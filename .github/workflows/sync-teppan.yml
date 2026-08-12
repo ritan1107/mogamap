@@ -1,0 +1,38 @@
+name: Sync Teppan Stores
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 21 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run Teppan sync
+        run: |
+          python sync_teppan.py
+
+      - name: Commit updated store data
+        run: |
+          git config user.name "mogamap-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add stores.json
+          git diff --cached --quiet || git commit -m "Update Teppan stores"
+          git push
