@@ -1,6 +1,6 @@
 import json
 import re
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
@@ -8,132 +8,150 @@ from playwright.sync_api import sync_playwright
 
 START_URL = "https://u-word.com/teppan/store/searchResult"
 BASE_URL = "https://u-word.com"
+OUTPUT_FILE = "stores.json"
 
 
 def clean(value):
-    return re.sub(r"\s+", " ", value or "").strip()
+    if value is None:
+        return ""
+    return re.sub(r"\s+", " ", str(value)).strip()
 
 
 def normalize_phone(value):
     value = clean(value)
-    value = value.replace("ー", "-").replace("‐", "-").replace("−", "-")
+    value = value.replace("−", "-").replace("ー", "-").replace("―", "-")
     return value
 
 
-def get_jsonld_items(soup):
-    items = []
+def find_store_urls(text):
+    urls = set()
 
-    for script in soup.find_all("script", type="application/ld+json"):
+    patterns = [
+        r'["\']?(/teppan/store/storeDetail/\d+)["\']?',
+        r'https?://u-word\.com/teppan/store/storeDetail/\d+',
+    ]
+
+    for pattern in patterns:
+        for match in re.findall(pattern, text or ""):
+            urls.add(urljoin(BASE_URL, match))
+
+    return urls
+
+
+def collect_store_urls(page):
+    found = set()
+
+    # 通信で返ってくるURLも確認
+    def inspect_response(response):
         try:
-            data = json.loads(script.string or script.get_text())
+            url = response.url
+            found.update(find_store_urls(url))
 
-            if isinstance(data, list):
-                items.extend(data)
+            content_type = response.headers.get("content-type", "")
+            if "json" in content_type or "text" in content_type or "html" in content_type:
+                body = response.text()
+                found.update(find_store_urls(body))
+        except Exception:
+            pass
 
-            elif isinstance(data, dict):
-                if "@graph" in data and isinstance(data["@graph"], list):
-                    items.extend(data["@graph"])
-                else:
-                    items.append(data)
+    page.on("response", inspect_response)
+
+    print("Loading:", START_URL)
+
+    page.goto(
+        START_URL,
+        wait_until="domcontentloaded",
+        timeout=60000
+    )
+
+    page.wait_for_timeout(5000)
+
+    # スクロールして遅延読み込みを出す
+    previous_height = 0
+
+    for _ in range(15):
+        try:
+            current_height = page.evaluate("document.body.scrollHeight")
+
+            page.evaluate(
+                "window.scrollTo(0, document.body.scrollHeight)"
+            )
+
+            page.wait_for_timeout(1200)
+
+            html = page.content()
+            found.update(find_store_urls(html))
+
+            hrefs = page.locator("a").evaluate_all(
+                """els => els.map(a => a.href || a.getAttribute('href') || '')"""
+            )
+
+            for href in hrefs:
+                found.update(find_store_urls(href))
+
+            if current_height == previous_height:
+                break
+
+            previous_height = current_height
+
+        except Exception as e:
+            print("Scroll warning:", e)
+
+    # ページ内scriptも直接確認
+    try:
+        scripts = page.locator("script").all_text_contents()
+        for script in scripts:
+            found.update(find_store_urls(script))
+    except Exception:
+        pass
+
+    # 次へ・もっと見る系ボタンがあれば押してみる
+    labels = [
+        "次へ",
+        "次のページ",
+        "もっと見る",
+        "さらに表示",
+        "MORE",
+        "Next",
+    ]
+
+    for label in labels:
+        try:
+            locator = page.get_by_text(label, exact=False)
+
+            count = locator.count()
+
+            for i in range(min(count, 5)):
+                try:
+                    locator.nth(i).click(timeout=2000)
+                    page.wait_for_timeout(1500)
+
+                    html = page.content()
+                    found.update(find_store_urls(html))
+
+                except Exception:
+                    pass
 
         except Exception:
             pass
 
-    return items
+    html = page.content()
+    found.update(find_store_urls(html))
+
+    print("Candidate URLs:", len(found))
+
+    for url in sorted(found):
+        print("CANDIDATE:", url)
+
+    return sorted(found)
 
 
-def address_from_jsonld(soup):
-    for item in get_jsonld_items(soup):
-        if not isinstance(item, dict):
-            continue
+def extract_address(soup):
+    text = clean(soup.get_text(" ", strip=True))
 
-        address = item.get("address")
-
-        if isinstance(address, dict):
-            parts = [
-                address.get("postalCode", ""),
-                address.get("addressRegion", ""),
-                address.get("addressLocality", ""),
-                address.get("streetAddress", "")
-            ]
-
-            result = clean(" ".join(x for x in parts if x))
-
-            if result:
-                return result
-
-        elif isinstance(address, str):
-            result = clean(address)
-
-            if result:
-                return result
-
-    return ""
-
-
-def phone_from_jsonld(soup):
-    for item in get_jsonld_items(soup):
-        if not isinstance(item, dict):
-            continue
-
-        tel = item.get("telephone")
-
-        if tel:
-            return normalize_phone(str(tel))
-
-    return ""
-
-
-def find_address(soup, text):
-    # 1. 構造化データ
-    address = address_from_jsonld(soup)
-
-    if address:
-        return address
-
-    # 2. <address> タグ
-    tag = soup.find("address")
-
-    if tag:
-        value = clean(tag.get_text(" ", strip=True))
-
-        if value:
-            return value
-
-    # 3. 「住所」「所在地」の直後
-    labels = soup.find_all(
-        string=re.compile(r"住所|所在地|店舗住所|ショップ住所")
-    )
-
-    for label in labels:
-        parent = label.parent
-
-        if parent:
-            candidates = [
-                parent.get_text(" ", strip=True),
-                parent.parent.get_text(" ", strip=True)
-                if parent.parent else ""
-            ]
-
-            for candidate in candidates:
-                candidate = clean(candidate)
-
-                match = re.search(
-                    r"(?:住所|所在地|店舗住所|ショップ住所)"
-                    r"[\s：:]*"
-                    r"(〒?\s*\d{3}-?\d{4}\s*)?"
-                    r"(北海道[^|｜\n]{3,120})",
-                    candidate
-                )
-
-                if match:
-                    postal = match.group(1) or ""
-                    return clean(postal + match.group(2))
-
-    # 4. 郵便番号 + 北海道
+    # 北海道から始まる住所を優先
     match = re.search(
-        r"(〒?\s*\d{3}-?\d{4}\s*北海道.{3,100}?)"
-        r"(?=TEL|電話|営業時間|定休日|アクセス|MAP|地図|$)",
+        r"(北海道.{2,100}?)(?=TEL|電話|営業時間|定休日|アクセス|MAP|$)",
         text,
         re.IGNORECASE
     )
@@ -141,14 +159,9 @@ def find_address(soup, text):
     if match:
         return clean(match.group(1))
 
-    # 5. 北海道から始まる住所
+    # 郵便番号の後ろ
     match = re.search(
-        r"(北海道(?:札幌市|函館市|小樽市|旭川市|室蘭市|釧路市|"
-        r"帯広市|北見市|夕張市|岩見沢市|網走市|留萌市|苫小牧市|"
-        r"稚内市|美唄市|芦別市|江別市|赤平市|紋別市|士別市|"
-        r"名寄市|三笠市|根室市|千歳市|滝川市|砂川市|歌志内市|"
-        r"深川市|富良野市|登別市|恵庭市|伊達市|北広島市|"
-        r"石狩市|北斗市|[^ ]+郡)[^|｜\n]{3,100})",
+        r"(?:〒?\s*\d{3}-?\d{4}\s*)?(北海道.{2,100})",
         text
     )
 
@@ -158,293 +171,175 @@ def find_address(soup, text):
     return ""
 
 
-def find_phone(soup, text):
-    # 1. tel:リンクが最優先
-    tel_link = soup.find("a", href=re.compile(r"^tel:", re.I))
+def extract_phone(soup):
+    text = clean(soup.get_text(" ", strip=True))
 
-    if tel_link:
-        value = tel_link.get("href", "")[4:]
+    match = re.search(
+        r"(?:TEL|電話)[：:\s]*"
+        r"((?:0\d{1,4})[-ー−]?\d{1,4}[-ー−]?\d{3,4})",
+        text,
+        re.IGNORECASE
+    )
 
-        if value:
-            return normalize_phone(value)
+    if match:
+        return normalize_phone(match.group(1))
 
-    # 2. JSON-LD
-    value = phone_from_jsonld(soup)
+    tel = soup.select_one('a[href^="tel:"]')
 
-    if value:
-        return value
+    if tel:
+        return normalize_phone(
+            tel.get("href", "").replace("tel:", "")
+        )
 
-    # 3. テキストから電話番号
-    patterns = [
-        r"(?:TEL|電話|電話番号)[\s：:]*"
-        r"(0\d{1,4}[-ー‐−]\d{1,4}[-ー‐−]\d{3,4})",
+    return ""
 
-        r"(0\d{1,4}[-ー‐−]\d{1,4}[-ー‐−]\d{3,4})"
+
+def extract_name(soup):
+    selectors = [
+        "h1",
+        "h2",
+        ".store-name",
+        ".shop-name",
+        ".title",
     ]
 
-    for pattern in patterns:
-        match = re.search(pattern, text, re.I)
+    for selector in selectors:
+        node = soup.select_one(selector)
 
-        if match:
-            return normalize_phone(match.group(1))
+        if node:
+            value = clean(node.get_text(" ", strip=True))
+            if value:
+                return value
 
-    return ""
-
-
-def get_name(soup):
-    # JSON-LD
-    for item in get_jsonld_items(soup):
-        if isinstance(item, dict):
-            item_type = item.get("@type", "")
-
-            if isinstance(item_type, list):
-                item_type = " ".join(item_type)
-
-            if any(
-                x in str(item_type).lower()
-                for x in [
-                    "restaurant",
-                    "localbusiness",
-                    "store",
-                    "foodestablishment"
-                ]
-            ):
-                name = clean(item.get("name", ""))
-
-                if name:
-                    return name
-
-    # h1
-    h1 = soup.find("h1")
-
-    if h1:
-        name = clean(h1.get_text(" ", strip=True))
-
-        if name:
-            return name
-
-    # og:title
-    og = soup.find("meta", property="og:title")
-
-    if og and og.get("content"):
-        return clean(og["content"])
+    if soup.title:
+        title = clean(soup.title.get_text())
+        title = re.sub(
+            r"\s*[|｜\-–—]\s*HORBY.*$",
+            "",
+            title,
+            flags=re.IGNORECASE
+        )
+        return title
 
     return ""
 
 
-def get_description(soup):
-    og = soup.find("meta", property="og:description")
-
-    if og and og.get("content"):
-        return clean(og["content"])
-
-    meta = soup.find("meta", attrs={"name": "description"})
+def extract_description(soup):
+    meta = soup.select_one('meta[name="description"]')
 
     if meta and meta.get("content"):
-        return clean(meta["content"])
+        return clean(meta.get("content"))
 
-    return ""
+    text = clean(soup.get_text(" ", strip=True))
 
-
-def get_image(soup):
-    og = soup.find("meta", property="og:image")
-
-    if og and og.get("content"):
-        return urljoin(BASE_URL, og["content"])
-
-    img = soup.find("img")
-
-    if img and img.get("src"):
-        return urljoin(BASE_URL, img["src"])
-
-    return ""
+    return text[:300]
 
 
-def is_candidate_url(url):
-    parsed = urlparse(url)
-
-    if not parsed.netloc.endswith("u-word.com"):
-        return False
-
-    path = parsed.path.lower()
-
-    # 明らかに店舗詳細ではないURLを除外
-    blocked = [
-        "/login",
-        "/signup",
-        "/contact",
-        "/privacy",
-        "/terms",
-        "/news",
-        "/about",
-        "/assets/",
-        "/wp-",
-        "/teppan"
+def extract_image(soup, page_url):
+    selectors = [
+        'meta[property="og:image"]',
+        'meta[name="twitter:image"]',
     ]
 
-    if path in ["/", "/teppan"]:
-        return False
+    for selector in selectors:
+        node = soup.select_one(selector)
 
-    if any(x in path for x in blocked):
-        return False
+        if node and node.get("content"):
+            return urljoin(
+                page_url,
+                node.get("content")
+            )
 
-    return True
+    image = soup.select_one("img[src]")
+
+    if image:
+        return urljoin(
+            page_url,
+            image.get("src")
+        )
+
+    return ""
+
+
+def read_store(page, url):
+    print("Opening:", url)
+
+    try:
+        page.goto(
+            url,
+            wait_until="domcontentloaded",
+            timeout=60000
+        )
+
+        page.wait_for_timeout(1500)
+
+        soup = BeautifulSoup(
+            page.content(),
+            "html.parser"
+        )
+
+        name = extract_name(soup)
+        address = extract_address(soup)
+
+        print("STORE:", name)
+        print("ADDRESS:", address)
+
+        # 北海道だけ保存
+        if "北海道" not in address:
+            print("SKIP: Not Hokkaido")
+            return None
+
+        return {
+            "name": name,
+            "address": address,
+            "phone": extract_phone(soup),
+            "description": extract_description(soup),
+            "image": extract_image(soup, url),
+            "source_url": url,
+            "source": "U-WORD てっぱん"
+        }
+
+    except Exception as e:
+        print("STORE ERROR:", url, e)
+        return None
 
 
 def main():
     stores = []
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True
+        )
 
         context = browser.new_context(
-            viewport={"width": 1280, "height": 1800},
+            locale="ja-JP",
+            viewport={
+                "width": 1440,
+                "height": 1400
+            },
             user_agent=(
                 "Mozilla/5.0 "
-                "(Macintosh; Intel Mac OS X 10_15_7) "
+                "(Windows NT 10.0; Win64; x64) "
                 "AppleWebKit/537.36 "
                 "(KHTML, like Gecko) "
-                "Chrome/126 Safari/537.36"
+                "Chrome/126.0 Safari/537.36"
             )
         )
 
         page = context.new_page()
 
-        print("Loading:", START_URL)
+        urls = collect_store_urls(page)
 
-        page.goto(
-            START_URL,
-            wait_until="domcontentloaded",
-            timeout=60000
-        )
+        for url in urls:
+            store = read_store(page, url)
 
-        page.wait_for_timeout(5000)
-
-        # 遅延読み込み対策
-        last_height = 0
-
-        for _ in range(15):
-            page.evaluate(
-                "window.scrollTo(0, document.body.scrollHeight)"
-            )
-
-            page.wait_for_timeout(1000)
-
-            height = page.evaluate("document.body.scrollHeight")
-
-            if height == last_height:
-                break
-
-            last_height = height
-
-        hrefs = page.eval_on_selector_all(
-            "a[href]",
-            "els => els.map(a => a.href)"
-        )
-
-        urls = []
-
-        for href in hrefs:
-            if not href:
-                continue
-
-            href = href.split("#")[0]
-
-            if is_candidate_url(href):
-                urls.append(href)
-
-        urls = sorted(set(urls))
-
-        print("Candidate URLs:", len(urls))
-
-        detail = context.new_page()
-
-        for index, url in enumerate(urls, 1):
-            try:
-                print(f"[{index}/{len(urls)}] Opening:", url)
-
-                detail.goto(
-                    url,
-                    wait_until="domcontentloaded",
-                    timeout=60000
-                )
-
-                detail.wait_for_timeout(2500)
-
-                html = detail.content()
-
-                soup = BeautifulSoup(
-                    html,
-                    "html.parser"
-                )
-
-                text = clean(
-                    soup.get_text(" ", strip=True)
-                )
-
-                name = get_name(soup)
-
-                if not name:
-                    continue
-
-                address = find_address(
-                    soup,
-                    text
-                )
-
-                phone = find_phone(
-                    soup,
-                    text
-                )
-
-                # 北海道住所が取れない店舗は
-                # 北海道版もがマップには入れない
-                if not address:
-                    print(
-                        "SKIP no address:",
-                        name
-                    )
-                    continue
-
-                if "北海道" not in address:
-                    print(
-                        "SKIP outside Hokkaido:",
-                        name,
-                        address
-                    )
-                    continue
-
-                store = {
-                    "name": name,
-                    "address": address,
-                    "phone": phone,
-                    "description": get_description(soup),
-                    "image": get_image(soup),
-                    "source_url": url,
-                    "source": "U-WORD てっぱん"
-                }
-
+            if store:
                 stores.append(store)
-
-                print(
-                    "STORE:",
-                    name,
-                    "|",
-                    address,
-                    "|",
-                    phone
-                )
-
-            except Exception as e:
-                print(
-                    "ERROR:",
-                    url,
-                    str(e)
-                )
 
         browser.close()
 
-    # URL単位で重複除去
+    # URLで重複削除
     unique = {}
 
     for store in stores:
@@ -452,15 +347,7 @@ def main():
 
     stores = list(unique.values())
 
-    # 店名順
-    stores.sort(
-        key=lambda x: x["name"]
-    )
-
-    print(
-        "Hokkaido stores found:",
-        len(stores)
-    )
+    print("Hokkaido stores found:", len(stores))
 
     # 0件なら既存JSONを壊さない
     if not stores:
@@ -471,7 +358,7 @@ def main():
         return
 
     with open(
-        "stores.json",
+        OUTPUT_FILE,
         "w",
         encoding="utf-8"
     ) as f:
