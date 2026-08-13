@@ -459,6 +459,312 @@ window.addEventListener('load', function() {
   mogaRenderManager();
 });
 
+/* ===== Supabase 共有保存版 ===== */
 
+const MOGA_SUPABASE_URL = 'https://lgidhjxowpueglduphzp.supabase.co';
+
+const MOGA_SUPABASE_KEY =
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxnaWRoanhvd3B1ZWdsZHVwaHpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1Mzc4MjEsImV4cCI6MjEwMjExMzgyMX0.AU1WjBRfB8uvCCTUqW0mou8OHKbLEzGbV7dqELQElbo';
+
+
+function mogaSupabaseHeaders() {
+  return {
+    'apikey': MOGA_SUPABASE_KEY,
+    'Authorization': 'Bearer ' + MOGA_SUPABASE_KEY,
+    'Content-Type': 'application/json'
+  };
+}
+
+
+/* ===== 全員共通の店舗情報を取得 ===== */
+
+async function mogaSyncFromSupabase() {
+
+  try {
+
+    const url =
+      MOGA_SUPABASE_URL +
+      '/rest/v1/shop_public' +
+      '?select=source_id,name,stamp_rally_enabled,community_url,point_purchase_url,spot_job_enabled,spot_job_title,spot_job_description,spot_job_hourly_wage,spot_job_schedule,spot_job_payment_method,spot_job_contact' +
+      '&is_published=eq.true';
+
+    const response = await fetch(url, {
+      headers: mogaSupabaseHeaders()
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const rows = await response.json();
+
+    const shared = {};
+
+    rows.forEach(row => {
+
+      if (!row.source_id) return;
+
+      shared[String(row.source_id)] = {
+
+        stampJoin:
+          !!row.stamp_rally_enabled,
+
+        communityUrl:
+          row.community_url || '',
+
+        pointUrl:
+          row.point_purchase_url || '',
+
+        jobActive:
+          !!row.spot_job_enabled,
+
+        jobTitle:
+          row.spot_job_title || '',
+
+        jobDescription:
+          row.spot_job_description || '',
+
+        hourlyPay:
+          row.spot_job_hourly_wage
+            ? String(row.spot_job_hourly_wage) + '円'
+            : '',
+
+        jobSchedule:
+          row.spot_job_schedule || '',
+
+        paymentMethod:
+          row.spot_job_payment_method || '',
+
+        jobContact:
+          row.spot_job_contact || '',
+
+        editPin: ''
+      };
+    });
+
+
+    /* 既存画面との互換用 */
+    localStorage.setItem(
+      MOGA_EDIT_KEY,
+      JSON.stringify(shared)
+    );
+
+    mogaRenderManager();
+
+  } catch (error) {
+
+    console.error(
+      'Supabase読み込みエラー',
+      error
+    );
+  }
+}
+
+
+/* ===== 店舗編集をSupabase保存へ変更 ===== */
+
+window.mogaEditStore = async function(id) {
+
+  const store = mogaGetStore(id);
+
+  if (!store) {
+    alert('店舗情報が見つかりません');
+    return;
+  }
+
+  const setting = mogaGetSetting(id);
+
+
+  const pin = prompt(
+    store.name +
+    '\n\n店舗編集用の暗証番号を入力してください。\n' +
+    '初回は4文字以上の好きな暗証番号を設定できます。'
+  );
+
+  if (pin === null) return;
+
+  if (pin.trim().length < 4) {
+    alert('暗証番号は4文字以上にしてください');
+    return;
+  }
+
+
+  const stampJoin = confirm(
+    'センベロ・スタンプラリーに参加しますか？\n\n' +
+    'OK＝参加\nキャンセル＝不参加'
+  );
+
+
+  const communityUrl = prompt(
+    'コミュニティページURL\n未設定なら空欄',
+    setting.communityUrl || ''
+  );
+
+  if (communityUrl === null) return;
+
+
+  const pointUrl = prompt(
+    'ポイント購入・決済ページURL\n未設定なら空欄',
+    setting.pointUrl || ''
+  );
+
+  if (pointUrl === null) return;
+
+
+  const jobActive = confirm(
+    'スポットバイトを募集しますか？\n\n' +
+    'OK＝募集中\nキャンセル＝募集しない'
+  );
+
+
+  let jobTitle = '';
+  let jobDescription = '';
+  let hourlyPay = '';
+  let jobSchedule = '';
+  let paymentMethod = '';
+  let jobContact = '';
+
+
+  if (jobActive) {
+
+    jobTitle = prompt(
+      '募集タイトル\n例：ホールスタッフ募集',
+      setting.jobTitle || ''
+    ) || '';
+
+
+    jobDescription = prompt(
+      '仕事内容',
+      setting.jobDescription || ''
+    ) || '';
+
+
+    hourlyPay = prompt(
+      '時給\n例：1200',
+      String(setting.hourlyPay || '').replace(/[^0-9]/g, '')
+    ) || '';
+
+
+    jobSchedule = prompt(
+      '勤務時間・日時\n例：18:00〜22:00',
+      setting.jobSchedule || ''
+    ) || '';
+
+
+    paymentMethod = prompt(
+      '支払い方法\n例：当日現金払い',
+      setting.paymentMethod || ''
+    ) || '';
+
+
+    jobContact = prompt(
+      '応募・連絡方法\n例：店舗へ電話',
+      setting.jobContact || ''
+    ) || '';
+  }
+
+
+  const body = {
+
+    p_name:
+      store.name,
+
+    p_pin:
+      pin.trim(),
+
+    p_stamp_rally_enabled:
+      stampJoin,
+
+    p_community_url:
+      communityUrl.trim(),
+
+    p_point_purchase_url:
+      pointUrl.trim(),
+
+    p_spot_job_enabled:
+      jobActive,
+
+    p_spot_job_title:
+      jobTitle,
+
+    p_spot_job_description:
+      jobDescription,
+
+    p_spot_job_hourly_wage:
+      hourlyPay
+        ? Number(hourlyPay)
+        : null,
+
+    p_spot_job_schedule:
+      jobSchedule,
+
+    p_spot_job_payment_method:
+      paymentMethod,
+
+    p_spot_job_contact:
+      jobContact
+  };
+
+
+  try {
+
+    const response = await fetch(
+      MOGA_SUPABASE_URL +
+      '/rest/v1/rpc/update_shop_by_pin',
+      {
+        method: 'POST',
+        headers: mogaSupabaseHeaders(),
+        body: JSON.stringify(body)
+      }
+    );
+
+
+    if (!response.ok) {
+
+      const errorText =
+        await response.text();
+
+      if (
+        errorText.includes('Invalid PIN')
+      ) {
+        alert('暗証番号が違います');
+        return;
+      }
+
+      throw new Error(errorText);
+    }
+
+
+    alert(
+      '保存しました！\n\n' +
+      'この変更は他のスマホにも反映されます。'
+    );
+
+
+    await mogaSyncFromSupabase();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '保存できませんでした。\n' +
+      'もう一度お試しください。'
+    );
+  }
+};
+
+
+/* ===== 公開ページを開いた時に共有データ取得 ===== */
+
+window.addEventListener(
+  'load',
+  function() {
+
+    mogaSyncFromSupabase();
+
+  }
+);
 </script>
 </body></html>
