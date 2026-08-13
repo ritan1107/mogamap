@@ -60,4 +60,404 @@ function storePin(id){return String(5200+id)}document.getElementById('stampBtn')
 function jobHtml(j){const s=stores.find(x=>x.id==j.storeId);return `<article class="card job"><span class="badge">${s?.name||''}</span><h3>${j.title}</h3><div class="addr">🗓 ${j.date?new Date(j.date).toLocaleString('ja-JP'):''}</div><div class="addr">💰 ${j.pay||'応相談'}</div><p>${j.desc||''}</p><div class="memo">応募：${j.contact||'店舗へお問い合わせください'}</div></article>`}
 function renderJobs(){const j=getJobs();document.getElementById('jobList').innerHTML=j.length?j.map(jobHtml).join(''):'<div class="empty">現在、スポットバイトの募集はありません。</div>'}document.getElementById('newJobBtn').onclick=()=>document.getElementById('jobModal').classList.add('on');document.getElementById('saveJob').onclick=()=>{const j={id:Date.now(),storeId:document.getElementById('jobStore').value,title:document.getElementById('jobTitle').value.trim(),date:document.getElementById('jobDate').value,pay:document.getElementById('jobPay').value.trim(),desc:document.getElementById('jobDesc').value.trim(),contact:document.getElementById('jobContact').value.trim()};if(!j.title)return alert('募集タイトルを入力してください');const a=getJobs();a.push(j);localStorage.setItem('mogaJobs2',JSON.stringify(a));closeM('jobModal');renderJobs()};
 const opts=stores.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');document.getElementById('stampStore').innerHTML=opts;document.getElementById('jobStore').innerHTML=opts;renderCards();renderStamps();renderJobs();
-</script></body></html>
+
+</script>
+<script>
+/* ===== もがマップ 店舗拡張機能 ===== */
+
+const MOGA_EDIT_KEY = 'mogamap_store_settings_v1';
+
+function mogaLoadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem(MOGA_EDIT_KEY) || '{}');
+  } catch(e) {
+    return {};
+  }
+}
+
+function mogaSaveSettings(data) {
+  localStorage.setItem(MOGA_EDIT_KEY, JSON.stringify(data));
+}
+
+function mogaGetStore(id) {
+  return stores.find(s => String(s.id) === String(id));
+}
+
+function mogaGetSetting(id) {
+  const all = mogaLoadSettings();
+
+  return all[id] || {
+    stampJoin: false,
+    communityUrl: '',
+    pointUrl: '',
+    jobActive: false,
+    jobTitle: '',
+    jobDescription: '',
+    hourlyPay: '',
+    paymentMethod: '',
+    editPin: ''
+  };
+}
+
+
+/* ===== Googleマップ ナビ ===== */
+
+function mogaNavigate(id) {
+  const store = mogaGetStore(id);
+
+  if (!store) {
+    alert('店舗情報が見つかりません');
+    return;
+  }
+
+  const destination =
+    store.address && store.address.trim()
+      ? store.address
+      : store.name;
+
+  window.open(
+    'https://www.google.com/maps/dir/?api=1&destination=' +
+    encodeURIComponent(destination),
+    '_blank'
+  );
+}
+
+
+/* ===== コミュニティページ ===== */
+
+function mogaCommunity(id) {
+  const setting = mogaGetSetting(id);
+
+  if (!setting.communityUrl) {
+    alert('この店舗はコミュニティURLがまだ登録されていません');
+    return;
+  }
+
+  window.open(setting.communityUrl, '_blank');
+}
+
+
+/* ===== ポイント購入 ===== */
+
+function mogaBuyPoint(id) {
+  const setting = mogaGetSetting(id);
+
+  if (!setting.pointUrl) {
+    alert('この店舗はポイント購入URLがまだ登録されていません');
+    return;
+  }
+
+  window.open(setting.pointUrl, '_blank');
+}
+
+
+/* ===== 店舗編集 ===== */
+
+function mogaEditStore(id) {
+
+  const store = mogaGetStore(id);
+
+  if (!store) {
+    alert('店舗情報が見つかりません');
+    return;
+  }
+
+  const setting = mogaGetSetting(id);
+
+  const enteredPin = prompt(
+    store.name +
+    '\n\n店舗編集用の暗証番号を入力してください。\n' +
+    '初回は好きな暗証番号を設定できます。'
+  );
+
+  if (enteredPin === null) return;
+
+  if (setting.editPin && enteredPin !== setting.editPin) {
+    alert('暗証番号が違います');
+    return;
+  }
+
+  let pin = setting.editPin;
+
+  if (!pin) {
+    if (!enteredPin.trim()) {
+      alert('暗証番号を入力してください');
+      return;
+    }
+    pin = enteredPin.trim();
+  }
+
+
+  const stampJoin = confirm(
+    'センベロ・スタンプラリーに参加しますか？\n\n' +
+    'OK＝参加\nキャンセル＝不参加'
+  );
+
+
+  const communityUrl = prompt(
+    'コミュニティページURL\n（未設定なら空欄）',
+    setting.communityUrl || ''
+  );
+
+  if (communityUrl === null) return;
+
+
+  const pointUrl = prompt(
+    'ポイント購入・決済ページURL\n（未設定なら空欄）',
+    setting.pointUrl || ''
+  );
+
+  if (pointUrl === null) return;
+
+
+  const jobActive = confirm(
+    'スポットバイトを募集しますか？\n\n' +
+    'OK＝募集中\nキャンセル＝募集しない'
+  );
+
+
+  let jobTitle = setting.jobTitle || '';
+  let jobDescription = setting.jobDescription || '';
+  let hourlyPay = setting.hourlyPay || '';
+  let paymentMethod = setting.paymentMethod || '';
+
+  if (jobActive) {
+
+    jobTitle = prompt(
+      '募集タイトル\n例：ホールスタッフ募集',
+      jobTitle
+    ) || '';
+
+    jobDescription = prompt(
+      '仕事内容',
+      jobDescription
+    ) || '';
+
+    hourlyPay = prompt(
+      '時給・報酬\n例：時給1,200円',
+      hourlyPay
+    ) || '';
+
+    paymentMethod = prompt(
+      '支払い方法\n例：当日現金払い',
+      paymentMethod
+    ) || '';
+  }
+
+
+  const all = mogaLoadSettings();
+
+  all[id] = {
+    stampJoin,
+    communityUrl: communityUrl.trim(),
+    pointUrl: pointUrl.trim(),
+    jobActive,
+    jobTitle,
+    jobDescription,
+    hourlyPay,
+    paymentMethod,
+    editPin: pin
+  };
+
+  mogaSaveSettings(all);
+
+  alert(
+    '保存しました！\n\n' +
+    '店舗：' + store.name + '\n' +
+    'スタンプラリー：' +
+    (stampJoin ? '参加' : '不参加') + '\n' +
+    'スポットバイト：' +
+    (jobActive ? '募集中' : '募集なし')
+  );
+
+  mogaRenderManager();
+}
+
+
+/* ===== 管理画面 ===== */
+
+function mogaRenderManager() {
+
+  let area = document.getElementById('mogaManager');
+
+  if (!area) {
+
+    area = document.createElement('section');
+    area.id = 'mogaManager';
+
+    area.style.cssText =
+      'max-width:1200px;margin:20px auto;padding:15px;' +
+      'font-family:-apple-system,BlinkMacSystemFont,sans-serif;';
+
+    document.body.insertBefore(
+      area,
+      document.body.firstChild
+    );
+  }
+
+  let html = `
+    <div style="
+      background:#fff;
+      padding:18px;
+      border-radius:16px;
+      box-shadow:0 3px 14px rgba(0,0,0,.08);
+      margin-bottom:15px;
+    ">
+      <h2 style="margin:0 0 6px;">
+        🍺 センベロ・スタンプラリー
+      </h2>
+
+      <div style="font-size:14px;color:#666;">
+        店舗情報・参加設定・スポットバイト・
+        コミュニティ・ポイント購入
+      </div>
+    </div>
+  `;
+
+
+  stores.forEach(store => {
+
+    const s = mogaGetSetting(store.id);
+
+    html += `
+      <div style="
+        background:#fff;
+        margin:12px 0;
+        padding:15px;
+        border-radius:14px;
+        box-shadow:0 2px 8px rgba(0,0,0,.06);
+      ">
+
+        <div style="
+          font-size:18px;
+          font-weight:700;
+          margin-bottom:5px;
+        ">
+          ${store.name}
+        </div>
+
+        <div style="
+          font-size:13px;
+          color:#666;
+          margin-bottom:10px;
+        ">
+          ${store.address || ''}
+        </div>
+
+
+        ${
+          s.stampJoin
+          ? `<div style="
+               display:inline-block;
+               background:#e9f7ec;
+               color:#267a38;
+               padding:5px 9px;
+               border-radius:20px;
+               margin:3px;
+             ">
+               🎯 スタンプラリー参加店
+             </div>`
+          : ''
+        }
+
+
+        ${
+          s.jobActive
+          ? `<div style="
+               display:inline-block;
+               background:#fff0df;
+               color:#a55a00;
+               padding:5px 9px;
+               border-radius:20px;
+               margin:3px;
+             ">
+               💼 スポットバイト募集中
+             </div>`
+          : ''
+        }
+
+
+        ${
+          s.jobActive
+          ? `
+            <div style="
+              background:#fafafa;
+              padding:10px;
+              margin-top:10px;
+              border-radius:10px;
+              font-size:14px;
+            ">
+              <b>${s.jobTitle || 'スタッフ募集'}</b><br>
+              ${s.jobDescription || ''}<br>
+              ${s.hourlyPay ? '💴 ' + s.hourlyPay + '<br>' : ''}
+              ${s.paymentMethod ? '💳 ' + s.paymentMethod : ''}
+            </div>
+          `
+          : ''
+        }
+
+
+        <div style="
+          display:flex;
+          flex-wrap:wrap;
+          gap:7px;
+          margin-top:12px;
+        ">
+
+          <button onclick="mogaNavigate('${store.id}')"
+            style="padding:10px;border:0;border-radius:9px;">
+            🗺️ 店舗までナビ
+          </button>
+
+          ${
+            s.communityUrl
+            ? `
+              <button onclick="mogaCommunity('${store.id}')"
+                style="padding:10px;border:0;border-radius:9px;">
+                👥 コミュニティ
+              </button>
+            `
+            : ''
+          }
+
+          ${
+            s.pointUrl
+            ? `
+              <button onclick="mogaBuyPoint('${store.id}')"
+                style="padding:10px;border:0;border-radius:9px;">
+                💳 ポイント購入
+              </button>
+            `
+            : ''
+          }
+
+          <button onclick="mogaEditStore('${store.id}')"
+            style="
+              padding:10px;
+              border:0;
+              border-radius:9px;
+              background:#333;
+              color:#fff;
+            ">
+            🔐 店舗編集
+          </button>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+
+  area.innerHTML = html;
+}
+
+
+/* ページ読み込み後に表示 */
+
+window.addEventListener('load', function() {
+  mogaRenderManager();
+});
+
+</script>
+</body></html>
