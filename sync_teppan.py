@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
 
-START_URL = START_URL = "https://u-word.com/teppan/store/searchResult"
+START_URL = "https://u-word.com/teppan/store/searchResult"
 BASE_URL = "https://u-word.com"
 
 
