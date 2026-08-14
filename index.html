@@ -1,1187 +1,875 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-<title>もがマップ｜北海道のお店</title>
-
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>もがマップ｜北海道36店舗</title>
 <style>
-:root{
-  --orange:#f58a24;
-  --green:#198754;
-  --bg:#fffaf2;
-  --card:#ffffff;
-  --text:#292722;
-  --sub:#777168;
-  --line:#eadfce;
-}
-
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Hiragino Kaku Gothic ProN",
-    "Yu Gothic",
-    sans-serif;
-}
-
-body{
-  padding-bottom:90px;
-}
-
-/* ===== ヘッダー ===== */
-
-header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:rgba(255,250,242,.96);
-  border-bottom:1px solid var(--line);
-  backdrop-filter:blur(10px);
-}
-
-.header-inner{
-  max-width:1100px;
-  margin:auto;
-  padding:14px 16px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.logo{
-  font-size:21px;
-  font-weight:900;
-  color:var(--orange);
-  white-space:nowrap;
-}
-
-.search{
-  flex:1;
-  display:flex;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.search input{
-  width:100%;
-  border:0;
-  outline:0;
-  padding:13px 16px;
-  font-size:16px;
-  background:transparent;
-}
-
-.search button{
-  border:0;
-  background:transparent;
-  padding:0 16px;
-  font-size:20px;
-}
-
-/* ===== メイン ===== */
-
-main{
-  max-width:1100px;
-  margin:auto;
-  padding:22px 15px 40px;
-}
-
-.hero{
-  margin-bottom:20px;
-}
-
-.hero h1{
-  margin:0 0 6px;
-  font-size:27px;
-  line-height:1.35;
-}
-
-.hero p{
-  margin:0;
-  color:var(--sub);
-  font-weight:600;
-  line-height:1.6;
-}
-
-.status{
-  display:inline-block;
-  margin-top:10px;
-  padding:7px 12px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:999px;
-  font-size:13px;
-  font-weight:800;
-}
-
-/* ===== MAP ===== */
-
-.map-card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:22px;
-  overflow:hidden;
-  box-shadow:0 5px 18px rgba(0,0,0,.04);
-}
-
-.map-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:15px 16px;
-}
-
-.map-title{
-  font-size:20px;
-  font-weight:900;
-}
-
-.map-sub{
-  font-size:13px;
-  color:var(--sub);
-  margin-top:3px;
-}
-
-.map-btn{
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:13px;
-  padding:9px 12px;
-  font-weight:800;
-  cursor:pointer;
-}
-
-#map{
-  width:100%;
-  height:460px;
-  background:#eee;
-}
-
-.map-note{
-  padding:12px 15px;
-  color:var(--sub);
-  font-size:13px;
-  line-height:1.6;
-  font-weight:600;
-}
-
-/* ===== 店舗 ===== */
-
-.shop-heading{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:28px 2px 14px;
-}
-
-.shop-heading h2{
-  margin:0;
-  font-size:24px;
-}
-
-.shop-count{
-  color:var(--green);
-  font-weight:900;
-}
-
-#shopList{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-}
-
-.shop{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 4px 14px rgba(0,0,0,.035);
-}
-
-.shop-category{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:999px;
-  background:#fff3e5;
-  color:#d96f08;
-  font-size:12px;
-  font-weight:900;
-  margin-bottom:8px;
-}
-
-.shop h3{
-  margin:0 0 7px;
-  font-size:19px;
-}
-
-.address{
-  color:var(--sub);
-  font-size:14px;
-  line-height:1.5;
-}
-
-.memo{
-  margin-top:9px;
-  font-size:14px;
-  line-height:1.6;
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  margin-top:13px;
-}
-
-.actions a{
-  flex:1;
-  text-align:center;
-  text-decoration:none;
-  border-radius:11px;
-  padding:10px 7px;
-  font-size:13px;
-  font-weight:900;
-}
-
-.detail{
-  color:#fff;
-  background:var(--orange);
-}
-
-.navi{
-  color:#fff;
-  background:var(--green);
-}
-
-/* ===== 空データ ===== */
-
-.empty{
-  grid-column:1/-1;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:28px 18px;
-  text-align:center;
-  color:var(--sub);
-  line-height:1.8;
-}
-
-/* ===== 下メニュー ===== */
-
-.bottom-nav{
-  position:fixed;
-  z-index:1100;
-  bottom:0;
-  left:0;
-  right:0;
-  background:rgba(255,255,255,.96);
-  border-top:1px solid var(--line);
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding-bottom:env(safe-area-inset-bottom);
-}
-
-.bottom-nav button{
-  border:0;
-  background:transparent;
-  padding:10px 2px 8px;
-  font-weight:800;
-  color:#6d685f;
-  font-size:12px;
-}
-
-.bottom-nav span{
-  display:block;
-  font-size:21px;
-  margin-bottom:2px;
-}
-
-.bottom-nav .active{
-  color:var(--orange);
-}
-
-/* ===== スマホ ===== */
-
-@media(max-width:700px){
-
-  .header-inner{
-    padding:11px 12px;
-  }
-
-  .logo{
-    font-size:17px;
-  }
-
-  .search input{
-    font-size:14px;
-    padding:11px 12px;
-  }
-
-  main{
-    padding:18px 12px 30px;
-  }
-
-  .hero h1{
-    font-size:23px;
-  }
-
-  #map{
-    height:420px;
-  }
-
-  #shopList{
-    grid-template-columns:1fr;
-  }
-}
+:root{--bg:#fffaf2;--card:#fff;--text:#2d2a26;--muted:#746e67;--accent:#ef8a24;--green:#278668;--line:#eadfd2;--shadow:0 8px 24px rgba(60,40,20,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;background:var(--bg);color:var(--text)}
+header{position:sticky;top:0;z-index:50;background:#fffaf2f2;border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.head{max-width:1200px;margin:auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-weight:900;font-size:20px}.brand b{color:var(--accent)}
+nav{display:flex;gap:7px;flex-wrap:wrap}.nav{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:800}.nav.on{background:var(--accent);color:#fff}
+main{max-width:1200px;margin:auto;padding:16px}.hero{background:linear-gradient(135deg,#fff1dc,#eef9f4);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}.hero h1{font-size:25px;margin:0 0 5px}.hero p{margin:0;color:var(--muted);line-height:1.65}
+.panel{display:none}.panel.on{display:block}.mapbox{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.maphead{padding:14px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.maphead h2{font-size:18px;margin:0}.maphead p{font-size:12px;color:var(--muted);margin:3px 0 0}
+iframe{display:block;width:100%;height:470px;border:0;background:#eee}.controls{display:grid;grid-template-columns:1fr 220px;gap:10px;margin:14px 0}.controls input,.controls select,input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}.cat{font-size:12px;color:var(--green);font-weight:900}.card h3{font-size:17px;margin:6px 0}.addr,.memo{font-size:13px;color:var(--muted);line-height:1.5}.memo{margin-top:4px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.btn{border:0;background:var(--accent);color:#fff;border-radius:11px;padding:10px 12px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-block}.btn.green{background:var(--green)}.btn.ghost{background:#fff;color:var(--text);border:1px solid var(--line)}.small{font-size:12px;padding:8px 10px}
+.modal{position:fixed;inset:0;z-index:100;background:#0008;display:none;align-items:flex-end;justify-content:center}.modal.on{display:flex}.sheet{background:#fff;width:min(720px,100%);max-height:90vh;overflow:auto;border-radius:24px 24px 0 0;padding:20px}.close{float:right;border:0;background:#f3eee8;border-radius:50%;width:36px;height:36px;font-size:19px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form{margin:10px 0}.label{font-size:13px;font-weight:900;display:block;margin-bottom:5px}.progress{height:14px;background:#eee5da;border-radius:99px;overflow:hidden}.progress>div{height:100%;width:0;background:var(--accent)}.stampgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:13px}.stamp{aspect-ratio:1;border:2px dashed #d9cabb;border-radius:50%;display:grid;place-items:center;text-align:center;padding:7px;font-size:10px;color:#968778}.stamp.on{border-style:solid;border-color:var(--accent);background:#fff0dc;color:var(--accent);font-weight:900}.job{border-left:5px solid var(--green)}.badge{display:inline-block;background:#edf7f2;color:var(--green);border-radius:999px;font-size:11px;font-weight:900;padding:5px 8px}.empty{text-align:center;padding:24px;color:var(--muted)}.note{background:#fff6d7;border:1px solid #edd99a;border-radius:12px;padding:11px;font-size:12px;line-height:1.6}.googleTag{font-size:12px;background:#edf3ff;color:#2459a9;border-radius:999px;padding:5px 8px;font-weight:800}
+@media(max-width:800px){.head{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.stampgrid{grid-template-columns:repeat(3,1fr)}iframe{height:52vh;min-height:360px}.hero h1{font-size:22px}}
 </style>
 </head>
-
 <body>
-
-<header>
-  <div class="header-inner">
-
-    <div class="logo">
-      📍 もがマップ
-    </div>
-
-    <div class="search">
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="店名・地域・キーワードで検索"
-      >
-      <button onclick="searchStores()">🔎</button>
-    </div>
-
-  </div>
-</header>
-
-
+<header><div class="head"><div class="brand">📍 <b>もがマップ</b> 北海道</div><nav><button class="nav on" data-tab="stores">Google地図・お店</button><button class="nav" data-tab="stamps">スタンプラリー</button><button class="nav" data-tab="jobs">スポットバイト</button></nav></div></header>
 <main>
-
-  <section class="hero">
-
-    <h1>
-      北海道のお店を、すぐ見つける。
-    </h1>
-
-    <p>
-      地図で集まりを確認 → 気になるお店をチェック。
-    </p>
-
-    <div class="status" id="status">
-      店舗データ読込中…
-    </div>
-
-  </section>
-
-
-  <section class="map-card">
-
-    <div class="map-head">
-
-      <div>
-        <div class="map-title">
-          🗺️ お店マップ
-        </div>
-
-        <div class="map-sub">
-          マーカーを押すと店舗情報が表示されます
-        </div>
-      </div>
-
-      <button
-        class="map-btn"
-        onclick="showAllStores()"
-      >
-        全体表示
-      </button>
-
-    </div>
-
-    <div id="map"></div>
-
-    <div class="map-note">
-      🟠 店舗位置は登録住所をもとに表示しています。
-      正確な経路は「ナビ」をご利用ください。
-    </div>
-
-  </section>
-
-
-  <div class="shop-heading">
-
-    <h2>
-      お店
-    </h2>
-
-    <div
-      class="shop-count"
-      id="shopCount"
-    >
-      0店舗
-    </div>
-
-  </div>
-
-  <section id="shopList">
-
-    <div class="empty">
-      店舗情報を読み込んでいます…
-    </div>
-
-  </section>
-
+<section class="hero"><h1>北海道36店舗を、地図から探せる。</h1><p>店舗カードの「Google地図に表示」を押すと、そのお店を上のGoogleマップへ表示します。詳細ページ・スタンプラリー・スポットバイトも店舗ごとに連動しています。</p></section>
+<section id="stores" class="panel on">
+<div class="mapbox"><div class="maphead"><div><h2 id="mapTitle">🗺️ Googleマップ｜北海道</h2><p id="mapSub">下のお店から選ぶと、この地図が店舗位置へ切り替わります。</p></div><span class="googleTag">Google Maps</span></div><iframe id="gmap" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=%E5%8C%97%E6%B5%B7%E9%81%93&z=5&output=embed"></iframe></div>
+<div class="controls"><input id="search" placeholder="店名・住所・メモから検索"><select id="category"><option value="">すべてのカテゴリ</option><option>お食事処</option><option>居酒屋</option><option>カフェ</option><option>海鮮系</option><option>その他</option></select></div>
+<div id="cards" class="grid"></div>
+</section>
+<section id="stamps" class="panel"><div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><h2 style="margin:0">🎟️ 北海道スタンプラリー</h2><div id="joinStatus" class="addr">まだ参加していません</div></div><button id="joinBtn" class="btn">参加する</button></div><div class="progress" style="margin-top:14px"><div id="progressbar"></div></div><p id="progressText" class="addr">0 / 36 スタンプ</p><div id="stampGrid" class="stampgrid"></div></div><div class="card" style="margin-top:14px"><h3>店舗でスタンプを押す</h3><p class="addr">参加後、来店店舗を選び、店舗スタッフが店舗用暗証番号を入力するとスタンプが付きます。</p><div class="two"><select id="stampStore"></select><input id="stampPin" inputmode="numeric" maxlength="6" placeholder="店舗用暗証番号"></div><div class="actions"><button id="stampBtn" class="btn green">スタンプを押す</button></div><div id="stampMsg" class="addr"></div></div></section>
+<section id="jobs" class="panel"><div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><h2 style="margin:0">💼 スポットバイト</h2><p class="addr">店舗ごとに短時間・単発のお仕事を掲載できます。</p></div><button id="newJobBtn" class="btn green">＋ 募集を出す</button></div></div><div id="jobList" class="grid" style="margin-top:14px"></div></section>
 </main>
-
-
-<nav class="bottom-nav">
-
-  <button class="active">
-    <span>🗺️</span>
-    地図・お店
-  </button>
-
-  <button>
-    <span>🎟️</span>
-    スタンプ
-  </button>
-
-  <button>
-    <span>💼</span>
-    バイト
-  </button>
-
-  <button>
-    <span>☰</span>
-    その他
-  </button>
-
-</nav>
-
-
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
-
-
+<div id="storeModal" class="modal"><div class="sheet"><button class="close" data-close="storeModal">×</button><div id="storeDetail"></div></div></div>
+<div id="joinModal" class="modal"><div class="sheet"><button class="close" data-close="joinModal">×</button><h2>スタンプラリー参加</h2><div class="form"><label class="label">ニックネーム</label><input id="joinName" placeholder="例：りーたん"></div><div class="form"><label class="label">参加用暗証番号（4〜6桁）</label><input id="joinPin" inputmode="numeric" maxlength="6"></div><button id="confirmJoin" class="btn">参加登録</button></div></div>
+<div id="jobModal" class="modal"><div class="sheet"><button class="close" data-close="jobModal">×</button><h2>スポットバイト募集</h2><div class="note">このファイル版では募集・スタンプは端末内保存です。本番公開時はFirebaseなどへ接続すると複数端末で共有できます。</div><div class="form"><label class="label">店舗</label><select id="jobStore"></select></div><div class="form"><label class="label">募集タイトル</label><input id="jobTitle" placeholder="例：ランチタイムのお手伝い"></div><div class="two"><div class="form"><label class="label">日時</label><input id="jobDate" type="datetime-local"></div><div class="form"><label class="label">報酬</label><input id="jobPay" placeholder="例：時給1,200円"></div></div><div class="form"><label class="label">詳細</label><textarea id="jobDesc" rows="5"></textarea></div><div class="form"><label class="label">応募・連絡先</label><input id="jobContact"></div><button id="saveJob" class="btn green">募集を掲載</button></div></div>
 <script>
+const stores=[
+[1,'お食事処','みいと まるっと肉や','北海道札幌市','北海道４代目老舗 お肉屋さん'],[2,'お食事処','みにとまとん','北海道小樽市花園1-4-3','ウケる（笑）すいーつ'],[3,'お食事処','銭函お米食堂','北海道小樽市銭函2丁目48-25','ほっと安らげるココロのふるさと'],[4,'お食事処','彩の味','北海道札幌市西区西野二条3丁目','からあげとローストビーフ自慢の弁当屋'],[5,'お食事処','おにぎり．','北海道札幌市中央区南二十八条西12丁目','北海道米のおにぎり'],[6,'お食事処','どさんこシェフ イタリアンダイニング 大通店','北海道札幌市中央区北一条西3丁目','道産食材のイタリアン、時計台すぐ'],[7,'お食事処','くせつよレイズ','北海道札幌市豊平区月寒中央通5丁目','素材こだわりランチ＆健康志向カフェ'],[8,'お食事処','結維。','北海道札幌市中央区南五条西4丁目','おうちのような和み空間'],[9,'お食事処','まゆゆのキッチン','北海道札幌市新札幌','和洋食のフルコース提供'],
+[10,'居酒屋','グランド居酒屋富士ショップ','北海道札幌市中央区南五条西四丁目','創業60年の老舗'],[11,'居酒屋','お繋ぎサロンスナックみぽりん','北海道札幌市中央区南5条西5丁目','現在休業中'],[12,'居酒屋','BAR紺野','北海道札幌市南区澄川四条2丁目','疲れを癒す一杯'],[13,'居酒屋','日本酒&アニメBAR巡舞Voyage','北海道札幌市中央区南六条西3丁目','すすきの一の飲み放題'],[14,'居酒屋','笑家（しようや）','北海道札幌市中央区南四条西5','創作和食と地酒'],[15,'居酒屋','ワインとチーズと有機野菜のお店YUKIAKARI','北海道小樽市色内1-6-5','チーズプロフェッショナルのワインダイニング'],
+[16,'カフェ','ドライフルーツ専門店モモカーゴ','北海道札幌市西区山の手二条一丁目','セミドライタイプ専門店'],[17,'カフェ','yaccoマンマ / てん珈琲','北海道札幌市西区西野二条9丁目','カヌレと自家焙煎珈琲'],[18,'カフェ','marucoffee家庭焙煎コーヒー専門店','北海道札幌市西区','家庭焙煎コーヒー'],[19,'カフェ','MARUIKUMO ヴィーガンシュトーレン専門店','北海道札幌市南区','カカオバターのヴィーガンシュトーレン'],[20,'カフェ','jflora「食べる甘さけ」オリゼ','北海道江別市見晴台100-3','米麹甘酒専門'],[21,'カフェ','a cake（アケイク）','北海道石狩市緑苑台東三条3丁目','セミオーダーケーキ＆焼菓子'],[22,'カフェ','ぴあのぴあの カフェ＆スタジオ','北海道札幌市中央区南九条西16丁目','おうちカフェ、イベントの店'],[23,'カフェ','ジャワティージャパン tamariba cafe java','北海道札幌市中央区南1条西7丁目','インドネシア紅茶と交流の場'],[24,'カフェ','登別ガーデン','北海道登別市柏木町4-14-1','手摘み生ハーブソルト'],[25,'カフェ','家登珈琲','北海道札幌市中央区南十四条西18丁目','最高の一杯を提供'],[26,'カフェ','KONERI','北海道札幌市北区北三十四条西4丁目','素材を活かしたお菓子'],[27,'カフェ','アトリエジャンゴ','北海道札幌市南区澄川二条4丁目','完全予約制レンタルスペース'],
+[28,'海鮮系','北海道函館朝市マルジュウ佐々木商店','北海道函館市大縄町23-9-1','海産物、かに、イクラ'],
+[29,'その他','樂々ゆたか農園','北海道恵庭市島松仲町3丁目','有機栽培農園'],[30,'その他','北海道珍味 ALPHA NOEL','北海道江別市5条3丁目','日常のちょっとした贅沢'],[31,'その他','ヒロコの麹','北海道札幌市','無添加・自然仕込み麹'],[32,'その他','おひさまファーム','北海道別海町豊原38-81','ミラクル最強ビーフ'],[33,'その他','にゃん珈琲【通販専門】','北海道札幌市西区','黒猫が運ぶ幸運と珈琲'],[34,'その他','BEE FACTORY','北海道札幌市北区','詳細情報少なめ'],[35,'その他','おでん 松ちゃん','北海道稚内市港1-6-28','日本最北端の関西風おでん'],[36,'その他','とかちミルクピース','北海道帯広市別府町','十勝ミルク100%アイス']
+].map(x=>({id:x[0],cat:x[1],name:x[2],address:x[3],memo:x[4]}));
+const icon=c=>({'お食事処':'🍽️','居酒屋':'🍺','カフェ':'☕','海鮮系':'🐟','その他':'🛒'}[c]||'📌');
+function googleQuery(s){return encodeURIComponent(`${s.name} ${s.address}`)}
+function showOnGoogle(id){const s=stores.find(x=>x.id===id);document.getElementById('gmap').src=`https://maps.google.com/maps?q=${googleQuery(s)}&z=16&output=embed`;document.getElementById('mapTitle').textContent=`📌 ${s.name}`;document.getElementById('mapSub').textContent=s.address;document.querySelector('[data-tab="stores"]').click();window.scrollTo({top:0,behavior:'smooth'})}
+function renderCards(){const q=document.getElementById('search').value.toLowerCase(),c=document.getElementById('category').value;const list=stores.filter(s=>(!c||s.cat===c)&&(`${s.name} ${s.address} ${s.memo}`).toLowerCase().includes(q));document.getElementById('cards').innerHTML=list.map(s=>`<article class="card"><div class="cat">${icon(s.cat)} ${s.cat}</div><h3>${s.name}</h3><div class="addr">📍 ${s.address}</div><div class="memo">${s.memo}</div><div class="actions"><button class="btn small" onclick="showOnGoogle(${s.id})">📌 Google地図に表示</button><button class="btn ghost small" onclick="openStore(${s.id})">店舗ページ</button></div></article>`).join('')||'<div class="empty">該当する店舗がありません。</div>'}
+function getJobs(){return JSON.parse(localStorage.getItem('mogaJobs2')||'[]')}function getStamps(){return JSON.parse(localStorage.getItem('mogaStamps2')||'[]')}function participant(){return JSON.parse(localStorage.getItem('mogaParticipant2')||'null')}
+function openStore(id){const s=stores.find(x=>x.id===id),st=getStamps().includes(id),jobs=getJobs().filter(j=>+j.storeId===id);document.getElementById('storeDetail').innerHTML=`<div class="cat">${icon(s.cat)} ${s.cat}</div><h2>${s.name}</h2><p>📍 ${s.address}</p><p>${s.memo}</p><iframe style="height:300px;border-radius:14px" loading="lazy" src="https://maps.google.com/maps?q=${googleQuery(s)}&z=16&output=embed"></iframe><div class="actions"><button class="btn" onclick="showOnGoogle(${id});closeM('storeModal')">Google地図に表示</button><a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${googleQuery(s)}">Googleマップアプリで開く</a></div><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><h3>🎟️ スタンプラリー</h3><p>${st?'✅ このお店のスタンプ取得済み':'来店時、店舗用暗証番号でスタンプを取得できます。'}</p><button class="btn green small" onclick="goStamp(${id})">この店のスタンプを押す</button><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><h3>💼 スポットバイト</h3>${jobs.length?jobs.map(jobHtml).join(''):'<p class="addr">現在募集はありません。</p>'}`;document.getElementById('storeModal').classList.add('on')}
+function goStamp(id){closeM('storeModal');document.querySelector('[data-tab="stamps"]').click();document.getElementById('stampStore').value=id}
+function closeM(id){document.getElementById(id).classList.remove('on')}document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeM(b.dataset.close));document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)closeM(m.id)});
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));document.getElementById(b.dataset.tab).classList.add('on')});
+document.getElementById('search').oninput=renderCards;document.getElementById('category').onchange=renderCards;
+function renderStamps(){const p=participant(),st=getStamps();document.getElementById('joinStatus').textContent=p?`${p.name}さん参加中`:'まだ参加していません';document.getElementById('joinBtn').textContent=p?'参加情報':'参加する';document.getElementById('progressText').textContent=`${st.length} / ${stores.length} スタンプ`;document.getElementById('progressbar').style.width=`${Math.round(st.length/stores.length*100)}%`;document.getElementById('stampGrid').innerHTML=stores.map(s=>`<div class="stamp ${st.includes(s.id)?'on':''}">${st.includes(s.id)?'✓ ':''}${s.name}</div>`).join('')}
+document.getElementById('joinBtn').onclick=()=>participant()?alert(`${participant().name}さん\n${getStamps().length}/${stores.length}スタンプ`):document.getElementById('joinModal').classList.add('on');document.getElementById('confirmJoin').onclick=()=>{const n=document.getElementById('joinName').value.trim(),p=document.getElementById('joinPin').value.trim();if(!n||!/^[0-9]{4,6}$/.test(p))return alert('ニックネームと4〜6桁の暗証番号を入力してください');localStorage.setItem('mogaParticipant2',JSON.stringify({name:n,pin:p}));closeM('joinModal');renderStamps()};
+function storePin(id){return String(5200+id)}document.getElementById('stampBtn').onclick=()=>{if(!participant())return document.getElementById('stampMsg').textContent='先に参加登録してください。';const id=+document.getElementById('stampStore').value,p=document.getElementById('stampPin').value.trim();if(p!==storePin(id))return document.getElementById('stampMsg').textContent='店舗用暗証番号が違います。';let st=getStamps();if(!st.includes(id)){st.push(id);localStorage.setItem('mogaStamps2',JSON.stringify(st));document.getElementById('stampMsg').textContent='🎉 スタンプを獲得しました！'}else document.getElementById('stampMsg').textContent='この店舗は取得済みです。';document.getElementById('stampPin').value='';renderStamps()};
+function jobHtml(j){const s=stores.find(x=>x.id==j.storeId);return `<article class="card job"><span class="badge">${s?.name||''}</span><h3>${j.title}</h3><div class="addr">🗓 ${j.date?new Date(j.date).toLocaleString('ja-JP'):''}</div><div class="addr">💰 ${j.pay||'応相談'}</div><p>${j.desc||''}</p><div class="memo">応募：${j.contact||'店舗へお問い合わせください'}</div></article>`}
+function renderJobs(){const j=getJobs();document.getElementById('jobList').innerHTML=j.length?j.map(jobHtml).join(''):'<div class="empty">現在、スポットバイトの募集はありません。</div>'}document.getElementById('newJobBtn').onclick=()=>document.getElementById('jobModal').classList.add('on');document.getElementById('saveJob').onclick=()=>{const j={id:Date.now(),storeId:document.getElementById('jobStore').value,title:document.getElementById('jobTitle').value.trim(),date:document.getElementById('jobDate').value,pay:document.getElementById('jobPay').value.trim(),desc:document.getElementById('jobDesc').value.trim(),contact:document.getElementById('jobContact').value.trim()};if(!j.title)return alert('募集タイトルを入力してください');const a=getJobs();a.push(j);localStorage.setItem('mogaJobs2',JSON.stringify(a));closeM('jobModal');renderJobs()};
+const opts=stores.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');document.getElementById('stampStore').innerHTML=opts;document.getElementById('jobStore').innerHTML=opts;renderCards();renderStamps();renderJobs();
 
-/* =====================================
-   MAP
-===================================== */
+</script>
+<script>
+/* ===== もがマップ 店舗拡張機能 ===== */
 
-const map = L.map("map").setView(
-  [43.30,142.70],
-  6
-);
+const MOGA_EDIT_KEY = 'mogamap_store_settings_v1';
 
-L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    maxZoom:19,
-    attribution:"© OpenStreetMap"
+function mogaLoadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem(MOGA_EDIT_KEY) || '{}');
+  } catch(e) {
+    return {};
   }
-).addTo(map);
+}
 
+function mogaSaveSettings(data) {
+  localStorage.setItem(MOGA_EDIT_KEY, JSON.stringify(data));
+}
 
-/* =====================================
-   VARIABLES
-===================================== */
+function mogaGetStore(id) {
+  return stores.find(s => String(s.id) === String(id));
+}
 
-let stores = [];
-let markers = [];
-let markerGroup = L.featureGroup().addTo(map);
+function mogaGetSetting(id) {
+  const all = mogaLoadSettings();
 
-
-/* =====================================
-   データの項目名の違いにも対応
-===================================== */
-
-function value(obj,names){
-
-  for(const name of names){
-
-    if(
-      obj[name] !== undefined &&
-      obj[name] !== null &&
-      obj[name] !== ""
-    ){
-      return obj[name];
-    }
-
-  }
-
-  return "";
+  return all[id] || {
+    stampJoin: false,
+    communityUrl: '',
+    pointUrl: '',
+    websiteUrl: '',
+    instagramUrl: '',
+    facebookUrl: '',
+    xUrl: '',
+    lineUrl: '',
+    jobActive: false,
+    jobTitle: '',
+    jobDescription: '',
+    hourlyPay: '',
+    paymentMethod: '',
+    editPin: ''
+  };
 }
 
 
-function getName(store){
+/* ===== Googleマップ ナビ ===== */
 
-  return value(
-    store,
-    [
-      "name",
-      "store",
-      "storeName",
-      "shop",
-      "shopName",
-      "店名",
-      "店舗名"
-    ]
-  );
+function mogaNavigate(id) {
+  const store = mogaGetStore(id);
 
-}
-
-
-function getAddress(store){
-
-  return value(
-    store,
-    [
-      "address",
-      "addr",
-      "住所",
-      "所在地"
-    ]
-  );
-
-}
-
-
-function getCategory(store){
-
-  return value(
-    store,
-    [
-      "category",
-      "type",
-      "genre",
-      "カテゴリ",
-      "カテゴリー",
-      "ジャンル"
-    ]
-  );
-
-}
-
-
-function getMemo(store){
-
-  return value(
-    store,
-    [
-      "memo",
-      "description",
-      "note",
-      "comment",
-      "紹介",
-      "説明",
-      "メモ"
-    ]
-  );
-
-}
-
-
-function getLat(store){
-
-  return Number(
-    value(
-      store,
-      [
-        "lat",
-        "latitude",
-        "緯度"
-      ]
-    )
-  );
-
-}
-
-
-function getLng(store){
-
-  return Number(
-    value(
-      store,
-      [
-        "lng",
-        "lon",
-        "longitude",
-        "経度"
-      ]
-    )
-  );
-
-}
-
-
-/* =====================================
-   stores.json 読込
-===================================== */
-
-async function loadStores(){
-
-  const status =
-    document.getElementById("status");
-
-  try{
-
-    /*
-      GitHub Pagesでは
-      index.html と同じ場所にある
-      stores.json を読み込みます
-    */
-
-    const response =
-      await fetch(
-        "./stores.json?v=" + Date.now()
-      );
-
-    if(!response.ok){
-
-      throw new Error(
-        "stores.jsonを読み込めません"
-      );
-
-    }
-
-    const json =
-      await response.json();
-
-
-    /*
-      JSONが
-
-      [ ... ]
-
-      の場合と
-
-      {
-        "stores":[ ... ]
-      }
-
-      の両方に対応
-    */
-
-    if(Array.isArray(json)){
-
-      stores = json;
-
-    }else if(
-      json &&
-      Array.isArray(json.stores)
-    ){
-
-      stores = json.stores;
-
-    }else if(
-      json &&
-      Array.isArray(json.data)
-    ){
-
-      stores = json.data;
-
-    }else{
-
-      stores = [];
-
-    }
-
-
-    status.textContent =
-      "✅ " +
-      stores.length +
-      "店舗 読込完了";
-
-
-    renderStores(stores);
-
-
-  }catch(error){
-
-    console.error(error);
-
-    status.textContent =
-      "⚠️ 店舗データを読み込めません";
-
-    document.getElementById(
-      "shopList"
-    ).innerHTML = `
-
-      <div class="empty">
-
-        <strong>
-          stores.json の読み込みに失敗しました。
-        </strong>
-
-        <br><br>
-
-        GitHub Pagesからページを開いているか、
-        stores.json が index.html と同じ場所に
-        あるか確認してください。
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-/* =====================================
-   店舗表示
-===================================== */
-
-function renderStores(list){
-
-  const container =
-    document.getElementById("shopList");
-
-  const count =
-    document.getElementById("shopCount");
-
-
-  container.innerHTML = "";
-
-  count.textContent =
-    list.length + "店舗";
-
-
-  markerGroup.clearLayers();
-
-  markers = [];
-
-
-  if(list.length === 0){
-
-    container.innerHTML = `
-
-      <div class="empty">
-        該当するお店がありません。
-      </div>
-
-    `;
-
+  if (!store) {
+    alert('店舗情報が見つかりません');
     return;
+  }
 
+  const destination =
+    store.address && store.address.trim()
+      ? store.address
+      : store.name;
+
+  window.open(
+    'https://www.google.com/maps/dir/?api=1&destination=' +
+    encodeURIComponent(destination),
+    '_blank'
+  );
+}
+
+
+/* ===== コミュニティページ ===== */
+
+function mogaCommunity(id) {
+  const setting = mogaGetSetting(id);
+
+  if (!setting.communityUrl) {
+    alert('この店舗はコミュニティURLがまだ登録されていません');
+    return;
+  }
+
+  window.open(setting.communityUrl, '_blank');
+}
+
+
+/* ===== ポイント購入 ===== */
+
+function mogaBuyPoint(id) {
+  const setting = mogaGetSetting(id);
+
+  if (!setting.pointUrl) {
+    alert('この店舗はポイント購入URLがまだ登録されていません');
+    return;
+  }
+
+  window.open(setting.pointUrl, '_blank');
+}
+
+
+/* ===== 店舗編集 ===== */
+
+function mogaEditStore(id) {
+
+  const store = mogaGetStore(id);
+
+  if (!store) {
+    alert('店舗情報が見つかりません');
+    return;
+  }
+
+  const setting = mogaGetSetting(id);
+
+  const enteredPin = prompt(
+    store.name +
+    '\n\n店舗編集用の暗証番号を入力してください。\n' +
+    '初回は好きな暗証番号を設定できます。'
+  );
+
+  if (enteredPin === null) return;
+
+  if (setting.editPin && enteredPin !== setting.editPin) {
+    alert('暗証番号が違います');
+    return;
+  }
+
+  let pin = setting.editPin;
+
+  if (!pin) {
+    if (!enteredPin.trim()) {
+      alert('暗証番号を入力してください');
+      return;
+    }
+    pin = enteredPin.trim();
   }
 
 
-  list.forEach((store,index)=>{
-
-    const name =
-      getName(store) ||
-      "名称未登録";
-
-    const address =
-      getAddress(store);
-
-    const category =
-      getCategory(store);
-
-    const memo =
-      getMemo(store);
-
-    const lat =
-      getLat(store);
-
-    const lng =
-      getLng(store);
+  const stampJoin = confirm(
+    'センベロ・スタンプラリーに参加しますか？\n\n' +
+    'OK＝参加\nキャンセル＝不参加'
+  );
 
 
-    /* ===== 店舗カード ===== */
+  const communityUrl = prompt(
+    'コミュニティページURL\n（未設定なら空欄）',
+    setting.communityUrl || ''
+  );
 
-    const card =
-      document.createElement("article");
-
-    card.className = "shop";
-
-
-    const query =
-      encodeURIComponent(
-        address || name
-      );
+  if (communityUrl === null) return;
 
 
-    card.innerHTML = `
+  const pointUrl = prompt(
+    'ポイント購入・決済ページURL\n（未設定なら空欄）',
+    setting.pointUrl || ''
+  );
 
-      ${
-        category
-        ?
-        `<div class="shop-category">
-          ${escapeHTML(category)}
-        </div>`
-        :
-        ""
-      }
+  if (pointUrl === null) return;
 
-      <h3>
-        ${escapeHTML(name)}
-      </h3>
+  const websiteUrl = prompt('ホームページURL（未設定なら空欄）', setting.websiteUrl || '');
+  if (websiteUrl === null) return;
+  const instagramUrl = prompt('Instagram URL（未設定なら空欄）', setting.instagramUrl || '');
+  if (instagramUrl === null) return;
+  const facebookUrl = prompt('Facebook URL（未設定なら空欄）', setting.facebookUrl || '');
+  if (facebookUrl === null) return;
+  const xUrl = prompt('X URL（未設定なら空欄）', setting.xUrl || '');
+  if (xUrl === null) return;
+  const lineUrl = prompt('LINE URL（未設定なら空欄）', setting.lineUrl || '');
+  if (lineUrl === null) return;
 
-      ${
-        address
-        ?
-        `<div class="address">
-          📍 ${escapeHTML(address)}
-        </div>`
-        :
-        ""
-      }
+  const urlValues = [communityUrl, pointUrl, websiteUrl, instagramUrl, facebookUrl, xUrl, lineUrl];
+  if (urlValues.some(value => value.trim() && !/^https?:\/\//i.test(value.trim()))) {
+    alert('URLは http:// または https:// から入力してください');
+    return;
+  }
 
-      ${
-        memo
-        ?
-        `<div class="memo">
-          ${escapeHTML(memo)}
-        </div>`
-        :
-        ""
-      }
 
-      <div class="actions">
+  const jobActive = confirm(
+    'スポットバイトを募集しますか？\n\n' +
+    'OK＝募集中\nキャンセル＝募集しない'
+  );
 
-        ${
-          Number.isFinite(lat) &&
-          Number.isFinite(lng) &&
-          lat !== 0 &&
-          lng !== 0
-          ?
 
-          `<a
-            href="#map"
-            class="detail"
-            onclick="focusStore(${lat},${lng});return false;"
-          >
-            地図で見る
-          </a>`
+  let jobTitle = setting.jobTitle || '';
+  let jobDescription = setting.jobDescription || '';
+  let hourlyPay = setting.hourlyPay || '';
+  let paymentMethod = setting.paymentMethod || '';
 
-          :
+  if (jobActive) {
 
-          `<a
-            href="#map"
-            class="detail"
-          >
-            お店を見る
-          </a>`
-        }
+    jobTitle = prompt(
+      '募集タイトル\n例：ホールスタッフ募集',
+      jobTitle
+    ) || '';
 
-        <a
-          class="navi"
-          target="_blank"
-          rel="noopener"
-          href="https://www.google.com/maps/search/?api=1&query=${query}"
-        >
-          ナビ
-        </a>
+    jobDescription = prompt(
+      '仕事内容',
+      jobDescription
+    ) || '';
 
+    hourlyPay = prompt(
+      '時給・報酬\n例：時給1,200円',
+      hourlyPay
+    ) || '';
+
+    paymentMethod = prompt(
+      '支払い方法\n例：当日現金払い',
+      paymentMethod
+    ) || '';
+  }
+
+
+  const all = mogaLoadSettings();
+
+  all[id] = {
+    stampJoin,
+    communityUrl: communityUrl.trim(),
+    pointUrl: pointUrl.trim(),
+    jobActive,
+    jobTitle,
+    jobDescription,
+    hourlyPay,
+    paymentMethod,
+    editPin: pin
+  };
+
+  mogaSaveSettings(all);
+
+  alert(
+    '保存しました！\n\n' +
+    '店舗：' + store.name + '\n' +
+    'スタンプラリー：' +
+    (stampJoin ? '参加' : '不参加') + '\n' +
+    'スポットバイト：' +
+    (jobActive ? '募集中' : '募集なし')
+  );
+
+  mogaRenderManager();
+}
+
+
+/* ===== 管理画面 ===== */
+
+function mogaRenderManager() {
+
+  let area = document.getElementById('mogaManager');
+
+  if (!area) {
+
+    area = document.createElement('section');
+    area.id = 'mogaManager';
+
+    area.style.cssText =
+      'max-width:1200px;margin:20px auto;padding:15px;' +
+      'font-family:-apple-system,BlinkMacSystemFont,sans-serif;';
+
+    document.body.insertBefore(
+      area,
+      document.body.firstChild
+    );
+  }
+
+  let html = `
+    <div style="
+      background:#fff;
+      padding:18px;
+      border-radius:16px;
+      box-shadow:0 3px 14px rgba(0,0,0,.08);
+      margin-bottom:15px;
+    ">
+      <h2 style="margin:0 0 6px;">
+        🍺 センベロ・スタンプラリー
+      </h2>
+
+      <div style="font-size:14px;color:#666;">
+        店舗情報・参加設定・スポットバイト・
+        コミュニティ・ポイント購入
       </div>
-
-    `;
-
-
-    container.appendChild(card);
+    </div>
+  `;
 
 
-    /* ===== 地図マーカー ===== */
+  stores.forEach(store => {
 
-    if(
-      Number.isFinite(lat) &&
-      Number.isFinite(lng) &&
-      lat !== 0 &&
-      lng !== 0
-    ){
+    const s = mogaGetSetting(store.id);
 
-      const marker =
-        L.marker(
-          [lat,lng]
-        );
-
-
-      marker.bindPopup(`
+    html += `
+      <div style="
+        background:#fff;
+        margin:12px 0;
+        padding:15px;
+        border-radius:14px;
+        box-shadow:0 2px 8px rgba(0,0,0,.06);
+      ">
 
         <div style="
-          min-width:180px;
-          font-family:
-          -apple-system,
-          BlinkMacSystemFont,
-          sans-serif;
+          font-size:18px;
+          font-weight:700;
+          margin-bottom:5px;
+        ">
+          ${store.name}
+        </div>
+
+        <div style="
+          font-size:13px;
+          color:#666;
+          margin-bottom:10px;
+        ">
+          ${store.address || ''}
+        </div>
+
+
+        ${
+          s.stampJoin
+          ? `<div style="
+               display:inline-block;
+               background:#e9f7ec;
+               color:#267a38;
+               padding:5px 9px;
+               border-radius:20px;
+               margin:3px;
+             ">
+               🎯 スタンプラリー参加店
+             </div>`
+          : ''
+        }
+
+
+        ${
+          s.jobActive
+          ? `<div style="
+               display:inline-block;
+               background:#fff0df;
+               color:#a55a00;
+               padding:5px 9px;
+               border-radius:20px;
+               margin:3px;
+             ">
+               💼 スポットバイト募集中
+             </div>`
+          : ''
+        }
+
+
+        ${
+          s.jobActive
+          ? `
+            <div style="
+              background:#fafafa;
+              padding:10px;
+              margin-top:10px;
+              border-radius:10px;
+              font-size:14px;
+            ">
+              <b>${s.jobTitle || 'スタッフ募集'}</b><br>
+              ${s.jobDescription || ''}<br>
+              ${s.hourlyPay ? '💴 ' + s.hourlyPay + '<br>' : ''}
+              ${s.paymentMethod ? '💳 ' + s.paymentMethod : ''}
+            </div>
+          `
+          : ''
+        }
+
+
+        <div style="
+          display:flex;
+          flex-wrap:wrap;
+          gap:7px;
+          margin-top:12px;
         ">
 
-          <strong
-            style="font-size:16px"
-          >
-            ${escapeHTML(name)}
-          </strong>
+          <button onclick="mogaNavigate('${store.id}')"
+            style="padding:10px;border:0;border-radius:9px;">
+            🗺️ 店舗までナビ
+          </button>
 
           ${
-            address
-            ?
-            `<div
-              style="
-                margin-top:6px;
-                font-size:13px;
-              "
-            >
-              ${escapeHTML(address)}
-            </div>`
-            :
-            ""
+            s.communityUrl
+            ? `
+              <button onclick="mogaCommunity('${store.id}')"
+                style="padding:10px;border:0;border-radius:9px;">
+                👥 コミュニティ
+              </button>
+            `
+            : ''
           }
 
-          <a
-            target="_blank"
-            rel="noopener"
-            href="https://www.google.com/maps/search/?api=1&query=${query}"
+          ${
+            s.pointUrl
+            ? `
+              <button onclick="mogaBuyPoint('${store.id}')"
+                style="padding:10px;border:0;border-radius:9px;">
+                💳 ポイント購入
+              </button>
+            `
+            : ''
+          }
+
+          <button onclick="mogaEditStore('${store.id}')"
             style="
-              display:block;
-              margin-top:9px;
-              color:#198754;
-              font-weight:bold;
-            "
-          >
-            Googleマップで開く
-          </a>
+              padding:10px;
+              border:0;
+              border-radius:9px;
+              background:#333;
+              color:#fff;
+            ">
+            🔐 店舗編集
+          </button>
 
         </div>
 
-      `);
-
-
-      marker.addTo(markerGroup);
-
-      markers.push(marker);
-
-    }
-
+      </div>
+    `;
   });
 
 
-  /* ===== 全店舗が入るよう地図調整 ===== */
-
-  if(markers.length > 0){
-
-    const bounds =
-      markerGroup.getBounds();
-
-    if(bounds.isValid()){
-
-      map.fitBounds(
-        bounds,
-        {
-          padding:[35,35],
-          maxZoom:13
-        }
-      );
-
-    }
-
-  }
-
+  area.innerHTML = html;
 }
 
 
-/* =====================================
-   検索
-===================================== */
+/* ページ読み込み後に表示 */
 
-function searchStores(){
+window.addEventListener('load', function() {
+  mogaRenderManager();
+});
 
-  const keyword =
-    document
-      .getElementById("searchInput")
-      .value
-      .trim()
-      .toLowerCase();
+/* ===== Supabase 共有保存版 ===== */
 
+const MOGA_SUPABASE_URL = 'https://lgidhjxowpueglduphzp.supabase.co';
 
-  if(!keyword){
-
-    renderStores(stores);
-
-    return;
-
-  }
+const MOGA_SUPABASE_KEY =
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxnaWRoanhvd3B1ZWdsZHVwaHpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1Mzc4MjEsImV4cCI6MjEwMjExMzgyMX0.AU1WjBRfB8uvCCTUqW0mou8OHKbLEzGbV7dqELQElbo';
 
 
-  const result =
-    stores.filter(store=>{
-
-      const text = [
-
-        getName(store),
-        getAddress(store),
-        getCategory(store),
-        getMemo(store)
-
-      ]
-      .join(" ")
-      .toLowerCase();
+function mogaSupabaseHeaders() {
+  return {
+    'apikey': MOGA_SUPABASE_KEY,
+    'Authorization': 'Bearer ' + MOGA_SUPABASE_KEY,
+    'Content-Type': 'application/json'
+  };
+}
 
 
-      return text.includes(keyword);
+/* ===== 全員共通の店舗情報を取得 ===== */
 
+async function mogaSyncFromSupabase() {
+
+  try {
+
+    const url =
+      MOGA_SUPABASE_URL +
+      '/rest/v1/shop_public' +
+      '?select=source_id,name,address,category,description,latitude,longitude,stamp_rally_enabled,community_url,point_purchase_url,website_url,instagram_url,facebook_url,x_url,line_url,spot_job_enabled,spot_job_title,spot_job_description,spot_job_hourly_wage,spot_job_schedule,spot_job_payment_method,spot_job_contact' +
+      '&is_published=eq.true';
+
+    const response = await fetch(url, {
+      headers: mogaSupabaseHeaders()
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const rows = await response.json();
+
+    const shared = {};
+
+    rows.forEach(row => {
+
+      if (!row.source_id) return;
+
+      shared[String(row.source_id)] = {
+
+        stampJoin:
+          !!row.stamp_rally_enabled,
+
+        communityUrl:
+          row.community_url || '',
+
+        pointUrl:
+          row.point_purchase_url || '',
+
+        websiteUrl:
+          row.website_url || '',
+
+        instagramUrl:
+          row.instagram_url || '',
+
+        facebookUrl:
+          row.facebook_url || '',
+
+        xUrl:
+          row.x_url || '',
+
+        lineUrl:
+          row.line_url || '',
+
+        jobActive:
+          !!row.spot_job_enabled,
+
+        jobTitle:
+          row.spot_job_title || '',
+
+        jobDescription:
+          row.spot_job_description || '',
+
+        hourlyPay:
+          row.spot_job_hourly_wage
+            ? String(row.spot_job_hourly_wage) + '円'
+            : '',
+
+        jobSchedule:
+          row.spot_job_schedule || '',
+
+        paymentMethod:
+          row.spot_job_payment_method || '',
+
+        jobContact:
+          row.spot_job_contact || '',
+
+        editPin: ''
+      };
     });
 
 
-  renderStores(result);
-
-}
-
-
-/* Enterでも検索 */
-
-document
-.getElementById("searchInput")
-.addEventListener(
-  "keydown",
-  function(event){
-
-    if(event.key === "Enter"){
-
-      searchStores();
-
-    }
-
-  }
-);
-
-
-/* 入力を消したら全部戻す */
-
-document
-.getElementById("searchInput")
-.addEventListener(
-  "input",
-  function(){
-
-    if(this.value.trim() === ""){
-
-      renderStores(stores);
-
-    }
-
-  }
-);
-
-
-/* =====================================
-   MAP操作
-===================================== */
-
-function focusStore(lat,lng){
-
-  map.setView(
-    [lat,lng],
-    16
-  );
-
-  window.scrollTo({
-    top:
-      document
-      .getElementById("map")
-      .offsetTop - 120,
-
-    behavior:"smooth"
-  });
-
-}
-
-
-function showAllStores(){
-
-  if(markers.length === 0){
-
-    map.setView(
-      [43.30,142.70],
-      6
+    /* 既存画面との互換用 */
+    localStorage.setItem(
+      MOGA_EDIT_KEY,
+      JSON.stringify(shared)
     );
 
-    return;
+    mogaRenderManager();
 
+  } catch (error) {
+
+    console.error(
+      'Supabase読み込みエラー',
+      error
+    );
+  }
+}
+
+
+/* ===== 店舗編集をSupabase保存へ変更 ===== */
+
+window.mogaEditStore = async function(id) {
+
+  const store = mogaGetStore(id);
+
+  if (!store) {
+    alert('店舗情報が見つかりません');
+    return;
+  }
+
+  const setting = mogaGetSetting(id);
+
+
+  const pin = prompt(
+    store.name +
+    '\n\n店舗編集用の暗証番号を入力してください。\n' +
+    '初回は4文字以上の好きな暗証番号を設定できます。'
+  );
+
+  if (pin === null) return;
+
+  if (pin.trim().length < 4) {
+    alert('暗証番号は4文字以上にしてください');
+    return;
   }
 
 
-  const bounds =
-    markerGroup.getBounds();
+  const stampJoin = confirm(
+    'センベロ・スタンプラリーに参加しますか？\n\n' +
+    'OK＝参加\nキャンセル＝不参加'
+  );
 
 
-  if(bounds.isValid()){
+  const communityUrl = prompt(
+    'コミュニティページURL\n未設定なら空欄',
+    setting.communityUrl || ''
+  );
 
-    map.fitBounds(
-      bounds,
+  if (communityUrl === null) return;
+
+
+  const pointUrl = prompt(
+    'ポイント購入・決済ページURL\n未設定なら空欄',
+    setting.pointUrl || ''
+  );
+
+  if (pointUrl === null) return;
+
+
+  const jobActive = confirm(
+    'スポットバイトを募集しますか？\n\n' +
+    'OK＝募集中\nキャンセル＝募集しない'
+  );
+
+
+  let jobTitle = '';
+  let jobDescription = '';
+  let hourlyPay = '';
+  let jobSchedule = '';
+  let paymentMethod = '';
+  let jobContact = '';
+
+
+  if (jobActive) {
+
+    jobTitle = prompt(
+      '募集タイトル\n例：ホールスタッフ募集',
+      setting.jobTitle || ''
+    ) || '';
+
+
+    jobDescription = prompt(
+      '仕事内容',
+      setting.jobDescription || ''
+    ) || '';
+
+
+    hourlyPay = prompt(
+      '時給\n例：1200',
+      String(setting.hourlyPay || '').replace(/[^0-9]/g, '')
+    ) || '';
+
+
+    jobSchedule = prompt(
+      '勤務時間・日時\n例：18:00〜22:00',
+      setting.jobSchedule || ''
+    ) || '';
+
+
+    paymentMethod = prompt(
+      '支払い方法\n例：当日現金払い',
+      setting.paymentMethod || ''
+    ) || '';
+
+
+    jobContact = prompt(
+      '応募・連絡方法\n例：店舗へ電話',
+      setting.jobContact || ''
+    ) || '';
+  }
+
+
+  const body = {
+
+    p_name:
+      store.name,
+
+    p_pin:
+      pin.trim(),
+
+    p_stamp_rally_enabled:
+      stampJoin,
+
+    p_community_url:
+      communityUrl.trim(),
+
+    p_point_purchase_url:
+      pointUrl.trim(),
+
+    p_website_url:
+      websiteUrl.trim(),
+
+    p_instagram_url:
+      instagramUrl.trim(),
+
+    p_facebook_url:
+      facebookUrl.trim(),
+
+    p_x_url:
+      xUrl.trim(),
+
+    p_line_url:
+      lineUrl.trim(),
+
+    p_spot_job_enabled:
+      jobActive,
+
+    p_spot_job_title:
+      jobTitle,
+
+    p_spot_job_description:
+      jobDescription,
+
+    p_spot_job_hourly_wage:
+      hourlyPay
+        ? Number(hourlyPay)
+        : null,
+
+    p_spot_job_schedule:
+      jobSchedule,
+
+    p_spot_job_payment_method:
+      paymentMethod,
+
+    p_spot_job_contact:
+      jobContact
+  };
+
+
+  try {
+
+    const response = await fetch(
+      MOGA_SUPABASE_URL +
+      '/rest/v1/rpc/update_shop_by_pin',
       {
-        padding:[35,35],
-        maxZoom:13
+        method: 'POST',
+        headers: mogaSupabaseHeaders(),
+        body: JSON.stringify(body)
       }
     );
 
+
+    if (!response.ok) {
+
+      const errorText =
+        await response.text();
+
+      if (
+        errorText.includes('Invalid PIN')
+      ) {
+        alert('暗証番号が違います');
+        return;
+      }
+
+      throw new Error(errorText);
+    }
+
+
+    alert(
+      '保存しました！\n\n' +
+      'この変更は他のスマホにも反映されます。'
+    );
+
+
+    await mogaSyncFromSupabase();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '保存できませんでした。\n' +
+      'もう一度お試しください。'
+    );
   }
+};
 
+
+/* ===== 店舗詳細（共有URL対応） ===== */
+
+function mogaSafeUrl(value) {
+  const url = String(value || '').trim();
+  return /^https?:\/\//i.test(url) ? url : '';
 }
 
-
-/* =====================================
-   HTML安全処理
-===================================== */
-
-function escapeHTML(value){
-
-  return String(value || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
+function mogaLink(url, label, extraClass) {
+  const safe = mogaSafeUrl(url);
+  if (!safe) return `<span class="btn ghost small" aria-disabled="true">${label}：準備中</span>`;
+  return `<a class="btn ${extraClass || 'ghost'} small" target="_blank" rel="noopener noreferrer" href="${safe.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">${label}</a>`;
 }
 
+window.openStore = function(id) {
+  const s = mogaGetStore(id);
+  if (!s) return;
+  const setting = mogaGetSetting(id);
+  const stamped = getStamps().includes(Number(id));
+  const sharedJob = setting.jobActive ? [{
+    storeId: id,
+    title: setting.jobTitle || 'スタッフ募集',
+    date: setting.jobSchedule || '',
+    pay: setting.hourlyPay || '応相談',
+    desc: setting.jobDescription || '',
+    contact: setting.jobContact || '店舗へお問い合わせください'
+  }] : [];
+  document.getElementById('storeDetail').innerHTML = `
+    <div class="cat">${icon(s.cat)} ${s.cat}</div>
+    <h2>${s.name}</h2>
+    <p>📍 ${s.address}</p><p>${s.memo || ''}</p>
+    <iframe style="height:300px;border-radius:14px" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${googleQuery(s)}&z=16&output=embed"></iframe>
+    <div class="actions">
+      <button class="btn" onclick="showOnGoogle(${Number(id)});closeM('storeModal')">地図に表示</button>
+      <button class="btn green" onclick="mogaNavigate('${id}')">ここまでナビ</button>
+      ${mogaLink(setting.websiteUrl, 'ホームページ')}
+      ${mogaLink(setting.pointUrl, 'ポイント')}
+      ${mogaLink(setting.communityUrl, 'コミュニティ')}
+      ${mogaLink(setting.instagramUrl, 'Instagram')}
+      ${mogaLink(setting.facebookUrl, 'Facebook')}
+      ${mogaLink(setting.xUrl, 'X')}
+      ${mogaLink(setting.lineUrl, 'LINE')}
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+    <h3>🎟️ スタンプラリー</h3>
+    <p>${stamped ? '✅ このお店のスタンプ取得済み' : '来店時、店舗用暗証番号でスタンプを取得できます。'}</p>
+    <button class="btn green small" onclick="goStamp(${Number(id)})">この店のスタンプを押す</button>
+    <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+    <h3>💼 スポットバイト</h3>
+    ${sharedJob.length ? sharedJob.map(j => `<article class="card job"><h3>${j.title}</h3><div class="addr">🗓 ${j.date}</div><div class="addr">💰 ${j.pay}</div><p>${j.desc}</p><div class="memo">応募：${j.contact}</div></article>`).join('') : '<p class="addr">現在募集はありません。</p>'}
+    <div class="actions"><button class="btn ghost small" onclick="mogaEditStore('${id}')">🔐 店舗PINで編集</button></div>`;
+  document.getElementById('storeModal').classList.add('on');
+};
 
-/* =====================================
-   START
-===================================== */
-
-loadStores();
-
-
-/*
-  Safariなどで地図サイズが
-  正しく計算されない場合の対策
-*/
+/* ===== 公開ページを開いた時に共有データ取得 ===== */
 
 window.addEventListener(
-  "load",
-  function(){
+  'load',
+  function() {
 
-    setTimeout(
-      ()=>map.invalidateSize(),
-      300
-    );
+    mogaSyncFromSupabase();
 
   }
 );
-
 </script>
-
-</body>
-</html>
+</body></html>
