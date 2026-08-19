@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#81D8D0">
+<title>りーたん Digital Card</title>
+<style>
+:root{
+ --t:#81D8D0;--t2:#d9faf6;--pink:#ffb9d2;--pink2:#fff0f6;--lav:#d9c8ff;
+ --gold:#d9b66f;--ink:#28424b;--white:#fff;--glass:rgba(255,255,255,.78)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{
+ margin:0;color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;
+ background:
+ radial-gradient(circle at 12% 0%,rgba(255,185,210,.72),transparent 24%),
+ radial-gradient(circle at 88% 4%,rgba(154,221,255,.82),transparent 27%),
+ radial-gradient(circle at 50% 38%,rgba(218,201,255,.38),transparent 35%),
+ linear-gradient(#e6fffd,#fff7fc 52%,#f6f1ff);
+ overflow-x:hidden
+}
+.aurora{position:fixed;inset:-28%;z-index:0;pointer-events:none;filter:blur(36px);opacity:.48;background:conic-gradient(#ffb9d244,#81d8d055,#9edcff44,#d9c8ff55,#ffb9d244);animation:aurora 18s linear infinite}
+@keyframes aurora{to{transform:rotate(360deg) scale(1.08)}}
+.fx{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.star{position:absolute;color:#fff;text-shadow:0 0 10px #fff,0 0 22px #ffe1a0;animation:tw 2.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.18;transform:scale(.55) rotate(0)}50%{opacity:1;transform:scale(1.55) rotate(45deg)}}
+.float{position:absolute;top:-40px;animation:fall linear infinite;opacity:.7}
+@keyframes fall{to{transform:translate3d(10vw,112vh,0) rotate(500deg)}}
+.dragon{
+ position:fixed;z-index:2;top:18px;left:-420px;width:400px;height:255px;pointer-events:none;
+ background:radial-gradient(circle at 48% 50%,rgba(255,255,255,.95),rgba(230,255,255,.78) 25%,rgba(255,255,255,0) 62%);
+ border-radius:50%;filter:drop-shadow(0 0 12px #fff) drop-shadow(0 0 25px rgba(108,227,216,.75));
+ animation:fly 22s linear infinite
+}
+.dragon:before{content:"🐉";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:150px;filter:grayscale(1) brightness(3) drop-shadow(0 0 12px #fff);opacity:.78}
+@keyframes fly{
+ 0%{transform:translateX(-10vw) translateY(0) rotate(-6deg) scale(.88);opacity:0}
+ 7%{opacity:.85}
+ 48%{transform:translateX(75vw) translateY(10vh) rotate(5deg) scale(1.08);opacity:.9}
+ 100%{transform:translateX(150vw) translateY(-5vh) rotate(-4deg) scale(.92);opacity:0}
+}
+.app{position:relative;z-index:4;max-width:780px;margin:auto;padding:10px 10px 100px}
+.shell{border-radius:34px;overflow:hidden;background:rgba(255,255,255,.63);backdrop-filter:blur(17px);border:1px solid white;box-shadow:0 25px 80px rgba(55,93,120,.2)}
+.hero{position:relative;text-align:center;padding:29px 17px 26px;background:radial-gradient(circle at 16% 5%,rgba(255,255,255,.98),transparent 18%),linear-gradient(135deg,rgba(129,216,208,.95),rgba(200,243,255,.88) 47%,rgba(255,225,239,.9));overflow:hidden}
+.hero:after{content:"✦ ✧ ✦";position:absolute;top:15px;right:14px;color:#fff3bf;font-size:21px;letter-spacing:7px;animation:tw 2s infinite}
+.script{font-family:"Snell Roundhand","Segoe Script",cursive;color:#ae8339;font-size:21px}
+.avatarWrap{position:relative;width:152px;height:152px;margin:11px auto 13px}
+.avatar{width:152px;height:152px;border-radius:50%;overflow:hidden;border:5px solid white;box-shadow:0 0 0 2px var(--gold),0 0 30px #fff,0 13px 36px rgba(48,94,115,.22);background:linear-gradient(135deg,#fff,#eaffff)}
+.avatar img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
+.avatarWrap:before,.avatarWrap:after{content:"✦";position:absolute;z-index:3;color:#fff1af;font-size:25px;text-shadow:0 0 12px white;animation:tw 2s infinite}
+.avatarWrap:before{left:-8px;top:24px}.avatarWrap:after{right:-8px;bottom:20px;animation-delay:1s}
+.pill{display:inline-block;padding:5px 10px;border-radius:99px;background:rgba(255,255,255,.72);font-size:10px;font-weight:900;letter-spacing:.08em;color:#47716c}
+h1{margin:8px 0 0;font-size:28px;letter-spacing:.05em}
+.nick{font-family:"Snell Roundhand","Segoe Script",cursive;color:#ee6d9d;font-size:34px;line-height:1.08}
+.role{font-size:12px;font-weight:850;line-height:1.75;max-width:600px;margin:8px auto}
+.catch{font-size:17px;font-weight:900;line-height:1.6;margin:11px 0 0}.catch b{color:#ed6d9c}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}
+.gem{min-height:58px;border-radius:18px;padding:12px 8px;text-decoration:none;color:white;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:900;border:1px solid rgba(255,255,255,.95);box-shadow:inset 0 2px 8px rgba(255,255,255,.65),0 9px 22px rgba(57,96,122,.14);transition:.2s}
+.gem:active{transform:scale(.97)}.pink{background:linear-gradient(135deg,#eb6e9f,#ffc3d7)}.blue{background:linear-gradient(135deg,#4daeea,#9edcff)}.lav{background:linear-gradient(135deg,#9873dc,#d7c9ff)}.aqua{background:linear-gradient(135deg,#35bcb1,#85ded5)}
+.content{padding:14px}.panel{position:relative;margin-top:13px;padding:16px;border-radius:22px;background:var(--glass);border:1px solid white;box-shadow:0 12px 30px rgba(58,97,121,.09);scroll-margin-top:16px;overflow:hidden}
+.panel:before{content:"";position:absolute;inset:4px;border:1px solid rgba(217,182,111,.22);border-radius:18px;pointer-events:none}
+.reveal{opacity:0;transform:translateY(24px) scale(.985);transition:.7s cubic-bezier(.2,.8,.2,1)}.reveal.in{opacity:1;transform:none}
+.title{position:relative;margin:0 0 11px;font-size:17px;font-weight:900;color:#d75d8f}.title:before{content:"✧ ";color:var(--gold)}
+.story p{position:relative;font-size:12.6px;line-height:1.93;margin:0 0 10px}.quote{position:relative;padding:12px;background:linear-gradient(135deg,#effffc,#fff3f8);border-left:4px solid var(--t);border-radius:0 14px 14px 0;font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.service{min-height:96px;border-radius:17px;background:linear-gradient(#fff,#faf8ff);border:1px solid rgba(215,198,255,.5);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:9px;font-size:11.5px;font-weight:900}.service span{font-size:28px;margin-bottom:5px}
+.mediaGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.media{position:relative;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#dcfaf6,#ffe5ef,#eee6ff);border:1px solid #fff;box-shadow:0 8px 22px rgba(55,90,113,.1)}.media img,.media video{width:100%;display:block;aspect-ratio:1/1;object-fit:cover}.media .doc{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:38px}.cap{padding:9px;background:#ffffffed;font-size:11px;font-weight:900}.empty{padding:18px;text-align:center;font-size:12px;color:#6d858e}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:8px}.link{padding:13px 10px;border-radius:16px;text-decoration:none;color:var(--ink);background:#fff;border:1px solid #e5edf2;font-size:11.5px;font-weight:900}.link.main{background:linear-gradient(135deg,#94e6df,#ddfbf7)}
+.cta{display:block;margin-top:10px;padding:15px;border-radius:18px;text-align:center;text-decoration:none;color:white;font-size:13px;font-weight:900;background:linear-gradient(135deg,#e66b99,#75d8d0,#9c82df);background-size:200% 200%;animation:grad 6s ease infinite}@keyframes grad{50%{background-position:100% 50%}}
+.adminCard{margin-top:10px;padding:14px;border-radius:18px;background:linear-gradient(135deg,#ffe7f1,#e6fcff,#efe8ff);border:1px solid white}.adminOpen{width:100%;border:0;border-radius:14px;padding:12px;margin-top:8px;background:linear-gradient(135deg,#df6696,#78d7d0);color:white;font-weight:900}
+.nav{position:fixed;z-index:40;left:50%;bottom:8px;transform:translateX(-50%);width:min(740px,calc(100% - 16px));display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:6px;border-radius:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(15px);border:1px solid white;box-shadow:0 12px 35px rgba(48,86,107,.2)}
+.nav button{border:0;background:transparent;border-radius:13px;padding:6px 2px;color:#58717a;font-size:9.5px;font-weight:900}.nav span{display:block;font-size:18px}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(28,43,52,.65);padding:14px;overflow:auto;display:none}.modal.show{display:block}
+.login,.editor{max-width:720px;margin:45px auto;background:white;border-radius:23px;box-shadow:0 30px 80px rgba(0,0,0,.27);overflow:hidden}.login{max-width:420px;padding:20px}.login h2{margin-top:0}
+.editorHead{position:sticky;top:0;z-index:2;background:linear-gradient(135deg,#ffbdd4,#97e4dd,#d8c7ff);padding:16px 18px;display:flex;justify-content:space-between;align-items:center}.editorHead h2{margin:0;font-size:18px}.close{width:36px;height:36px;border:0;border-radius:50%;background:white;font-size:20px}
+.editorBody{padding:15px}.note{font-size:11px;padding:10px 12px;border-radius:13px;background:#fff8e6;border:1px solid #ead6a9;margin-bottom:12px}.group{border:1px solid #e3eaf0;border-radius:15px;padding:13px;margin-bottom:11px}.group h3{font-size:13px;margin:0 0 8px}
+label{display:block;font-size:10.5px;font-weight:900;color:#667985;margin:8px 0 4px}input,textarea,select{width:100%;padding:10px 11px;border:1px solid #d7e2e9;border-radius:11px;font:inherit;background:#fbfeff}textarea{min-height:92px;resize:vertical}
+.adminBtn{border:0;border-radius:12px;padding:12px;font-weight:900}.save{background:#86ded6}.dark{background:#2d4350;color:white}.danger{background:#fff0f3;color:#aa3d67}.rowBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.itemEdit{border:1px solid #e4eaf0;border-radius:13px;padding:10px;margin:8px 0}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:100;background:#2e4350;color:white;padding:10px 14px;border-radius:99px;font-size:11px;opacity:0;transition:.2s}.toast.show{opacity:1}
+@media(min-width:700px){.quick{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:repeat(3,1fr)}.mediaGrid{grid-template-columns:repeat(3,1fr)}.links{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+<div class="fx">
+ <div class="star" style="left:8%;top:10%;font-size:23px">✦</div><div class="star" style="left:88%;top:18%;font-size:18px;animation-delay:.8s">✧</div>
+ <div class="star" style="left:18%;top:54%;font-size:17px;animation-delay:1.3s">✦</div><div class="star" style="left:78%;top:70%;font-size:24px;animation-delay:2s">✧</div>
+ <div class="float" style="left:8%;animation-duration:13s">🌸</div><div class="float" style="left:34%;animation-duration:16s;animation-delay:3s">🦋</div>
+ <div class="float" style="left:70%;animation-duration:14s;animation-delay:5s">♡</div><div class="float" style="left:90%;animation-duration:18s;animation-delay:1s">🌸</div>
+</div>
+<div class="dragon"></div>
+
+<div class="app"><main class="shell">
+<section class="hero" id="home">
+ <div class="script">Ritan ♡ Hope is the bridge</div>
+ <div class="avatarWrap"><div class="avatar"><img id="avatarImg" src="" alt=""></div></div>
+ <div class="pill">WEB CREATOR × CONNECTOR</div>
+ <h1 id="name"></h1><div class="nick" id="nickname"></div><div class="role" id="role"></div>
+ <div class="catch"><b id="lead1"></b><br><span id="lead2"></span></div>
+ <div class="quick">
+  <a class="gem pink" id="lineTop" target="_blank">💚 公式LINE</a>
+  <a class="gem blue" id="instaTop" target="_blank">📷 Instagram</a>
+  <a class="gem lav" href="#media">🖼️ 作品・動画</a>
+  <a class="gem aqua" id="portalTop" target="_blank">🌐 ポータル</a>
+ </div>
+</section>
+
+<div class="content">
+<section class="panel reveal story" id="story"><h2 class="title">My Story ～子育ては、現在進行形。～</h2><div id="storyBody"></div></section>
+<section class="panel reveal" id="service"><h2 class="title">Service</h2><div class="grid" id="serviceGrid"></div></section>
+<section class="panel reveal" id="media"><h2 class="title">Gallery / 画像・動画・資料</h2><div class="mediaGrid" id="mediaGrid"></div><div class="empty" id="mediaEmpty">作品や動画は管理画面から追加できます ✨</div></section>
+<section class="panel reveal" id="connect"><h2 class="title">Connect</h2><div class="links">
+ <a class="link main" id="portalLink" target="_blank">🧭 ポータルサイト</a>
+ <a class="link" id="lineLink" target="_blank">💚 公式LINE</a>
+ <a class="link" id="instaLink" target="_blank">📷 Instagram</a>
+ <a class="link" id="shopLink" target="_blank">🛍️ りーたんのお店</a>
+</div><a class="cta" id="contactLink" target="_blank">一緒に、未来をデザインしませんか？ ✨</a></section>
+<section class="panel reveal"><h2 class="title">管理・編集</h2><div class="adminCard"><b>🔐 あなた専用編集</b><br><small>PIN：0201。写真・文章・動画・資料・リンクを編集できます。</small><button class="adminOpen" id="adminOpen" type="button">編集画面を開く ✨</button><a href="#admin" style="display:block;text-align:center;margin-top:8px;font-size:11px;color:#9a4c79">編集が開かない時はこちら</a></div></section>
+</div></main></div>
+
+<nav class="nav">
+ <button data-go="home"><span>🏠</span>ホーム</button>
+ <button data-go="story"><span>📖</span>ストーリー</button>
+ <button data-go="service"><span>🎨</span>サービス</button>
+ <button data-go="media"><span>🖼️</span>作品</button>
+ <button id="navEdit"><span>🔐</span>編集</button>
+</nav>
+
+<div class="modal" id="modal"><div id="host"></div></div><div class="toast" id="toast"></div>
+
+<script>
+const LINE='https://lin.ee/ZJwTkPK';
+const INSTA='https://www.instagram.com/ritan83584?igsh=MWEycjFmNTZkaWYyNg%3D%3D&utm_source=qr';
+const DEFAULT={
+ name:'波多野 由梨',nickname:'りーたん ♡',
+ role:'Webクリエイター｜ホワイトボードアニメ作家｜イラストレーター｜動画編集',
+ lead1:'知れたから、出逢えた。',lead2:'だから私は、希望をつなぐ。',
+ portal:'https://ritan1107.github.io/mogamap/',shop:'',contact:LINE,
+ story:`宮崎で育ち、18歳で東京へ。飛び込み営業、派遣、飲食店、フェイシャルエステなど、さまざまな仕事を経験してきました。
+
+その後結婚し、待望の息子を授かりました。産後の事故により息子は心肺停止になりましたが、命は救われました。
+
+現在も、重い障がいと向き合いながら在宅医療で子育てを続けています。子育ては今も現在進行形です。
+
+たくさんの人や医療・福祉サービスに支えてもらう中で、「知っているか、知らないか」「つながっているか、いないか」で人生の選択肢は大きく変わると実感しました。
+
+好きな“絵を描くこと”と“伝えること”を掛け合わせ、お絵描き動画の仕事を始め、Web・動画・イラスト・LINE・地域の情報発信へ。
+
+知れたから、出逢えた。
+出逢えたから、今の私と息子がいる。
+だから私は、誰かの希望を次の誰かへつなぐ「架け橋」でありたい。`,
+ services:['🌐 Web制作','🎨 イラスト・デザイン','🎬 ホワイトボードアニメ','🎞️ 動画編集','💚 LINEスタンプ','🤝 地域・人・サービスをつなぐ']
+};
+let profile={...DEFAULT,...JSON.parse(localStorage.getItem('ritan_app_profile')||'{}')};
+const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1700)}
+function renderProfile(){
+ $('name').textContent=profile.name;$('nickname').textContent=profile.nickname;$('role').textContent=profile.role;$('lead1').textContent=profile.lead1;$('lead2').textContent=profile.lead2;
+ $('storyBody').innerHTML=profile.story.split(/\n\s*\n/).filter(Boolean).map(p=>p.includes('知れたから、出逢えた。')?`<div class="quote">${esc(p).replace(/\n/g,'<br>')}</div>`:`<p>${esc(p).replace(/\n/g,'<br>')}</p>`).join('');
+ $('serviceGrid').innerHTML=profile.services.map(s=>{const a=s.split(' '),ic=a.shift()||'✨';return `<div class="service"><span>${esc(ic)}</span>${esc(a.join(' ')||s)}</div>`}).join('');
+ const av=localStorage.getItem('ritan_app_avatar'); if(av)$('avatarImg').src=av;
+ [['lineTop',LINE],['lineLink',LINE],['instaTop',INSTA],['instaLink',INSTA],['portalTop',profile.portal],['portalLink',profile.portal],['shopLink',profile.shop],['contactLink',profile.contact||LINE]].forEach(([id,u])=>{const e=$(id);if(u){e.href=u;e.style.opacity='1';e.style.pointerEvents='auto'}else{e.href='#';e.style.opacity='.4';e.style.pointerEvents='none'}});
+}
+renderProfile();
+
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>$(b.dataset.go)?.scrollIntoView({behavior:'smooth',block:'start'}));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.13});document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+
+const DB='ritan-card-media', STORE='items';
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function dbAll(){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly'),r=tx.objectStore(STORE).getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function dbAdd(item){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite'),r=tx.objectStore(STORE).add(item);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function dbDelete(id){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite'),r=tx.objectStore(STORE).delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+async function renderMedia(){
+ const items=await dbAll();$('mediaEmpty').style.display=items.length?'none':'block';
+ $('mediaGrid').innerHTML=items.map(x=>{
+   const url=URL.createObjectURL(x.blob);
+   if(x.type.startsWith('image/'))return `<div class="media"><img src="${url}"><div class="cap">${esc(x.title)}</div></div>`;
+   if(x.type.startsWith('video/'))return `<div class="media"><video src="${url}" controls playsinline></video><div class="cap">${esc(x.title)}</div></div>`;
+   return `<a class="media" href="${url}" download="${esc(x.name)}"><div class="doc">📄</div><div class="cap">${esc(x.title)}</div></a>`;
+ }).join('');
+}
+renderMedia();
+
+const modal=$('modal'),host=$('host');
+function closeM(){modal.classList.remove('show');host.innerHTML=''} modal.onclick=e=>{if(e.target===modal)closeM()};
+function login(){modal.classList.add('show');host.innerHTML=`<div class="login"><h2>🔐 管理・編集</h2><p>暗証番号を入力してください。</p><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="0201"><button class="adminBtn save" id="go" style="width:100%;margin-top:10px">編集画面へ</button><button class="adminBtn" id="cancel" style="width:100%;margin-top:7px">閉じる</button></div>`;$('cancel').onclick=closeM;$('go').onclick=()=>$('pin').value==='0201'?editor():alert('PINが違います');$('pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click()})}
+$('adminOpen').onclick=login;$('navEdit').onclick=login;
+function fld(id,label,val,ta=false){return `<label>${label}</label>${ta?`<textarea id="${id}">${esc(val)}</textarea>`:`<input id="${id}" value="${esc(val)}">`}`}
+async function editor(){
+ const items=await dbAll();
+ host.innerHTML=`<div class="editor"><div class="editorHead"><h2>✏️ りーたん専用編集</h2><button class="close" id="x">×</button></div><div class="editorBody">
+ <div class="note">コード不要です。写真・動画・PDFなどはスマホの「写真／ファイル」から追加できます。</div>
+ <div class="group"><h3>👤 プロフィール</h3>${fld('en','名前',profile.name)}${fld('ek','ニックネーム',profile.nickname)}${fld('er','肩書き',profile.role,true)}${fld('e1','キャッチ1',profile.lead1)}${fld('e2','キャッチ2',profile.lead2)}<label>プロフィール写真</label><input id="avatarFile" type="file" accept="image/*"></div>
+ <div class="group"><h3>📖 ストーリー</h3>${fld('es','本文',profile.story,true)}</div>
+ <div class="group"><h3>🎨 サービス</h3>${fld('ev','1行に1つ',profile.services.join('\n'),true)}</div>
+ <div class="group"><h3>🔗 リンク</h3>${fld('ep','ポータル',profile.portal)}${fld('eshop','お店ページ',profile.shop)}${fld('ec','お問い合わせ',profile.contact)}</div>
+ <div class="group"><h3>🖼️ 画像・動画・資料を追加</h3><label>タイトル</label><input id="mt" placeholder="例：ホームページ制作実績"><label>ファイル</label><input id="mf" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx"><button class="adminBtn save" id="addMedia" style="width:100%;margin-top:9px">追加する</button><p style="font-size:10px;color:#6d7f87">大きな動画は端末容量を使います。YouTube等のURL埋め込みは次の段階で追加できます。</p></div>
+ <div class="group"><h3>🗂️ 登録済みメディア</h3>${items.length?items.map(x=>`<div class="itemEdit"><b>${esc(x.title)}</b><br><small>${esc(x.name)}</small><button class="adminBtn danger del" data-id="${x.id}" style="width:100%;margin-top:7px">削除</button></div>`).join(''):'まだありません'}</div>
+ <div class="rowBtns"><button class="adminBtn save" id="saveProfile">プロフィール保存</button><button class="adminBtn dark" id="done">完了</button></div>
+ </div></div>`;
+ $('x').onclick=closeM;$('done').onclick=closeM;
+ $('avatarFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{localStorage.setItem('ritan_app_avatar',r.result);$('avatarImg').src=r.result;toast('写真を変更しました')};r.readAsDataURL(f)};
+ $('saveProfile').onclick=()=>{profile.name=$('en').value.trim();profile.nickname=$('ek').value.trim();profile.role=$('er').value.trim();profile.lead1=$('e1').value.trim();profile.lead2=$('e2').value.trim();profile.story=$('es').value.trim();profile.services=$('ev').value.split(/\n/).map(x=>x.trim()).filter(Boolean);profile.portal=$('ep').value.trim();profile.shop=$('eshop').value.trim();profile.contact=$('ec').value.trim();localStorage.setItem('ritan_app_profile',JSON.stringify(profile));renderProfile();toast('保存しました')};
+ $('addMedia').onclick=async()=>{const f=$('mf').files[0],title=$('mt').value.trim()||f?.name;if(!f)return alert('ファイルを選んでください');await dbAdd({title,name:f.name,type:f.type||'application/octet-stream',blob:f});await renderMedia();toast('追加しました');editor()};
+ document.querySelectorAll('.del').forEach(b=>b.onclick=async()=>{await dbDelete(Number(b.dataset.id));await renderMedia();toast('削除しました');editor()});
+}
+
+if(location.hash==='#admin')setTimeout(login,120);
+</script>
+</body>
+</html>
