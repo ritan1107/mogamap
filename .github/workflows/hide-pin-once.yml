@@ -1,0 +1,38 @@
+name: Hide exposed PIN once
+on:
+  push:
+    paths:
+      - '.github/workflows/hide-pin-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch only admin PIN handling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('ritan-denshi-meishi/index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("const M=$('modal'),B=$('box');", "let ADMIN_PIN='';const M=$('modal'),B=$('box');")
+          s=s.replace("headers:{'content-type':'application/json','x-card-pin':'0201'}", "headers:{'content-type':'application/json','x-card-pin':ADMIN_PIN}")
+          s=s.replace("headers:{'x-card-pin':'0201'}", "headers:{'x-card-pin':ADMIN_PIN}")
+          old="function login(){M.classList.add('show');B.innerHTML='<h2>🔐 管理・編集</h2><input id=\"pin\" type=\"password\" inputmode=\"numeric\" maxlength=\"4\" placeholder=\"0201\"><button class=\"btn\" id=\"go\">編集メニューへ</button>';$('go').onclick=()=>$('pin').value==='0201'?menu():alert('PINが違います')}"
+          new="function login(){M.classList.add('show');B.innerHTML='<h2>🔐 管理・編集</h2><input id=\"pin\" type=\"password\" inputmode=\"numeric\" maxlength=\"4\" autocomplete=\"off\" placeholder=\"暗証番号\"><button class=\"btn\" id=\"go\">編集メニューへ</button>';$('go').onclick=async()=>{try{let pin=$('pin').value.trim();if(!pin)throw Error('暗証番号を入力してください');let r=await fetch(A,{method:'POST',cache:'no-store',headers:{'content-type':'application/json','x-card-pin':pin},body:JSON.stringify({action:'verify_pin'})}),j=await r.json().catch(()=>({}));if(!r.ok||!j.ok)throw Error('暗証番号が違います');ADMIN_PIN=pin;menu()}catch(e){alert(e.message)}}}"
+          if old not in s:
+              raise SystemExit('login pattern not found; no changes committed')
+          s=s.replace(old,new)
+          if '0201' in s:
+              raise SystemExit('PIN string still present; aborting')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit index-only change
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add ritan-denshi-meishi/index.html
+          git commit -m "Hide admin PIN from digital card" || exit 0
+          git push
