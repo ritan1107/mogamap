@@ -1,0 +1,51 @@
+name: Add story editor once
+on:
+  push:
+    paths:
+      - '.github/workflows/story-editor-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch story only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('ritan-denshi-meishi/index.html')
+          s=p.read_text(encoding='utf-8')
+          old_story='<section class="panel story" id="story"><h2 class="title">My Story ～子育ては、現在進行形。～</h2><p>宮崎で育ち、18歳で東京へ。飛び込み営業、派遣、飲食店、フェイシャルエステなど、さまざまな仕事を経験してきました。</p><p>その後結婚し、待望の息子を授かりました。現在も重い障がいと向き合いながら在宅医療で子育てを続けています。</p><div class="quote">知れたから、出逢えた。出逢えたから、今の私と息子がいる。だから私は、誰かの希望を次の誰かへつなぐ「架け橋」でありたい。</div></section>'
+          new_story='<section class="panel story" id="story"><h2 class="title">My Story ～子育ては、現在進行形。～</h2><div id="storyText"></div></section>'
+          if old_story not in s: raise SystemExit('story pattern not found')
+          s=s.replace(old_story,new_story,1)
+          if 'storyText:' not in s:
+              if 'galleryPhotos:[]};' not in s: raise SystemExit('default data marker not found')
+              s=s.replace('galleryPhotos:[]};',"galleryPhotos:[],storyText:''};",1)
+          old_render="$('hobbyGrid').innerHTML=(P.hobbies||D.hobbies).slice(0,4).filter(Boolean).map(x=>`<div class=\"p\">${esc(x)}</div>`).join('');gallery()}"
+          new_render="$('hobbyGrid').innerHTML=(P.hobbies||D.hobbies).slice(0,4).filter(Boolean).map(x=>`<div class=\"p\">${esc(x)}</div>`).join('');let st=(P.storyText||'').trim();$('storyText').innerHTML=st?st.split(/\\n\\s*\\n/).map(x=>`<p>${esc(x).replace(/\\n/g,'<br>')}</p>`).join(''):'<p>ストーリーを準備中です。</p>';gallery()}"
+          if old_render not in s: raise SystemExit('render marker not found')
+          s=s.replace(old_render,new_render,1)
+          old_btn='<button class="choice wide" id="cnt"><span>🌷</span>コンテンツ編集<small>好きなこと・趣味・写真8枚</small></button>'
+          new_btn='<button class="choice wide" id="storyEditBtn"><span>📖</span>ストーリー編集<small>My Story の文章を編集</small></button>'+old_btn
+          if old_btn not in s: raise SystemExit('menu button marker not found')
+          s=s.replace(old_btn,new_btn,1)
+          old_click="$('prof').onclick=profile;$('des').onclick=design;$('cnt').onclick=content}"
+          new_click="$('prof').onclick=profile;$('des').onclick=design;$('storyEditBtn').onclick=storyEdit;$('cnt').onclick=content}"
+          if old_click not in s: raise SystemExit('menu handler marker not found')
+          s=s.replace(old_click,new_click,1)
+          fn="function storyEdit(){B.innerHTML=`<button class=\"btn dark\" id=\"back\">← 戻る</button><h2>📖 ストーリー編集</h2><div class=\"group\"><b>My Story</b><p style=\"font-size:10.5px;color:#6a8189\">空行で段落を区切ると読みやすく表示されます。</p><textarea id=\"storyEditor\" style=\"min-height:420px\">${esc(P.storyText||'')}</textarea></div><button class=\"btn\" id=\"saveStory\">☁️ ストーリーを保存</button>`;$('back').onclick=menu;$('saveStory').onclick=async()=>{try{let v=$('storyEditor').value.trim();if(!v)throw Error('ストーリー本文を入力してください');P.storyText=v;await save();toast('ストーリーを保存しました');menu()}catch(e){alert(e.message)}}}"
+          if 'function content(){' not in s: raise SystemExit('content marker not found')
+          s=s.replace('function content(){',fn+'function content(){',1)
+          if '0201' in s: raise SystemExit('PIN leak detected; abort')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit index-only story change
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add ritan-denshi-meishi/index.html
+          git commit -m "Add editable story section" || exit 0
+          git push
