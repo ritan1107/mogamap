@@ -1,0 +1,46 @@
+name: Add dedicated Links editor once
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-link-editor-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch Links editor only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('ritan-denshi-meishi/index.html')
+          s=p.read_text(encoding='utf-8')
+          original=s
+          if 'id="linkEditBtn"' not in s:
+              old='<button class="choice wide" id="storyEditBtn"><span>📖</span>ストーリー編集<small>My Story の文章を編集</small></button><button class="choice wide" id="cnt"><span>🌷</span>コンテンツ編集<small>好きなこと・趣味・写真8枚</small></button>'
+              new='<button class="choice wide" id="storyEditBtn"><span>📖</span>ストーリー編集<small>My Story の文章を編集</small></button><button class="choice wide" id="linkEditBtn"><span>🔗</span>リンク編集<small>Links欄専用・最大6件</small></button><button class="choice wide" id="cnt"><span>🌷</span>コンテンツ編集<small>好きなこと・趣味・写真8枚</small></button>'
+              assert old in s, 'menu target not found'
+              s=s.replace(old,new,1)
+              old_bind="$('des').onclick=design;$('storyEditBtn').onclick=storyEdit;$('cnt').onclick=content}"
+              new_bind="$('des').onclick=design;$('storyEditBtn').onclick=storyEdit;$('linkEditBtn').onclick=linkEdit;$('cnt').onclick=content}"
+              assert old_bind in s, 'menu bind target not found'
+              s=s.replace(old_bind,new_bind,1)
+          if 'function linkEdit(){' not in s:
+              marker='function storyEdit(){'
+              assert marker in s, 'storyEdit marker missing'
+              fn="function linkEdit(){let L=[...(P.links||[])].slice(0,6);while(L.length<6)L.push({label:'',url:''});B.innerHTML=`<button class=\"btn dark\" id=\"back\">← 戻る</button><h2>🔗 リンク編集</h2><div class=\"group\"><b>Links欄専用（最大6件）</b><p style=\"font-size:10.5px;color:#6a8189\">上部の公式LINE・Instagram・電子名刺URLとは別のリンクを登録できます。空欄の枠は表示されません。</p>${L.map((x,i)=>`<div class=\"gRow\"><b>リンク ${i+1}</b>${f('ll'+i,'ボタン名',x.label||'')}${f('lu'+i,'URL',x.url||'')}</div>`).join('')}</div><button class=\"btn\" id=\"saveLinks\">☁️ Linksを保存</button>`;$('back').onclick=menu;$('saveLinks').onclick=async()=>{try{let out=[];for(let i=0;i<6;i++){let label=$('ll'+i).value.trim(),url=$('lu'+i).value.trim();if(!label&&!url)continue;if(!label||!url)throw Error('リンク'+(i+1)+'は、ボタン名とURLを両方入力してください');if(!/^https?:\\/\\//i.test(url))throw Error('リンク'+(i+1)+'のURLは https:// から入力してください');out.push({label,url})}P.links=out;await save();toast('Linksを保存しました');menu()}catch(e){alert(e.message)}}}"
+              s=s.replace(marker,fn+marker,1)
+          assert '0201' not in s, 'PIN leaked into public HTML'
+          assert 'id="linkEditBtn"' in s and 'function linkEdit(){' in s
+          if s!=original:
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit Links-only change
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ritan-denshi-meishi/index.html
+          git commit -m 'Add dedicated editable Links section'
+          git push
