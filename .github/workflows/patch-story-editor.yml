@@ -1,0 +1,56 @@
+name: Patch story editor safely
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-story-editor.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch only story UI
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('ritan-denshi-meishi/index.html')
+          s=p.read_text(encoding='utf-8')
+          original=s
+          if 'id="storyText"' not in s:
+              pat=r'<section class="panel story" id="story">.*?</section><section class="panel" id="service">'
+              repl='<section class="panel story" id="story"><h2 class="title">My Story ～子育ては、現在進行形。～</h2><div id="storyText"></div></section><section class="panel" id="service">'
+              s,n=re.subn(pat,repl,s,count=1,flags=re.S)
+              assert n==1, f'story section patch count={n}'
+          if 'storyText:' not in s:
+              s,n=re.subn(r'galleryPhotos:\[\]\};',"galleryPhotos:[],storyText:''};",s,count=1)
+              assert n==1, f'default story field patch count={n}'
+          marker="$('hobbyGrid').innerHTML=(P.hobbies||D.hobbies).slice(0,4).filter(Boolean).map(x=>`<div class=\"p\">${esc(x)}</div>`).join('');gallery()}"
+          if "$('storyText').innerHTML" not in s:
+              assert marker in s, 'render marker missing'
+              repl=marker.replace(';gallery()}',";let st=(P.storyText||'').trim();$('storyText').innerHTML=st?st.split(/\\n\\s*\\n/).map(x=>`<p>${esc(x).replace(/\\n/g,'<br>')}</p>`).join(''):'<p>ストーリーを準備中です。</p>';gallery()}")
+              s=s.replace(marker,repl,1)
+          oldmenu='<button class="choice wide" id="cnt"><span>🌷</span>コンテンツ編集<small>好きなこと・趣味・写真</small></button>'
+          if 'id="storyEditBtn"' not in s:
+              assert oldmenu in s, 'menu marker missing'
+              s=s.replace(oldmenu,'<button class="choice wide" id="storyEditBtn"><span>📖</span>ストーリー編集<small>My Story の文章を編集</small></button>'+oldmenu,1)
+              s=s.replace("$('des').onclick=design;$('cnt').onclick=content}","$('des').onclick=design;$('storyEditBtn').onclick=storyEdit;$('cnt').onclick=content}",1)
+          if 'function storyEdit(){' not in s:
+              marker2='function content(){'
+              assert marker2 in s, 'content function marker missing'
+              fn="function storyEdit(){B.innerHTML=`<button class=\"btn dark\" id=\"back\">← 戻る</button><h2>📖 ストーリー編集</h2><div class=\"group\"><b>My Story</b><p style=\"font-size:10.5px;color:#6a8189\">段落を空行で区切ると、読みやすく表示されます。</p><textarea id=\"storyEditor\" style=\"min-height:420px\">${esc(P.storyText||'')}</textarea></div><button class=\"btn\" id=\"saveStory\">☁️ ストーリーを保存</button>`;$('back').onclick=menu;$('saveStory').onclick=async()=>{try{let v=$('storyEditor').value.trim();if(!v)throw Error('ストーリー本文を入力してください');P.storyText=v;await save();toast('ストーリーを保存しました');menu()}catch(e){alert(e.message)}}}"
+              s=s.replace(marker2,fn+marker2,1)
+          assert '0201' not in s, 'PIN leaked into public HTML'
+          assert 'id="storyText"' in s and 'function storyEdit(){' in s and 'id="storyEditBtn"' in s
+          if s!=original:
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit story-only changes
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ritan-denshi-meishi/index.html
+          git commit -m 'Add editable cloud-backed story section'
+          git push
