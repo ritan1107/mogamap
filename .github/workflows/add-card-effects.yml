@@ -2,6 +2,8 @@ name: Add card effects
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 permissions:
   contents: write
 jobs:
@@ -10,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Add editable effects to both cards
         run: |
           python3 - <<'PY'
@@ -48,4 +52,4 @@ function effectsEdit(){let d=effectDefaults();for(let k in d)if(P[k]===undefined
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- abe/index.html ritan-denshi-meishi/index.html
           git commit -m "Add editable card effects"
-          git push
+          git push origin main
