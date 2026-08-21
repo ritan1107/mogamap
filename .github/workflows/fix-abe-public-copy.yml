@@ -1,0 +1,37 @@
+name: Fix Abe public copy
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/fix-abe-public-copy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove template-owner wording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('abe/index.html')
+          s = p.read_text(encoding='utf-8')
+          old = 'りーたん電子名刺と同じ構成。写真・動画・壁紙・文章・リンクをクラウド保存。'
+          new = '写真・動画・壁紙・文章・リンクを編集できます。'
+          if old not in s:
+              raise SystemExit('target text not found')
+          p.write_text(s.replace(old, new), encoding='utf-8')
+          PY
+      - name: Remove one-time workflow
+        run: rm .github/workflows/fix-abe-public-copy.yml
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add abe/index.html .github/workflows/fix-abe-public-copy.yml
+          git commit -m 'Remove creator reference from Abe card'
+          git push
