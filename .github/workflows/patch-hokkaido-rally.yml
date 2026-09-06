@@ -1,0 +1,43 @@
+name: Patch Hokkaido rally UI
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-hokkaido-rally.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch index
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          s=s.replace("s.status==='fulfilled'&&s.value?.length===36", "s.status==='fulfilled'&&Array.isArray(s.value)&&s.value.length>0")
+          s=s.replace('36店舗をピン表示','店舗ピンを表示')
+          marker='<!-- HOKKAIDO_RALLY_UI_V2 -->'
+          if marker not in s:
+            addon=r'''\n<!-- HOKKAIDO_RALLY_UI_V2 -->
+<style>
+.rallyBadge{display:inline-flex;align-items:center;gap:5px;background:#fff0d9;color:#a34d00;border:1px solid #f2bd75;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:950;margin:0 0 7px}.rallyNote{background:#fff8ed;border:1px solid #f1d2a5;border-radius:11px;padding:9px 10px;margin:8px 0;font-size:12px;font-weight:800;line-height:1.55}.shop.rallyShop{border:2px solid #f2bd75;box-shadow:0 8px 24px #d878161c}.rallyPreGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}.rallyPreCard{border:1px solid #eadfd2;border-radius:13px;padding:10px;background:#fff;text-align:left;cursor:pointer}.rallyPreCard b{display:block;margin-bottom:4px}.rallyPin{background:#f28b25;color:#fff;border:3px solid #fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px #0004}.stampTap .rallyMiniNote{display:block;margin-top:5px;font-size:9px;line-height:1.35;color:#756f68;font-weight:700}@media(max-width:640px){.rallyPreGrid{grid-template-columns:1fr}}
+</style>
+<script>
+function rallyBadgeHtml(s){return s.stamp_rally_enabled?'<div class="rallyBadge">🎫 スタンプラリー参加店</div>':''}
+function rallyNoteHtml(s){return s.stamp_rally_enabled&&s.stamp_rally_note?'<div class="rallyNote">'+esc(s.stamp_rally_note)+'</div>':''}
+renderShops=function(){const list=filtered();$('resultCount').textContent=list.length+'件';$('shopList').innerHTML=list.length?list.map(s=>`<article class="shop ${s.stamp_rally_enabled?'rallyShop':''}" onclick="openDetail('${s.id}')">${rallyBadgeHtml(s)}<div class="cat">${esc(s.main_category)} › ${esc(s.subcategory||'その他')}</div><h3>${esc(s.name)}</h3><div class="muted">📍 ${esc(area(s.address))}</div><p>${esc(s.description||'')}</p>${rallyNoteHtml(s)}<div class="actions"><button class="btn small">詳しく見る</button><button class="btn green small" onclick="event.stopPropagation();navigateShop('${s.id}')">経路</button></div></article>`).join(''):'<div class="empty">該当する店舗がありません</div>';clusters.clearLayers();let pinCount=0;list.forEach(s=>{if(!Number.isFinite(+s.latitude)||!Number.isFinite(+s.longitude))return;let opt={};if(s.stamp_rally_enabled)opt.icon=L.divIcon({className:'',html:'<div class="rallyPin">🎫</div>',iconSize:[30,30],iconAnchor:[15,15],popupAnchor:[0,-14]});const m=L.marker([+s.latitude,+s.longitude],opt).bindPopup(`${s.stamp_rally_enabled?'<b style="color:#a34d00">🎫 スタンプ参加店</b><br>':''}<b>${esc(s.name)}</b><br><small>${esc(s.main_category)} › ${esc(s.subcategory||'その他')}</small>${s.stamp_rally_note?`<br><small>${esc(s.stamp_rally_note)}</small>`:''}<div class="actions"><button class="btn small" onclick="openDetail('${s.id}')">店舗を見る</button></div>`);clusters.addLayer(m);pinCount++});$('mapStatus').textContent=pinCount+'店舗をピン表示';if(clusters.getLayers().length){const b=clusters.getBounds();if(b.isValid())map.fitBounds(b,{padding:[20,20],maxZoom:11})}}
+renderRally=function(){const a=$('rallyArea'),rallyShops=shops.filter(s=>s.stamp_rally_enabled).sort((x,y)=>(x.rally_number||999)-(y.rally_number||999));const cards=rallyShops.map(s=>`<button type="button" class="rallyPreCard" onclick="openRallyShop('${s.id}')"><b>🎫 ${esc(s.name)}</b>${s.stamp_rally_note?`<span class="muted">${esc(s.stamp_rally_note)}</span>`:'<span class="muted">スタンプ対象店舗</span>'}</button>`).join('');if(!participant){a.innerHTML=`<h2>🎫 ${esc(settings.rally_title||'スタンプラリー')}</h2><div class="notice"><b>参加店舗は ${rallyShops.length}店</b><br>下の店舗をタップすると、店舗情報・行き方を確認できます。</div>${typeof publicParticipantCountHtml==='function'?publicParticipantCountHtml():''}<label for="participantEntryId"><b>参加者ID（任意）</b></label><input id="participantEntryId" class="rallyInput" maxlength="80" autocomplete="off" placeholder="会員番号など（なくても参加できます）"><label for="nickname"><b>ニックネーム（必須）</b></label><input id="nickname" class="rallyInput" maxlength="40" autocomplete="nickname" placeholder="ニックネーム"><div class="actions"><button class="btn" onclick="startRally()">スタンプラリーに参加する</button></div><p class="muted">IDとニックネームは管理者だけが確認できます。</p><h3>🎫 スタンプ対象店舗</h3><div class="rallyPreGrid">${cards}</div>`;return}const got=progress?.stamp_count||stampIds.size,total=progress?.total_shops||rallyShops.length;a.innerHTML=`<h2>🎫 ${esc(participant.nickname)}さん</h2>${typeof publicParticipantCountHtml==='function'?publicParticipantCountHtml():''}<h3>${got} / ${total}店舗</h3><div class="progress"><div style="width:${total?got/total*100:0}%"></div></div>${progress?.completed?`<div class="notice"><h2>🎉 全参加店舗クリア！</h2><strong>達成番号：${esc(progress.completion_code||'発行中')}</strong><p>${esc(settings.reward_description||'この画面を主催者へお見せください。')}</p></div>`:`<p>あと${Math.max(total-got,0)}店舗！</p>`}<p class="rallyGuide">店舗をタップして詳細を開き、会計時にお店の方へ「スタンプを押す」をお願いしてください。</p><div class="stampGrid">${rallyShops.map(s=>`<button type="button" class="stamp stampTap ${stampIds.has(s.id)?'got':''}" onclick="openRallyShop('${s.id}')"><b>#${String(s.rally_number||'--').padStart(4,'0')}</b><br>${stampIds.has(s.id)?'✅ ':''}${esc(s.name)}${s.stamp_rally_note?`<span class="rallyMiniNote">${esc(s.stamp_rally_note)}</span>`:''}</button>`).join('')}</div>`}
+</script>
+'''
+            s=s.replace('</body></html>',addon+'\n</body></html>')
+          p.write_text(s)
+      - name: Commit patch
+        run: |
+          git config user.name "MOGU Map Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Improve Hokkaido rally visibility and dynamic store loading"
+          git push
