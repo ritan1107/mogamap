@@ -1,0 +1,30 @@
+name: Apply Hokkaido cute theme
+on:
+  push:
+    paths:
+      - 'trigger-hokkaido-cute-theme.txt'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject theme stylesheet safely
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          css='<link rel="stylesheet" href="./hokkaido-cute-theme-v1.css?v=1">'
+          if css not in s:
+              s=s.replace('</head>',css+'\n</head>')
+          p.write_text(s)
+      - name: Commit
+        run: |
+          git config user.name "MOGU Map Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Apply safe cute Hokkaido visual theme"
+          git push
