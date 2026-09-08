@@ -1,0 +1,36 @@
+name: Apply Hokkaido dual ranking
+on:
+  push:
+    paths:
+      - 'hokkaido-dual-ranking-v1.js'
+      - 'hokkaido-dual-ranking-v1.css'
+      - '.github/workflows/apply-hokkaido-dual-ranking.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject ranking assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          css='<link rel="stylesheet" href="./hokkaido-dual-ranking-v1.css?v=1">\n'
+          js='<script src="./hokkaido-dual-ranking-v1.js?v=1"></script>\n'
+          if 'hokkaido-dual-ranking-v1.css' not in s:
+              s=s.replace('</head>',css+'</head>')
+          if 'hokkaido-dual-ranking-v1.js' not in s:
+              s=s.replace('</body>',js+'</body>')
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git diff --cached --quiet || git commit -m "Deploy customer and shop rankings"
+          git push
