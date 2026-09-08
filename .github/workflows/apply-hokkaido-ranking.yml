@@ -1,0 +1,33 @@
+name: Apply Hokkaido ranking
+on:
+  push:
+    paths:
+      - 'trigger-hokkaido-ranking.txt'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject ranking assets
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          css='<link rel="stylesheet" href="./hokkaido-ranking-v1.css?v=1">'
+          js='<script src="./hokkaido-ranking-v1.js?v=1"></script>'
+          if css not in s:
+              s=s.replace('</head>',css+'\n</head>')
+          if js not in s:
+              s=s.replace('</body>',js+'\n</body>')
+          p.write_text(s)
+      - name: Commit
+        run: |
+          git config user.name "MOGU Map Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Show public participant top 20 ranking"
+          git push
