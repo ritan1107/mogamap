@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="./hokkaido-mypage-v1.css">
 <link rel="stylesheet" href="./hokkaido-cute-theme-v1.css?v=1">
 <link rel="stylesheet" href="./hokkaido-ranking-v1.css?v=1">
+<link rel="stylesheet" href="./hokkaido-creator-info-v1.css?v=1">
 </head>
 <body><header><div class="head"><div class="brand">📍 モグマップ</div><div class="count" id="topCount">店舗データ読込中…</div><div class="search"><input id="search" aria-label="店舗検索" placeholder="店名・地域・キーワードで検索"><button id="searchBtn">検索</button></div><div class="filterTitle">メインカテゴリ</div><div class="filters" id="mainFilters"></div><div id="subWrap" hidden><div class="filterTitle">サブカテゴリ</div><div class="filters" id="subFilters"></div></div></div></header>
 <main><section class="view on" id="mapView"><div class="panel"><div id="map"></div><div class="mapMeta"><span id="mapStatus">店舗ピンを表示</span><span class="muted">住所・位置確認済みの店舗のみピン表示</span></div></div><div class="heading"><h2>お店を探す</h2><strong id="resultCount"></strong></div><div class="shopList" id="shopList"></div></section><section class="view" id="stampView"><div class="panel panelPad" id="rallyArea"></div></section><section class="view" id="jobView"><div class="heading"><h2>💼 スポットバイト</h2></div><div class="shopList" id="jobList"></div></section><section class="view" id="moreView"><div class="panel panelPad"><h2>その他</h2><p class="muted">店舗情報やスタンプラリーの管理はこちらです。一般のお客様は操作不要です。</p><div class="actions"><button class="btn ghost" onclick="openOrganizer()">主催者管理</button><button class="btn ghost" onclick="checkReward()">特典受取確認</button></div></div></section></main>
@@ -100,4 +101,5 @@ window.addEventListener('popstate',()=>{if(detailHistoryOpen){detailHistoryOpen=
 <script src="./hokkaido-map-v3.js?v=3"></script>
 <script src="./hokkaido-mypage-v1.js"></script>
 <script src="./hokkaido-ranking-v1.js?v=1"></script>
+<script src="./hokkaido-creator-info-v1.js?v=1"></script>
 </body></html>
