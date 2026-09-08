@@ -1,0 +1,36 @@
+name: Apply Hokkaido tourism app
+on:
+  push:
+    paths:
+      - 'hokkaido-tourism-app-v1.js'
+      - 'hokkaido-tourism-app-v1.css'
+      - '.github/workflows/apply-hokkaido-tourism-app.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject tourism app assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          css='<link rel="stylesheet" href="./hokkaido-tourism-app-v1.css?v=1">\n'
+          js='<script src="./hokkaido-tourism-app-v1.js?v=1"></script>\n'
+          if 'hokkaido-tourism-app-v1.css' not in s:
+              s=s.replace('</head>',css+'</head>')
+          if 'hokkaido-tourism-app-v1.js' not in s:
+              s=s.replace('</body>',js+'</body>')
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git diff --cached --quiet || git commit -m "Deploy tourism-style Hokkaido app UI"
+          git push
