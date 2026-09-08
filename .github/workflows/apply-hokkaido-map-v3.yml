@@ -1,0 +1,31 @@
+name: Apply Hokkaido map v3
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-hokkaido-map-v3.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject map v3
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          tag='<script src="./hokkaido-map-v3.js?v=3"></script>'
+          if tag not in s:
+              s=s.replace('</body></html>', tag+'\n</body></html>')
+          s=s.replace('※一部は地域の概算位置','住所・位置確認済みの店舗のみピン表示')
+          p.write_text(s)
+      - name: Commit
+        run: |
+          git config user.name "MOGU Map Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Apply precise Hokkaido map pins and Google routing"
+          git push
