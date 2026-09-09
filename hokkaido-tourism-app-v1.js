@@ -1,11 +1,18 @@
 (() => {
-  const DEFAULT_VISUALS={heroImage:'',bodyImage:'',heroPosition:'center',bodyPosition:'center top'};
-  function visualSettings(){try{return {...DEFAULT_VISUALS,...JSON.parse(localStorage.getItem('moguVisualSettings')||'{}')}}catch(e){return {...DEFAULT_VISUALS}}}
+  let CLOUD_VISUALS={heroImage:'',bodyImage:''};
   function applyVisuals(){
-    const s=visualSettings(),hero=document.querySelector('.sapporoSkyline');
+    const s=CLOUD_VISUALS,hero=document.querySelector('.sapporoSkyline');
     document.body.classList.toggle('hasCustomBodyBg',!!s.bodyImage);
-    if(s.bodyImage){document.body.style.setProperty('--mogu-body-bg',`url("${s.bodyImage.replace(/"/g,'%22')}")`);document.body.style.setProperty('--mogu-body-pos',s.bodyPosition||'center top')}else{document.body.style.removeProperty('--mogu-body-bg');document.body.style.removeProperty('--mogu-body-pos')}
-    if(hero){hero.classList.toggle('hasCustomHero',!!s.heroImage);hero.style.setProperty('--mogu-hero-bg',s.heroImage?`url("${s.heroImage.replace(/"/g,'%22')}")`:'none');hero.style.setProperty('--mogu-hero-pos',s.heroPosition||'center')}
+    if(s.bodyImage)document.body.style.setProperty('--mogu-body-bg',`url("${s.bodyImage.replace(/"/g,'%22')}")`);else document.body.style.removeProperty('--mogu-body-bg');
+    if(hero){hero.classList.toggle('hasCustomHero',!!s.heroImage);hero.style.setProperty('--mogu-hero-bg',s.heroImage?`url("${s.heroImage.replace(/"/g,'%22')}")`:'none')}
+  }
+  async function loadPublicVisuals(){
+    try{
+      const data=await api('rpc/get_public_app_visual_settings',{method:'POST',body:'{}'});
+      const r=Array.isArray(data)?data[0]:data;
+      CLOUD_VISUALS={heroImage:r?.hero_image_data||'',bodyImage:r?.body_image_data||''};
+      applyVisuals();
+    }catch(e){console.warn('visual settings unavailable',e)}
   }
   function activeView(){return document.querySelector('.view.on')?.id||'mapView'}
   function syncActive(){
@@ -19,7 +26,6 @@
   }
   function go(view){if(typeof window.switchView==='function')window.switchView(view);else document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id===view));requestAnimationFrame(syncActive)}
   window.moguGo=go;
-
   function addHero(){
     if(document.getElementById('moguTourismHero'))return;
     const main=document.querySelector('main');if(!main)return;
@@ -30,15 +36,24 @@
   function addFoodStrip(){if(document.getElementById('moguFoodStrip'))return;const mapView=document.getElementById('mapView');if(!mapView)return;const strip=document.createElement('div');strip.id='moguFoodStrip';strip.className='moguFoodStrip';strip.innerHTML=`<button onclick="setMoguSearch('ラーメン')">🍜<span>札幌ラーメン</span></button><button onclick="setMoguSearch('海鮮')">🦀<span>海鮮</span></button><button onclick="setMoguSearch('スイーツ')">🍦<span>スイーツ</span></button><button onclick="setMoguSearch('ジンギスカン')">🥩<span>ジンギスカン</span></button><button onclick="setMoguSearch('カフェ')">☕<span>カフェ巡り</span></button>`;const heading=mapView.querySelector('.heading');if(heading)heading.parentNode.insertBefore(strip,heading)}
   window.setMoguSearch=function(q){const input=document.getElementById('search');if(input){input.value=q;input.dispatchEvent(new Event('input',{bubbles:true}))}if(typeof window.renderAll==='function')renderAll();else if(typeof window.renderShops==='function')renderShops();go('mapView')};
 
-  function fileToDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+  async function compressImage(file,maxW=1600,maxH=1200,quality=.82){
+    const bmp=await createImageBitmap(file),scale=Math.min(1,maxW/bmp.width,maxH/bmp.height),w=Math.round(bmp.width*scale),h=Math.round(bmp.height*scale),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);bmp.close?.();let q=quality,data=c.toDataURL('image/jpeg',q);while(data.length>1600000&&q>.48){q-=.08;data=c.toDataURL('image/jpeg',q)}if(data.length>1750000)throw new Error('image too large');return data;
+  }
+  async function saveCloudVisual({hero=null,body=null,clearHero=false,clearBody=false}){
+    const pin=prompt('主催者PINを入力してください');if(pin===null)return false;
+    const payload={p_pin:pin,p_hero_image_data:hero,p_body_image_data:body,p_clear_hero:!!clearHero,p_clear_body:!!clearBody};
+    await api('rpc/save_app_visual_settings_by_pin',{method:'POST',body:JSON.stringify(payload)});await loadPublicVisuals();return true;
+  }
   function addDesignEditor(){
     const more=document.querySelector('#moreView .panel');if(!more||document.getElementById('moguDesignEditor'))return;
-    const box=document.createElement('details');box.id='moguDesignEditor';box.className='moguDesignEditor';box.innerHTML=`<summary>🎨 背景・トップ画像を編集</summary><div class="moguDesignEditorBody"><label><b>トップ画像</b><input id="moguHeroFile" type="file" accept="image/*"></label><div class="editorRow"><button id="moguHeroClear" type="button">トップ画像を元に戻す</button></div><label><b>アプリ全体の背景画像</b><input id="moguBodyFile" type="file" accept="image/*"></label><div class="editorRow"><button id="moguBodyClear" type="button">全体背景を元に戻す</button></div><small>画像を選ぶだけで差し替えできます。この端末のブラウザに保存されます。</small></div>`;more.appendChild(box);
-    const save=async(key,file)=>{if(!file)return;const data=await fileToDataUrl(file);if(data.length>4_500_000){alert('画像が大きすぎます。4MB程度までの画像を使ってください。');return}const s=visualSettings();s[key]=data;localStorage.setItem('moguVisualSettings',JSON.stringify(s));applyVisuals()};
-    box.querySelector('#moguHeroFile').addEventListener('change',e=>save('heroImage',e.target.files?.[0]));box.querySelector('#moguBodyFile').addEventListener('change',e=>save('bodyImage',e.target.files?.[0]));
-    box.querySelector('#moguHeroClear').onclick=()=>{const s=visualSettings();s.heroImage='';localStorage.setItem('moguVisualSettings',JSON.stringify(s));applyVisuals()};box.querySelector('#moguBodyClear').onclick=()=>{const s=visualSettings();s.bodyImage='';localStorage.setItem('moguVisualSettings',JSON.stringify(s));applyVisuals()};
+    const box=document.createElement('details');box.id='moguDesignEditor';box.className='moguDesignEditor';box.innerHTML=`<summary>🎨 公開デザインを編集</summary><div class="moguDesignEditorBody"><p class="designPublicNote">ここで変更すると、もぐマップを見る全員に反映されます。</p><label><b>トップ画像</b><input id="moguHeroFile" type="file" accept="image/*"></label><div class="editorRow"><button id="moguHeroSave" type="button">トップ画像を公開する</button><button id="moguHeroClear" type="button">元に戻す</button></div><label><b>アプリ全体の背景画像</b><input id="moguBodyFile" type="file" accept="image/*"></label><div class="editorRow"><button id="moguBodySave" type="button">背景画像を公開する</button><button id="moguBodyClear" type="button">元に戻す</button></div><p id="moguDesignMsg" class="muted"></p><small>画像は自動で軽量化して保存します。主催者PINが必要です。</small></div>`;more.appendChild(box);
+    const msg=box.querySelector('#moguDesignMsg');
+    async function publish(kind){const input=box.querySelector(kind==='hero'?'#moguHeroFile':'#moguBodyFile'),file=input.files?.[0];if(!file){msg.textContent='先に画像を選んでください。';return}msg.textContent='画像を軽量化しています…';try{const data=await compressImage(file,kind==='hero'?1800:1600,kind==='hero'?1000:1400,.84);msg.textContent='公開設定を保存しています…';const ok=await saveCloudVisual(kind==='hero'?{hero:data}:{body:data});if(ok)msg.textContent='✅ 全ユーザー向けの画像を更新しました。'}catch(e){msg.textContent=e?.message?.includes('pin')?'主催者PINを確認してください。':'画像を保存できませんでした。別の画像でお試しください。'}}
+    box.querySelector('#moguHeroSave').onclick=()=>publish('hero');box.querySelector('#moguBodySave').onclick=()=>publish('body');
+    box.querySelector('#moguHeroClear').onclick=async()=>{try{if(await saveCloudVisual({clearHero:true}))msg.textContent='✅ トップ画像を初期デザインに戻しました。'}catch(e){msg.textContent='主催者PINを確認してください。'}};
+    box.querySelector('#moguBodyClear').onclick=async()=>{try{if(await saveCloudVisual({clearBody:true}))msg.textContent='✅ 全体背景を初期デザインに戻しました。'}catch(e){msg.textContent='主催者PINを確認してください。'}};
   }
-  function boot(){addHero();addFoodStrip();addDesignEditor();applyVisuals();syncActive();const observer=new MutationObserver(()=>requestAnimationFrame(syncActive));document.querySelectorAll('.view').forEach(v=>observer.observe(v,{attributes:true,attributeFilter:['class']}));const rally=document.getElementById('rallyArea');if(rally)observer.observe(rally,{subtree:true,attributes:true,attributeFilter:['class']});document.addEventListener('click',()=>setTimeout(syncActive,60),true)}
-  window.syncMoguActivePage=syncActive;window.applyMoguVisuals=applyVisuals;
+  async function boot(){addHero();addFoodStrip();addDesignEditor();syncActive();await loadPublicVisuals();const observer=new MutationObserver(()=>requestAnimationFrame(syncActive));document.querySelectorAll('.view').forEach(v=>observer.observe(v,{attributes:true,attributeFilter:['class']}));const rally=document.getElementById('rallyArea');if(rally)observer.observe(rally,{subtree:true,attributes:true,attributeFilter:['class']});document.addEventListener('click',()=>setTimeout(syncActive,60),true)}
+  window.syncMoguActivePage=syncActive;window.applyMoguVisuals=applyVisuals;window.reloadMoguVisuals=loadPublicVisuals;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
