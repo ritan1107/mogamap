@@ -808,6 +808,7 @@ if(participant()){loadCustomerProfile();loadCustomerMailbox()}
 .pin-show-row{display:flex;gap:6px;align-items:stretch}.pin-show-row input{flex:1;min-width:0}.pin-show-row .btn{margin:0;white-space:nowrap}
 .rally-alert-control{display:flex;align-items:center;gap:7px;margin-top:10px;padding:9px 10px;border:1px dashed #e7c86c;border-radius:13px;background:#fffdf4;color:#806126;font-size:11px}.rally-alert-control .btn{margin:0;margin-left:auto}.rally-alert-status{font-size:10px;color:#806126}
 .shop-number-control{display:grid;gap:7px}.shop-number-control .btn{margin:0}
+.rally-stampbook-visible{display:block!important;margin-top:10px}.rally-stampbook-visible .stampbook{margin-top:0}.rally-stampbook-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 0;color:#397f87;font-size:13px;font-weight:950}.rally-stampbook-title small{color:#87959b;font-size:10px;font-weight:700}
 </style>
 <script>
 /* 店舗PIN・対面番号・遠隔申請の最終整理。既存データ/RPCは残し、入口だけ安全に差し替える。 */
@@ -852,6 +853,20 @@ if(participant()){loadCustomerProfile();loadCustomerMailbox()}
     const button=document.getElementById('claimStamp');if(button)button.textContent='この番号でスタンプを押す';
     if(!card.querySelector('.shop-number-note')){const note=document.createElement('div');note.className='addr shop-number-note';note.textContent='番号は店舗の編集ページで確認・変更できます。';card.appendChild(note)}
     if(button&&!button.dataset.finalStampHandler){button.dataset.finalStampHandler='1';button.onclick=async()=>{const p=participant();if(!p){openM('joinModal');return}const shopId=document.getElementById('stampShop')?.value||'',code=input.value.trim();if(!shopId||!/^(?:\d{3}|\d{4})$/.test(code))return toast('店舗と3桁または4桁の番号を確認してください');button.disabled=true;try{const rows=await rpc('claim_participant_stamp',{p_participant_id:p.id,p_participant_token:p.token,p_shop_id:shopId,p_shop_pin:code}),x=rows?.[0];input.value='';if(!x?.success)return toast('スタンプラリー番号が違います');await loadProgress();await loadRankings();toast('🎉 スタンプを獲得しました！');if(x.completed)showCompletion()}catch(e){console.error(e);toast('スタンプを押せませんでした')}finally{button.disabled=false}}}
+  }
+  function keepStampBookVisible(){
+    const wrap=document.getElementById('stampBookWrap'),toggle=document.getElementById('toggleBook');
+    if(!wrap||!toggle)return;
+    if(!document.getElementById('rallyStampbookTitle')){
+      const title=document.createElement('div');title.id='rallyStampbookTitle';title.className='rally-stampbook-title';title.innerHTML='<span>📖 スタンプ一覧</span><small>押した店舗に ✓ が付きます</small>';
+      wrap.parentNode.insertBefore(title,wrap);
+    }
+    const paint=visible=>{wrap.classList.toggle('on',visible);wrap.classList.add('rally-stampbook-visible');wrap.style.display=visible?'block':'none';toggle.textContent=visible?'スタンプ帳を隠す':'スタンプ帳を見る';toggle.setAttribute('aria-expanded',visible?'true':'false')};
+    if(toggle.dataset.stampBookUx!=='1'){
+      toggle.dataset.stampBookUx='1';
+      toggle.onclick=()=>paint(wrap.style.display==='none'||!wrap.classList.contains('on'));
+    }
+    paint(true);
   }
   function decorateCustomerPage(){
     customerRemoteCard();
@@ -931,7 +946,7 @@ if(participant()){loadCustomerProfile();loadCustomerMailbox()}
   window.sendShopPurchaseReply=async(shopId,submissionId)=>{const pin=shopPinOrMessage(),input=[...document.querySelectorAll('[data-purchase-reply]')].find(el=>el.dataset.purchaseReply===submissionId),message=input?.value.trim()||'';if(!pin||!message)return toast('PINと返信メッセージを確認してください');try{await rpc('send_rally_message_from_shop',{p_shop_id:shopId,p_shop_pin:pin,p_submission_id:submissionId,p_message:message});toast('お客様へ返信しました');await loadShopPurchaseInbox(shopId)}catch(e){toast(pinError(e))}};
   const oldNewShopClick=document.getElementById('newShop')?.onclick;
   document.getElementById('newShop')?.addEventListener('click',()=>setTimeout(()=>{const pin=document.getElementById('nsPin'),code=document.getElementById('nsStampCode'),modal=document.getElementById('newShopModal');if(!modal)return;if(pin){pin.readOnly=false;pin.value='';pin.type='text';pin.placeholder='総合管理者が発行した初期PIN';const label=pin.previousElementSibling;if(label)label.textContent='店舗初期PIN（総合管理者から発行）'}if(code){code.maxLength=4;code.placeholder='3桁または4桁の番号'}const note=modal.querySelector('.note');if(note)note.innerHTML='店舗ページPINはお客さんには伝えません。総合管理者が店舗本人へ発行し、店舗本人だけが編集に使います。';},40));
-  hideLegacyCustomerCards();customerRemoteCard();decorateStampEntry();decorateCustomerPage();
+  hideLegacyCustomerCards();customerRemoteCard();decorateStampEntry();decorateCustomerPage();keepStampBookVisible();
   setInterval(()=>{if(document.visibilityState==='visible'&&participant())window.loadCustomerMailbox()},30000);
   setInterval(()=>{if(document.visibilityState==='visible'&&activeShopManageId&&document.getElementById('shopManageModal')?.classList.contains('on')&&currentShopPin()){loadShopPurchaseInbox(activeShopManageId);loadShopManageRemoteRequests(activeShopManageId)}},30000);
 })();
