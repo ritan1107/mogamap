@@ -664,7 +664,7 @@ async function loadCustomerMailbox(){
       rpc('list_rally_messages_for_participant',{p_participant_id:p.id,p_participant_token:p.token}),
       rpc('list_participant_notifications',{p_participant_id:p.id,p_participant_token:p.token})
     ]);
-    rallyCustomerState.submissions=Array.isArray(submissions)?submissions:[];rallyCustomerState.messages=Array.isArray(messages)?messages:[];rallyCustomerState.notifications=Array.isArray(notifications)?notifications:[];
+    rallyCustomerState.submissions=(Array.isArray(submissions)?submissions:[]).map(row=>({...row,id:row.submission_id||row.id,status:row.submission_status||row.status||'pending'}));rallyCustomerState.messages=Array.isArray(messages)?messages:[];rallyCustomerState.notifications=Array.isArray(notifications)?notifications:[];
     renderCustomerMyPage();
   }catch(e){console.error(e);if(status)status.textContent='受信箱を更新できませんでした。参加情報を確認してください。'}
 }
@@ -708,6 +708,7 @@ document.getElementById('joinRally').onclick=()=>{if(participant()){document.get
 // 店舗ページの管理画面に、購入証明と店舗向けメールを追加します。
 function renderShopPurchaseInbox(rows,messages,notifications,shopId){
   const list=document.getElementById('smPurchaseInbox'),status=document.getElementById('smPurchaseStatus');if(!list)return;
+  rows=(rows||[]).map(row=>({...row,id:row.submission_id||row.id,status:row.submission_status||row.status||'pending'}));
   const pending=(rows||[]).filter(x=>x.status==='pending').length;const unread=(notifications||[]).filter(x=>!x.is_read).length;
   if(status)status.textContent=`購入証明 ${rows?.length||0}件（確認待ち ${pending}件）／通知 ${unread}件`;
   const purchaseMarkup=rows?.length?rows.map(row=>{const response=row.response_message?`<div class="note" style="margin-top:8px">返信：${rallyMultiline(row.response_message)}</div>`:'';const actions=row.status==='pending'?`<div class="purchase-item-actions"><button class="btn green small" data-purchase-action="approve" data-purchase-id="${rallyLine(row.id)}">承認してスタンプ</button><button class="btn ghost small" data-purchase-action="reject" data-purchase-id="${rallyLine(row.id)}">今回は見送る</button></div><div class="reply-box"><input data-purchase-reply="${rallyLine(row.id)}" placeholder="返信メッセージ（任意）"><button class="btn soft small" data-purchase-reply-send="${rallyLine(row.id)}">返信</button></div>`:'';return `<div class="purchase-item ${rallyLine(row.status)}"><div class="purchase-item-top"><span class="purchase-item-title">${rallyLine(row.nickname||'お客様')}さん</span><span class="badge">${rallyLine(rallyPurchaseStatusText(row.status))}</span></div><div class="purchase-item-meta">${new Date(row.created_at).toLocaleString('ja-JP')}<br>参加者ID：${rallyLine(row.participant_entry_id||'未発行')}　${row.uw_id?`UW.ID：${rallyLine(row.uw_id)}`:''}<br>${row.purchase_message?rallyMultiline(row.purchase_message):'メッセージなし'}</div>${row.purchase_url&&/^https:\/\//i.test(row.purchase_url)?`<a class="linkbtn" href="${rallyLine(row.purchase_url)}" target="_blank" rel="noopener">🔗 UW購入ページを確認</a>`:''}${rallyProofMarkup(row)}${response}${actions}</div>`}).join(''):'<div class="addr">購入証明はまだありません。</div>';
