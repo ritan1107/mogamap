@@ -447,7 +447,7 @@ window.openShopManage=id=>{
 const saveShopManageThreeDigitBase=window.saveShopManage;
 window.saveShopManage=async id=>{
   const mode=document.getElementById('smMode')?.value||'shop',input=document.getElementById('smStampCode'),code=input?.value.trim()||'';
-  if(input&&!/^\d{3}$/.test(code))return toast('新しいスタンプラリー番号は3桁の数字で入力してください');
+  if(input&&!/^\d{3,4}$/.test(code))return toast('スタンプラリー番号は3桁または4桁の数字で入力してください');
   if(input){
     try{
       if(mode==='admin')await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:document.getElementById('smPin').value.trim(),p_shop_id:id,p_new_code:code});
@@ -456,6 +456,100 @@ window.saveShopManage=async id=>{
   }
   await saveShopManageThreeDigitBase(id);
 };
+
+// 店舗の人が迷わないよう、番号確認・変更と遠隔スタンプ依頼を店舗管理画面へ集約する。
+const stampNumberIsValid=value=>/^\d{3,4}$/.test(String(value||'').trim());
+const stampNumberFromRpc=value=>typeof value==='string'?value:(typeof value?.[0]==='string'?value[0]:'');
+
+function renderShopManageRemoteRequests(rows,shopId){
+  const list=document.getElementById('smRemoteList');
+  const status=document.getElementById('smRemoteStatus');
+  if(!list)return;
+  if(!Array.isArray(rows)||!rows.length){list.innerHTML='<div class="addr">現在、遠隔スタンプの依頼はありません。</div>';return}
+  list.innerHTML=rows.map(r=>{
+    const state=escapeHtml(r.request_status||'pending');
+    const requestId=escapeHtml(r.request_id||'');
+    const action=r.request_status==='pending'?`<div class="remote-request-actions"><button class="btn green small" type="button" data-sm-remote-action="approve" data-sm-request-id="${requestId}">承認してスタンプ</button><button class="btn ghost small" type="button" data-sm-remote-action="reject" data-sm-request-id="${requestId}">見送る</button></div>`:'';
+    return `<div class="remote-request-row ${state}"><div class="remote-request-top"><span class="remote-request-name">${escapeHtml(r.nickname||'参加者')}さん</span><span class="remote-request-id">${escapeHtml(remoteRequestStatusText(r.request_status))}</span></div><div class="remote-request-meta">${escapeHtml(r.request_note||'購入内容メモなし')}<br>${new Date(r.requested_at).toLocaleString('ja-JP')}<br>参加者ID：${escapeHtml(r.participant_entry_id||'未発行')}</div>${action}${r.response_note?`<div class="remote-request-meta">店舗メモ：${escapeHtml(r.response_note)}</div>`:''}</div>`;
+  }).join('');
+  list.querySelectorAll('[data-sm-remote-action]').forEach(button=>button.onclick=async()=>{
+    const action=button.dataset.smRemoteAction,requestId=button.dataset.smRequestId;
+    if(action==='reject'&&!confirm('この依頼を見送りますか？'))return;
+    if(status)status.textContent='処理中…';
+    try{
+      const result=await rpc('resolve_remote_stamp_request',{p_shop_id:shopId,p_shop_pin:SHOP_SHARED_PIN,p_request_id:requestId,p_action:action,p_response_note:null});
+      const x=result?.[0];
+      if(status)status.textContent=x?.message||'処理しました';
+      await loadShopManageRemoteRequests(shopId);
+      await loadRankings();
+      if(action==='approve')toast(x?.completed?'🎉 コンプリートしました！':'遠隔スタンプを付与しました');
+    }catch(e){console.error(e);if(status)status.textContent=String(e).includes('店舗ページPIN')?'店舗編集PINが違います':'依頼を処理できませんでした'}
+  });
+}
+
+async function loadShopManageRemoteRequests(shopId){
+  const status=document.getElementById('smRemoteStatus');
+  if(!status)return;
+  status.textContent='依頼を確認中…';
+  try{
+    const rows=await rpc('list_remote_stamp_requests_by_shop_pin',{p_shop_id:shopId,p_shop_pin:SHOP_SHARED_PIN});
+    const list=Array.isArray(rows)?rows:[];
+    renderShopManageRemoteRequests(list,shopId);
+    status.textContent=`依頼を${list.filter(x=>x.request_status==='pending').length}件確認しました`;
+  }catch(e){console.error(e);status.textContent='依頼を確認できませんでした。もう一度押してください。'}
+}
+
+const openShopManageSimpleBase=window.openShopManage;
+window.openShopManage=id=>{
+  openShopManageSimpleBase(id);
+  const s=adminShops.find(x=>x.id===id)||shops.find(x=>x.id===id);
+  const save=document.querySelector('#shopManageBody button[onclick^="saveShopManage"]');
+  if(!s||!save||document.getElementById('smStampCode'))return;
+  const block=document.createElement('div');
+  block.innerHTML='<div class="linktitle">🎟️ スタンプラリー番号</div><div class="form"><label class="label">現在の番号（確認・変更できます）</label><div class="pin-input-row"><input id="smStampCode" type="text" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="読み込み中…"><button id="smCopyStampCode" class="btn ghost small" type="button">コピー</button></div><div id="smStampCodeStatus" class="addr">店舗で使っている番号を読み込んでいます。</div></div><div class="note"><b>新しい番号に変更する場合</b><br>3桁または4桁の数字を入力して、下の「保存する」を押してください。</div><div class="linktitle">📮 遠隔スタンプ依頼</div><div class="note">お客様が遠方購入などで依頼すると、ここに表示されます。確認して「承認してスタンプ」を押すだけです。</div><button id="smRemoteRefresh" class="btn ghost full" type="button">遠隔スタンプ依頼を確認</button><div id="smRemoteStatus" class="remote-stamp-status"></div><div id="smRemoteList" class="remote-request-list"></div>';
+  save.parentNode.insertBefore(block,save);
+  const input=document.getElementById('smStampCode'),codeStatus=document.getElementById('smStampCodeStatus');
+  const initial=adminStampCodes[id]||s.stamp_code||'';
+  if(initial){input.value=initial;codeStatus.textContent=`現在の番号：${initial}`}
+  document.getElementById('smCopyStampCode').onclick=async()=>{if(!input.value)return toast('番号がまだ読み込まれていません');try{await copyAdminPageText(input.value);toast('スタンプラリー番号をコピーしました')}catch(e){toast('コピーできませんでした')}};
+  document.getElementById('smRemoteRefresh').onclick=()=>loadShopManageRemoteRequests(id);
+  rpc('get_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:SHOP_SHARED_PIN}).then(value=>{const code=stampNumberFromRpc(value);if(code){input.value=code;codeStatus.textContent=`現在の番号：${code}`;}}).catch(e=>{console.warn('スタンプラリー番号の取得に失敗:',e);codeStatus.textContent='番号を取得できませんでした。管理者に連絡してください。'});
+  loadShopManageRemoteRequests(id);
+};
+
+const saveShopManageSimpleBase=saveShopManageThreeDigitBase;
+window.saveShopManage=async id=>{
+  const input=document.getElementById('smStampCode'),code=input?.value.trim()||'';
+  if(input&&!stampNumberIsValid(code))return toast('スタンプラリー番号は3桁または4桁の数字で入力してください');
+  if(input){
+    const mode=document.getElementById('smMode')?.value||'shop';
+    try{
+      if(mode==='admin')await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:document.getElementById('smPin').value.trim(),p_shop_id:id,p_new_code:code});
+      else await rpc('update_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:SHOP_SHARED_PIN,p_new_code:code});
+    }catch(e){console.error(e);return toast(String(e).includes('Invalid')?'PINが違います':'スタンプラリー番号を保存できませんでした')}
+  }
+  await saveShopManageSimpleBase(id);
+};
+
+window.saveAdminStampCode=async id=>{
+  if(!adminEditorPin)return toast('先に管理者PINで一覧を開いてください');
+  const input=document.getElementById('adminStampCode-'+id),code=input?.value.trim()||'';
+  if(!stampNumberIsValid(code))return toast('スタンプラリー番号は3桁または4桁の数字です');
+  try{const ok=await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:adminEditorPin,p_shop_id:id,p_new_code:code});if(!ok)return toast('番号を保存できませんでした');adminStampCodes[id]=code;renderAdminShopList();toast('スタンプラリー番号を保存しました')}catch(e){console.error(e);toast(String(e).includes('Invalid PIN')?'管理者PINが違います':'番号を保存できませんでした')}
+};
+
+const renderAdminShopListSimpleBase=renderAdminShopList;
+renderAdminShopList=()=>{renderAdminShopListSimpleBase();document.querySelectorAll('.admin-stamp-code .stamp-code-note').forEach(el=>{el.textContent='🎟️ スタンプラリー番号（現在の3桁・4桁を確認／変更）'});document.querySelectorAll('[id^="adminStampCode-"]').forEach(el=>{el.maxLength=4;el.placeholder='現在の番号を確認・変更'});};
+
+const saveNewShopSimpleBase=document.getElementById('saveNewShop').onclick;
+document.getElementById('saveNewShop').onclick=async()=>{
+  const name=document.getElementById('nsName').value.trim(),address=document.getElementById('nsAddress').value.trim(),pin=document.getElementById('nsPin').value.trim(),stampCode=document.getElementById('nsStampCode').value.trim();
+  if(!name||!address||pin.length<4||!stampNumberIsValid(stampCode))return toast('店名・住所・編集PIN・3桁または4桁の番号を入力してください');
+  try{await rpc('add_shop_with_codes',{p_name:name,p_address:address,p_category:document.getElementById('nsCategory').value,p_description:document.getElementById('nsDesc').value,p_latitude:null,p_longitude:null,p_pin:pin,p_stamp_code:stampCode});closeM('newShopModal');await loadAll();toast('店舗を登録しました')}catch(e){console.error(e);toast(String(e).includes('stamp_code')?'番号は3桁または4桁の数字で入力してください':'登録できませんでした')}
+};
+
+const stampWordingRefresh=()=>{const pin=document.getElementById('stampPin');if(pin){pin.maxLength=4;pin.placeholder='店舗の3桁・4桁番号'}const code=document.getElementById('nsStampCode');if(code){code.maxLength=4;code.placeholder='例：482 または 4827'}const card=pin?.closest('.card');const p=card?.querySelector('.addr');if(p)p.textContent='店舗に表示されている現在のスタンプラリー番号（3桁・4桁）を入力します。店舗ページPIN・コミュニティIDとは別の数字です。'};
+stampWordingRefresh();
 </script>
 </body>
 </html>
