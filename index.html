@@ -1539,5 +1539,86 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
   if(originalAdminOpen)window.openAdminShop=id=>{originalAdminOpen(id);setTimeout(()=>{const body=document.getElementById('shopManageBody'),mode=document.getElementById('smMode');if(body&&mode?.value==='admin'){body.classList.remove('shop-manage-locked');removeControl();const unlock=document.getElementById('smUnlockManage');if(unlock)unlock.style.display='none'}},100)};
 })();
 </script>
+<style>
+.visual-admin-card{border:2px solid #cfe4dc!important;background:linear-gradient(135deg,#f5fffc,#fff7fb)!important}
+.visual-admin-card .moreitem-cta{display:inline-block;margin-top:9px;color:#2a9486;font-size:12px;font-weight:950}
+.visual-admin-sheet{max-height:94vh}
+.visual-admin-note{margin:10px 0;background:#fff8df;border:1px solid #efd58e;border-radius:13px;padding:11px;color:#705f2b;font-size:12px;line-height:1.55}
+.visual-editor-panel{display:grid;gap:13px;margin-top:12px}
+.visual-editor-section{padding:13px;border:1px solid #dcebef;border-radius:16px;background:#fbffff}
+.visual-editor-section h3{margin:0 0 7px;color:#397f87;font-size:15px}
+.visual-editor-section p{margin:0 0 9px;color:var(--muted);font-size:11px;line-height:1.5}
+.visual-slider{display:grid;grid-template-columns:76px 1fr 48px;gap:7px;align-items:center;margin:8px 0;font-size:11px;color:#52646d}
+.visual-slider input{padding:0;border:0;background:transparent}
+.visual-slider output{text-align:right;font-weight:950;color:#397f87}
+.visual-file{padding:9px!important;background:#fff!important}
+.visual-editor-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.visual-editor-actions .btn{margin:0}
+.visual-editor-status{min-height:18px;margin-top:9px;color:#397f87;font-size:11px;font-weight:850;line-height:1.5}
+@media(max-width:520px){.visual-slider{grid-template-columns:68px 1fr 44px}.visual-editor-actions{grid-template-columns:1fr}}
+</style>
+<script>
+/* 以前の「背景・トップ画像編集」を現在の単一ページ構成へ復旧する。 */
+(()=>{
+  const DEFAULTS={heroImage:'',bodyImage:'',heroSize:100,heroX:50,heroY:50,bodySize:100,bodyX:50,bodyY:0};
+  let visualState={...DEFAULTS},visualPin='',visualReady=false;
+  const safeImage=value=>{const s=String(value||'');return /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(s)&&s.length<1800000?s:''};
+  const hero=()=>document.querySelector('#home .summary.welcome');
+  const visualStatus=message=>{const el=document.getElementById('visualEditorStatus');if(el)el.textContent=message||''};
+  const setOutput=(id,value)=>{const input=document.getElementById(id),out=document.querySelector(`[data-visual-output="${id}"]`);if(input)input.value=value;if(out)out.textContent=`${value}%`};
+  function applyVisuals(){
+    const bodyImage=safeImage(visualState.bodyImage),topImage=safeImage(visualState.heroImage),h=hero();
+    if(bodyImage){
+      document.body.style.backgroundImage=`linear-gradient(180deg,rgba(248,253,255,.82),rgba(238,249,246,.88)),url("${bodyImage}")`;
+      document.body.style.backgroundSize=`cover,${Number(visualState.bodySize)||100}% auto`;
+      document.body.style.backgroundPosition=`center top,${Number(visualState.bodyX)||50}% ${Number(visualState.bodyY)||0}%`;
+      document.body.style.backgroundRepeat='no-repeat,no-repeat';
+      document.body.classList.add('hasCustomBodyBg');
+    }else{
+      document.body.style.removeProperty('background-image');document.body.style.removeProperty('background-size');document.body.style.removeProperty('background-position');document.body.style.removeProperty('background-repeat');document.body.classList.remove('hasCustomBodyBg');
+    }
+    if(h){
+      if(topImage){
+        h.style.backgroundImage=`linear-gradient(135deg,rgba(52,177,183,.58),rgba(114,184,228,.54),rgba(239,154,170,.58)),url("${topImage}")`;
+        h.style.backgroundSize=`cover,${Number(visualState.heroSize)||100}% auto`;
+        h.style.backgroundPosition=`center,${Number(visualState.heroX)||50}% ${Number(visualState.heroY)||50}%`;
+        h.style.backgroundRepeat='no-repeat,no-repeat';
+      }else{
+        h.style.removeProperty('background-image');h.style.removeProperty('background-size');h.style.removeProperty('background-position');h.style.removeProperty('background-repeat');
+      }
+    }
+  }
+  function syncVisualForm(){
+    [['visualHeroSize','heroSize'],['visualHeroX','heroX'],['visualHeroY','heroY'],['visualBodySize','bodySize'],['visualBodyX','bodyX'],['visualBodyY','bodyY']].forEach(([id,key])=>setOutput(id,Number(visualState[key])||DEFAULTS[key]));
+  }
+  async function loadVisuals(){
+    try{
+      const rows=await rpc('get_public_app_visual_settings',{}),r=Array.isArray(rows)?rows[0]:rows;
+      if(r)visualState={heroImage:r.hero_image_data||'',bodyImage:r.body_image_data||'',heroSize:r.hero_size??100,heroX:r.hero_x??50,heroY:r.hero_y??50,bodySize:r.body_size??100,bodyX:r.body_x??50,bodyY:r.body_y??0};
+      applyVisuals();syncVisualForm();
+    }catch(error){console.warn('アプリデザイン設定を読み込めませんでした',error)}
+  }
+  function addVisualEntry(){
+    const grid=document.querySelector('#more .moregrid');if(!grid||document.getElementById('visualAdminEntry'))return;
+    const card=document.createElement('button');card.type='button';card.id='visualAdminEntry';card.className='card moreitem visual-admin-card';card.innerHTML='<h3>🎨 アプリデザイン管理</h3><p>トップ画像・アプリ全体の背景画像・大きさ・位置を変更します。</p><span class="moreitem-cta">管理者PINで開く →</span>';grid.insertBefore(card,grid.firstChild);card.onclick=()=>openVisualModal();
+  }
+  function createVisualModal(){
+    if(document.getElementById('visualSettingsModal'))return;
+    const modal=document.createElement('div');modal.id='visualSettingsModal';modal.className='modal';modal.innerHTML=`<div class="sheet visual-admin-sheet"><div class="sheetHead"><h2>🎨 アプリデザイン管理</h2><button class="close" type="button" data-visual-close>×</button></div><div class="visual-admin-note">ここは総合管理者・主催者だけが使う画面です。PINで開くまでは画像や設定項目は表示されません。保存すると全員の画面に反映されます。</div><div class="form"><label class="label" for="visualAdminPin">主催者PIN</label><div class="pin-input-row"><input id="visualAdminPin" type="password" inputmode="numeric" autocomplete="off" placeholder="管理者PINを入力"><button id="visualAdminPinToggle" type="button" class="btn ghost small">表示</button></div></div><button id="unlockVisualEditor" type="button" class="btn green full">デザイン編集を開く</button><div id="visualEditorStatus" class="visual-editor-status"></div><div id="visualEditorPanel" class="visual-editor-panel hidden"><section class="visual-editor-section"><h3>🖼️ トップ画像</h3><p>ホーム画面上部の大きな見出し部分です。位置を動かして文字が読みやすい場所に合わせられます。</p><input id="visualHeroFile" class="visual-file" type="file" accept="image/jpeg,image/png,image/webp"><label class="visual-slider">大きさ<input id="visualHeroSize" type="range" min="50" max="250" step="1"><output data-visual-output="visualHeroSize"></output></label><label class="visual-slider">左右位置<input id="visualHeroX" type="range" min="0" max="100" step="1"><output data-visual-output="visualHeroX"></output></label><label class="visual-slider">上下位置<input id="visualHeroY" type="range" min="0" max="100" step="1"><output data-visual-output="visualHeroY"></output></label><div class="visual-editor-actions"><button id="saveVisualHero" type="button" class="btn green">トップ画像を保存</button><button id="clearVisualHero" type="button" class="btn ghost">初期デザインに戻す</button></div></section><section class="visual-editor-section"><h3>🌿 アプリ全体の背景</h3><p>地図・スタンプ・その他の画面の背景です。写真を薄く重ねて見やすく表示します。</p><input id="visualBodyFile" class="visual-file" type="file" accept="image/jpeg,image/png,image/webp"><label class="visual-slider">大きさ<input id="visualBodySize" type="range" min="50" max="250" step="1"><output data-visual-output="visualBodySize"></output></label><label class="visual-slider">左右位置<input id="visualBodyX" type="range" min="0" max="100" step="1"><output data-visual-output="visualBodyX"></output></label><label class="visual-slider">上下位置<input id="visualBodyY" type="range" min="0" max="100" step="1"><output data-visual-output="visualBodyY"></output></label><div class="visual-editor-actions"><button id="saveVisualBody" type="button" class="btn green">背景画像を保存</button><button id="clearVisualBody" type="button" class="btn ghost">初期デザインに戻す</button></div></section></div></div>`;document.body.appendChild(modal);
+    modal.onclick=e=>{if(e.target===modal)closeVisualModal()};modal.querySelector('[data-visual-close]').onclick=closeVisualModal;
+    document.getElementById('visualAdminPinToggle').onclick=()=>{const x=document.getElementById('visualAdminPin'),visible=x.type==='text';x.type=visible?'password':'text';document.getElementById('visualAdminPinToggle').textContent=visible?'表示':'隠す'};
+    ['visualHeroSize','visualHeroX','visualHeroY','visualBodySize','visualBodyX','visualBodyY'].forEach(id=>document.getElementById(id).oninput=()=>{const key={visualHeroSize:'heroSize',visualHeroX:'heroX',visualHeroY:'heroY',visualBodySize:'bodySize',visualBodyX:'bodyX',visualBodyY:'bodyY'}[id];visualState[key]=Number(document.getElementById(id).value);setOutput(id,visualState[key]);applyVisuals()});
+    document.getElementById('unlockVisualEditor').onclick=unlockVisualEditor;
+    document.getElementById('saveVisualHero').onclick=()=>saveVisualPart('hero');document.getElementById('saveVisualBody').onclick=()=>saveVisualPart('body');document.getElementById('clearVisualHero').onclick=()=>clearVisualPart('hero');document.getElementById('clearVisualBody').onclick=()=>clearVisualPart('body');
+  }
+  function openVisualModal(){createVisualModal();const modal=document.getElementById('visualSettingsModal');modal.classList.add('on');syncVisualForm();if(visualReady)document.getElementById('visualEditorPanel').classList.remove('hidden')}
+  function closeVisualModal(){const modal=document.getElementById('visualSettingsModal');if(!modal)return;modal.classList.remove('on');visualPin='';visualReady=false;document.getElementById('visualEditorPanel')?.classList.add('hidden');document.getElementById('visualAdminPin').value='';visualStatus('')}
+  async function unlockVisualEditor(){const pin=document.getElementById('visualAdminPin').value.trim();if(!pin)return visualStatus('主催者PINを入力してください。');const button=document.getElementById('unlockVisualEditor');button.disabled=true;visualStatus('確認中…');try{const ok=await rpc('verify_organizer_pin',{p_pin:pin});if(!ok){visualStatus('主催者PINが違います。');return}visualPin=pin;visualReady=true;document.getElementById('visualEditorPanel').classList.remove('hidden');syncVisualForm();visualStatus('✅ デザイン編集を開きました。')}catch(error){console.error(error);visualStatus('PINを確認できませんでした。')}finally{button.disabled=false}}
+  function imageData(file,maxWidth,maxHeight){return new Promise((resolve,reject)=>{if(!file)return resolve(null);const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{const scale=Math.min(1,maxWidth/img.naturalWidth,maxHeight/img.naturalHeight),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);let quality=.84,data=canvas.toDataURL('image/jpeg',quality);while(data.length>1600000&&quality>.48){quality-=.08;data=canvas.toDataURL('image/jpeg',quality)}if(data.length>1750000)return reject(new Error('画像が大きすぎます'));resolve(data)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('画像を読み込めません'))};img.src=url})}
+  async function saveVisualPart(kind){if(!visualReady||!visualPin)return visualStatus('先に主催者PINで編集画面を開いてください。');const isHero=kind==='hero',file=document.getElementById(isHero?'visualHeroFile':'visualBodyFile').files?.[0],payload={p_pin:visualPin,p_hero_image_data:null,p_body_image_data:null,p_clear_hero:false,p_clear_body:false,p_hero_size:isHero?Number(visualState.heroSize):null,p_hero_x:isHero?Number(visualState.heroX):null,p_hero_y:isHero?Number(visualState.heroY):null,p_body_size:isHero?null:Number(visualState.bodySize),p_body_x:isHero?null:Number(visualState.bodyX),p_body_y:isHero?null:Number(visualState.bodyY)};try{visualStatus('画像を軽量化して保存しています…');if(file)payload[isHero?'p_hero_image_data':'p_body_image_data']=await imageData(file,isHero?1800:1600,isHero?1000:1400);await rpc('save_app_visual_settings_by_pin',payload);await loadVisuals();document.getElementById(isHero?'visualHeroFile':'visualBodyFile').value='';visualStatus(`✅ ${isHero?'トップ画像':'全体背景'}を保存しました。全員に反映されています。`)}catch(error){console.error(error);visualStatus(String(error).includes('invalid organizer pin')?'主催者PINが違います。':'保存できませんでした。画像サイズとPINを確認してください。')}}
+  async function clearVisualPart(kind){if(!visualReady||!visualPin)return visualStatus('先に主催者PINで編集画面を開いてください。');const isHero=kind==='hero',payload={p_pin:visualPin,p_hero_image_data:null,p_body_image_data:null,p_clear_hero:isHero,p_clear_body:!isHero,p_hero_size:isHero?100:null,p_hero_x:isHero?50:null,p_hero_y:isHero?50:null,p_body_size:isHero?null:100,p_body_x:isHero?null:50,p_body_y:isHero?null:0};if(!confirm(`${isHero?'トップ画像':'全体背景'}を初期デザインに戻しますか？`))return;try{await rpc('save_app_visual_settings_by_pin',payload);await loadVisuals();syncVisualForm();visualStatus(`✅ ${isHero?'トップ画像':'全体背景'}を初期デザインに戻しました。`)}catch(error){console.error(error);visualStatus('初期デザインに戻せませんでした。')}}
+  addVisualEntry();createVisualModal();loadVisuals();
+})();
+</script>
 </body>
 </html>
