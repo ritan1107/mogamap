@@ -115,7 +115,7 @@ header{background:rgba(255,255,255,.84);border-bottom:1px solid #dcebef;box-shad
 <div id="joinModal" class="modal"><div class="sheet"><div class="sheetHead"><h2>スタンプラリー参加</h2><button class="close" data-close="joinModal">×</button></div><div class="form"><label class="label" id="nickLabel">名前／ニックネーム</label><input id="nickname" placeholder="例：りーたん"><div class="addr" id="nickHelp">本名でなくてもOKです</div></div><div class="form"><label class="label">UW.ID（持っている人のみ・任意）</label><input id="uwParticipantId" placeholder="例：UW12345 または お持ちのUW.ID"></div><div class="note">参加後はマイページから、購入したものの<strong>写真・メール本文の貼り付け・UW購入ページURL</strong>を店舗へ送れます。お店の確認後にスタンプが付きます。</div><button id="startRally" class="btn full">この名前で参加する</button></div></div>
 <div id="completionModal" class="modal"><div class="sheet"><div class="sheetHead"><h2>クリア</h2><button class="close" data-close="completionModal">×</button></div><div id="completionBody"></div></div></div>
 <div id="shopManageModal" class="modal"><div class="sheet"><div class="sheetHead"><h2>店舗管理</h2><button class="close" data-close="shopManageModal">×</button></div><div id="shopManageBody"></div></div></div>
-<div id="newShopModal" class="modal"><div class="sheet"><div class="sheetHead"><h2>新規店舗登録</h2><button class="close" data-close="newShopModal">×</button></div><div class="form"><label class="label">店名</label><input id="nsName"></div><div class="form"><label class="label">住所</label><input id="nsAddress"></div><div class="form"><label class="label">カテゴリ</label><select id="nsCategory"><option>お食事処</option><option>居酒屋</option><option>カフェ</option><option>海鮮系</option><option>その他</option></select></div><div class="form"><label class="label">紹介文</label><textarea id="nsDesc" rows="3"></textarea></div><div class="form"><label class="label">加盟店共通編集PIN</label><input id="nsPin" type="text" inputmode="numeric" value="1236" readonly></div><div class="form"><label class="label">スタンプ用コード（4桁の数字）</label><input id="nsStampCode" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="例：4827"></div><div class="note">加盟店の店舗編集PINは全店舗共通で <b>1236</b> です。スタンプ用コードは店舗ごとに別の4桁数字です。登録後は非公開で保存され、管理者が確認してから公開できます。</div><div class="actions"><button id="saveNewShop" class="btn green full">店舗を登録</button></div></div></div>
+<div id="newShopModal" class="modal"><div class="sheet"><div class="sheetHead"><h2>新規店舗登録</h2><button class="close" data-close="newShopModal">×</button></div><div class="form"><label class="label">店名</label><input id="nsName"></div><div class="form"><label class="label">住所</label><input id="nsAddress"></div><div class="form"><label class="label">カテゴリ</label><select id="nsCategory"><option>お食事処</option><option>居酒屋</option><option>カフェ</option><option>海鮮系</option><option>その他</option></select></div><div class="form"><label class="label">紹介文</label><textarea id="nsDesc" rows="3"></textarea></div><div class="form"><label class="label">店舗初期PIN（総合管理者から発行）</label><input id="nsPin" type="text" inputmode="numeric" placeholder="管理者が発行したPIN"></div><div class="form"><label class="label">スタンプ用コード（3桁または4桁）</label><input id="nsStampCode" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="例：482"></div><div class="note">店舗ページPINはお客さんには伝えません。総合管理者が店舗本人へ発行し、店舗本人だけが編集に使います。登録後は非公開で保存され、管理者が確認してから公開できます。</div><div class="actions"><button id="saveNewShop" class="btn green full">店舗を登録</button></div></div></div>
 <div id="organizerModal" class="modal"><div class="sheet"><div class="sheetHead"><h2>主催者設定</h2><button class="close" data-close="organizerModal">×</button></div><div class="form"><label class="label">管理者PIN</label><input id="orgPin" type="password"></div><div class="form"><label class="label">スタンプラリー名</label><input id="orgRallyTitle"></div><div class="form"><label class="label">参加者の名前ラベル</label><input id="orgNameLabel"></div><div class="form"><label class="label">参加者向け補足</label><input id="orgNameHelp"></div><div class="form"><label class="label">クリアタイトル</label><input id="orgCompleteTitle"></div><div class="form"><label class="label">お礼メッセージ</label><textarea id="orgCompleteMsg" rows="3"></textarea></div><div class="form"><label class="label">特典タイトル</label><input id="orgRewardTitle"></div><div class="form"><label class="label">特典内容</label><textarea id="orgRewardDesc" rows="3"></textarea></div><div class="form"><label class="label">注意書き・受取方法</label><textarea id="orgRewardInst" rows="3"></textarea></div><div class="form"><label class="label">主催者メール</label><input id="orgEmail" type="email"></div><div class="switchrow"><span>メール報告ボタンを表示</span><input id="orgShowEmail" type="checkbox"></div><div class="switchrow"><span>「この画面を見せる」を表示</span><input id="orgShowScreen" type="checkbox"></div><div class="switchrow"><span>🏪 店舗ランキングを公開する</span><input id="orgShowShopRanking" type="checkbox"></div><div class="note">店舗ランキングは、スタンプが付くたびに自動集計されます。</div><div class="form"><label class="label">特典有効期限</label><input id="orgValid" type="date"></div><button id="saveOrganizer" class="btn green full">設定を保存</button></div></div>
 <div id="rewardModal" class="modal"><div class="sheet"><div class="sheetHead"><h2>特典受取確認</h2><button class="close" data-close="rewardModal">×</button></div><div class="form"><label class="label">管理者PIN</label><input id="rewardPin" type="password"></div><div class="form"><label class="label">達成番号</label><input id="rewardCode" placeholder="MOGA-2026-XXXXXXXX"></div><button id="markReward" class="btn green full">特典渡し済みにする</button></div></div>
 <div id="toast" class="toast"></div>
@@ -125,7 +125,8 @@ header{background:rgba(255,255,255,.84);border-bottom:1px solid #dcebef;box-shad
 <script>
 const API='https://lgidhjxowpueglduphzp.supabase.co';
 const KEY='sb_publishable_beqwleruXXNe93qNA6UNzg_K9fSd5ft';
-const SHOP_SHARED_PIN='1236';
+// 店舗PINは店舗ごとに異なるため、公開ページへ固定値を置かない。
+const SHOP_SHARED_PIN='';
 const headers=()=>({'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'});
 // Supabaseが未設定・停止中でも、北海道36店舗を閲覧できる予備データ。
 // 区切り文字は「|」。管理機能やスタンプ機能はSupabase接続時のみ有効になる。
@@ -796,6 +797,143 @@ if(participant()){loadCustomerProfile();loadCustomerMailbox()}
   const originalOpenShopManageForUx=window.openShopManage;
   window.openShopManage=id=>{originalOpenShopManageForUx?.(id);setTimeout(compactShopManage,0)};
   makeRallyUxGuide();simplifyRallyCards();
+})();
+</script>
+<style>
+/* PINは店舗管理画面だけ。お客様画面には出さず、遠隔申請はマイページへ一本化 */
+#rally .remote-request-card,#rally .remote-stamp-card{display:none!important}
+.rally-customer-remote-card{margin:10px 0;padding:15px;border:2px solid #b9d8ee;border-radius:20px;background:linear-gradient(135deg,#f4fbff,#fff 58%,#fff5fa);box-shadow:0 8px 20px rgba(77,143,182,.1)}
+.rally-customer-remote-card h3{margin:0;color:#397f87;font-size:17px}.rally-customer-remote-card p{margin:6px 0;color:#60717a;font-size:12px;line-height:1.65}.rally-customer-remote-card ol{margin:7px 0 11px;padding-left:21px;color:#4f626a;font-size:12px;line-height:1.7}.rally-customer-remote-card .btn{margin-top:0}
+.private-pin-note{margin:7px 0;padding:9px 10px;border-radius:12px;background:#fff8ee;border:1px solid #f0d39c;color:#806126;font-size:11px;line-height:1.55}
+.pin-show-row{display:flex;gap:6px;align-items:stretch}.pin-show-row input{flex:1;min-width:0}.pin-show-row .btn{margin:0;white-space:nowrap}
+.rally-alert-control{display:flex;align-items:center;gap:7px;margin-top:10px;padding:9px 10px;border:1px dashed #e7c86c;border-radius:13px;background:#fffdf4;color:#806126;font-size:11px}.rally-alert-control .btn{margin:0;margin-left:auto}.rally-alert-status{font-size:10px;color:#806126}
+.shop-number-control{display:grid;gap:7px}.shop-number-control .btn{margin:0}
+</style>
+<script>
+/* 店舗PIN・対面番号・遠隔申請の最終整理。既存データ/RPCは残し、入口だけ安全に差し替える。 */
+(function(){
+  const rallyPanel=document.getElementById('rally');
+  if(!rallyPanel)return;
+  const alertKey='moga_rally_alerts_v1';
+  let customerAlertsPrimed=false;
+  let customerSeenIds=new Set();
+  let activeShopManageId='';
+  let shopAlertsPrimed=false;
+  let shopSeenIds=new Set();
+  const alertEnabled=()=>localStorage.getItem(alertKey)==='1';
+  const setAlertEnabled=value=>localStorage.setItem(alertKey,value?'1':'0');
+  const playAlert=()=>{try{const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;const ctx=new AudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.linearRampToValueAtTime(1180,ctx.currentTime+.12);gain.gain.setValueAtTime(.0001,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.16,ctx.currentTime+.02);gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.32);osc.connect(gain).connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.34);navigator.vibrate?.([70,40,70]);setTimeout(()=>ctx.close?.(),500)}catch(e){console.warn('通知音を再生できません:',e)}};
+  const browserAlert=(title,body)=>{if(!alertEnabled()||!('Notification' in window)||Notification.permission!=='granted')return;try{new Notification(title,{body,tag:'mogamap-rally'})}catch(e){console.warn('ブラウザ通知を表示できません:',e)}};
+  async function enableAlerts(button,status){
+    setAlertEnabled(true);playAlert();
+    if('Notification' in window&&Notification.permission==='default'){try{await Notification.requestPermission()}catch(e){console.warn(e)}}
+    if(status)status.textContent='通知音をONにしました（画面を開いている間に知らせます）';
+    if(button)button.textContent='🔔 通知・音 ON';
+  }
+  function alertControl(idPrefix){
+    const box=document.createElement('div');box.className='rally-alert-control';box.innerHTML='<span>🔔 通知・音</span><span class="rally-alert-status"></span><button type="button" class="btn ghost small">ONにする</button>';
+    const button=box.querySelector('button'),status=box.querySelector('.rally-alert-status');button.id=idPrefix+'Toggle';button.textContent=alertEnabled()?'🔔 ON':'ONにする';button.addEventListener('click',()=>enableAlerts(button,status));return box;
+  }
+  function hideLegacyCustomerCards(){
+    ['.remote-request-card','.remote-stamp-card'].forEach(selector=>{const element=rallyPanel.querySelector(selector);if(!element)return;const wrapper=element.closest('details.rally-details')||element;wrapper.style.display='none';wrapper.setAttribute('aria-hidden','true')});
+  }
+  function customerRemoteCard(){
+    if(document.getElementById('rallyCustomerRemoteCard'))return;
+    const page=document.getElementById('rallyMyPage');if(!page)return;
+    const card=document.createElement('div');card.id='rallyCustomerRemoteCard';card.className='rally-customer-remote-card';card.innerHTML='<h3>🚚 行けないときの遠隔スタンプ</h3><p>店舗ページPINは使いません。お客さんのマイページから、店舗へ購入証明を送ります。</p><ol><li>自分の遠隔スタンプ用IDをコピー</li><li>店舗を選び、UW.ID・写真・メッセージを入力</li><li>店舗が確認・承認すると、あなたのスタンプ帳に反映</li></ol><button type="button" class="btn green full">📮 購入証明を送る</button>';
+    page.parentNode.insertBefore(card,page);
+    card.querySelector('button').addEventListener('click',()=>{if(!participant()){openM('joinModal');return}document.getElementById('customerProofForm')?.scrollIntoView({behavior:'smooth',block:'start'})});
+  }
+  function decorateStampEntry(){
+    const input=document.getElementById('stampPin'),card=input?.closest('.card');if(!input||!card)return;
+    input.type='text';input.inputMode='numeric';input.maxLength=4;input.placeholder='3桁または4桁の番号';input.setAttribute('aria-label','店舗のスタンプラリー番号');
+    const heading=card.querySelector('h3');if(heading)heading.textContent='📍 お店にいるとき：その場でスタンプ';
+    const text=card.querySelector('.addr');if(text)text.innerHTML='お店の人に<strong>店舗のスタンプラリー番号</strong>を聞いて入力します。店舗ページPINは入力しません。';
+    const button=document.getElementById('claimStamp');if(button)button.textContent='この番号でスタンプを押す';
+    if(!card.querySelector('.shop-number-note')){const note=document.createElement('div');note.className='addr shop-number-note';note.textContent='番号は店舗の編集ページで確認・変更できます。';card.appendChild(note)}
+    if(button&&!button.dataset.finalStampHandler){button.dataset.finalStampHandler='1';button.onclick=async()=>{const p=participant();if(!p){openM('joinModal');return}const shopId=document.getElementById('stampShop')?.value||'',code=input.value.trim();if(!shopId||!/^(?:\d{3}|\d{4})$/.test(code))return toast('店舗と3桁または4桁の番号を確認してください');button.disabled=true;try{const rows=await rpc('claim_participant_stamp',{p_participant_id:p.id,p_participant_token:p.token,p_shop_id:shopId,p_shop_pin:code}),x=rows?.[0];input.value='';if(!x?.success)return toast('スタンプラリー番号が違います');await loadProgress();await loadRankings();toast('🎉 スタンプを獲得しました！');if(x.completed)showCompletion()}catch(e){console.error(e);toast('スタンプを押せませんでした')}finally{button.disabled=false}}}
+  }
+  function decorateCustomerPage(){
+    customerRemoteCard();
+    const root=document.getElementById('rallyMyPage');if(!root||!participant())return;
+    const help=root.querySelector('#customerProofForm .purchase-proof-help');if(help)help.textContent='店舗を選び、UW.ID（持っている人のみ）・購入ページ・写真・メール本文のどれかを送ります。店舗が承認すると、この携帯のスタンプ帳に反映されます。';
+    const select=root.querySelector('#purchaseShopSelect');if(select&&!select.previousElementSibling?.classList.contains('label')){const label=document.createElement('label');label.className='label';label.textContent='送る店舗';select.parentNode.insertBefore(label,select)}
+    const uw=root.querySelector('#purchaseUwId');if(uw)uw.placeholder='UW.ID（持っている人のみ・任意）';
+    const url=root.querySelector('#purchaseUrl');if(url)url.placeholder='UW購入ページURL（任意）';
+    const file=root.querySelector('#purchaseProofFile');if(file)file.setAttribute('aria-label','購入証明の写真');
+    const message=root.querySelector('#purchaseMessage');if(message)message.placeholder='購入したもの・店舗へ伝えるメッセージ（任意）';
+    if(!root.querySelector('#customerAlertControl')){const control=alertControl('customerAlert');control.id='customerAlertControl';root.appendChild(control)}
+  }
+  const oldRenderCustomerMyPage=window.renderCustomerMyPage;
+  if(oldRenderCustomerMyPage){window.renderCustomerMyPage=()=>{oldRenderCustomerMyPage();decorateCustomerPage()}}
+  async function loadCustomerMailboxWithAlert(){
+    const before=new Set((rallyCustomerState.notifications||[]).map(row=>row.notification_id||row.id));
+    await window.__mogaOriginalLoadCustomerMailbox?.();
+    const rows=rallyCustomerState.notifications||[],fresh=rows.filter(row=>!before.has(row.notification_id||row.id));
+    if(customerAlertsPrimed&&fresh.length&&alertEnabled()){playAlert();browserAlert(fresh[0].title||'もぐマップから通知',fresh[0].body||'新しい通知があります')}
+    customerSeenIds=new Set(rows.map(row=>row.notification_id||row.id));customerAlertsPrimed=true;decorateCustomerPage();
+  }
+  if(!window.__mogaOriginalLoadCustomerMailbox){window.__mogaOriginalLoadCustomerMailbox=window.loadCustomerMailbox}
+  window.loadCustomerMailbox=loadCustomerMailboxWithAlert;
+  const categoryMain=value=>['お食事処','居酒屋','カフェ','海鮮系','飲食店'].includes(value)?'飲食店':['美容','宿泊','買い物','その他'].includes(value)?value:'その他';
+  const currentShopPin=()=>document.getElementById('smPin')?.value.trim()||'';
+  const pinError=e=>String(e).includes('PIN')?'店舗編集PINが違います。総合管理者から発行されたPINを入力してください。':'保存できませんでした。';
+  function preparePinInput(){
+    const pin=document.getElementById('smPin'),label=pin?.previousElementSibling;if(!pin)return;
+    if(label)label.textContent='店舗編集PIN（総合管理者から受け取った番号）';pin.type='password';pin.readOnly=false;pin.value='';pin.placeholder='店舗本人だけが入力';pin.inputMode='numeric';
+    if(!document.getElementById('smPinShow')){const row=document.createElement('div');row.className='pin-show-row';pin.parentNode.insertBefore(row,pin);row.append(pin);const show=document.createElement('button');show.id='smPinShow';show.type='button';show.className='btn ghost small';show.textContent='表示';row.append(show);show.onclick=()=>{pin.type=pin.type==='password'?'text':'password';show.textContent=pin.type==='password'?'表示':'隠す'}}
+    let note=document.getElementById('smPrivatePinNote');if(!note){note=document.createElement('div');note.id='smPrivatePinNote';note.className='private-pin-note';pin.closest('.form')?.append(note)}note.innerHTML='🔒 このPINはお客様には教えません。総合管理者から発行・再発行してもらい、店舗本人の編集と受信箱確認だけに使います。';
+  }
+  function stampControlForShop(id){
+    const input=document.getElementById('smStampCode');if(!input)return;input.type='text';input.inputMode='numeric';input.maxLength=4;input.placeholder='店舗で押す3桁または4桁';
+    const form=input.closest('.form');if(form&&!form.querySelector('#smLoadStampCode')){const wrap=document.createElement('div');wrap.className='shop-number-control';input.parentNode.insertBefore(wrap,input);wrap.append(input);const load=document.createElement('button');load.id='smLoadStampCode';load.type='button';load.className='btn ghost full';load.textContent='🔎 PINで現在の番号を確認';wrap.append(load);load.onclick=async()=>{const pin=currentShopPin();if(!pin)return toast('先に店舗編集PINを入力してください');load.disabled=true;try{const value=stampNumberFromRpc(await rpc('get_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:pin}));if(value){input.value=value;toast('現在のスタンプラリー番号を表示しました')}else toast('番号がまだ設定されていません')}catch(e){toast(pinError(e))}finally{load.disabled=false}}}
+    const note=form?.querySelector('.addr');if(note)note.innerHTML='お客さんが対面で入力する番号です。<strong>店舗ページPINとは別</strong>で、ここでは隠さず確認・変更できます。';
+  }
+  function addShopAlertControl(){
+    const guide=document.getElementById('smQuickGuide');if(!guide||guide.querySelector('#shopAlertControl'))return;const control=alertControl('shopAlert');control.id='shopAlertControl';guide.appendChild(control);
+  }
+  function configureShopManage(id){
+    const body=document.getElementById('shopManageBody'),mode=document.getElementById('smMode');if(!body)return;if(activeShopManageId!==id){shopAlertsPrimed=false;shopSeenIds=new Set()}activeShopManageId=id;preparePinInput();if(mode)mode.value='shop';stampControlForShop(id);addShopAlertControl();
+    const note=body.querySelector('.note');if(note)note.innerHTML='店舗本人は「店舗編集PIN」で編集します。総合管理者は管理者PINで編集します。お客さんは店舗PINを使いません。';
+    const quick=body.querySelector('[data-shop-jump="inbox"]');if(quick){quick.textContent='🔐 PINで受信箱を確認';quick.onclick=()=>{if(!currentShopPin())return toast('店舗編集PINを入力してください');document.getElementById('smCustomerInboxBlock')?.scrollIntoView({behavior:'smooth',block:'start'});loadShopPurchaseInbox(id);loadShopManageRemoteRequests(id)}}
+    const stampJump=body.querySelector('[data-shop-jump="stamp"]');if(stampJump)stampJump.textContent='🎟️ 番号を確認・変更';
+    const pin=currentShopPin();if(!pin){const status=document.getElementById('smPurchaseStatus');if(status)status.textContent='店舗編集PINを入力して受信箱を確認してください。'}
+  }
+  const oldOpenShopManage=window.openShopManage;
+  window.openShopManage=id=>{oldOpenShopManage?.(id);setTimeout(()=>configureShopManage(id),80)};
+  function shopPinOrMessage(){const pin=currentShopPin();if(!pin){toast('店舗編集PINを入力してください');return ''}if(pin.length<4){toast('店舗編集PINは4文字以上です');return ''}return pin}
+  function shopFields(s){
+    const value=id=>document.getElementById(id)?.value||'';
+    return {p_name:value('smName'),p_address:value('smAddress'),p_main_category:categoryMain(value('smCat')),p_subcategory:categoryMain(value('smCat'))===value('smCat')?'その他':value('smCat'),p_description:value('smDesc'),p_phone:value('smPhone'),p_stamp_rally_enabled:!!document.getElementById('smRally')?.checked,p_community_url:value('smCommunity'),p_point_purchase_url:value('smPoint'),p_spot_job_enabled:!!document.getElementById('smJob')?.checked,p_spot_job_title:value('smJobTitle'),p_spot_job_description:value('smJobDesc'),p_spot_job_hourly_wage:Number(value('smWage'))||null,p_spot_job_schedule:value('smSchedule'),p_spot_job_payment_method:value('smPayment'),p_spot_job_contact:value('smContact'),p_website_url:value('smWebsite'),p_instagram_url:value('smInstagram'),p_facebook_url:value('smFacebook'),p_x_url:value('smX'),p_line_url:value('smLine'),p_subcategory:value('smCat')||s.subcategory||null};
+  }
+  window.saveShopManage=async id=>{
+    const mode=document.getElementById('smMode')?.value||'shop',pin=shopPinOrMessage();if(!pin)return;
+    const s=shops.find(x=>x.id===id)||adminShops.find(x=>x.id===id);if(!s)return toast('店舗情報を読み込めませんでした');
+    const code=document.getElementById('smStampCode')?.value.trim()||'';if(code&&!/^\d{3,4}$/.test(code))return toast('スタンプラリー番号は3桁または4桁です');
+    try{
+      if(code){if(mode==='admin')await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:pin,p_shop_id:id,p_new_code:code});else await rpc('update_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:pin,p_new_code:code})}
+      const f=shopFields(s);
+      if(mode==='admin'){
+        await rpc('admin_update_shop_by_pin',{p_admin_pin:pin,p_shop_id:id,p_name:f.p_name,p_address:f.p_address,p_category:document.getElementById('smCat')?.value||s.category,p_description:f.p_description,p_phone:f.p_phone,p_community_url:f.p_community_url,p_point_purchase_url:f.p_point_purchase_url,p_stamp_rally_enabled:f.p_stamp_rally_enabled,p_spot_job_enabled:f.p_spot_job_enabled,p_spot_job_title:f.p_spot_job_title,p_spot_job_description:f.p_spot_job_description,p_spot_job_hourly_wage:f.p_spot_job_hourly_wage,p_spot_job_schedule:f.p_spot_job_schedule,p_spot_job_payment_method:f.p_spot_job_payment_method,p_spot_job_contact:f.p_spot_job_contact,p_website_url:f.p_website_url,p_instagram_url:f.p_instagram_url,p_facebook_url:f.p_facebook_url,p_x_url:f.p_x_url,p_line_url:f.p_line_url})
+      }else{
+        await rpc('update_shop_details_by_pin',{p_shop_id:id,p_pin:pin,...f})
+      }
+      closeM('shopManageModal');await loadAll();toast(mode==='admin'?'管理者として保存しました。':'店舗情報とスタンプ番号を保存しました。');
+    }catch(e){console.error(e);toast(pinError(e))}
+  };
+  window.renderShopManageRemoteRequests=function(rows,shopId){
+    const list=document.getElementById('smRemoteList'),status=document.getElementById('smRemoteStatus');if(!list)return;if(!rows?.length){list.innerHTML='<div class="addr">現在、遠隔スタンプの依頼はありません。</div>';return}
+    list.innerHTML=rows.map(r=>{const id=escapeHtml(r.request_id||''),state=escapeHtml(r.request_status||'pending'),action=r.request_status==='pending'?`<div class="remote-request-actions"><button class="btn green small" type="button" data-final-remote="approve" data-id="${id}">承認してスタンプ</button><button class="btn ghost small" type="button" data-final-remote="reject" data-id="${id}">見送る</button></div>`:'';return `<div class="remote-request-row ${state}"><div class="remote-request-top"><span class="remote-request-name">${escapeHtml(r.nickname||'お客様')}さん</span><span class="remote-request-id">${escapeHtml(remoteRequestStatusText(r.request_status))}</span></div><div class="remote-request-meta">参加者ID：${escapeHtml(r.participant_entry_id||'未発行')}<br>${escapeHtml(r.request_note||'購入内容メモなし')}<br>${new Date(r.requested_at).toLocaleString('ja-JP')}</div>${action}${r.response_note?`<div class="remote-request-meta">店舗メモ：${escapeHtml(r.response_note)}</div>`:''}</div>`}).join('');list.querySelectorAll('[data-final-remote]').forEach(button=>button.onclick=()=>window.resolveRemoteStampRequest?.(button.dataset.id,button.dataset.finalRemote))};
+  window.loadShopManageRemoteRequests=async shopId=>{const status=document.getElementById('smRemoteStatus'),pin=currentShopPin();if(!status)return;if(!pin){status.textContent='店舗編集PINを入力すると遠隔依頼を確認できます。';return}status.textContent='遠隔依頼を確認中…';try{const rows=await rpc('list_remote_stamp_requests_by_shop_pin',{p_shop_id:shopId,p_shop_pin:pin});const list=Array.isArray(rows)?rows:[];renderShopManageRemoteRequests(list,shopId);status.textContent=`遠隔依頼 ${list.filter(x=>x.request_status==='pending').length}件が確認待ちです。`}catch(e){status.textContent=pinError(e)}};
+  window.resolveRemoteStampRequest=async(requestId,action)=>{const pin=shopPinOrMessage(),shopId=activeShopManageId||document.getElementById('remoteStampShop')?.value,status=document.getElementById('smRemoteStatus');if(!pin||!shopId)return;if(action==='reject'&&!confirm('この依頼を見送りますか？'))return;try{const rows=await rpc('resolve_remote_stamp_request',{p_shop_id:shopId,p_shop_pin:pin,p_request_id:requestId,p_action:action,p_response_note:null}),x=rows?.[0];if(status)status.textContent=x?.message||'処理しました';await loadShopManageRemoteRequests(shopId);await loadRankings();if(action==='approve'){playAlert();toast(x?.completed?'🎉 コンプリートしました！':'遠隔スタンプを付与しました')}}catch(e){toast(pinError(e))}};
+  window.loadShopPurchaseInbox=async shopId=>{const list=document.getElementById('smPurchaseInbox'),status=document.getElementById('smPurchaseStatus'),pin=currentShopPin();if(!list)return;if(!pin){list.innerHTML='<div class="addr">店舗編集PINを入力して「受信箱を更新」を押してください。</div>';return}list.innerHTML='<div class="addr">受信箱を読み込み中…</div>';try{const [rows,messages,notifications]=await Promise.all([rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}),rpc('list_rally_messages_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}),rpc('list_shop_notifications_by_pin',{p_shop_id:shopId,p_shop_pin:pin})]);const ns=Array.isArray(notifications)?notifications:[],fresh=ns.filter(row=>!shopSeenIds.has(row.notification_id||row.id));if(shopAlertsPrimed&&fresh.length&&alertEnabled()){playAlert();browserAlert('店舗に新しい依頼があります',fresh[0].body||'受信箱を確認してください')}shopSeenIds=new Set(ns.map(row=>row.notification_id||row.id));shopAlertsPrimed=true;renderShopPurchaseInbox(Array.isArray(rows)?rows:[],Array.isArray(messages)?messages:[],ns,shopId);if(status)status.textContent=`購入証明 ${Array.isArray(rows)?rows.length:0}件／未読通知 ${ns.filter(x=>!x.is_read).length}件`;}catch(e){list.innerHTML='<div class="addr">'+pinError(e)+'</div>'}};
+  window.resolveShopPurchase=async(shopId,submissionId,action)=>{const pin=shopPinOrMessage();if(!pin)return;const reply=prompt(action==='reject'?'見送り理由（任意）':'承認メッセージ（任意）')||'';try{const rows=await rpc('resolve_purchase_submission',{p_shop_id:shopId,p_shop_pin:pin,p_submission_id:submissionId,p_action:action,p_response_message:reply||null}),x=rows?.[0];toast(x?.message||'処理しました');await loadShopPurchaseInbox(shopId);await loadRankings();if(action==='approve')playAlert()}catch(e){toast(pinError(e))}};
+  window.sendShopPurchaseReply=async(shopId,submissionId)=>{const pin=shopPinOrMessage(),input=[...document.querySelectorAll('[data-purchase-reply]')].find(el=>el.dataset.purchaseReply===submissionId),message=input?.value.trim()||'';if(!pin||!message)return toast('PINと返信メッセージを確認してください');try{await rpc('send_rally_message_from_shop',{p_shop_id:shopId,p_shop_pin:pin,p_submission_id:submissionId,p_message:message});toast('お客様へ返信しました');await loadShopPurchaseInbox(shopId)}catch(e){toast(pinError(e))}};
+  const oldNewShopClick=document.getElementById('newShop')?.onclick;
+  document.getElementById('newShop')?.addEventListener('click',()=>setTimeout(()=>{const pin=document.getElementById('nsPin'),code=document.getElementById('nsStampCode'),modal=document.getElementById('newShopModal');if(!modal)return;if(pin){pin.readOnly=false;pin.value='';pin.type='text';pin.placeholder='総合管理者が発行した初期PIN';const label=pin.previousElementSibling;if(label)label.textContent='店舗初期PIN（総合管理者から発行）'}if(code){code.maxLength=4;code.placeholder='3桁または4桁の番号'}const note=modal.querySelector('.note');if(note)note.innerHTML='店舗ページPINはお客さんには伝えません。総合管理者が店舗本人へ発行し、店舗本人だけが編集に使います。';},40));
+  hideLegacyCustomerCards();customerRemoteCard();decorateStampEntry();decorateCustomerPage();
+  setInterval(()=>{if(document.visibilityState==='visible'&&participant())window.loadCustomerMailbox()},30000);
+  setInterval(()=>{if(document.visibilityState==='visible'&&activeShopManageId&&document.getElementById('shopManageModal')?.classList.contains('on')&&currentShopPin()){loadShopPurchaseInbox(activeShopManageId);loadShopManageRemoteRequests(activeShopManageId)}},30000);
 })();
 </script>
 </body>
