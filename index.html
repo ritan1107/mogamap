@@ -365,6 +365,97 @@ document.getElementById('newShop').onclick=()=>{newShopSharedBase?.();const pin=
 const saveShopDetailsSharedBase=window.saveShopManage;
 window.saveShopManage=async id=>{const mode=document.getElementById('smMode')?.value;if(mode!=='shop')return saveShopDetailsSharedBase(id);const s=shops.find(x=>x.id===id),pin=document.getElementById('smPin')?.value.trim()||'';if(!s)return toast('店舗情報を読み込めませんでした');if(pin!==SHOP_SHARED_PIN)return toast('加盟店共通編集PINは1236です');try{await rpc('update_shop_details_by_shared_pin',{p_shop_id:id,p_pin:SHOP_SHARED_PIN,p_name:document.getElementById('smName').value,p_address:document.getElementById('smAddress').value,p_category:document.getElementById('smCat').value,p_description:document.getElementById('smDesc').value,p_phone:document.getElementById('smPhone').value,p_stamp_rally_enabled:document.getElementById('smRally').checked,p_community_url:document.getElementById('smCommunity').value,p_point_purchase_url:document.getElementById('smPoint').value,p_spot_job_enabled:document.getElementById('smJob').checked,p_spot_job_title:document.getElementById('smJobTitle').value,p_spot_job_description:document.getElementById('smJobDesc').value,p_spot_job_hourly_wage:Number(document.getElementById('smWage').value)||null,p_spot_job_schedule:document.getElementById('smSchedule').value,p_spot_job_payment_method:document.getElementById('smPayment').value,p_spot_job_contact:document.getElementById('smContact').value,p_website_url:document.getElementById('smWebsite').value,p_instagram_url:document.getElementById('smInstagram').value,p_facebook_url:document.getElementById('smFacebook').value,p_x_url:document.getElementById('smX').value,p_line_url:document.getElementById('smLine').value,p_subcategory:s.subcategory||null});closeM('shopManageModal');await loadAll();toast('店舗情報を保存しました。全員に反映されます')}catch(e){console.error(e);toast(String(e).includes('Invalid')?'加盟店共通PINが違います':'保存できませんでした')}};
 loadAll().catch(e=>{console.error(e);toast('データの読み込みに失敗しました')});
+// スタンプラリー番号を「店舗ごとに設定できる3桁」に統一するための移行対応。
+// 既存の4桁コードは、店舗が3桁へ変更するまで利用できるように残す。
+const threeDigitStampText=()=>{
+  const card=document.getElementById('stampPin')?.closest('.card');
+  if(card){
+    const p=card.querySelector('.addr');
+    if(p)p.textContent='参加店舗を選び、店舗に設定された3桁のスタンプラリー番号を入力します。店舗ページPIN・コミュニティIDとは別の数字です。既存の4桁番号は移行まで利用できます。';
+  }
+  const stampPin=document.getElementById('stampPin');
+  if(stampPin){stampPin.maxLength=4;stampPin.placeholder='3桁のスタンプラリー番号';stampPin.setAttribute('aria-label','3桁のスタンプラリー番号（既存4桁も可）')}
+  const newCode=document.getElementById('nsStampCode');
+  if(newCode){newCode.maxLength=3;newCode.placeholder='例：482';newCode.setAttribute('aria-label','3桁のスタンプラリー番号')}
+  const guide=document.querySelector('.admin-guide');
+  if(guide)guide.innerHTML='<strong>ここだけで店舗管理できます</strong><br>管理者PINは1つだけ。店舗情報の編集、店舗ページPINの発行・再発行、店舗ごとの3桁スタンプラリー番号、公開範囲をこの画面から管理できます。<br>※既存の4桁番号は移行まで利用でき、店舗本人が3桁へ変更できます。';
+  const note=document.querySelector('#newShopModal .note');
+  if(note)note.innerHTML='加盟店の店舗編集PINは全店舗共通で <b>1236</b> です。スタンプラリー番号は店舗ごとに自分で決める3桁の数字です。登録後は非公開で保存され、管理者が確認してから公開できます。';
+};
+threeDigitStampText();
+
+const renderAdminShopListThreeDigitBase=renderAdminShopList;
+renderAdminShopList=()=>{
+  renderAdminShopListThreeDigitBase();
+  document.querySelectorAll('.admin-stamp-code .stamp-code-note').forEach(el=>{el.textContent='🎟️ スタンプラリー番号（新しく設定する場合は3桁）'});
+  document.querySelectorAll('[id^="adminStampCode-"]').forEach(el=>{el.maxLength=4;el.placeholder='3桁の番号（既存4桁も可）'});
+};
+
+window.saveAdminStampCode=async id=>{
+  if(!adminEditorPin)return toast('先に管理者PINで一覧を開いてください');
+  const input=document.getElementById('adminStampCode-'+id),code=input?.value.trim()||'';
+  if(!/^\d{3}$/.test(code))return toast('新しいスタンプラリー番号は3桁の数字です');
+  try{
+    const ok=await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:adminEditorPin,p_shop_id:id,p_new_code:code});
+    if(!ok)return toast('番号を保存できませんでした');
+    adminStampCodes[id]=code;renderAdminShopList();toast('3桁のスタンプラリー番号を保存しました');
+  }catch(e){console.error(e);toast(String(e).includes('Invalid PIN')?'管理者PINが違います':'番号を保存できませんでした')}
+};
+window.regenerateAdminStampCode=async id=>{const code=String(Math.floor(100+Math.random()*900));const input=document.getElementById('adminStampCode-'+id);if(input)input.value=code;await saveAdminStampCode(id)};
+
+document.getElementById('claimStamp').onclick=async()=>{
+  const p=participant();if(!p){openM('joinModal');return}
+  const shopId=document.getElementById('stampShop').value,pin=document.getElementById('stampPin').value.trim();
+  if(!shopId||!pin)return toast('店舗と3桁のスタンプラリー番号を確認してください');
+  if(!/^(?:\d{3}|\d{4})$/.test(pin))return toast('スタンプラリー番号は3桁の数字です（既存4桁も移行まで可）');
+  try{
+    const r=await rpc('claim_participant_stamp',{p_participant_id:p.id,p_participant_token:p.token,p_shop_id:shopId,p_shop_pin:pin});
+    const x=r?.[0];document.getElementById('stampPin').value='';
+    if(!x?.success)return toast('スタンプラリー番号が違います');
+    await loadProgress();await loadRankings();toast('🎉 スタンプを獲得しました！');if(x.completed)showCompletion();
+  }catch(e){console.error(e);toast('スタンプを押せませんでした')}
+};
+
+const newShopTriggerThreeDigitBase=document.getElementById('newShop').onclick;
+document.getElementById('newShop').onclick=()=>{newShopTriggerThreeDigitBase?.();threeDigitStampText()};
+document.getElementById('saveNewShop').onclick=async()=>{
+  const name=document.getElementById('nsName').value.trim(),address=document.getElementById('nsAddress').value.trim(),pin=document.getElementById('nsPin').value.trim(),stampCode=document.getElementById('nsStampCode').value.trim();
+  if(!name||!address||pin.length<4||!/^[0-9]{3}$/.test(stampCode))return toast('店名・住所・編集PIN・3桁のスタンプラリー番号を入力してください');
+  try{
+    await rpc('add_shop_with_codes',{p_name:name,p_address:address,p_category:document.getElementById('nsCategory').value,p_description:document.getElementById('nsDesc').value,p_latitude:null,p_longitude:null,p_pin:pin,p_stamp_code:stampCode});
+    closeM('newShopModal');await loadAll();toast('3桁のスタンプラリー番号で店舗を登録しました');
+  }catch(e){console.error(e);toast(String(e).includes('stamp_code')?'スタンプラリー番号は3桁の数字で入力してください':'登録できませんでした')}
+};
+
+const openShopManageThreeDigitBase=window.openShopManage;
+window.openShopManage=id=>{
+  openShopManageThreeDigitBase(id);
+  const s=adminShops.find(x=>x.id===id)||shops.find(x=>x.id===id),save=document.querySelector('#shopManageBody button[onclick^="saveShopManage"]');
+  if(!s||!save||document.getElementById('smStampCode'))return;
+  const mode=document.getElementById('smMode')?.value||'shop';
+  const block=document.createElement('div');
+  block.innerHTML='<div class="linktitle">🎟️ スタンプラリー番号</div><div class="form"><label class="label">店舗で設定する3桁の番号</label><input id="smStampCode" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="例：482（既存4桁も移行まで可）"><div class="addr">この番号をお客様が入力するとスタンプが付きます。保存時は新しい3桁にしてください。</div></div>';
+  save.parentNode.insertBefore(block,save);
+  const input=document.getElementById('smStampCode');
+  if(mode==='admin'){
+    input.value=adminStampCodes[id]||'';
+  }else{
+    rpc('get_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:SHOP_SHARED_PIN}).then(rows=>{const value=typeof rows==='string'?rows:(typeof rows?.[0]==='string'?rows[0]:'');if(input&&!input.value)input.value=value}).catch(e=>console.warn('店舗番号の取得に失敗:',e));
+  }
+};
+
+const saveShopManageThreeDigitBase=window.saveShopManage;
+window.saveShopManage=async id=>{
+  const mode=document.getElementById('smMode')?.value||'shop',input=document.getElementById('smStampCode'),code=input?.value.trim()||'';
+  if(input&&!/^\d{3}$/.test(code))return toast('新しいスタンプラリー番号は3桁の数字で入力してください');
+  if(input){
+    try{
+      if(mode==='admin')await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:document.getElementById('smPin').value.trim(),p_shop_id:id,p_new_code:code});
+      else await rpc('update_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:SHOP_SHARED_PIN,p_new_code:code});
+    }catch(e){console.error(e);return toast(String(e).includes('Invalid')?'PINが違います':'スタンプラリー番号を保存できませんでした')}
+  }
+  await saveShopManageThreeDigitBase(id);
+};
 </script>
 </body>
 </html>
