@@ -504,7 +504,10 @@ window.openShopManage=id=>{
   openShopManageSimpleBase(id);
   const s=adminShops.find(x=>x.id===id)||shops.find(x=>x.id===id);
   const save=document.querySelector('#shopManageBody button[onclick^="saveShopManage"]');
-  if(!s||!save||document.getElementById('smStampCode'))return;
+  if(!s||!save)return;
+  const legacyInput=document.getElementById('smStampCode');
+  const legacyBlock=legacyInput?.closest('.form')?.parentElement;
+  if(legacyBlock?.querySelector('.linktitle')?.textContent.includes('スタンプラリー番号'))legacyBlock.remove();
   const block=document.createElement('div');
   block.innerHTML='<div class="linktitle">🎟️ スタンプラリー番号</div><div class="form"><label class="label">現在の番号（確認・変更できます）</label><div class="pin-input-row"><input id="smStampCode" type="text" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="読み込み中…"><button id="smCopyStampCode" class="btn ghost small" type="button">コピー</button></div><div id="smStampCodeStatus" class="addr">店舗で使っている番号を読み込んでいます。</div></div><div class="note"><b>新しい番号に変更する場合</b><br>3桁または4桁の数字を入力して、下の「保存する」を押してください。</div><div class="linktitle">📮 遠隔スタンプ依頼</div><div class="note">お客様が遠方購入などで依頼すると、ここに表示されます。確認して「承認してスタンプ」を押すだけです。</div><button id="smRemoteRefresh" class="btn ghost full" type="button">遠隔スタンプ依頼を確認</button><div id="smRemoteStatus" class="remote-stamp-status"></div><div id="smRemoteList" class="remote-request-list"></div>';
   save.parentNode.insertBefore(block,save);
@@ -517,7 +520,7 @@ window.openShopManage=id=>{
   loadShopManageRemoteRequests(id);
 };
 
-const saveShopManageSimpleBase=saveShopManageThreeDigitBase;
+const saveShopManageSimpleBase=saveShopDetailsSharedBase;
 window.saveShopManage=async id=>{
   const input=document.getElementById('smStampCode'),code=input?.value.trim()||'';
   if(input&&!stampNumberIsValid(code))return toast('スタンプラリー番号は3桁または4桁の数字で入力してください');
