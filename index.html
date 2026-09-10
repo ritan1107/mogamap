@@ -308,7 +308,7 @@ window.openStore=id=>{
   if(detail&&!detail.querySelector('.store-id-box')){
     const box=document.createElement('div');
     box.className='store-id-box';
-    box.innerHTML=`<div><div class="store-id-label">店舗ID</div><div class="store-id-value">${escapeHtml(storeId)}</div></div><button type="button" class="store-id-copy">コピー</button>`;
+    box.innerHTML=`<div><div class="store-id-label">UW.ID</div><div class="store-id-value">${escapeHtml(storeId)}</div></div><button type="button" class="store-id-copy">コピー</button>`;
     const address=detail.querySelector('.detailAddr');
     if(address)address.insertAdjacentElement('afterend',box);else detail.insertBefore(box,detail.firstChild);
     const copyButton=box.querySelector('.store-id-copy');
@@ -318,7 +318,7 @@ window.openStore=id=>{
         if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(storeId);
         else{const input=document.createElement('textarea');input.value=storeId;input.style.position='fixed';input.style.opacity='0';document.body.appendChild(input);input.select();document.execCommand('copy');input.remove()}
         copyButton.textContent='コピーしました';
-        toast('店舗IDをコピーしました');
+        toast('UW.IDをコピーしました');
       }catch(e){toast('コピーできませんでした')}
       setTimeout(()=>{copyButton.textContent=original},1500);
     });
