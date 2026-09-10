@@ -740,5 +740,63 @@ window.openShopManage=id=>{
 renderCustomerMyPage();
 if(participant()){loadCustomerProfile();loadCustomerMailbox()}
 </script>
+<style>
+/* UX整理：初めての人は3つの入口だけ見て、詳細機能は必要な時だけ開く */
+.rally-ux-guide{margin-bottom:10px;padding:15px;border:2px solid #b9e5df;border-radius:22px;background:linear-gradient(135deg,#f2fffc,#fff 58%,#fff5fb);box-shadow:0 12px 26px rgba(73,144,143,.12)}
+.rally-ux-guide h2{margin:0;color:#397f87;font-size:19px}.rally-ux-guide p{margin:6px 0 0;color:#62727b;font-size:12px;line-height:1.6}.rally-ux-kicker{display:inline-block;margin-bottom:5px;color:#d36c88;font-size:10px;font-weight:950;letter-spacing:.12em}.rally-ux-choice{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.rally-ux-choice button{min-height:76px;padding:9px 6px;border:1px solid #d8ece9;border-radius:16px;background:#fff;color:#49636b;font-size:11px;font-weight:950;line-height:1.45;box-shadow:0 5px 12px rgba(73,144,143,.07)}.rally-ux-choice button strong{display:block;color:#397f87;font-size:13px;margin-bottom:2px}.rally-ux-choice button:first-child{border-color:#efb7c5;background:#fff8fb}.rally-ux-choice button:nth-child(2){border-color:#f1d58d;background:#fffdf4}.rally-ux-choice button:nth-child(3){border-color:#b9d8ee;background:#f6fbff}.rally-ux-help-toggle{margin-top:10px;width:100%;border:0;background:transparent;color:#397f87;font-size:11px;font-weight:900;text-decoration:underline}.rally-ux-help{max-height:120px;overflow:hidden;transition:max-height .2s,opacity .2s;margin-top:7px}.rally-ux-guide.help-off .rally-ux-help{max-height:0;opacity:0;margin-top:0}.rally-ux-guide.help-off .rally-ux-help-toggle{margin-top:4px}
+.rally-details{margin-top:10px;border:1px solid #dcebef;border-radius:18px;background:#fff;box-shadow:0 6px 16px rgba(73,115,128,.06);overflow:hidden}.rally-details>summary{list-style:none;cursor:pointer;padding:13px 14px;color:#397f87;font-weight:950;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}.rally-details>summary::-webkit-details-marker{display:none}.rally-details>summary:after{content:'＋';font-size:18px;color:#81a2a7}.rally-details[open]>summary:after{content:'−'}.rally-details>summary small{display:block;color:#87959b;font-size:10px;font-weight:700;margin-top:3px}.rally-details>.remote-join-card,.rally-details>.remote-request-card,.rally-details>.ranking-profile,.rally-details>.remote-stamp-card,.rally-details>.ranking-card{margin:0;border:0;border-top:1px solid #e8f1f2;border-radius:0;box-shadow:none}.rally-details>.remote-join-card{padding:13px}.rally-details>.remote-request-card{padding:14px}.rally-details>.remote-stamp-card,.rally-details>.ranking-card,.rally-details>.ranking-profile{padding:14px}
+.rally-store-code-card{border:2px solid #f0d28b!important;background:linear-gradient(135deg,#fffdf2,#fff)!important}.rally-store-code-card h3{color:#806126}.rally-store-code-card .addr{line-height:1.6}
+.shop-quick-guide{margin-bottom:12px;padding:13px;border:2px solid #b9e5df;border-radius:18px;background:linear-gradient(135deg,#f4fffc,#fff);color:#4e6870}.shop-quick-guide h3{margin:0;color:#397f87;font-size:15px}.shop-quick-guide p{margin:5px 0 9px;font-size:11px;line-height:1.55}.shop-quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.shop-quick-actions .btn{margin:0}.shop-advanced-details{margin-top:11px;border:1px solid #dcebef;border-radius:16px;background:#fff;overflow:hidden}.shop-advanced-details>summary{list-style:none;cursor:pointer;padding:12px 13px;color:#397f87;font-size:13px;font-weight:950}.shop-advanced-details>summary::-webkit-details-marker{display:none}.shop-advanced-details>summary:after{content:' ＋';float:right;font-size:17px}.shop-advanced-details[open]>summary:after{content:' −'}.shop-advanced-details>div{padding:0 13px 7px;border-top:1px solid #e8f1f2}
+@media(max-width:520px){.rally-ux-choice{grid-template-columns:1fr;gap:6px}.rally-ux-choice button{min-height:48px;text-align:left;padding:9px 12px}.rally-ux-choice button strong{display:inline;margin-right:4px}.shop-quick-actions{grid-template-columns:1fr}}
+</style>
+<script>
+(function(){
+  const rallyPanel=document.getElementById('rally');
+  if(!rallyPanel)return;
+  const uxHelpKey='moga_rally_help_visible_v1';
+  const scrollToRallyTarget=target=>{const element=document.getElementById(target);if(element){element.scrollIntoView({behavior:'smooth',block:'start'});if(element.tagName==='DETAILS')element.open=true}};
+  const makeRallyUxGuide=()=>{
+    if(document.getElementById('rallyUxGuide'))return;
+    const guide=document.createElement('div');guide.id='rallyUxGuide';guide.className='rally-ux-guide';guide.innerHTML='<span class="rally-ux-kicker">STAMP RALLY / かんたん3ステップ</span><h2>🎟️ どのスタンプを使う？</h2><p class="rally-ux-help">まず参加登録をして、あなたの状況に合うボタンを押してください。分からなくなったら、いつでもここへ戻れば大丈夫です。</p><div class="rally-ux-choice"><button type="button" data-rally-ux="join"><strong>👤 初めて参加</strong>名前を登録する</button><button type="button" data-rally-ux="shop"><strong>📍 お店にいる</strong>番号で押す</button><button type="button" data-rally-ux="remote"><strong>🚚 行けない</strong>写真・メールで送る</button></div><button type="button" class="rally-ux-help-toggle">説明を隠す</button>';
+    rallyPanel.insertBefore(guide,rallyPanel.firstElementChild);
+    guide.querySelectorAll('[data-rally-ux]').forEach(button=>button.addEventListener('click',()=>{
+      const action=button.dataset.rallyUx;
+      if(action==='join'&&!participant()){openM('joinModal');return}
+      if(action==='join'){scrollToRallyTarget('rallyMyPage');return}
+      if(action==='shop'){scrollToRallyTarget('stampPin');return}
+      if(action==='remote'){scrollToRallyTarget('rallyMyPage');document.getElementById('customerProofForm')?.scrollIntoView({behavior:'smooth',block:'start'});return}
+    }));
+    const toggle=guide.querySelector('.rally-ux-help-toggle');let visible=localStorage.getItem(uxHelpKey)!=='0';
+    const paint=()=>{guide.classList.toggle('help-off',!visible);toggle.textContent=visible?'説明を隠す':'説明を表示'};toggle.addEventListener('click',()=>{visible=!visible;localStorage.setItem(uxHelpKey,visible?'1':'0');paint()});paint();
+  };
+  const wrapRallyDetail=(selector,title,sub)=>{
+    const element=rallyPanel.querySelector(selector);if(!element||element.closest('details.rally-details'))return;
+    const detail=document.createElement('details');detail.className='rally-details';
+    const summary=document.createElement('summary');summary.innerHTML=`<span>${title}<small>${sub}</small></span>`;
+    element.parentNode.insertBefore(detail,element);detail.append(summary,element);
+  };
+  const simplifyRallyCards=()=>{
+    const stampCard=document.getElementById('stampPin')?.closest('.card');
+    if(stampCard&&!stampCard.dataset.uxReady){stampCard.dataset.uxReady='1';stampCard.classList.add('rally-store-code-card');const heading=stampCard.querySelector('h3');if(heading)heading.textContent='📍 お店にいるとき：スタンプを押す';const text=stampCard.querySelector('.addr');if(text)text.innerHTML='店員さんに<strong>スタンプラリー番号</strong>を聞いて入力してください。店舗ページPINやコミュニティIDではありません。'}
+    wrapRallyDetail('.remote-join-card','🚚 遠くから参加する（詳しい説明）','参加後はマイページから購入証明を送れます');
+    wrapRallyDetail('.remote-request-card','📮 以前の遠隔スタンプ依頼を使う','店舗へ参加者IDを伝える従来方式');
+    wrapRallyDetail('#rankingProfileCard','🌟 ランキング参加設定','名前やスタンプ数の公開を変更');
+    wrapRallyDetail('.remote-stamp-card','🏪 店舗の方：遠隔スタンプ操作','店舗管理画面を使わない場合の旧操作');
+    wrapRallyDetail('.ranking-card','🏆 ランキングを見る','参加者・店舗のランキング');
+  };
+  const compactShopManage=()=>{
+    const body=document.getElementById('shopManageBody');if(!body||document.getElementById('smQuickGuide'))return;
+    const guide=document.createElement('div');guide.id='smQuickGuide';guide.className='shop-quick-guide';guide.innerHTML='<h3>🏪 店舗管理はここだけ見ればOK</h3><p>①「購入証明・メール」でお客様を確認　②「遠隔スタンプ依頼」で依頼を確認　③情報を変える時だけ下の編集を開きます。</p><div class="shop-quick-actions"><button type="button" class="btn soft" data-shop-jump="inbox">📥 受信箱を見る</button><button type="button" class="btn ghost" data-shop-jump="stamp">🎟️ 番号を見る</button></div>';
+    body.insertBefore(guide,body.firstElementChild);
+    guide.querySelector('[data-shop-jump="inbox"]')?.addEventListener('click',()=>document.getElementById('smCustomerInboxBlock')?.scrollIntoView({behavior:'smooth',block:'start'}));
+    guide.querySelector('[data-shop-jump="stamp"]')?.addEventListener('click',()=>document.getElementById('smStampCode')?.scrollIntoView({behavior:'smooth',block:'center'}));
+    const start=document.getElementById('smName')?.closest('.form'),end=document.getElementById('smContact')?.closest('.form');
+    if(start&&end&&start.parentNode===body){const detail=document.createElement('details');detail.className='shop-advanced-details';detail.innerHTML='<summary>✏️ 店舗情報・リンク・募集内容を編集</summary><div></div>';body.insertBefore(detail,start);const inner=detail.querySelector('div');let node=start;while(node){const next=node.nextSibling;inner.appendChild(node);if(node===end)break;node=next}}
+  };
+  const originalOpenShopManageForUx=window.openShopManage;
+  window.openShopManage=id=>{originalOpenShopManageForUx?.(id);setTimeout(compactShopManage,0)};
+  makeRallyUxGuide();simplifyRallyCards();
+})();
+</script>
 </body>
 </html>
