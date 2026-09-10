@@ -1393,20 +1393,19 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
     if(!source)return toast('店舗情報を読み込めませんでした');
     const stampInput=document.getElementById('smStampCode');
     const code=stampInput?.value.trim()||'';
+    if(mode==='shop'&&!stampInput)return toast('スタンプ番号欄が読み込めません。最新版ページを開き直してください。');
     if(stampInput&&!/^\d{4}$/.test(code))return toast('スタンプラリー番号は4桁の数字で入力してください');
     if(saving)return toast('保存中です。少しお待ちください。');
     saving=true;
     const saveButton=document.querySelector('#shopManageBody button[onclick^="saveShopManage"]');
     if(saveButton)saveButton.disabled=true;
     try{
-      if(code){
-        const stampResult=mode==='admin'
-          ?await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:pin,p_shop_id:id,p_new_code:code})
-          :await rpc('update_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:pin,p_new_code:code});
-        if(resultFailed(stampResult))throw new Error('スタンプラリー番号を保存できませんでした');
-      }
       const fields=collectFields(source);
       if(mode==='admin'){
+        if(code){
+          const stampResult=await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:pin,p_shop_id:id,p_new_code:code});
+          if(resultFailed(stampResult))throw new Error('スタンプラリー番号を保存できませんでした');
+        }
         const shopResult=await rpc('admin_update_shop_by_pin',{p_admin_pin:pin,p_shop_id:id,p_name:fields.p_name,p_address:fields.p_address,p_category:document.getElementById('smCat')?.value||source.category,p_description:fields.p_description,p_phone:fields.p_phone,p_community_url:fields.p_community_url,p_point_purchase_url:fields.p_point_purchase_url,p_stamp_rally_enabled:fields.p_stamp_rally_enabled,p_spot_job_enabled:fields.p_spot_job_enabled,p_spot_job_title:fields.p_spot_job_title,p_spot_job_description:fields.p_spot_job_description,p_spot_job_hourly_wage:fields.p_spot_job_hourly_wage,p_spot_job_schedule:fields.p_spot_job_schedule,p_spot_job_payment_method:fields.p_spot_job_payment_method,p_spot_job_contact:fields.p_spot_job_contact,p_website_url:fields.p_website_url,p_instagram_url:fields.p_instagram_url,p_facebook_url:fields.p_facebook_url,p_x_url:fields.p_x_url,p_line_url:fields.p_line_url});
         if(resultFailed(shopResult))throw new Error('店舗情報を保存できませんでした');
         const volunteer=document.getElementById('smVolunteer');
@@ -1415,7 +1414,8 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
           if(resultFailed(volunteerResult))throw new Error('ボランティア情報を保存できませんでした');
         }
       }else{
-        const shopResult=await rpc('update_shop_details_by_pin',{p_shop_id:id,p_pin:pin,...fields});
+        /* 店舗本人の保存は、スタンプ番号と店舗情報を同じDBトランザクションで更新する。 */
+        const shopResult=await rpc('update_shop_management_by_pin',{p_shop_id:id,p_pin:pin,...fields,p_stamp_code:code});
         if(resultFailed(shopResult))throw new Error('店舗情報を保存できませんでした');
       }
       closeM('shopManageModal');
