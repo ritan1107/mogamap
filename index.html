@@ -1355,6 +1355,35 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
     if(message.includes('stamp')||message.includes('番号'))return 'スタンプラリー番号を保存できませんでした。4桁で入力してください。';
     return '保存できませんでした。入力内容を確認してください。';
   };
+  const collectFields=source=>{
+    const value=id=>document.getElementById(id)?.value||'';
+    const rawCategory=value('smCat')||source.category||'その他';
+    const mainCategory=['お食事処','居酒屋','カフェ','海鮮系','飲食店'].includes(rawCategory)?'飲食店':['美容','宿泊','買い物','その他'].includes(rawCategory)?rawCategory:'その他';
+    return {
+      p_name:value('smName'),
+      p_address:value('smAddress'),
+      p_main_category:mainCategory,
+      p_subcategory:rawCategory||source.subcategory||'その他',
+      p_description:value('smDesc'),
+      p_phone:value('smPhone'),
+      p_stamp_rally_enabled:!!document.getElementById('smRally')?.checked,
+      p_community_url:value('smCommunity'),
+      p_point_purchase_url:value('smPoint'),
+      p_spot_job_enabled:!!document.getElementById('smJob')?.checked,
+      p_spot_job_title:value('smJobTitle'),
+      p_spot_job_description:value('smJobDesc'),
+      p_spot_job_hourly_wage:Number(value('smWage'))||null,
+      p_spot_job_schedule:value('smSchedule'),
+      p_spot_job_payment_method:value('smPayment'),
+      p_spot_job_contact:value('smContact'),
+      p_website_url:value('smWebsite'),
+      p_instagram_url:value('smInstagram'),
+      p_facebook_url:value('smFacebook'),
+      p_x_url:value('smX'),
+      p_line_url:value('smLine')
+    };
+  };
+  let saving=false;
   window.saveShopManage=async id=>{
     const mode=document.getElementById('smMode')?.value||'shop';
     const pin=document.getElementById('smPin')?.value.trim()||'';
@@ -1365,6 +1394,10 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
     const stampInput=document.getElementById('smStampCode');
     const code=stampInput?.value.trim()||'';
     if(stampInput&&!/^\d{4}$/.test(code))return toast('スタンプラリー番号は4桁の数字で入力してください');
+    if(saving)return toast('保存中です。少しお待ちください。');
+    saving=true;
+    const saveButton=document.querySelector('#shopManageBody button[onclick^="saveShopManage"]');
+    if(saveButton)saveButton.disabled=true;
     try{
       if(code){
         const stampResult=mode==='admin'
@@ -1372,7 +1405,7 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
           :await rpc('update_shop_stamp_code_by_shared_pin',{p_shop_id:id,p_pin:pin,p_new_code:code});
         if(resultFailed(stampResult))throw new Error('スタンプラリー番号を保存できませんでした');
       }
-      const fields=shopFields(source);
+      const fields=collectFields(source);
       if(mode==='admin'){
         const shopResult=await rpc('admin_update_shop_by_pin',{p_admin_pin:pin,p_shop_id:id,p_name:fields.p_name,p_address:fields.p_address,p_category:document.getElementById('smCat')?.value||source.category,p_description:fields.p_description,p_phone:fields.p_phone,p_community_url:fields.p_community_url,p_point_purchase_url:fields.p_point_purchase_url,p_stamp_rally_enabled:fields.p_stamp_rally_enabled,p_spot_job_enabled:fields.p_spot_job_enabled,p_spot_job_title:fields.p_spot_job_title,p_spot_job_description:fields.p_spot_job_description,p_spot_job_hourly_wage:fields.p_spot_job_hourly_wage,p_spot_job_schedule:fields.p_spot_job_schedule,p_spot_job_payment_method:fields.p_spot_job_payment_method,p_spot_job_contact:fields.p_spot_job_contact,p_website_url:fields.p_website_url,p_instagram_url:fields.p_instagram_url,p_facebook_url:fields.p_facebook_url,p_x_url:fields.p_x_url,p_line_url:fields.p_line_url});
         if(resultFailed(shopResult))throw new Error('店舗情報を保存できませんでした');
@@ -1389,6 +1422,7 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
       await loadAll();
       toast(mode==='admin'?'管理者として保存しました。':'店舗情報とスタンプ番号を保存しました。');
     }catch(error){console.error(error);toast(saveError(error))}
+    finally{saving=false;if(saveButton)saveButton.disabled=false}
   };
 })();
 </script>
