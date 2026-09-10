@@ -1620,5 +1620,73 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
   addVisualEntry();createVisualModal();loadVisuals();
 })();
 </script>
+<style>
+.shop-image-editor{margin:12px 0;padding:14px;border:2px solid #cfe4dc;border-radius:18px;background:linear-gradient(135deg,#f7fffc,#fff8fb);box-shadow:0 6px 16px rgba(73,145,151,.08)}
+.shop-image-editor h3{margin:0;color:#397f87;font-size:16px}.shop-image-editor p{margin:6px 0 10px;color:#71808a;font-size:12px;line-height:1.55}.shop-image-editor input[type=file]{width:100%;box-sizing:border-box;padding:9px;background:#fff;border:1px solid #dcebef;border-radius:12px}.shop-image-preview{display:block;width:100%;height:150px;margin:9px 0;object-fit:cover;border-radius:14px;background:#edf5f3;border:1px solid #dcebef}.shop-image-empty{display:grid;place-items:center;color:#71808a;font-size:12px;font-weight:800}.shop-image-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.shop-image-actions .btn{margin:0}.shop-image-status{min-height:18px;margin-top:8px;color:#397f87;font-size:11px;font-weight:850;line-height:1.5}
+.shop-top-image{display:block;width:100%;height:180px;margin:0 0 12px;object-fit:cover;border-radius:18px;background:#edf5f3;border:1px solid #dcebef}
+@media(max-width:520px){.shop-image-preview{height:132px}.shop-top-image{height:156px}.shop-image-actions{grid-template-columns:1fr}}
+</style>
+<script>
+/* 店舗ごとのトップ画像。店舗編集PINまたは総合管理者PINで開いた後だけ表示・保存する。 */
+(function(){
+  if(window.__shopTopImageEditorReady)return;
+  window.__shopTopImageEditorReady=true;
+  const imageSrc=value=>{
+    const s=String(value||'');
+    if(/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(s)&&s.length<1800000)return s;
+    if(/^https:\/\//i.test(s))return s;
+    return '';
+  };
+  const shopFor=id=>(typeof adminShops!=='undefined'&&Array.isArray(adminShops)?adminShops:[]).find(x=>x.id===id)||(typeof shops!=='undefined'&&Array.isArray(shops)?shops:[]).find(x=>x.id===id);
+  const readImage=file=>new Promise((resolve,reject)=>{
+    if(!file)return resolve(null);
+    const url=URL.createObjectURL(file),img=new Image();
+    img.onload=()=>{
+      try{
+        const maxWidth=1800,maxHeight=1000,scale=Math.min(1,maxWidth/img.naturalWidth,maxHeight/img.naturalHeight),canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+        const context=canvas.getContext('2d');if(!context)throw new Error('canvas unavailable');context.drawImage(img,0,0,canvas.width,canvas.height);
+        let quality=.84,data=canvas.toDataURL('image/jpeg',quality);while(data.length>1600000&&quality>.48){quality-=.08;data=canvas.toDataURL('image/jpeg',quality)}
+        if(data.length>1750000)throw new Error('画像が大きすぎます');URL.revokeObjectURL(url);resolve(data);
+      }catch(error){URL.revokeObjectURL(url);reject(error)}
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('画像を読み込めません'))};img.src=url;
+  });
+  const addEditor=id=>{
+    const body=document.getElementById('shopManageBody'),mode=document.getElementById('smMode')?.value||'shop',save=document.querySelector('#shopManageBody button[onclick^="saveShopManage"]'),s=shopFor(id);
+    if(!body||!save||!s||document.getElementById('smShopTopImageEditor'))return;
+    const block=document.createElement('section');block.id='smShopTopImageEditor';block.className='shop-image-editor';block.dataset.clear='0';
+    const current=imageSrc(s.image_url);
+    block.innerHTML='<h3>🖼️ 店舗ページのトップ画像</h3><p>店舗ページの一番上に表示する写真です。店舗本人は店舗編集PIN、総合管理者は管理者PINで変更できます。お客さんにはこの編集欄は表示されません。</p><div id="smShopTopImagePreview" class="shop-image-preview shop-image-empty">現在の画像はありません</div><input id="smShopTopImageFile" type="file" accept="image/jpeg,image/png,image/webp"><div class="shop-image-actions"><button id="smShopTopImageClear" type="button" class="btn ghost">画像を外す</button><button id="smShopTopImageSave" type="button" class="btn green">画像を保存</button></div><div id="smShopTopImageStatus" class="shop-image-status"></div>';
+    if(save.parentNode)save.parentNode.insertBefore(block,save);else body.append(block);
+    const preview=document.getElementById('smShopTopImagePreview'),file=document.getElementById('smShopTopImageFile'),clear=document.getElementById('smShopTopImageClear'),status=document.getElementById('smShopTopImageStatus');
+    const show=value=>{const src=imageSrc(value);if(src){preview.className='shop-image-preview';preview.innerHTML='';const img=document.createElement('img');img.src=src;img.alt='店舗トップ画像プレビュー';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:13px';preview.append(img)}else{preview.className='shop-image-preview shop-image-empty';preview.textContent='現在の画像はありません'}};
+    show(current);
+    file.onchange=()=>{block.dataset.clear='0';clear.textContent='画像を外す';const selected=file.files?.[0];if(selected){const url=URL.createObjectURL(selected);preview.className='shop-image-preview';preview.innerHTML='';const img=document.createElement('img');img.src=url;img.alt='選択した店舗トップ画像';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:13px';img.onload=()=>URL.revokeObjectURL(url);preview.append(img);status.textContent='この画像を「保存する」で反映します。'}};
+    clear.onclick=()=>{if(block.dataset.clear==='1'){block.dataset.clear='0';clear.textContent='画像を外す';show(current);status.textContent='画像を残す設定に戻しました。'}else{block.dataset.clear='1';file.value='';show('');clear.textContent='画像を残して保存';status.textContent='「画像を保存」を押すと店舗ページから画像を外します。'}};
+    document.getElementById('smShopTopImageSave').onclick=()=>{status.textContent='下の「保存する」で店舗情報と一緒に保存します。';document.querySelector('#shopManageBody button[onclick^="saveShopManage"]')?.scrollIntoView({behavior:'smooth',block:'center'})};
+  };
+  const originalOpenManage=window.openShopManage;
+  window.openShopManage=id=>{originalOpenManage?.(id);const sync=()=>addEditor(id);setTimeout(sync,180);setTimeout(sync,650)};
+  const originalSave=window.saveShopManage;
+  window.saveShopManage=async id=>{
+    const block=document.getElementById('smShopTopImageEditor'),file=document.getElementById('smShopTopImageFile'),mode=document.getElementById('smMode')?.value||'shop',pin=document.getElementById('smPin')?.value.trim()||'';
+    if(!block||(!file?.files?.[0]&&block.dataset.clear!=='1'))return originalSave?.(id);
+    if(!pin)return originalSave?.(id);
+    const status=document.getElementById('smShopTopImageStatus');try{
+      if(status)status.textContent='画像を軽量化して保存しています…';
+      const data=file?.files?.[0]?await readImage(file.files[0]):null;
+      const fn=mode==='admin'?'admin_update_shop_image_by_pin':'update_shop_image_by_shared_pin';
+      const payload=mode==='admin'?{p_admin_pin:pin,p_shop_id:id,p_image_data:data,p_clear:block.dataset.clear==='1'}:{p_shop_id:id,p_pin:pin,p_image_data:data,p_clear:block.dataset.clear==='1'};
+      const updated=await rpc(fn,payload),row=Array.isArray(updated)?updated[0]:updated,s=shopFor(id);if(s&&row?.image_url!==undefined)s.image_url=row.image_url;
+      if(status)status.textContent='✅ 店舗トップ画像を保存しました。公開ページに反映されます。';
+      toast('店舗トップ画像を保存しました');
+    }catch(error){console.error(error);if(status)status.textContent=String(error).toLowerCase().includes('pin')?'PINが違います。':'画像を保存できませんでした。';toast('店舗トップ画像を保存できませんでした');return}
+    return originalSave?.(id);
+  };
+  const originalOpenStore=window.openStore;
+  window.openStore=id=>{originalOpenStore?.(id);setTimeout(()=>{const detail=document.getElementById('storeDetail'),s=shopFor(id),src=imageSrc(s?.image_url);if(!detail)return;detail.querySelector('.shop-top-image')?.remove();if(src){const img=document.createElement('img');img.className='shop-top-image';img.src=src;img.alt=`${s?.name||'店舗'}のトップ画像`;detail.insertBefore(img,detail.firstChild)}},0)};
+})();
+</script>
 </body>
 </html>
