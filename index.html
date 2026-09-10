@@ -1664,7 +1664,7 @@ body.moga-furari-mode .dm-card .reply-box{align-items:stretch}
     show(current);
     file.onchange=()=>{block.dataset.clear='0';clear.textContent='画像を外す';const selected=file.files?.[0];if(selected){const url=URL.createObjectURL(selected);preview.className='shop-image-preview';preview.innerHTML='';const img=document.createElement('img');img.src=url;img.alt='選択した店舗トップ画像';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:13px';img.onload=()=>URL.revokeObjectURL(url);preview.append(img);status.textContent='この画像を「保存する」で反映します。'}};
     clear.onclick=()=>{if(block.dataset.clear==='1'){block.dataset.clear='0';clear.textContent='画像を外す';show(current);status.textContent='画像を残す設定に戻しました。'}else{block.dataset.clear='1';file.value='';show('');clear.textContent='画像を残して保存';status.textContent='「画像を保存」を押すと店舗ページから画像を外します。'}};
-    document.getElementById('smShopTopImageSave').onclick=()=>{status.textContent='下の「保存する」で店舗情報と一緒に保存します。';document.querySelector('#shopManageBody button[onclick^="saveShopManage"]')?.scrollIntoView({behavior:'smooth',block:'center'})};
+    document.getElementById('smShopTopImageSave').onclick=()=>window.saveShopManage?.(id);
   };
   const originalOpenManage=window.openShopManage;
   window.openShopManage=id=>{originalOpenManage?.(id);const sync=()=>addEditor(id);setTimeout(sync,180);setTimeout(sync,650)};
