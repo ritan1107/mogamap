@@ -900,7 +900,7 @@ if(participant()){loadCustomerProfile();loadCustomerMailbox()}
     const pin=currentShopPin();if(!pin){const status=document.getElementById('smPurchaseStatus');if(status)status.textContent='店舗編集PINを入力して受信箱を確認してください。'}
   }
   const oldOpenShopManage=window.openShopManage;
-  window.openShopManage=id=>{oldOpenShopManage?.(id);setTimeout(()=>configureShopManage(id),80)};
+  window.openShopManage=id=>{oldOpenShopManage?.(id);configureShopManage(id);setTimeout(()=>configureShopManage(id),80)};
   function shopPinOrMessage(){const pin=currentShopPin();if(!pin){toast('店舗編集PINを入力してください');return ''}if(pin.length<4){toast('店舗編集PINは4文字以上です');return ''}return pin}
   function shopFields(s){
     const value=id=>document.getElementById(id)?.value||'';
