@@ -1,7 +1,16 @@
 [
   {
     "name": "NEW RESTAURANT 新規加盟店舗",
-    "address": "北海道 さるふつホタテ直送便 その他グルメ 北海道 シャンパンバープルミエ 洋食 対面",
+    "address": "北海道 さるふつホタテ直送便 その他グルメ 対面",
+    "phone": "",
+    "description": "",
+    "image": "",
+    "source_url": "https://u-word.com/teppan/store/searchResult",
+    "source": "U-WORD てっぱん"
+  },
+  {
+    "name": "呑み処 haru",
+    "address": "北海道 さるふつホタテ直送便 その他グルメ 対面",
     "phone": "",
     "description": "",
     "image": "",
@@ -10,16 +19,7 @@
   },
   {
     "name": "さるふつホタテ直送便",
-    "address": "北海道 さるふつホタテ直送便 その他グルメ 北海道 シャンパンバープルミエ 洋食 対面",
-    "phone": "",
-    "description": "",
-    "image": "",
-    "source_url": "https://u-word.com/teppan/store/searchResult",
-    "source": "U-WORD てっぱん"
-  },
-  {
-    "name": "さるふつホタテ直送便",
-    "address": "北海道 さるふつホタテ直送便 その他グルメ",
+    "address": "北海道 さるふつホタテ直送便 その他グルメ 対面",
     "phone": "",
     "description": "",
     "image": "",
