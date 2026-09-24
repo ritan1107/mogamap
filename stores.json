@@ -1,11 +1,20 @@
 [
   {
-    "name": "08:19 毛ガニ2尾セット フル🅿️でご提供開始！期間限定",
-    "address": "北海道 北海道函館朝市マルジュウ佐々木商店 (16667)",
+    "name": "NEW RESTAURANT 新規加盟店舗",
+    "address": "北海道 MIX NUTS（ミックスナッツ） 居酒屋・ダイニングバー 対面",
     "phone": "",
     "description": "",
     "image": "",
-    "source_url": "https://u-word.com/teppan/store/storeDetail/117089",
+    "source_url": "https://u-word.com/teppan/store/searchResult",
+    "source": "U-WORD てっぱん"
+  },
+  {
+    "name": "MIX NUTS（ミックスナッツ）",
+    "address": "北海道 MIX NUTS（ミックスナッツ） 居酒屋・ダイニングバー 対面",
+    "phone": "",
+    "description": "",
+    "image": "",
+    "source_url": "https://u-word.com/teppan/store/searchResult",
     "source": "U-WORD てっぱん"
   }
 ]
