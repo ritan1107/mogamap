@@ -1,7 +1,25 @@
 [
   {
     "name": "NEW RESTAURANT 新規加盟店舗",
-    "address": "北海道 MIX NUTS（ミックスナッツ） 居酒屋・ダイニングバー 対面",
+    "address": "北海道 月織堂 居酒屋・ダイニングバー 対面",
+    "phone": "",
+    "description": "",
+    "image": "",
+    "source_url": "https://u-word.com/teppan/store/searchResult",
+    "source": "U-WORD てっぱん"
+  },
+  {
+    "name": "アブリコロ",
+    "address": "北海道 月織堂 居酒屋・ダイニングバー 対面",
+    "phone": "",
+    "description": "",
+    "image": "",
+    "source_url": "https://u-word.com/teppan/store/searchResult",
+    "source": "U-WORD てっぱん"
+  },
+  {
+    "name": "月織堂",
+    "address": "北海道 月織堂 居酒屋・ダイニングバー 対面",
     "phone": "",
     "description": "",
     "image": "",
