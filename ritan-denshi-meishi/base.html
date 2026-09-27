@@ -77,7 +77,7 @@
     setIcon(document.getElementById('self'),'website','電子名刺URL');
     setIcon(document.getElementById('storyToggleBtn'),'story',clean(document.getElementById('storyToggleBtn')&&document.getElementById('storyToggleBtn').textContent));
     document.querySelectorAll('#linkGrid .link').forEach(function(el){setIcon(el,keyFor(el.textContent,el.getAttribute('href')),clean(el.textContent))});
-    document.querySelectorAll('.service').forEach(function(el){setIcon(el,keyFor(el.textContent,''),clean(el.textContent))});
+    document.querySelectorAll('.service').forEach(function(el){var text=clean(el.textContent);el.textContent=text;el.dataset.rtDecorated='1'});
     document.querySelectorAll('.nav button').forEach(function(btn){
       var holder=btn.querySelector('span');if(!holder||holder.dataset.rtIconDone==='1')return;
       var go=(btn.getAttribute('data-go')||btn.id||'').toLowerCase();var key=go==='home'?'home':go==='story'?'story':go==='service'?'service':go==='links'?'other':go==='navedit'?'admin':'other';
