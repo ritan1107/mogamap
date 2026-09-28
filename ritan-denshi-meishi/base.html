@@ -89,4 +89,50 @@
   var count=0;var timer=setInterval(function(){decorate();count++;if(count>80)clearInterval(timer)},350);
 })();
 </script>
+
+<!-- ritan-ai-widget-v1 -->
+<style>
+.ritan-ai-open{position:fixed;right:14px;bottom:78px;z-index:45;border:0;border-radius:999px;padding:12px 16px;background:linear-gradient(135deg,#df6696,#58b8b0);color:#fff;font:900 12px inherit;box-shadow:0 9px 24px rgba(55,86,96,.25);cursor:pointer}
+.ritan-ai-open:active{transform:scale(.97)}
+.ritan-ai-modal{display:none;position:fixed;inset:0;z-index:90;padding:14px;background:rgba(28,43,52,.48)}
+.ritan-ai-modal.show{display:flex;align-items:flex-end;justify-content:center}
+.ritan-ai-panel{width:min(720px,100%);max-height:min(78vh,720px);display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:#fff;color:#29414b;box-shadow:0 20px 60px rgba(20,40,50,.28)}
+.ritan-ai-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;background:linear-gradient(135deg,#ffe9f2,#e6fcff);border-bottom:1px solid #e4edf0}
+.ritan-ai-head strong{font-size:16px}.ritan-ai-close{width:32px;height:32px;border:0;border-radius:50%;background:#fff;color:#526d76;font-size:20px;line-height:1;cursor:pointer}
+.ritan-ai-intro{padding:12px 16px 0;font-size:11px;color:#6a8189;line-height:1.7}
+.ritan-ai-quick{display:flex;gap:7px;overflow-x:auto;padding:10px 16px 5px}
+.ritan-ai-quick button{white-space:nowrap;border:1px solid #d8e6e9;border-radius:999px;padding:7px 11px;background:#f7fffe;color:#41616a;font:900 11px inherit;cursor:pointer}
+.ritan-ai-messages{min-height:130px;max-height:42vh;overflow:auto;padding:8px 16px 14px}
+.ritan-ai-msg{display:flex;margin:7px 0}.ritan-ai-msg.user{justify-content:flex-end}.ritan-ai-bubble{max-width:88%;padding:10px 12px;border-radius:15px;background:#f0fbfa;font-size:12px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.ritan-ai-msg.user .ritan-ai-bubble{background:#ffeaf2}
+.ritan-ai-form{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid #edf2f3;background:#fff}.ritan-ai-input{min-width:0;flex:1;border:1px solid #d6e3e6;border-radius:13px;padding:10px 12px;font:inherit;font-size:12px}.ritan-ai-send{border:0;border-radius:13px;padding:0 15px;background:#58b8b0;color:#fff;font-weight:900;cursor:pointer}.ritan-ai-send:disabled{opacity:.55;cursor:wait}
+.ritan-ai-cta{padding:0 16px 13px;text-align:center;font-size:10px;color:#6a8189}.ritan-ai-cta a{color:#d75d8f;font-weight:900}
+@media(max-width:699px){.ritan-ai-open{right:12px;bottom:78px}.ritan-ai-modal{padding:8px}.ritan-ai-panel{max-height:84vh}}
+</style>
+<button class="ritan-ai-open" id="ritanAiOpen" type="button">りーたんAIに相談</button>
+<div class="ritan-ai-modal" id="ritanAiModal" aria-hidden="true">
+  <section class="ritan-ai-panel" role="dialog" aria-modal="true" aria-labelledby="ritanAiTitle">
+    <div class="ritan-ai-head"><strong id="ritanAiTitle">りーたんAIに相談</strong><button class="ritan-ai-close" id="ritanAiClose" type="button" aria-label="閉じる">×</button></div>
+    <div class="ritan-ai-intro">作りたいものや困っていることを入力してください。合いそうなサービスをご案内します。</div>
+    <div class="ritan-ai-quick" id="ritanAiQuick">
+      <button type="button" data-q="LPやホームページを作りたい">LP・HP</button>
+      <button type="button" data-q="手描きアニメーション動画を作りたい">手描き動画</button>
+      <button type="button" data-q="LINEスタンプを作りたい">LINEスタンプ</button>
+      <button type="button" data-q="マルシェや掲載について相談したい">マルシェ・掲載</button>
+    </div>
+    <div class="ritan-ai-messages" id="ritanAiMessages"></div>
+    <div class="ritan-ai-cta">具体的な相談や依頼は<a href="https://lin.ee/ZJwTkPK" target="_blank" rel="noopener">公式LINE</a>からどうぞ</div>
+    <form class="ritan-ai-form" id="ritanAiForm"><input class="ritan-ai-input" id="ritanAiInput" type="text" maxlength="500" placeholder="例：お店のLPを作りたい"><button class="ritan-ai-send" id="ritanAiSend" type="submit">送信</button></form>
+  </section>
+</div>
+<script>
+(function(){
+  var endpoint='https://lgidhjxowpueglduphzp.supabase.co/functions/v1/ritan-ai-agent';
+  var modal=document.getElementById('ritanAiModal'),open=document.getElementById('ritanAiOpen'),close=document.getElementById('ritanAiClose'),list=document.getElementById('ritanAiMessages'),form=document.getElementById('ritanAiForm'),input=document.getElementById('ritanAiInput'),send=document.getElementById('ritanAiSend'),quick=document.getElementById('ritanAiQuick'),messages=[],started=false,busy=false;
+  function add(role,text){var row=document.createElement('div');row.className='ritan-ai-msg '+role;var bubble=document.createElement('div');bubble.className='ritan-ai-bubble';bubble.textContent=text;row.appendChild(bubble);list.appendChild(row);list.scrollTop=list.scrollHeight}
+  function guide(text){var s=String(text||'');if(/LP|HP|ホームページ|印刷|Web|WEB/i.test(s))return 'Webデザインのご相談ですね。LP・HP・印刷物のどれを作りたいか、業種と目的を教えていただければ、必要な構成を整理できます。';if(/手描き|アニメ|ホワイトボード/i.test(s))return '手描きアニメーション動画で、サービスや想いを分かりやすく伝えられます。何を誰に伝えたい動画か教えてください。';if(/LINE|スタンプ/i.test(s))return 'LINEスタンプの制作相談ですね。キャラクターの元画像や入れたい言葉があれば、そこから整理できます。';if(/似顔絵|イラスト/i.test(s))return '似顔絵・イラストのご相談ですね。用途と希望する雰囲気を教えてください。';if(/動画編集|編集/i.test(s))return '動画編集のご相談ですね。素材の種類、完成イメージ、使う場所を教えてください。';if(/マルシェ|掲載|集客|イベント/i.test(s))return 'マルシェ・掲載案内・集客のご相談ですね。出店したい、紹介してほしい、掲載したいなど、希望を教えてください。';return 'どんなものを作りたい、または何に困っていますか？「LPを作りたい」「LINEスタンプを作りたい」のように教えてください。'}
+  function welcome(){if(started)return;started=true;add('ai','こんにちは。りーたんのサービスについて、何を相談したいですか？')}
+  function ask(text){text=String(text||'').trim();if(!text||busy)return;input.value='';add('user',text);messages.push({role:'user',content:text});busy=true;send.disabled=true;send.textContent='送信中';fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:messages.slice(-8)})}).then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data}})}).then(function(result){var reply=result.ok&&result.data&&result.data.reply?result.data.reply:guide(text);messages.push({role:'assistant',content:reply});add('ai',reply)}).catch(function(){var reply=guide(text);messages.push({role:'assistant',content:reply});add('ai',reply)}).finally(function(){busy=false;send.disabled=false;send.textContent='送信';input.focus()})}
+  open.onclick=function(){modal.classList.add('show');modal.setAttribute('aria-hidden','false');welcome();setTimeout(function(){input.focus()},50)};close.onclick=function(){modal.classList.remove('show');modal.setAttribute('aria-hidden','true')};modal.addEventListener('click',function(e){if(e.target===modal)close.click()});form.onsubmit=function(e){e.preventDefault();ask(input.value)};quick.querySelectorAll('button').forEach(function(b){b.onclick=function(){ask(b.getAttribute('data-q'))}});
+})();
+</script>
 </body></html>
