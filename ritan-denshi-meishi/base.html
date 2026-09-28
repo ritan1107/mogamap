@@ -75,7 +75,6 @@
     setIcon(document.getElementById('shareBtn'),'share','共有');
     setIcon(document.getElementById('copyBtn'),'other','コピー');
     setIcon(document.getElementById('self'),'website','電子名刺URL');
-    setIcon(document.getElementById('storyToggleBtn'),'story',clean(document.getElementById('storyToggleBtn')&&document.getElementById('storyToggleBtn').textContent));
     document.querySelectorAll('#linkGrid .link').forEach(function(el){setIcon(el,keyFor(el.textContent,el.getAttribute('href')),clean(el.textContent))});
     document.querySelectorAll('.service').forEach(function(el){var text=clean(el.textContent);el.textContent=text;el.dataset.rtDecorated='1'});
     document.querySelectorAll('.nav button').forEach(function(btn){
