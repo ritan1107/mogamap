@@ -33,7 +33,7 @@
     admin:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'
   };
   function icon(key){return '<span class="rt-icon rt-'+key+'">'+(bodies[key]||bodies.other)+'</span>'}
-  function clean(value){return String(value||'').replace(/^(?:💚|📇|🛒|🎨|📷|↗|🔗|🌐|🖥️|🎬|🎞️|🤝|🔐|🏠|📖|👤|📸|✨|💡|🎤|💃|🖌️|🌸|🦋)\s*/,'').trim()}
+  function clean(value){return String(value||'').replace(/^(?:[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]\s*)+/u,'').trim()}
   function keyFor(value,href){
     var s=(String(value||'')+' '+String(href||'')).toLowerCase();
     if(s.indexOf('line')>=0||s.indexOf('lin.ee')>=0)return 'line';
@@ -75,11 +75,13 @@
     setIcon(document.getElementById('shareBtn'),'share','共有');
     setIcon(document.getElementById('copyBtn'),'other','コピー');
     setIcon(document.getElementById('self'),'website','電子名刺URL');
-    document.querySelectorAll('#linkGrid .link').forEach(function(el){setIcon(el,keyFor(el.textContent,el.getAttribute('href')),clean(el.textContent))});
+    document.querySelectorAll('#linkGrid .link').forEach(function(el){el.textContent=clean(el.textContent);el.dataset.rtDecorated='1'});
     document.querySelectorAll('.service').forEach(function(el){var text=clean(el.textContent);el.textContent=text;el.dataset.rtDecorated='1'});
     document.querySelectorAll('.nav button').forEach(function(btn){
       var holder=btn.querySelector('span');if(!holder||holder.dataset.rtIconDone==='1')return;
-      var go=(btn.getAttribute('data-go')||btn.id||'').toLowerCase();var key=go==='home'?'home':go==='story'?'story':go==='service'?'service':go==='links'?'other':go==='navedit'?'admin':'other';
+      var go=(btn.getAttribute('data-go')||btn.id||'').toLowerCase();
+      if(go==='links'){holder.replaceChildren();holder.style.display='none';holder.dataset.rtIconDone='1';return;}
+      var key=go==='home'?'home':go==='story'?'story':go==='service'?'service':go==='navedit'?'admin':'other';
       holder.replaceChildren();holder.insertAdjacentHTML('beforeend',icon(key));holder.dataset.rtIconDone='1';
     });
   }
