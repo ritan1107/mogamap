@@ -1,0 +1,1 @@
+window.MOGU_CONFIG={"supabaseUrl":"https://lgidhjxowpueglduphzp.supabase.co","publishableKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxnaWRoanhvd3B1ZWdsZHVwaHpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1Mzc4MjEsImV4cCI6MjEwMjExMzgyMX0.AU1WjBRfB8uvCCTUqW0mou8OHKbLEzGbV7dqELQElbo"};
