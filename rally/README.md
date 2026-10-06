@@ -19,5 +19,7 @@ NFCとQRは同じ店舗認証コードを使います。発行URLの `via=nfc` /
 - `create_mogu_rally_core_functions`
 - `create_mogu_rally_admin_functions`
 - `harden_mogu_rally_policies_and_indexes`
+- `grant_mogu_rally_policy_lookup`
+- `restrict_mogu_rally_rpc_roles`
 
 公開側は参加トークンだけを端末に保存し、店舗コードのハッシュ・スタンプ付与・完了判定はRPC側で処理します。
