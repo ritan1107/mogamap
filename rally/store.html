@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102a43">
+<title>MOGU RALLY 店舗確認</title>
+<style>
+:root{--navy:#102a43;--orange:#ffb703;--cream:#fffaf0;--ink:#162433;--muted:#6c7a89;--line:#dbe4ea;--mint:#b8f2e6;--danger:#c3423f}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}.top{background:var(--navy);color:#fff;padding:20px}.top-inner{max-width:760px;margin:auto;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:950;letter-spacing:.08em}.brand span{color:var(--orange)}.wrap{max-width:760px;margin:auto;padding:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 18px 45px rgba(16,42,67,.12);margin-bottom:16px}.hgroup{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}.hgroup h1,.hgroup h2{margin:0}.muted{color:var(--muted);font-size:14px;line-height:1.7}.button{border:0;border-radius:12px;padding:11px 15px;font-weight:900;background:var(--navy);color:#fff}.button.mint{background:var(--mint);color:var(--navy)}.button.red{background:#fee9e7;color:var(--danger)}.button.small{padding:8px 10px;font-size:12px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.status{border-radius:99px;background:#eef3f6;color:var(--muted);font-size:12px;font-weight:900;padding:6px 9px}.request{border-left:5px solid var(--orange);padding:12px 0 12px 12px;margin-top:14px}.request.approved{border-left-color:#54a86b}.request.rejected{border-left-color:var(--danger)}.evidence{background:#f6f9fa;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;line-height:1.7;white-space:pre-wrap;word-break:break-word}.msg{margin-top:10px;color:var(--danger);font-weight:800;font-size:13px}.hidden{display:none!important}a{color:var(--navy);font-weight:800;word-break:break-all}@media(max-width:700px){.wrap{padding:12px}.panel{padding:16px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner"><div class="brand">MOGU <span>RALLY</span> 店舗確認</div><span style="color:#d9edf2;font-size:13px">承認画面</span></div></header>
+<main class="wrap">
+<section id="gate" class="panel"><div class="hgroup"><div><div class="muted">STORE APPROVAL</div><h1 id="storeName">店舗を確認中…</h1></div><div style="font-size:38px">✅</div></div><p class="muted">NFC・QR・遠隔の申請をここで確認し、承認すると参加者のスタンプ帳へ反映されます。</p><div id="gateMsg" class="msg"></div></section>
+<section id="requestsPanel" class="panel hidden"><div class="hgroup"><div><div class="muted">REQUESTS</div><h2>承認待ち</h2></div><button id="refresh" class="button small">更新</button></div><div id="requestList"></div></section>
+</main>
+<script src="./config.js"></script>
+<script>
+const CFG=window.MOGU_CONFIG||{},SB=CFG.supabaseUrl,KEY=CFG.publishableKey,params=new URLSearchParams(location.search),storeId=params.get('store')||'',accessCode=params.get('access')||'';
+const H={apikey:KEY,'Content-Type':'application/json'},$=id=>document.getElementById(id);
+async function call(action,payload={}){const r=await fetch(SB+'/functions/v1/mogu-store-admin',{method:'POST',headers:H,body:JSON.stringify({action,store_id:storeId,access_code:accessCode,...payload})});const t=await r.text();let d={};try{d=t?JSON.parse(t):{}}catch(e){}if(!r.ok||d.ok===false)throw Error(d.reason||'通信できません');return d}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function label(r){return r.request_kind==='onsite'?(r.source_method==='nfc'?'NFC現地':'QR現地'):'遠隔購入'}
+function render(rows){const pending=rows.filter(r=>r.status==='pending');$('requestList').innerHTML=pending.length?pending.map(r=>'<div class="request"><b>'+esc(r.participant_nickname)+'</b> ／ '+esc(r.cycle_no)+'周目 <span class="status">'+label(r)+'</span><div class="muted">'+new Date(r.created_at).toLocaleString('ja-JP')+'</div>'+(r.note?'<div class="evidence"><b>申請内容</b><br>'+esc(r.note)+'</div>':'')+(r.evidence_text?'<div class="evidence"><b>購入履歴</b><br>'+esc(r.evidence_text)+'</div>':'')+(r.evidence_url?'<div class="evidence"><a href="'+esc(r.evidence_url)+'" target="_blank" rel="noopener">購入履歴ページを開く</a></div>':'')+'<div class="row" style="margin-top:10px"><button class="button mint small" data-approve="'+r.id+'">確認して承認</button><button class="button red small" data-reject="'+r.id+'">見送り</button></div></div>').join(''):'<div class="muted">現在、承認待ちはありません。</div>'}
+async function load(){if(!storeId||!accessCode){$('gateMsg').textContent='店舗確認用URLが不足しています。主催者から発行されたURLを使用してください。';return}try{const x=await call('list_requests');$('storeName').textContent=x.store.store_name;$('requestsPanel').classList.remove('hidden');render(x.requests||[])}catch(e){$('gateMsg').textContent='店舗確認用URLを確認できません。'+e.message}}
+$('refresh').onclick=load;$('requestList').onclick=async e=>{const a=e.target.closest('[data-approve]'),r=e.target.closest('[data-reject]');if(!a&&!r)return;const id=(a||r).dataset[a?'approve':'reject'];try{const x=await call('resolve_request',{request_id:id,approve:!!a,response_note:''});if(!x.ok)throw Error(x.reason);await load()}catch(err){alert(err.message)}};load();
+</script>
+</body>
+</html>
