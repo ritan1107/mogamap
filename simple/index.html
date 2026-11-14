@@ -42,6 +42,18 @@
 @keyframes pon{to{transform:rotate(-10deg) scale(1);opacity:1}}
 .pon h2{margin-top:26px}
 .hrow{display:flex;justify-content:space-between;align-items:center;gap:10px}.hrow .btn{white-space:nowrap}
+.clear-line{margin-top:10px;background:#fff8ec;border-radius:14px;padding:9px 12px;font-size:14px;font-weight:800;color:#a8742a;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.clear-dots{display:flex;gap:5px}.clear-dots i{width:14px;height:14px;border-radius:50%;background:#efe2cf;display:block}.clear-dots i.on{background:var(--pink)}
+.reward{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1.5px solid #f1ddb9;background:#fffaf0;border-radius:16px;padding:11px 13px;margin-top:9px}
+.reward b{font-size:17px}
+.reward-card{text-align:center}.reward-card .big-gift{font-size:60px;line-height:1.1}.reward-card .no{font-size:40px;font-weight:900;color:var(--pink)}
+.reward-card .ticket{border:2.5px dashed var(--pink);border-radius:18px;padding:14px;margin:14px 0;background:#fff7fa}
+.thread{border:1.5px solid var(--line);border-radius:16px;padding:11px 12px;margin-top:10px}
+.thread-head{font-weight:900;color:var(--teal);display:flex;justify-content:space-between;gap:8px}
+.bubble{max-width:85%;padding:8px 11px;border-radius:14px;margin-top:7px;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.bubble small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.bubble.me{margin-left:auto;background:#e6f4f3}.bubble.them{background:#fdeef3}
+.reply{display:flex;gap:6px;margin-top:8px}.reply input{padding:9px 11px;font-size:15px}.reply .btn{margin:0;white-space:nowrap}
 .admin-link{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 .complete{text-align:center}
 .complete .code{font-size:28px;font-weight:900;letter-spacing:.1em;background:#fff1f6;border-radius:16px;padding:12px;margin:10px 0;color:var(--pink)}
@@ -60,6 +72,7 @@
       <div class="progress-num" id="pNum">0<small> / 0</small></div>
       <div style="flex:1"><div class="muted" id="rallyTitle">スタンプラリー</div><div class="bar"><i id="pBar"></i></div></div>
     </div>
+    <div class="clear-line hidden" id="clearLine"></div>
     <div class="grid4">
       <button class="big b1" data-go="stamp"><span>🏪</span><b>対面スタンプ</b><small>お店にいるとき</small></button>
       <button class="big b2" data-go="remote"><span>📦</span><b>遠隔スタンプ</b><small>通販・遠くから</small></button>
@@ -117,12 +130,26 @@
       <div class="book" id="book"></div>
       <button class="btn pink hidden" id="showComplete">🎉 コンプリート画面を見る</button>
     </div>
+    <div class="card">
+      <h3>🎁 クリアと景品</h3>
+      <div class="muted">スタンプ3つで1クリア。クリアするたびに景品がもらえます。</div>
+      <div id="clearList"></div>
+    </div>
   </section>
 
   <!-- マイページ -->
   <section class="view" id="v-mypage">
     <button class="back" data-go="home">← もどる</button>
     <div class="card" id="myCard"></div>
+    <div class="card" id="dmCard">
+      <div class="hrow"><h3 style="margin:0">💬 お店とメッセージ</h3><button class="btn ghost small" id="refreshDm">更新</button></div>
+      <label class="label" for="dmShop">送るお店</label>
+      <select id="dmShop"></select>
+      <textarea id="dmText" rows="3" placeholder="お店に聞きたいこと・伝えたいこと"></textarea>
+      <button class="btn" id="dmSend">送る</button>
+      <div class="status" id="dmStatus"></div>
+      <div id="dmList"></div>
+    </div>
     <div class="card" id="noticeCard">
       <div class="hrow"><h3 style="margin:0">🔔 お知らせ</h3><button class="btn ghost small" id="markRead">既読にする</button></div>
       <div id="noticeList"><div class="muted">お知らせはありません</div></div>
@@ -147,6 +174,12 @@
   <div class="complete" id="completeBody"></div>
 </div></div>
 
+<!-- 景品受け取り画面 -->
+<div class="modal" id="rewardModal"><div class="sheet">
+  <div class="sheet-head"><span></span><button class="x" data-close="rewardModal">×</button></div>
+  <div class="reward-card" id="rewardBody"></div>
+</div></div>
+
 <!-- スタンプ演出 -->
 <div class="pon" id="pon">
   <div class="pon-mark"><b>もぐ</b><span id="ponShop"></span></div>
@@ -158,7 +191,8 @@
 <div id="toast"></div>
 <script src="core.js?v=1"></script>
 <script>
-let shops=[],settings={},progress=null,stampIds=new Set(),notices=[],subs=[];
+let shops=[],settings={},progress=null,stampIds=new Set(),notices=[],subs=[],allSubs=[],dmMsgs=[],clears=[];
+const PER_CLEAR=3; // スタンプいくつで1クリアか
 
 /* ---------- 画面切り替え ---------- */
 function go(name){
@@ -166,7 +200,7 @@ function go(name){
   window.scrollTo(0,0);
   if(name!=='home'&&name!=='book'&&!participant()){openJoin();}
   if(name==='remote')loadSubs();
-  if(name==='mypage'){renderMy();loadNotices();}
+  if(name==='mypage'){renderMy();loadNotices();loadDm();}
   if(name!=='home')history.replaceState(null,'','#'+name);else history.replaceState(null,'',location.pathname);
 }
 document.addEventListener('click',e=>{
@@ -199,6 +233,7 @@ async function loadProgress(){
     progress=pr?.[0]||null;stampIds=new Set((ids||[]).map(x=>x.shop_id));
     if(!p.entryId){try{const er=await rpc('get_participant_entry_id',auth(p));if(er?.[0]?.participant_entry_id){p.entryId=er[0].participant_entry_id;saveParticipant(p)}}catch{}}
   }catch(e){console.error(e)}
+  await recordClears();
   renderProgress();
 }
 function renderProgress(){
@@ -208,6 +243,45 @@ function renderProgress(){
   $('bookNote').textContent=p?`${count}個 / ${total}店舗`:'参加すると、ここにスタンプがたまります';
   $('book').innerHTML=rs.length?rs.map(s=>`<div class="stamp ${stampIds.has(s.id)?'on':''}"><span class="stamp-inner">${esc(s.name)}</span></div>`).join(''):'<div class="muted">参加店舗はまだありません</div>';
   $('showComplete').classList.toggle('hidden',!progress?.completed);
+  renderClears(count);
+}
+
+/* ---------- クリア（スタンプ3つで1クリア） ---------- */
+const stampCount=()=>progress?.stamp_count??stampIds.size;
+const seenKey=()=>'mogu_seen_clears_'+(participant()?.id||'');
+const seenClears=()=>{try{return +localStorage.getItem(seenKey())||0}catch{return 0}};
+const setSeen=n=>{try{localStorage.setItem(seenKey(),String(n))}catch{}};
+async function recordClears(){
+  const p=participant();if(!p){clears=[];return}
+  try{
+    const rows=await rpc('mogu_record_clears',{...auth(p),p_per_clear:PER_CLEAR});
+    clears=(rows||[]).map(r=>({clear_no:r.clear_no,reward_given:!!r.reward_given,created_at:r.created_at}));
+  }catch(e){ // 記録用の仕組みが未設定でも、表示だけは出す
+    console.warn('クリア記録なし:',e);
+    const n=Math.floor(stampCount()/PER_CLEAR);clears=Array.from({length:n},(_,i)=>({clear_no:i+1,reward_given:false}));
+  }
+}
+function renderClears(count){
+  const p=participant(),line=$('clearLine'),n=clears.length,rest=PER_CLEAR-(count%PER_CLEAR);
+  line.classList.toggle('hidden',!p);
+  if(p)line.innerHTML=`<span>${n?`🎁 ${n}クリア達成！`:'🎁 3つで1クリア'}　あと${rest}個で${n+1}クリア</span><span class="clear-dots">${Array.from({length:PER_CLEAR},(_,i)=>`<i class="${i<count%PER_CLEAR?'on':''}"></i>`).join('')}</span>`;
+  $('clearList').innerHTML=n?clears.slice().reverse().map(c=>`<div class="reward"><div><b>${c.clear_no}クリア</b><div class="muted">${c.reward_given?'✅ 景品を受け取りました':'🎁 景品がもらえます'}</div></div>${c.reward_given?'':`<button class="btn pink small" data-reward="${c.clear_no}">受け取り画面</button>`}</div>`).join(''):`<div class="muted" style="margin-top:8px">${p?`あと${rest}個で1クリア！`:'参加すると、ここにクリアが出ます'}</div>`;
+}
+$('clearList').addEventListener('click',e=>{const b=e.target.closest('[data-reward]');if(b)showReward(+b.dataset.reward)});
+$('clearLine').addEventListener('click',()=>go('book'));
+function showReward(no,isNew){
+  const p=participant();if(!p)return;
+  $('rewardBody').innerHTML=`<div class="big-gift">🎁</div><h2>${isNew?'クリアおめでとう！':'景品の受け取り'}</h2>
+  <div class="ticket"><div class="no">${no}クリア</div><div><b>${esc(p.nickname||'')}</b> さん</div><div class="muted">参加者ID ${esc(p.entryId||'-----')}</div></div>
+  <p>景品がもらえます🎉<br>この画面を<b>主催者・スタッフ</b>に見せてください。</p>
+  <p class="muted">スタンプ${PER_CLEAR}つごとに、また景品がもらえます。</p>`;
+  $('rewardModal').classList.add('on');
+}
+function checkNewClears(){
+  if(!participant())return;
+  const seen=seenClears(),n=clears.length;
+  if(n>seen){setSeen(n);const latest=clears.filter(c=>!c.reward_given).pop()||clears[n-1];showReward(latest.clear_no,true)}
+  else if(n<seen)setSeen(n);
 }
 
 /* ---------- 参加登録 ---------- */
@@ -237,20 +311,24 @@ async function claim(shopId,code){
   try{
     const r=await rpc('claim_participant_stamp',{...auth(p),p_shop_id:shopId,p_shop_pin:code}),x=r?.[0];
     if(!x?.success)return toast('番号がちがうようです');
+    const before=seenClears();
     await loadProgress();
-    const s=shops.find(y=>y.id===shopId);showPon(s?.name||'',false);
+    const s=shops.find(y=>y.id===shopId);showPon(s?.name||'',false,clears.length>before);
   }catch(e){console.error(e);toast('スタンプを押せませんでした')}
 }
 $('claimStamp').onclick=()=>{const code=$('stampCode').value.trim();claim($('stampShop').value,code).then(()=>{$('stampCode').value=''})};
-function showPon(name,already){
+let ponClear=false;
+function showPon(name,already,newClear){
+  ponClear=!!newClear;
   $('ponShop').textContent=name;
   $('ponTitle').textContent=already?'もう押してあります':'スタンプゲット！';
   const count=progress?.stamp_count??stampIds.size,total=progress?.total_shops??rallyShops().length;
-  $('ponNote').textContent=progress?.completed?'🎉 全部そろいました！':`いま ${count} / ${total} 個`;
+  $('ponNote').textContent=newClear?`🎁 ${clears.length}クリア！景品がもらえます`:progress?.completed?'🎉 全部そろいました！':`いま ${count} / ${total} 個`;
+  $('ponClose').textContent=newClear?'🎁 景品の受け取り画面へ':'スタンプ帳を見る';
   const el=$('pon');el.classList.remove('on');void el.offsetWidth;el.classList.add('on');
   if(navigator.vibrate)navigator.vibrate(60);
 }
-$('ponClose').onclick=()=>{$('pon').classList.remove('on');go(progress?.completed?'book':'book');if(progress?.completed)showComplete()};
+$('ponClose').onclick=()=>{$('pon').classList.remove('on');go('book');if(ponClear)checkNewClears();else if(progress?.completed)showComplete()};
 
 /* ---------- 遠隔スタンプ ---------- */
 function readPhoto(file){
@@ -278,18 +356,67 @@ async function loadSubs(){
   const p=participant();if(!p)return;
   try{
     const rows=await rpc('list_purchase_submissions_for_participant',auth(p));
-    subs=(rows||[]).map(r=>({...r,status:r.submission_status||r.status||'pending'})).filter(r=>!String(r.purchase_message||'').startsWith('【DM・質問】'));
+    allSubs=(rows||[]).map(r=>({...r,id:r.submission_id||r.id,status:r.submission_status||r.status||'pending'}));
+    subs=allSubs.filter(r=>!isDm(r));
   }catch(e){console.error(e)}
   $('remoteList').innerHTML=subs.length?subs.map(r=>{const [t,c]=subStatus(r.status);return `<div class="hist"><div class="hist-top"><span>${esc(r.shop_name||'お店')}</span><span class="badge ${c}">${t}</span></div><div class="muted">${new Date(r.created_at).toLocaleString('ja-JP')}</div>${r.response_message?`<div>お店から：${escBr(r.response_message)}</div>`:''}</div>`}).join(''):'<div class="muted">まだありません</div>';
-  if(subs.some(r=>r.status==='approved'))loadProgress();
+  if(subs.some(r=>r.status==='approved')){await loadProgress();checkNewClears()}
 }
 $('refreshRemote').onclick=loadSubs;
+
+/* ---------- お店とメッセージ（DM） ---------- */
+const DM_MARK='【DM・質問】';
+const isDm=r=>String(r.purchase_message||'').startsWith(DM_MARK);
+async function loadDm(){
+  const p=participant();if(!p)return;
+  const opts='<option value="">お店を選んでください</option>'+shops.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+  if(!$('dmShop').options.length||$('dmShop').options.length===1)$('dmShop').innerHTML=opts;
+  try{
+    const [rows,msgs]=await Promise.all([rpc('list_purchase_submissions_for_participant',auth(p)),rpc('list_rally_messages_for_participant',auth(p))]);
+    allSubs=(rows||[]).map(r=>({...r,id:r.submission_id||r.id,status:r.submission_status||r.status||'pending'}));
+    dmMsgs=Array.isArray(msgs)?msgs:[];
+  }catch(e){console.error(e);$('dmStatus').textContent='メッセージを読み込めませんでした'}
+  renderDm();
+}
+function renderDm(){
+  const threads=allSubs.filter(s=>isDm(s)||dmMsgs.some(m=>m.submission_id&&m.submission_id===s.id));
+  const loose=dmMsgs.filter(m=>!m.submission_id||!threads.some(t=>t.id===m.submission_id));
+  const bub=(who,text,at)=>`<div class="bubble ${who==='shop'?'them':'me'}">${esc(text)}<small>${who==='shop'?'お店':'あなた'}・${at?new Date(at).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):''}</small></div>`;
+  const html=threads.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).map(t=>{
+    const first=isDm(t)?bub('me',String(t.purchase_message).replace(DM_MARK,'').trim(),t.created_at):bub('me','（遠隔スタンプの申請）',t.created_at);
+    const ms=dmMsgs.filter(m=>m.submission_id===t.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)).map(m=>bub(m.sender_type,m.message_body,m.created_at)).join('');
+    const resp=t.response_message&&!dmMsgs.some(m=>m.submission_id===t.id&&m.message_body===t.response_message)?bub('shop',t.response_message,t.updated_at||t.created_at):'';
+    return `<div class="thread"><div class="thread-head"><span>🏪 ${esc(t.shop_name||'お店')}</span></div>${first}${resp}${ms}<div class="reply"><input data-reply-input="${esc(t.id)}" placeholder="返信を書く"><button class="btn small" data-reply="${esc(t.id)}">送る</button></div></div>`;
+  }).join('')+(loose.length?`<div class="thread"><div class="thread-head"><span>📨 その他のメッセージ</span></div>${loose.map(m=>bub(m.sender_type,(m.shop_name?m.shop_name+'：':'')+m.message_body,m.created_at)).join('')}</div>`:'');
+  $('dmList').innerHTML=html||'<div class="muted" style="margin-top:10px">まだメッセージはありません</div>';
+}
+$('dmSend').onclick=async()=>{
+  const p=participant();if(!p)return openJoin();
+  const shopId=$('dmShop').value,text=$('dmText').value.trim(),st=$('dmStatus');
+  if(!shopId)return st.textContent='お店を選んでください';if(!text)return st.textContent='メッセージを書いてください';
+  $('dmSend').disabled=true;st.textContent='送信中…';
+  try{
+    const thread=allSubs.filter(t=>(t.shop_id||t.store_id)===shopId&&isDm(t)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
+    if(thread)await rpc('send_rally_message_from_participant',{...auth(p),p_submission_id:thread.id,p_message:text});
+    else await rpc('submit_purchase_proof',{...auth(p),p_shop_id:shopId,p_uw_id:p.uwId||null,p_purchase_message:DM_MARK+' '+text,p_purchase_url:null,p_proof_data:null,p_proof_mime:null});
+    $('dmText').value='';st.textContent='送りました。お店からの返信はここに届きます。';toast('💬 お店に送りました');await loadDm();
+  }catch(e){console.error(e);st.textContent=errText(e).includes('すでに')?'このお店とのやり取りが下にあります。そこから続けて送ってください':'送れませんでした'}
+  finally{$('dmSend').disabled=false}
+};
+$('dmList').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-reply]');if(!b)return;const p=participant();if(!p)return;
+  const input=document.querySelector(`[data-reply-input="${CSS.escape(b.dataset.reply)}"]`),text=input?.value.trim();if(!text)return;
+  b.disabled=true;
+  try{await rpc('send_rally_message_from_participant',{...auth(p),p_submission_id:b.dataset.reply,p_message:text});toast('送りました');await loadDm()}
+  catch(e){console.error(e);toast('送れませんでした');b.disabled=false}
+});
+$('refreshDm').onclick=loadDm;
 
 /* ---------- マイページ ---------- */
 function renderMy(){
   const p=participant(),el=$('myCard');
-  if(!p){el.innerHTML='<h2>👤 マイページ</h2><div class="muted">まだ参加していません。</div><button class="btn pink" id="myJoin">参加する</button>';$('myJoin').onclick=()=>openJoin(renderMy);$('noticeCard').classList.add('hidden');return}
-  $('noticeCard').classList.remove('hidden');
+  if(!p){el.innerHTML='<h2>👤 マイページ</h2><div class="muted">まだ参加していません。</div><button class="btn pink" id="myJoin">参加する</button>';$('myJoin').onclick=()=>openJoin(renderMy);$('noticeCard').classList.add('hidden');$('dmCard').classList.add('hidden');return}
+  $('noticeCard').classList.remove('hidden');$('dmCard').classList.remove('hidden');
   const id=p.entryId||'-----';
   el.innerHTML=`<h2>👤 ${esc(p.nickname||'参加者')}さん</h2>
   <div class="muted">スタンプ ${progress?.stamp_count??stampIds.size}個</div>
@@ -335,6 +462,8 @@ function readNfcParams(){
     return;
   }
   const h=location.hash.slice(1);if(['stamp','remote','book','mypage'].includes(h))go(h);
+  checkNewClears();
+  setInterval(async()=>{if(document.visibilityState==='visible'&&participant()&&!$('pon').classList.contains('on')){await loadProgress();checkNewClears()}},60000);
 })();
 </script>
 </body>

@@ -28,6 +28,14 @@ body{background:#f6f3ef}
 .mini input{padding:9px 11px;font-size:16px}
 .nfc{font-size:12px;word-break:break-all;background:#effaf9;border-radius:10px;padding:8px 10px;margin-top:8px;color:var(--teal)}
 .edit{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.bubble{max-width:85%;padding:8px 11px;border-radius:14px;margin-top:7px;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.bubble small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.bubble.me{margin-left:auto;background:#e6f4f3}.bubble.them{background:#fdeef3}
+.reply{display:flex;gap:6px;margin-top:8px}.reply input{padding:9px 11px;font-size:15px}.reply .btn{margin:0;white-space:nowrap}
+.clear-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1.5px solid #f1ddb9;background:#fffaf0;border-radius:16px;padding:11px 13px;margin-top:8px}
+.clear-item.done{background:#fff;border-color:var(--line);opacity:.75}
+.clear-item b{font-size:16px}
+.newdot{display:inline-block;min-width:22px;padding:1px 7px;border-radius:99px;background:var(--pink);color:#fff;font-size:13px;margin-left:6px}
 .top a{font-size:14px;color:var(--teal);font-weight:800;text-decoration:none}
 </style>
 </head>
@@ -46,8 +54,8 @@ body{background:#f6f3ef}
   <!-- お店の方：遠隔スタンプの承認 -->
   <section class="pane on" id="p-shop">
     <div class="card">
-      <h2>📮 遠隔スタンプの確認</h2>
-      <div class="muted">お客様から届いた購入の証明を確認して、スタンプを押します。</div>
+      <h2>📮 お客様からの連絡</h2>
+      <div class="muted">遠隔スタンプの申請と、お客様からのメッセージが届きます。</div>
       <label class="label" for="sShop">お店</label>
       <select id="sShop"><option value="">読み込み中…</option></select>
       <label class="label" for="sPin">店舗ページPIN</label>
@@ -88,6 +96,12 @@ body{background:#f6f3ef}
       </div>
       <div class="muted" id="aCount"></div>
     </div>
+    <div class="card hidden" id="cCard">
+      <div class="hrow" style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">🎁 クリア通知<span class="newdot hidden" id="cNew"></span></h3><button class="btn ghost small" id="cRefresh">更新</button></div>
+      <div class="muted">スタンプ3つで1クリア。景品を渡したら「渡した」を押してください。</div>
+      <div class="chips" id="cFilter"><button class="chip on" data-c="todo">まだ渡していない</button><button class="chip" data-c="all">すべて</button></div>
+      <div id="cList"></div>
+    </div>
     <div id="aList"></div>
   </section>
 </div>
@@ -102,7 +116,8 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
 const failed=r=>r===false||(Array.isArray(r)&&r[0]&&(r[0].ok===false||r[0].success===false));
 
 /* ========== お店の方 ========== */
-let sRows=[];
+let sRows=[],sMsgs=[];
+const bub=(who,text,at)=>`<div class="bubble ${who==='shop'?'me':'them'}">${esc(text)}<small>${who==='shop'?'お店':'お客様'}・${at?new Date(at).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):''}</small></div>`;
 (async()=>{
   try{const shops=await loadPublicShops();$('sShop').innerHTML='<option value="">お店を選んでください</option>'+shops.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')}
   catch(e){$('sShop').innerHTML='<option value="">読み込めませんでした</option>'}
@@ -113,10 +128,12 @@ async function sLoad(){
   if(!shopId||!pin)return st.textContent='お店とPINを入れてください';
   st.textContent='読み込み中…';
   try{
-    const rows=await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin});
+    const [rows,msgs]=await Promise.all([rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}),rpc('list_rally_messages_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}).catch(e=>{console.warn(e);return []})]);
+    sMsgs=Array.isArray(msgs)?msgs:[];
     sRows=(rows||[]).map(r=>({...r,id:r.submission_id||r.id,status:r.submission_status||r.status||'pending'}));
     const pend=sRows.filter(r=>r.status==='pending').length;
-    st.textContent=`確認待ち ${pend}件`;$('sDirect').classList.remove('hidden');sRender();
+    const dms=sRows.filter(r=>String(r.purchase_message||'').startsWith('【DM・質問】')).length;
+    st.textContent=`遠隔スタンプ確認待ち ${pend}件・メッセージ ${dms}件`;$('sDirect').classList.remove('hidden');sRender();
   }catch(e){console.error(e);sRows=[];sRender();$('sDirect').classList.add('hidden');st.textContent=errText(e).includes('PIN')?'PINがちがいます':'読み込めませんでした'}
 }
 function sRender(){
@@ -125,11 +142,15 @@ function sRender(){
     const img=String(r.proof_data||'').startsWith('data:image/')?`<img class="proof" alt="購入の写真" src="${esc(r.proof_data)}">`:'';
     const link=/^https:\/\//i.test(r.purchase_url||'')?`<a href="${esc(r.purchase_url)}" target="_blank" rel="noopener">購入ページを開く</a>`:'';
     const acts=r.status==='pending'&&!dm?`<div class="acts"><button class="btn pink" data-act="approve" data-id="${esc(r.id)}">スタンプを押す</button><button class="btn ghost" data-act="reject" data-id="${esc(r.id)}">見送る</button></div>`:'';
-    return `<div class="item ${r.status==='pending'?'pending':''}"><div class="item-top"><span>${dm?'💬 ':''}${esc(r.nickname||'お客様')}さん</span><span class="badge ${c}">${dm?'質問':t}</span></div><div class="muted">${new Date(r.created_at).toLocaleString('ja-JP')}　ID ${esc(r.participant_entry_id||'—')}${r.uw_id?'　UW.ID '+esc(r.uw_id):''}</div>${msg?`<div>${escBr(msg)}</div>`:''}${link}${img}${r.response_message?`<div class="muted">返信：${escBr(r.response_message)}</div>`:''}${acts}</div>`;
+    return `<div class="item ${r.status==='pending'?'pending':''}"><div class="item-top"><span>${dm?'💬 ':''}${esc(r.nickname||'お客様')}さん</span><span class="badge ${c}">${dm?'質問':t}</span></div><div class="muted">${new Date(r.created_at).toLocaleString('ja-JP')}　ID ${esc(r.participant_entry_id||'—')}${r.uw_id?'　UW.ID '+esc(r.uw_id):''}</div>${msg?`<div>${escBr(msg)}</div>`:''}${link}${img}${r.response_message&&!sMsgs.some(m=>m.submission_id===r.id&&m.message_body===r.response_message)?bub('shop',r.response_message,r.updated_at):''}${sMsgs.filter(m=>m.submission_id===r.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)).map(m=>bub(m.sender_type,m.message_body,m.created_at)).join('')}${acts}<div class="reply"><input data-reply-input="${esc(r.id)}" placeholder="お客様へ返信"><button class="btn small" data-reply="${esc(r.id)}">送る</button></div></div>`;
   }).join(''):'';
 }
 $('sOpen').onclick=sLoad;
 $('sList').onclick=async e=>{
+  const rb=e.target.closest('[data-reply]');
+  if(rb){const input=document.querySelector(`[data-reply-input="${CSS.escape(rb.dataset.reply)}"]`),text=input?.value.trim();if(!text)return;rb.disabled=true;
+    try{await rpc('send_rally_message_from_shop',{p_shop_id:$('sShop').value,p_shop_pin:$('sPin').value.trim(),p_submission_id:rb.dataset.reply,p_message:text});toast('お客様へ送りました');await sLoad()}catch(err){console.error(err);toast('送れませんでした');rb.disabled=false}
+    return}
   const b=e.target.closest('[data-act]');if(!b)return;
   const action=b.dataset.act,msg=prompt(action==='approve'?'お客様へのひとこと（任意）':'見送る理由（任意）');
   if(msg===null)return;
@@ -161,7 +182,7 @@ async function aLoad(){
     const rows=await rpc('list_shops_by_admin_pin',{p_admin_pin:pin});
     let codes=[];try{codes=await rpc('list_shop_stamp_codes_by_admin_pin',{p_admin_pin:pin})}catch(e){console.warn(e)}
     aPin=pin;aShops=Array.isArray(rows)?rows:[];aCodes={};(codes||[]).forEach(x=>aCodes[x.shop_id]=x.stamp_code||'');
-    st.textContent=`${aShops.length}店舗`;$('aTools').classList.remove('hidden');aRender();
+    st.textContent=`${aShops.length}店舗`;$('aTools').classList.remove('hidden');aRender();cLoad();
   }catch(e){console.error(e);st.textContent=errText(e).includes('Invalid PIN')?'管理者PINがちがいます':'読み込めませんでした';$('aTools').classList.add('hidden');$('aList').innerHTML=''}
 }
 $('aOpen').onclick=aLoad;
@@ -224,6 +245,35 @@ $('aList').onclick=async e=>{
     }
     aRender();
   }catch(err){console.error(err);toast(errText(err).includes('Invalid PIN')?'管理者PINがちがいます':'保存できませんでした')}
+};
+
+/* ========== クリア通知（主催者） ========== */
+let cRows=[],cFilter='todo',cKnown=null,cTimer=null;
+async function cLoad(quiet){
+  if(!aPin)return;$('cCard').classList.remove('hidden');
+  try{
+    const rows=await rpc('mogu_list_clears_admin',{p_admin_pin:aPin});cRows=Array.isArray(rows)?rows:[];
+    const todo=cRows.filter(r=>!r.reward_given);
+    const ids=new Set(cRows.map(r=>r.id));
+    if(cKnown){const fresh=cRows.filter(r=>!cKnown.has(r.id));if(fresh.length){toast(`🎁 新しいクリアが${fresh.length}件あります`);try{if(window.Notification&&Notification.permission==='granted')new Notification('もぐマップ',{body:`${fresh[0].nickname||'参加者'}さんが${fresh[0].clear_no}クリアしました`})}catch{}}}
+    cKnown=ids;
+    $('cNew').textContent=todo.length;$('cNew').classList.toggle('hidden',!todo.length);
+    document.title=(todo.length?`(${todo.length}) `:'')+'もぐマップ 編集画面';
+    cRender();
+  }catch(e){console.error(e);$('cList').innerHTML=errText(e).includes('mogu_list_clears_admin')||errText(e).includes('PGRST202')?'<div class="muted" style="margin-top:8px">⚠️ クリア記録の準備（SQLの実行）がまだです。</div>':'<div class="muted" style="margin-top:8px">読み込めませんでした</div>'}
+  if(!cTimer){cTimer=setInterval(()=>{if(document.visibilityState==='visible')cLoad(true)},60000);try{if(window.Notification&&Notification.permission==='default')Notification.requestPermission()}catch{}}
+}
+function cRender(){
+  const rows=cFilter==='todo'?cRows.filter(r=>!r.reward_given):cRows;
+  $('cList').innerHTML=rows.length?rows.map(r=>`<div class="clear-item ${r.reward_given?'done':''}"><div><b>${esc(r.nickname||'参加者')}さん　${r.clear_no}クリア</b><div class="muted">ID ${esc(r.entry_id||'—')}・${new Date(r.created_at).toLocaleString('ja-JP')}${r.reward_given?'<br>✅ 景品渡し済み':''}</div></div><button class="btn ${r.reward_given?'ghost':'pink'} small" data-give="${esc(r.id)}" data-v="${r.reward_given?'0':'1'}">${r.reward_given?'取り消し':'渡した'}</button></div>`).join(''):`<div class="muted" style="margin-top:8px">${cFilter==='todo'?'まだ景品を渡していないクリアはありません':'まだクリアした人はいません'}</div>`;
+}
+$('cRefresh').onclick=()=>cLoad();
+$('cFilter').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;cFilter=b.dataset.c;$('cFilter').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));cRender()};
+$('cList').onclick=async e=>{
+  const b=e.target.closest('[data-give]');if(!b)return;const give=b.dataset.v==='1';
+  if(!give&&!confirm('「渡し済み」を取り消しますか？'))return;b.disabled=true;
+  try{await rpc('mogu_set_reward_given',{p_admin_pin:aPin,p_event_id:b.dataset.give,p_given:give});toast(give?'景品を渡した記録をつけました':'取り消しました');await cLoad()}
+  catch(err){console.error(err);toast('保存できませんでした');b.disabled=false}
 };
 </script>
 </body>
