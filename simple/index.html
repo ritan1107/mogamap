@@ -75,6 +75,31 @@
 .welcome p{margin:4px 0 0;font-size:14px;font-weight:700;text-shadow:0 1px 6px #0002}
 .welcome-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .welcome-tags span{background:#ffffff38;border:1px solid #ffffff66;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:900}
+.wide-btn{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;border:2px solid #cfe0f5;background:linear-gradient(160deg,#f3f8ff,#fff);border-radius:22px;padding:15px 16px;cursor:pointer;text-align:left;box-shadow:0 8px 20px rgba(120,90,60,.09)}
+.wide-btn span{font-size:36px}.wide-btn div{flex:1}.wide-btn b{display:block;font-size:19px}.wide-btn small{color:var(--muted);font-size:13px}.wide-btn i{font-style:normal;font-size:26px;color:var(--teal)}
+.shop-filter{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}
+.shop-filter button{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:900;cursor:pointer;color:var(--ink)}
+.shop-filter button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.shop-card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:14px;margin-top:10px;box-shadow:0 6px 16px rgba(120,90,60,.06)}
+.shop-card .head{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.shop-card .ic{flex:0 0 46px;height:46px;border-radius:14px;background:#fff6ea;display:flex;align-items:center;justify-content:center;font-size:24px}
+.shop-card h3{margin:0;font-size:17px;color:var(--ink)}
+.shop-card .addr{font-size:13px;color:var(--muted)}
+.shop-card .desc{font-size:14px;margin:8px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.tag{font-size:11px;font-weight:900;border-radius:999px;padding:2px 8px;background:#effaf9;color:var(--teal)}
+.tag.done{background:#fde8ef;color:var(--pink)}
+.buy-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.buy-row .btn{margin:0;font-size:15px;padding:12px 8px}
+.buy-row .btn:only-child{grid-column:1/-1}
+.btn.buy{background:linear-gradient(135deg,#ff9c3b,#ef7a9b)}
+.btn.comm{background:#4caf87}
+.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.link-grid .btn{margin:0;font-size:14px;padding:11px 6px}
+.sd-title{font-size:22px;margin:8px 0 2px;color:var(--ink)}
+.sd-sec{margin-top:16px}.sd-sec>b{display:block;font-size:14px;color:#6b5d50;margin-bottom:4px}
+.buy-guide{background:#fff8ec;border-radius:16px;padding:12px;margin-top:12px;font-size:14px}
+.buy-guide ol{margin:6px 0 0;padding-left:20px}
 .admin-link{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 .complete{text-align:center}
 .complete .code{font-size:28px;font-weight:900;letter-spacing:.1em;background:#fff1f6;border-radius:16px;padding:12px;margin:10px 0;color:var(--pink)}
@@ -107,6 +132,7 @@
       <button class="big b3" data-go="book"><span>📖</span><b>スタンプ帳</b><small>集めたスタンプ</small></button>
       <button class="big b4" data-go="mypage"><span>👤</span><b>マイページ</b><small>自分の情報</small></button>
     </div>
+    <button class="wide-btn" data-go="shops"><span>🛍️</span><div><b>お店・購入</b><small>お店の情報を見る・通販で買う・コミュニティ</small></div><i>›</i></button>
     <a class="admin-link" href="shop.html">お店の方はこちら</a>
   </section>
 
@@ -127,6 +153,23 @@
       <input id="stampCode" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="0000" autocomplete="off">
       <button class="btn" id="claimStamp">スタンプを押す</button>
     </details>
+  </section>
+
+  <!-- お店・購入 -->
+  <section class="view" id="v-shops">
+    <button class="back" data-go="home">← もどる</button>
+    <div class="card">
+      <h2>🛍️ お店・購入</h2>
+      <div class="muted">お店をタップすると、くわしい情報と購入ページが見られます。</div>
+      <input id="shopSearch" placeholder="🔎 お店の名前・地域でさがす" style="margin-top:10px">
+      <div class="shop-filter" id="shopFilter">
+        <button class="on" data-f="all">すべて</button>
+        <button data-f="buy">💳 購入できる</button>
+        <button data-f="stamp">🎯 スタンプ参加</button>
+        <button data-f="todo">まだ押してない</button>
+      </div>
+    </div>
+    <div id="shopList"></div>
   </section>
 
   <!-- 遠隔スタンプ -->
@@ -218,6 +261,12 @@
   <div class="complete" id="completeBody"></div>
 </div></div>
 
+<!-- お店の詳しい情報 -->
+<div class="modal" id="shopModal"><div class="sheet">
+  <div class="sheet-head"><span class="badge" id="sdCat"></span><button class="x" data-close="shopModal">×</button></div>
+  <div id="shopDetail"></div>
+</div></div>
+
 <!-- 景品受け取り画面 -->
 <div class="modal" id="rewardModal"><div class="sheet">
   <div class="sheet-head"><span></span><button class="x" data-close="rewardModal">×</button></div>
@@ -250,7 +299,8 @@ const PER_CLEAR=3; // スタンプいくつで1クリアか
 function go(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+name));
   window.scrollTo(0,0);
-  if(name!=='home'&&name!=='book'&&!participant()){openJoin();}
+  if(!['home','book','shops'].includes(name)&&!participant()){openJoin();}
+  if(name==='shops')renderShops();
   if(name==='remote')loadSubs();
   if(name==='mypage'){renderMy();loadNotices();loadDm();}
   if(name!=='home')history.replaceState(null,'','#'+name);else history.replaceState(null,'',location.pathname);
@@ -382,6 +432,59 @@ function showPon(name,already,newClear){
   if(navigator.vibrate)navigator.vibrate(60);
 }
 $('ponClose').onclick=()=>{$('pon').classList.remove('on');go('book');if(ponClear)checkNewClears();else if(progress?.completed)showComplete()};
+
+/* ---------- お店・購入 ---------- */
+const catIcon=c=>({'food':'🍽️','izakaya':'🍺','cafe':'☕','seafood':'🐟','other':'🛒','お食事処':'🍽️','居酒屋':'🍺','カフェ':'☕','海鮮系':'🐟','その他':'🛒'}[c]||'🏪');
+const catLabel=c=>({'food':'お食事処','izakaya':'居酒屋','cafe':'カフェ','seafood':'海鮮系','other':'その他'}[c]||c||'その他');
+function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
+const ext=(url,label,cls)=>{const u=safeUrl(url);return u?`<a class="btn ${cls||'ghost'}" target="_blank" rel="noopener noreferrer" href="${esc(u)}">${label}</a>`:''};
+let shopFilter='all';
+function renderShops(){
+  const q=$('shopSearch').value.trim().toLowerCase();
+  const rows=shops.filter(s=>(!q||`${s.name||''} ${s.address||''} ${s.description||''} ${catLabel(s.category)}`.toLowerCase().includes(q))
+    &&(shopFilter==='all'||shopFilter==='buy'&&safeUrl(s.point_purchase_url)||shopFilter==='stamp'&&s.stamp_rally_enabled||shopFilter==='todo'&&s.stamp_rally_enabled&&!stampIds.has(s.id)));
+  rows.sort((a,b)=>(!!safeUrl(b.point_purchase_url))-(!!safeUrl(a.point_purchase_url)));
+  $('shopList').innerHTML=rows.length?rows.map(s=>{
+    const buy=ext(s.point_purchase_url,'🛒 購入する','buy'),comm=ext(s.community_url,'👥 コミュニティ','comm');
+    return `<div class="shop-card"><div class="head" data-shop="${esc(s.id)}"><div class="ic">${catIcon(s.category)}</div><div style="flex:1;min-width:0"><h3>${esc(s.name)}</h3><div class="addr">📍 ${esc(s.address||'')}</div>
+    <div class="tags"><span class="tag">${esc(catLabel(s.category))}</span>${s.stamp_rally_enabled?(stampIds.has(s.id)?'<span class="tag done">✓ スタンプ済み</span>':'<span class="tag">🎯 スタンプ参加</span>'):''}${safeUrl(s.point_purchase_url)?'<span class="tag">💳 通販あり</span>':''}</div></div><span style="color:var(--teal);font-size:22px">›</span></div>
+    ${s.description?`<p class="desc">${esc(s.description)}</p>`:''}
+    ${buy||comm?`<div class="buy-row">${buy}${comm}</div>`:''}
+    <button class="btn ghost small" style="margin-top:10px;width:100%" data-shop="${esc(s.id)}">くわしく見る</button></div>`;
+  }).join(''):'<div class="card muted" style="margin-top:10px">見つかりませんでした</div>';
+}
+function openShop(id){
+  const s=shops.find(x=>x.id===id);if(!s)return;
+  const buy=ext(s.point_purchase_url,'🛒 購入ページへ','buy'),comm=ext(s.community_url,'👥 コミュニティに参加','comm');
+  const links=[ext(s.website_url,'🌐 ホームページ'),ext(s.instagram_url,'📸 Instagram'),ext(s.facebook_url,'f Facebook'),ext(s.x_url,'𝕏 X'),ext(s.line_url,'💬 LINE')].filter(Boolean).join('');
+  const map='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent((s.address||'')+' '+s.name);
+  $('sdCat').textContent=`${catIcon(s.category)} ${catLabel(s.category)}`;
+  $('shopDetail').innerHTML=`<h2 class="sd-title">${esc(s.name)}</h2>
+    <div class="muted">📍 ${esc(s.address||'')}</div>
+    <div class="tags">${s.stamp_rally_enabled?(stampIds.has(s.id)?'<span class="tag done">✓ スタンプ済み</span>':'<span class="tag">🎯 スタンプラリー参加店</span>'):''}</div>
+    <p style="font-size:15px">${s.description?escBr(s.description):'お店からの紹介は準備中です。'}</p>
+    ${s.phone?`<div>☎️ <a href="tel:${esc(s.phone)}">${esc(s.phone)}</a></div>`:''}
+    <div class="sd-sec"><b>🛍️ 買う・つながる</b>
+      ${buy||comm?`<div class="buy-row">${buy}${comm}</div>`:'<div class="muted">通販・コミュニティの情報は準備中です。</div>'}
+      ${buy&&s.stamp_rally_enabled?`<div class="buy-guide"><b>📦 通販で買ってもスタンプがもらえます</b><ol><li>「購入ページへ」で買い物する</li><li>注文画面のスクショを撮っておく</li><li>下の「遠隔スタンプを申請」から送る</li></ol></div>`:''}
+    </div>
+    <div class="sd-sec"><b>🏪 お店へ行く・もっと見る</b>
+      <div class="link-grid"><a class="btn" target="_blank" rel="noopener" href="${esc(map)}">🗺️ ここまでナビ</a>${links}</div>
+    </div>
+    ${s.stamp_rally_enabled?`<div class="sd-sec"><b>🎯 スタンプ</b><div class="link-grid"><button class="btn pink" data-sd="stamp">🏪 対面スタンプ</button><button class="btn ghost" data-sd="remote">📦 遠隔スタンプを申請</button></div></div>`:''}
+    <button class="btn ghost" data-sd="dm">💬 このお店にメッセージ</button>`;
+  $('shopDetail').dataset.id=id;$('shopModal').classList.add('on');
+}
+$('shopList').addEventListener('click',e=>{const t=e.target.closest('[data-shop]');if(t)openShop(t.dataset.shop)});
+$('shopSearch').oninput=renderShops;
+$('shopFilter').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;shopFilter=b.dataset.f;$('shopFilter').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));renderShops()};
+$('shopDetail').addEventListener('click',e=>{
+  const b=e.target.closest('[data-sd]');if(!b)return;const id=$('shopDetail').dataset.id,a=b.dataset.sd;
+  $('shopModal').classList.remove('on');
+  if(a==='stamp'){go('stamp');$('stampShop').value=id}
+  else if(a==='remote'){go('remote');$('remoteShop').value=id}
+  else if(a==='dm'){go('mypage');setTimeout(()=>{if($('dmShop').querySelector(`option[value="${CSS.escape(id)}"]`))$('dmShop').value=id;$('dmCard').scrollIntoView({behavior:'smooth'});$('dmText').focus()},400)}
+});
 
 /* ---------- 遠隔スタンプ ---------- */
 function readPhoto(file){
@@ -607,7 +710,7 @@ function readNfcParams(){
     else $('stampCode').focus();
     return;
   }
-  const h=location.hash.slice(1);if(['stamp','remote','book','mypage'].includes(h))go(h);
+  const h=location.hash.slice(1);if(['stamp','remote','book','mypage','shops'].includes(h))go(h);
   checkNewClears();
   setInterval(async()=>{if(document.visibilityState==='visible'&&participant()&&!$('pon').classList.contains('on')){await loadProgress();checkNewClears()}},60000);
 })();
