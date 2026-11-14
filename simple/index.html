@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>もぐマップ スタンプラリー</title>
+<meta name="description" content="もぐマップのスタンプラリー。対面スタンプ・遠隔スタンプ・スタンプ帳・マイページ。">
+<link rel="stylesheet" href="core.css?v=1">
+<style>
+.progress-card{display:flex;align-items:center;gap:14px}
+.progress-num{font-size:30px;font-weight:900;color:var(--pink);white-space:nowrap}
+.progress-num small{font-size:15px;color:var(--muted)}
+.bar{height:12px;background:#f1e7dc;border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal2),var(--pink));border-radius:99px;transition:width .6s}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.big{border:0;border-radius:24px;padding:22px 10px 18px;background:#fff;box-shadow:0 8px 20px rgba(120,90,60,.09);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:150px;justify-content:center;border:2px solid transparent;transition:transform .1s}
+.big:active{transform:scale(.97)}
+.big span{font-size:44px;line-height:1}
+.big b{font-size:19px;color:var(--ink)}
+.big small{font-size:13px;color:var(--muted)}
+.big.b1{border-color:#bfe3e1;background:linear-gradient(160deg,#effaf9,#fff)}
+.big.b2{border-color:#cfe0f5;background:linear-gradient(160deg,#f0f6fe,#fff)}
+.big.b3{border-color:#f6d3df;background:linear-gradient(160deg,#fff1f6,#fff)}
+.big.b4{border-color:#efe0c6;background:linear-gradient(160deg,#fff8ec,#fff)}
+.view{display:none}.view.on{display:block}
+.nfc-hint{display:flex;gap:12px;align-items:center;background:#effaf9;border:1.5px dashed var(--teal2);border-radius:18px;padding:12px 14px;margin-bottom:12px;font-size:14px}
+.nfc-hint span{font-size:30px}
+.book{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.stamp{aspect-ratio:1;border-radius:50%;border:2.5px dashed #e3d6c8;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-size:12px;font-weight:800;color:#b3a698;background:#fffdf9;line-height:1.3;word-break:break-all;overflow:hidden}
+.stamp.on{border:3px solid var(--pink);color:var(--pink);background:radial-gradient(circle,#fff 55%,#fde8ef);transform:rotate(-8deg)}
+.stamp.on::before{content:"✓";display:block}
+.stamp-inner{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.hist{border:1.5px solid var(--line);border-radius:16px;padding:11px 13px;margin-top:9px;font-size:14px}
+.hist-top{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:800}
+.idbox{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff8ec;border-radius:16px;padding:12px 14px;margin-top:10px}
+.idbox strong{font-size:26px;letter-spacing:.12em;color:var(--teal)}
+.pon{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#fff9f3ee;z-index:80;flex-direction:column;text-align:center;padding:20px}
+.pon.on{display:flex}
+.pon-mark{width:190px;height:190px;border-radius:50%;border:6px solid var(--pink);color:var(--pink);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:16px;padding:16px;transform:rotate(-10deg) scale(2.2);opacity:0}
+.pon.on .pon-mark{animation:pon .45s cubic-bezier(.2,1.6,.4,1) forwards}
+.pon-mark b{font-size:34px;line-height:1.1}
+@keyframes pon{to{transform:rotate(-10deg) scale(1);opacity:1}}
+.pon h2{margin-top:26px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:10px}.hrow .btn{white-space:nowrap}
+.admin-link{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
+.complete{text-align:center}
+.complete .code{font-size:28px;font-weight:900;letter-spacing:.1em;background:#fff1f6;border-radius:16px;padding:12px;margin:10px 0;color:var(--pink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><small>MOGU MAP</small>もぐマップ</div>
+    <span class="badge" id="who">未参加</span>
+  </header>
+
+  <!-- ホーム：4つのボタンだけ -->
+  <section class="view on" id="v-home">
+    <div class="card progress-card">
+      <div class="progress-num" id="pNum">0<small> / 0</small></div>
+      <div style="flex:1"><div class="muted" id="rallyTitle">スタンプラリー</div><div class="bar"><i id="pBar"></i></div></div>
+    </div>
+    <div class="grid4">
+      <button class="big b1" data-go="stamp"><span>🏪</span><b>対面スタンプ</b><small>お店にいるとき</small></button>
+      <button class="big b2" data-go="remote"><span>📦</span><b>遠隔スタンプ</b><small>通販・遠くから</small></button>
+      <button class="big b3" data-go="book"><span>📖</span><b>スタンプ帳</b><small>集めたスタンプ</small></button>
+      <button class="big b4" data-go="mypage"><span>👤</span><b>マイページ</b><small>自分の情報</small></button>
+    </div>
+    <a class="admin-link" href="admin.html">お店・管理者の方はこちら</a>
+  </section>
+
+  <!-- 対面スタンプ -->
+  <section class="view" id="v-stamp">
+    <button class="back" data-go="home">← もどる</button>
+    <div class="nfc-hint"><span>📱</span><div><b>NFCタグがあるお店</b><br>スマホをタグにかざすだけでスタンプが押されます。</div></div>
+    <div class="card">
+      <h2>🏪 対面スタンプ</h2>
+      <div class="muted">タグがない場合は、お店で聞いた4桁の番号を入れてください。</div>
+      <label class="label" for="stampShop">お店</label>
+      <select id="stampShop"></select>
+      <label class="label" for="stampCode">スタンプ番号（4桁）</label>
+      <input id="stampCode" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="0000" autocomplete="off">
+      <button class="btn pink" id="claimStamp">スタンプを押す</button>
+    </div>
+  </section>
+
+  <!-- 遠隔スタンプ -->
+  <section class="view" id="v-remote">
+    <button class="back" data-go="home">← もどる</button>
+    <div class="card">
+      <h2>📦 遠隔スタンプ</h2>
+      <div class="muted">通販などで買ったときは、購入の証明をお店に送ってください。お店が確認するとスタンプが押されます。</div>
+      <label class="label" for="remoteShop">お店</label>
+      <select id="remoteShop"></select>
+      <label class="label" for="remotePhoto">購入の写真（どれか1つでOK）</label>
+      <input id="remotePhoto" type="file" accept="image/*">
+      <label class="label" for="remoteUrl">購入ページのURL（任意）</label>
+      <input id="remoteUrl" inputmode="url" placeholder="https://">
+      <label class="label" for="remoteMsg">メモ（任意）</label>
+      <textarea id="remoteMsg" placeholder="買ったもの・注文メールの内容など"></textarea>
+      <button class="btn" id="sendRemote">お店に送る</button>
+      <div class="status" id="remoteStatus"></div>
+    </div>
+    <div class="card">
+      <div class="hrow"><h3 style="margin:0">送ったもの</h3><button class="btn ghost small" id="refreshRemote">更新</button></div>
+      <div id="remoteList"><div class="muted">まだありません</div></div>
+    </div>
+  </section>
+
+  <!-- スタンプ帳 -->
+  <section class="view" id="v-book">
+    <button class="back" data-go="home">← もどる</button>
+    <div class="card">
+      <h2>📖 スタンプ帳</h2>
+      <div class="muted" id="bookNote">集めたスタンプ</div>
+      <div class="bar"><i id="bookBar"></i></div>
+      <div class="book" id="book"></div>
+      <button class="btn pink hidden" id="showComplete">🎉 コンプリート画面を見る</button>
+    </div>
+  </section>
+
+  <!-- マイページ -->
+  <section class="view" id="v-mypage">
+    <button class="back" data-go="home">← もどる</button>
+    <div class="card" id="myCard"></div>
+    <div class="card" id="noticeCard">
+      <div class="hrow"><h3 style="margin:0">🔔 お知らせ</h3><button class="btn ghost small" id="markRead">既読にする</button></div>
+      <div id="noticeList"><div class="muted">お知らせはありません</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- 参加登録 -->
+<div class="modal" id="joinModal"><div class="sheet">
+  <div class="sheet-head"><h2>スタンプラリーに参加</h2><button class="x" data-close="joinModal">×</button></div>
+  <div class="muted">名前を入れるだけで始められます。</div>
+  <label class="label" for="joinName" id="joinLabel">名前／ニックネーム</label>
+  <input id="joinName" placeholder="本名でなくてもOK">
+  <label class="label" for="joinUw">UW.ID（持っている人だけ）</label>
+  <input id="joinUw" placeholder="任意">
+  <button class="btn pink" id="joinBtn">参加する</button>
+</div></div>
+
+<!-- コンプリート -->
+<div class="modal" id="completeModal"><div class="sheet">
+  <div class="sheet-head"><span></span><button class="x" data-close="completeModal">×</button></div>
+  <div class="complete" id="completeBody"></div>
+</div></div>
+
+<!-- スタンプ演出 -->
+<div class="pon" id="pon">
+  <div class="pon-mark"><b>もぐ</b><span id="ponShop"></span></div>
+  <h2 id="ponTitle">スタンプゲット！</h2>
+  <div class="muted" id="ponNote"></div>
+  <button class="btn" style="max-width:300px" id="ponClose">スタンプ帳を見る</button>
+</div>
+
+<div id="toast"></div>
+<script src="core.js?v=1"></script>
+<script>
+let shops=[],settings={},progress=null,stampIds=new Set(),notices=[],subs=[];
+
+/* ---------- 画面切り替え ---------- */
+function go(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+name));
+  window.scrollTo(0,0);
+  if(name!=='home'&&name!=='book'&&!participant()){openJoin();}
+  if(name==='remote')loadSubs();
+  if(name==='mypage'){renderMy();loadNotices();}
+  if(name!=='home')history.replaceState(null,'','#'+name);else history.replaceState(null,'',location.pathname);
+}
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');if(g){go(g.dataset.go);return}
+  const c=e.target.closest('[data-close]');if(c)$(c.dataset.close).classList.remove('on');
+});
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
+
+/* ---------- データ読み込み ---------- */
+const rallyShops=()=>shops.filter(s=>s.stamp_rally_enabled);
+async function loadSettings(){
+  try{const rows=await api('/rest/v1/rally_settings?select=rally_title,participant_name_label,completion_title,completion_message,reward_title,reward_description,reward_instructions,valid_until,show_present_screen,public_visibility_mode,public_visibility_excluded_ids&id=eq.true');settings=rows?.[0]||{}}catch(e){settings={}}
+  $('rallyTitle').textContent=settings.rally_title||'スタンプラリー';
+  if(settings.participant_name_label)$('joinLabel').textContent=settings.participant_name_label;
+}
+function applyVisibility(rows){
+  const mode=settings.public_visibility_mode||'all',ex=new Set(settings.public_visibility_excluded_ids||[]);
+  return rows.filter(s=>mode==='stamp_only'?!!s.stamp_rally_enabled:mode==='selected'?!ex.has(s.id):true);
+}
+async function loadShops(){
+  try{shops=applyVisibility(await loadPublicShops())}catch(e){console.error(e);shops=[];toast('お店の情報を読み込めませんでした')}
+  const opts='<option value="">お店を選んでください</option>'+rallyShops().map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+  $('stampShop').innerHTML=opts;$('remoteShop').innerHTML=opts;
+}
+async function loadProgress(){
+  const p=participant();
+  if(!p){progress=null;stampIds=new Set();renderProgress();return}
+  try{
+    const [pr,ids]=await Promise.all([rpc('get_rally_progress',auth(p)),rpc('get_participant_stamp_ids',auth(p))]);
+    progress=pr?.[0]||null;stampIds=new Set((ids||[]).map(x=>x.shop_id));
+    if(!p.entryId){try{const er=await rpc('get_participant_entry_id',auth(p));if(er?.[0]?.participant_entry_id){p.entryId=er[0].participant_entry_id;saveParticipant(p)}}catch{}}
+  }catch(e){console.error(e)}
+  renderProgress();
+}
+function renderProgress(){
+  const p=participant(),rs=rallyShops(),count=progress?.stamp_count??[...stampIds].length,total=progress?.total_shops??rs.length,pct=total?Math.min(100,count/total*100):0;
+  $('who').textContent=p?`${p.nickname||'参加者'}さん`:'未参加';$('who').classList.toggle('ok',!!p);
+  $('pNum').innerHTML=`${count}<small> / ${total}</small>`;$('pBar').style.width=pct+'%';$('bookBar').style.width=pct+'%';
+  $('bookNote').textContent=p?`${count}個 / ${total}店舗`:'参加すると、ここにスタンプがたまります';
+  $('book').innerHTML=rs.length?rs.map(s=>`<div class="stamp ${stampIds.has(s.id)?'on':''}"><span class="stamp-inner">${esc(s.name)}</span></div>`).join(''):'<div class="muted">参加店舗はまだありません</div>';
+  $('showComplete').classList.toggle('hidden',!progress?.completed);
+}
+
+/* ---------- 参加登録 ---------- */
+let afterJoin=null;
+function openJoin(then){afterJoin=then||null;$('joinModal').classList.add('on');setTimeout(()=>$('joinName').focus(),200)}
+$('joinBtn').onclick=async()=>{
+  const name=$('joinName').value.trim(),uw=$('joinUw').value.trim();
+  if(!name)return toast('名前を入力してください');
+  $('joinBtn').disabled=true;
+  try{
+    const rows=await rpc('start_rally_with_uwid',{p_nickname:name,p_uw_id:uw||null}),x=rows?.[0];
+    if(!x)throw new Error('参加登録できませんでした');
+    saveParticipant({id:x.id||x.participant_id,token:x.participant_token,nickname:x.nickname||name,entryId:x.participant_entry_id||'',uwId:x.uw_id||uw});
+    $('joinModal').classList.remove('on');toast('参加しました！');
+    await loadProgress();
+    if(afterJoin){const f=afterJoin;afterJoin=null;f()}
+  }catch(e){console.error(e);toast(errText(e).includes('UW.ID')?'UW.IDを確認してください':'参加登録できませんでした')}
+  finally{$('joinBtn').disabled=false}
+};
+
+/* ---------- スタンプを押す（番号入力・NFC共通） ---------- */
+async function claim(shopId,code){
+  const p=participant();
+  if(!p){openJoin(()=>claim(shopId,code));return}
+  if(!shopId||!/^\d{4}$/.test(code||''))return toast('お店と4桁の番号を確認してください');
+  if(stampIds.has(shopId)){const s=shops.find(x=>x.id===shopId);showPon(s?.name||'',true);return}
+  try{
+    const r=await rpc('claim_participant_stamp',{...auth(p),p_shop_id:shopId,p_shop_pin:code}),x=r?.[0];
+    if(!x?.success)return toast('番号がちがうようです');
+    await loadProgress();
+    const s=shops.find(y=>y.id===shopId);showPon(s?.name||'',false);
+  }catch(e){console.error(e);toast('スタンプを押せませんでした')}
+}
+$('claimStamp').onclick=()=>{const code=$('stampCode').value.trim();claim($('stampShop').value,code).then(()=>{$('stampCode').value=''})};
+function showPon(name,already){
+  $('ponShop').textContent=name;
+  $('ponTitle').textContent=already?'もう押してあります':'スタンプゲット！';
+  const count=progress?.stamp_count??stampIds.size,total=progress?.total_shops??rallyShops().length;
+  $('ponNote').textContent=progress?.completed?'🎉 全部そろいました！':`いま ${count} / ${total} 個`;
+  const el=$('pon');el.classList.remove('on');void el.offsetWidth;el.classList.add('on');
+  if(navigator.vibrate)navigator.vibrate(60);
+}
+$('ponClose').onclick=()=>{$('pon').classList.remove('on');go(progress?.completed?'book':'book');if(progress?.completed)showComplete()};
+
+/* ---------- 遠隔スタンプ ---------- */
+function readPhoto(file){
+  if(!file)return Promise.resolve({data:null,mime:null});
+  if(!String(file.type).startsWith('image/'))return Promise.reject(new Error('画像ファイルを選んでください'));
+  return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=()=>rej(new Error('写真を読み込めませんでした'));fr.onload=()=>{const img=new Image();img.onerror=()=>rej(new Error('写真を読み込めませんでした'));img.onload=()=>{const k=Math.min(1,1200/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res({data:c.toDataURL('image/jpeg',.72),mime:'image/jpeg'})};img.src=fr.result};fr.readAsDataURL(file)});
+}
+$('sendRemote').onclick=async()=>{
+  const p=participant();if(!p)return openJoin();
+  const shopId=$('remoteShop').value,url=$('remoteUrl').value.trim(),msg=$('remoteMsg').value.trim(),file=$('remotePhoto').files[0],st=$('remoteStatus');
+  if(!shopId)return st.textContent='お店を選んでください';
+  if(url&&!/^https:\/\//i.test(url))return st.textContent='URLは https:// から入れてください';
+  if(!file&&!url&&!msg)return st.textContent='写真・URL・メモのどれかを入れてください';
+  $('sendRemote').disabled=true;st.textContent='送信中…';
+  try{
+    const ph=await readPhoto(file);
+    await rpc('submit_purchase_proof',{...auth(p),p_shop_id:shopId,p_uw_id:p.uwId||null,p_purchase_message:msg||null,p_purchase_url:url||null,p_proof_data:ph.data,p_proof_mime:ph.mime});
+    $('remoteUrl').value='';$('remoteMsg').value='';$('remotePhoto').value='';
+    st.textContent='送りました。お店の確認を待ってください。';toast('📮 お店に送りました');loadSubs();
+  }catch(e){console.error(e);st.textContent=errText(e).includes('すでに')?'このお店には確認待ちのものがあります':(errText(e)||'送信できませんでした')}
+  finally{$('sendRemote').disabled=false}
+};
+const subStatus=s=>({pending:['確認待ち','wait'],approved:['スタンプ済み','ok'],rejected:['見送り','']}[s]||[s||'—','']);
+async function loadSubs(){
+  const p=participant();if(!p)return;
+  try{
+    const rows=await rpc('list_purchase_submissions_for_participant',auth(p));
+    subs=(rows||[]).map(r=>({...r,status:r.submission_status||r.status||'pending'})).filter(r=>!String(r.purchase_message||'').startsWith('【DM・質問】'));
+  }catch(e){console.error(e)}
+  $('remoteList').innerHTML=subs.length?subs.map(r=>{const [t,c]=subStatus(r.status);return `<div class="hist"><div class="hist-top"><span>${esc(r.shop_name||'お店')}</span><span class="badge ${c}">${t}</span></div><div class="muted">${new Date(r.created_at).toLocaleString('ja-JP')}</div>${r.response_message?`<div>お店から：${escBr(r.response_message)}</div>`:''}</div>`}).join(''):'<div class="muted">まだありません</div>';
+  if(subs.some(r=>r.status==='approved'))loadProgress();
+}
+$('refreshRemote').onclick=loadSubs;
+
+/* ---------- マイページ ---------- */
+function renderMy(){
+  const p=participant(),el=$('myCard');
+  if(!p){el.innerHTML='<h2>👤 マイページ</h2><div class="muted">まだ参加していません。</div><button class="btn pink" id="myJoin">参加する</button>';$('myJoin').onclick=()=>openJoin(renderMy);$('noticeCard').classList.add('hidden');return}
+  $('noticeCard').classList.remove('hidden');
+  const id=p.entryId||'-----';
+  el.innerHTML=`<h2>👤 ${esc(p.nickname||'参加者')}さん</h2>
+  <div class="muted">スタンプ ${progress?.stamp_count??stampIds.size}個</div>
+  <div class="idbox"><div><div class="muted">遠隔スタンプ用ID</div><strong>${esc(id)}</strong></div><button class="btn ghost small" id="copyId">コピー</button></div>
+  <label class="label" for="myName">名前／ニックネーム</label><input id="myName" value="${esc(p.nickname||'')}">
+  <label class="label" for="myUw">UW.ID（任意）</label><input id="myUw" value="${esc(p.uwId||'')}" placeholder="持っている人だけ">
+  <button class="btn ghost" id="saveMy">保存する</button><div class="status" id="myStatus"></div>`;
+  $('copyId').onclick=async()=>{try{await copyText(id);toast('IDをコピーしました')}catch{toast('コピーできませんでした')}};
+  $('saveMy').onclick=async()=>{const name=$('myName').value.trim(),uw=$('myUw').value.trim();if(!name)return $('myStatus').textContent='名前を入れてください';try{await rpc('save_participant_profile',{...auth(p),p_nickname:name,p_uw_id:uw||null});p.nickname=name;p.uwId=uw;saveParticipant(p);renderProgress();$('myStatus').textContent='保存しました'}catch(e){console.error(e);$('myStatus').textContent=errText(e).includes('UW.ID')?'UW.IDの形を確認してください':'保存できませんでした'}};
+}
+async function loadNotices(){
+  const p=participant();if(!p)return;
+  try{notices=await rpc('list_participant_notifications',auth(p))||[]}catch(e){console.error(e);notices=[]}
+  $('noticeList').innerHTML=notices.length?notices.slice(0,30).map(n=>`<div class="hist"><div class="hist-top"><span>${n.is_read?'':'🔴 '}${esc(n.title||'お知らせ')}</span></div>${n.body?`<div>${escBr(n.body)}</div>`:''}<div class="muted">${n.created_at?new Date(n.created_at).toLocaleString('ja-JP'):''}</div></div>`).join(''):'<div class="muted">お知らせはありません</div>';
+}
+$('markRead').onclick=async()=>{const p=participant();if(!p)return;try{await rpc('mark_participant_notifications_read',auth(p));loadNotices()}catch(e){console.error(e)}};
+
+/* ---------- コンプリート ---------- */
+function showComplete(){
+  if(!progress?.completed)return;
+  $('completeBody').innerHTML=`<div style="font-size:54px">🎉</div><h2>${esc(settings.completion_title||'全店舗コンプリート！')}</h2><p><b>${esc(progress.nickname||participant()?.nickname||'')}</b> さん</p><p>${escBr(settings.completion_message||'ありがとうございました。')}</p><h3>🎁 ${esc(settings.reward_title||'コンプリート特典')}</h3><p>${escBr(settings.reward_description||'')}</p><div class="code">${esc(progress.completion_code||'')}</div>${progress.reward_claimed?'<div class="badge ok">✅ 特典受取済み</div>':''}<p class="muted">${escBr(settings.reward_instructions||'')}</p>${settings.valid_until?`<p class="muted">有効期限：${esc(settings.valid_until)}</p>`:''}`;
+  $('completeModal').classList.add('on');
+}
+$('showComplete').onclick=showComplete;
+
+/* ---------- NFC・リンクから開いたとき ----------
+   NFCタグに書くURL： …/simple/?nfc=お店ID&c=4桁番号  → 開くだけでスタンプ
+                      …/simple/?nfc=お店ID           → お店を選んだ状態で番号入力へ */
+function readNfcParams(){
+  const q=new URLSearchParams(location.search),shop=q.get('nfc'),code=q.get('c');
+  if(!shop)return null;
+  history.replaceState(null,'',location.pathname); // 番号をアドレス欄に残さない
+  return{shop,code};
+}
+
+(async()=>{
+  const nfc=readNfcParams();
+  await loadSettings();await loadShops();await loadProgress();
+  if(nfc){
+    go('stamp');$('stampShop').value=nfc.shop;
+    if(nfc.code)claim(nfc.shop,nfc.code);
+    else $('stampCode').focus();
+    return;
+  }
+  const h=location.hash.slice(1);if(['stamp','remote','book','mypage'].includes(h))go(h);
+})();
+</script>
+</body>
+</html>

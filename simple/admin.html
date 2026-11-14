@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>もぐマップ 編集画面</title>
+<link rel="stylesheet" href="core.css?v=1">
+<style>
+body{background:#f6f3ef}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:13px;font-weight:900;cursor:pointer;font-size:16px}
+.tab.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.pane{display:none}.pane.on{display:block}
+.item{border:1.5px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;background:#fff}
+.item.pending{border-color:#f0cf8a;background:#fffcf3}
+.item-top{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:900}
+.proof{max-width:100%;max-height:260px;border-radius:12px;margin-top:8px;display:block}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.acts .btn{margin:0;font-size:15px;padding:11px}
+.shop{border:1.5px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;background:#fff}
+.shop h4{margin:0 0 4px;font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font-size:13px;font-weight:800;cursor:pointer}
+.chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.chip.off{background:#f3eee8;color:var(--muted)}
+.mini{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;margin-top:8px}
+.mini input{padding:9px 11px;font-size:16px}
+.nfc{font-size:12px;word-break:break-all;background:#effaf9;border-radius:10px;padding:8px 10px;margin-top:8px;color:var(--teal)}
+.edit{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.top a{font-size:14px;color:var(--teal);font-weight:800;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><small>MOGU MAP</small>編集画面</div>
+    <a href="./">← スタンプラリーへ</a>
+  </header>
+
+  <div class="tabs">
+    <button class="tab on" data-tab="shop">🏪 お店の方</button>
+    <button class="tab" data-tab="admin">🛠 管理者</button>
+  </div>
+
+  <!-- お店の方：遠隔スタンプの承認 -->
+  <section class="pane on" id="p-shop">
+    <div class="card">
+      <h2>📮 遠隔スタンプの確認</h2>
+      <div class="muted">お客様から届いた購入の証明を確認して、スタンプを押します。</div>
+      <label class="label" for="sShop">お店</label>
+      <select id="sShop"><option value="">読み込み中…</option></select>
+      <label class="label" for="sPin">店舗ページPIN</label>
+      <input id="sPin" type="password" autocomplete="off">
+      <button class="btn" id="sOpen">届いたものを見る</button>
+      <div class="status" id="sStatus"></div>
+    </div>
+    <div id="sList"></div>
+    <div class="card hidden" id="sDirect">
+      <h3>🔢 参加者IDで直接スタンプ</h3>
+      <div class="muted">お客様の「遠隔スタンプ用ID（5桁）」を聞いて押すこともできます。</div>
+      <label class="label" for="dId">参加者ID</label>
+      <input id="dId" inputmode="numeric" placeholder="例：12345">
+      <label class="label" for="dNote">メモ（任意）</label>
+      <input id="dNote">
+      <button class="btn ghost" id="dGrant">スタンプを押す</button>
+      <div class="status" id="dStatus"></div>
+    </div>
+  </section>
+
+  <!-- 管理者 -->
+  <section class="pane" id="p-admin">
+    <div class="card">
+      <h2>🛠 管理者メニュー</h2>
+      <div class="muted">スタンプ参加・スタンプ番号・NFC用URL・お店の基本情報を編集します。</div>
+      <label class="label" for="aPin">管理者PIN</label>
+      <input id="aPin" type="password" autocomplete="off">
+      <button class="btn" id="aOpen">開く</button>
+      <div class="status" id="aStatus"></div>
+    </div>
+    <div class="card hidden" id="aTools">
+      <input id="aSearch" placeholder="🔎 店名・住所で探す">
+      <div class="chips" id="aFilter">
+        <button class="chip on" data-f="all">すべて</button>
+        <button class="chip" data-f="stamp">スタンプ参加</button>
+        <button class="chip" data-f="nostamp">不参加</button>
+        <button class="chip" data-f="draft">非公開</button>
+      </div>
+      <div class="muted" id="aCount"></div>
+    </div>
+    <div id="aList"></div>
+  </section>
+</div>
+<div id="toast"></div>
+<script src="core.js?v=1"></script>
+<script>
+/* ---------- タブ ---------- */
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
+});
+const failed=r=>r===false||(Array.isArray(r)&&r[0]&&(r[0].ok===false||r[0].success===false));
+
+/* ========== お店の方 ========== */
+let sRows=[];
+(async()=>{
+  try{const shops=await loadPublicShops();$('sShop').innerHTML='<option value="">お店を選んでください</option>'+shops.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')}
+  catch(e){$('sShop').innerHTML='<option value="">読み込めませんでした</option>'}
+})();
+const sStatusText=s=>({pending:['確認待ち','wait'],approved:['スタンプ済み','ok'],rejected:['見送り','']}[s]||[s||'—','']);
+async function sLoad(){
+  const shopId=$('sShop').value,pin=$('sPin').value.trim(),st=$('sStatus');
+  if(!shopId||!pin)return st.textContent='お店とPINを入れてください';
+  st.textContent='読み込み中…';
+  try{
+    const rows=await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin});
+    sRows=(rows||[]).map(r=>({...r,id:r.submission_id||r.id,status:r.submission_status||r.status||'pending'}));
+    const pend=sRows.filter(r=>r.status==='pending').length;
+    st.textContent=`確認待ち ${pend}件`;$('sDirect').classList.remove('hidden');sRender();
+  }catch(e){console.error(e);sRows=[];sRender();$('sDirect').classList.add('hidden');st.textContent=errText(e).includes('PIN')?'PINがちがいます':'読み込めませんでした'}
+}
+function sRender(){
+  $('sList').innerHTML=sRows.length?sRows.map(r=>{
+    const [t,c]=sStatusText(r.status),dm=String(r.purchase_message||'').startsWith('【DM・質問】'),msg=String(r.purchase_message||'').replace(/^【DM・質問】\s*/,'');
+    const img=String(r.proof_data||'').startsWith('data:image/')?`<img class="proof" alt="購入の写真" src="${esc(r.proof_data)}">`:'';
+    const link=/^https:\/\//i.test(r.purchase_url||'')?`<a href="${esc(r.purchase_url)}" target="_blank" rel="noopener">購入ページを開く</a>`:'';
+    const acts=r.status==='pending'&&!dm?`<div class="acts"><button class="btn pink" data-act="approve" data-id="${esc(r.id)}">スタンプを押す</button><button class="btn ghost" data-act="reject" data-id="${esc(r.id)}">見送る</button></div>`:'';
+    return `<div class="item ${r.status==='pending'?'pending':''}"><div class="item-top"><span>${dm?'💬 ':''}${esc(r.nickname||'お客様')}さん</span><span class="badge ${c}">${dm?'質問':t}</span></div><div class="muted">${new Date(r.created_at).toLocaleString('ja-JP')}　ID ${esc(r.participant_entry_id||'—')}${r.uw_id?'　UW.ID '+esc(r.uw_id):''}</div>${msg?`<div>${escBr(msg)}</div>`:''}${link}${img}${r.response_message?`<div class="muted">返信：${escBr(r.response_message)}</div>`:''}${acts}</div>`;
+  }).join(''):'';
+}
+$('sOpen').onclick=sLoad;
+$('sList').onclick=async e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const action=b.dataset.act,msg=prompt(action==='approve'?'お客様へのひとこと（任意）':'見送る理由（任意）');
+  if(msg===null)return;
+  b.disabled=true;
+  try{
+    const r=await rpc('resolve_purchase_submission',{p_shop_id:$('sShop').value,p_shop_pin:$('sPin').value.trim(),p_submission_id:b.dataset.id,p_action:action,p_response_message:msg||null});
+    if(failed(r))throw new Error(r?.[0]?.message||'処理できませんでした');
+    toast(action==='approve'?'スタンプを押しました':'見送りにしました');await sLoad();
+  }catch(e){console.error(e);toast(errText(e)||'処理できませんでした');b.disabled=false}
+};
+$('dGrant').onclick=async()=>{
+  const id=$('dId').value.trim(),st=$('dStatus');if(!id)return st.textContent='参加者IDを入れてください';
+  st.textContent='確認中…';
+  try{
+    const r=await rpc('grant_remote_participant_stamp',{p_shop_id:$('sShop').value,p_shop_pin:$('sPin').value.trim(),p_participant_entry_id:id,p_note:$('dNote').value.trim()||null}),x=r?.[0];
+    if(!x?.ok)return st.textContent='スタンプを押せませんでした';
+    $('dId').value='';$('dNote').value='';st.textContent=`${x.nickname||'参加者'}さんにスタンプを押しました（${x.stamp_count}/${x.total_shops}）`;
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('参加者ID')?'参加者IDが見つかりません':m.includes('PIN')?'PINがちがいます':'スタンプを押せませんでした'}
+};
+
+/* ========== 管理者 ========== */
+let aPin='',aShops=[],aCodes={},aFilter='all',aOpenEdit=new Set();
+const NFC_BASE=new URL('./',location.href).href;
+const nfcUrl=(id,code)=>`${NFC_BASE}?nfc=${encodeURIComponent(id)}&c=${encodeURIComponent(code)}`;
+async function aLoad(){
+  const pin=$('aPin').value.trim(),st=$('aStatus');if(pin.length<4)return st.textContent='管理者PINを入れてください';
+  st.textContent='読み込み中…';
+  try{
+    const rows=await rpc('list_shops_by_admin_pin',{p_admin_pin:pin});
+    let codes=[];try{codes=await rpc('list_shop_stamp_codes_by_admin_pin',{p_admin_pin:pin})}catch(e){console.warn(e)}
+    aPin=pin;aShops=Array.isArray(rows)?rows:[];aCodes={};(codes||[]).forEach(x=>aCodes[x.shop_id]=x.stamp_code||'');
+    st.textContent=`${aShops.length}店舗`;$('aTools').classList.remove('hidden');aRender();
+  }catch(e){console.error(e);st.textContent=errText(e).includes('Invalid PIN')?'管理者PINがちがいます':'読み込めませんでした';$('aTools').classList.add('hidden');$('aList').innerHTML=''}
+}
+$('aOpen').onclick=aLoad;
+$('aSearch').oninput=()=>aRender();
+$('aFilter').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;aFilter=b.dataset.f;$('aFilter').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));aRender()};
+function aVisible(){
+  const q=$('aSearch').value.trim().toLowerCase();
+  return aShops.filter(s=>(!q||`${s.name||''} ${s.address||''} ${s.source_id||''}`.toLowerCase().includes(q))&&(aFilter==='all'||aFilter==='stamp'&&s.stamp_rally_enabled||aFilter==='nostamp'&&!s.stamp_rally_enabled||aFilter==='draft'&&!s.is_published));
+}
+function aRender(){
+  const rows=aVisible();$('aCount').textContent=`${rows.length}店舗を表示`;
+  $('aList').innerHTML=rows.map(s=>{
+    const code=aCodes[s.id]||'',id=esc(s.id);
+    return `<div class="shop"><h4>${esc(s.name)}</h4><div class="muted">${esc(s.address||'住所なし')}</div>
+    <div class="chips">
+      <button class="chip ${s.is_published?'on':'off'}" data-a="pub" data-id="${id}">${s.is_published?'公開中':'非公開'}</button>
+      <button class="chip ${s.stamp_rally_enabled?'on':'off'}" data-a="rally" data-id="${id}">${s.stamp_rally_enabled?'スタンプ参加':'スタンプ不参加'}</button>
+      <button class="chip" data-a="edit" data-id="${id}">✏️ 基本情報</button>
+      <button class="chip" data-a="pin" data-id="${id}">🔐 店舗PIN発行</button>
+    </div>
+    <div class="mini"><input id="code-${id}" inputmode="numeric" maxlength="4" value="${esc(code)}" placeholder="スタンプ番号4桁"><button class="btn ghost small" data-a="code" data-id="${id}">保存</button><button class="btn ghost small" data-a="regen" data-id="${id}">自動</button></div>
+    ${code?`<div class="nfc">📱 NFC用URL：${esc(nfcUrl(s.id,code))}</div><div class="chips"><button class="chip" data-a="copynfc" data-id="${id}">NFC用URLをコピー</button></div>`:'<div class="muted" style="font-size:13px">番号を保存すると、NFC用URLが出ます</div>'}
+    ${aOpenEdit.has(s.id)?editForm(s):''}</div>`;
+  }).join('')||'<div class="muted">該当するお店がありません</div>';
+}
+function editForm(s){const id=esc(s.id);return `<div class="edit">
+  <label class="label">店名</label><input id="eName-${id}" value="${esc(s.name||'')}">
+  <label class="label">住所</label><input id="eAddr-${id}" value="${esc(s.address||'')}">
+  <label class="label">電話</label><input id="ePhone-${id}" value="${esc(s.phone||'')}">
+  <label class="label">紹介文</label><textarea id="eDesc-${id}">${esc(s.description||'')}</textarea>
+  <button class="btn" data-a="save" data-id="${id}">保存する</button></div>`}
+function findShop(id){return aShops.find(x=>String(x.id)===String(id))}
+$('aList').onclick=async e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const s=findShop(b.dataset.id);if(!s)return;const a=b.dataset.a;
+  try{
+    if(a==='pub'){const r=await rpc('set_shop_publish_by_admin_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_is_published:!s.is_published});if(failed(r))throw 0;s.is_published=!s.is_published;toast(s.is_published?'公開しました':'非公開にしました')}
+    else if(a==='rally'){const r=await rpc('admin_set_shop_rally_enabled_by_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_enabled:!s.stamp_rally_enabled});if(failed(r))throw 0;s.stamp_rally_enabled=!s.stamp_rally_enabled;toast(s.stamp_rally_enabled?'スタンプ参加にしました':'スタンプ不参加にしました')}
+    else if(a==='code'||a==='regen'){
+      const code=a==='regen'?String(Math.floor(1000+Math.random()*9000)):$('code-'+s.id).value.trim();
+      if(!/^\d{4}$/.test(code))return toast('4桁の数字にしてください');
+      if(a==='regen'&&aCodes[s.id]&&!confirm('番号を変えると、前の番号とNFCタグは使えなくなります。変えますか？'))return;
+      const r=await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_new_code:code});if(failed(r))throw 0;aCodes[s.id]=code;toast('スタンプ番号を保存しました');
+    }
+    else if(a==='copynfc'){await copyText(nfcUrl(s.id,aCodes[s.id]));toast('NFC用URLをコピーしました');return}
+    else if(a==='pin'){
+      if(!confirm(`${s.name} の店舗ページPINを新しく発行しますか？\n前のPINは使えなくなります。`))return;
+      const pin=String(Math.floor(100000+Math.random()*900000));
+      const r=await rpc('admin_set_shop_edit_pin_by_admin_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_new_pin:pin});if(failed(r))throw 0;
+      const text=`【もぐマップ 店舗ページPIN】\n店舗名：${s.name}\n店舗ページPIN：${pin}\n\n遠隔スタンプの確認はこちら（「お店の方」で入力）：\n${new URL('admin.html',NFC_BASE).href}`;
+      try{await copyText(text)}catch{}
+      alert(`新しいPIN：${pin}\n\nお店へ送る文をコピーしました。`);return;
+    }
+    else if(a==='edit'){aOpenEdit.has(s.id)?aOpenEdit.delete(s.id):aOpenEdit.add(s.id)}
+    else if(a==='save'){
+      const v=k=>$(k+'-'+s.id).value;
+      const r=await rpc('admin_update_shop_by_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_name:v('eName'),p_address:v('eAddr'),p_category:s.category,p_description:v('eDesc'),p_phone:v('ePhone'),p_community_url:s.community_url||'',p_point_purchase_url:s.point_purchase_url||'',p_stamp_rally_enabled:!!s.stamp_rally_enabled,p_spot_job_enabled:!!s.spot_job_enabled,p_spot_job_title:s.spot_job_title||'',p_spot_job_description:s.spot_job_description||'',p_spot_job_hourly_wage:s.spot_job_hourly_wage??null,p_spot_job_schedule:s.spot_job_schedule||'',p_spot_job_payment_method:s.spot_job_payment_method||'',p_spot_job_contact:s.spot_job_contact||'',p_website_url:s.website_url||'',p_instagram_url:s.instagram_url||'',p_facebook_url:s.facebook_url||'',p_x_url:s.x_url||'',p_line_url:s.line_url||''});
+      if(failed(r))throw 0;
+      Object.assign(s,{name:v('eName'),address:v('eAddr'),description:v('eDesc'),phone:v('ePhone')});aOpenEdit.delete(s.id);toast('保存しました');
+    }
+    aRender();
+  }catch(err){console.error(err);toast(errText(err).includes('Invalid PIN')?'管理者PINがちがいます':'保存できませんでした')}
+};
+</script>
+</body>
+</html>
