@@ -1,7 +1,7 @@
 :root{--teal:#397f87;--teal2:#5fb3b3;--pink:#e07a9b;--pink2:#fde8ef;--ink:#3b3b3b;--muted:#8a8a8a;--line:#eadfd4;--bg:#fff9f3;--card:#fff;--ok:#4caf87}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.6;-webkit-tap-highlight-color:transparent}
+body{font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;min-height:100vh;background:radial-gradient(circle at 7% 6%,#ffe1b5 0 6%,transparent 22%),radial-gradient(circle at 94% 15%,#c9f2e8 0 7%,transparent 23%),linear-gradient(180deg,#f8fdff 0%,#eef9f6 100%);background-attachment:scroll;color:var(--ink);font-size:17px;line-height:1.6;-webkit-tap-highlight-color:transparent}
 button,input,select,textarea{font:inherit;color:inherit}
 .wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 2px 12px}

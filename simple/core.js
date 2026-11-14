@@ -32,6 +32,20 @@ async function notifyCall(body){
   return r.json();
 }
 function notifyShop(shopId,kind){if(NOTIFY_URL&&shopId)notifyCall({action:'notify',shopId,kind:kind||'message'}).catch(e=>console.warn('通知できませんでした',e))}
+// 元のもぐマップと同じ背景（主催者が「アプリデザイン管理」で登録した背景画像）
+function safeBgImage(v){v=String(v||'');return /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(v)||/^https:\/\/[^"'()\s]+$/.test(v)?v:''}
+async function applyAppBackground(){
+  try{
+    const rows=await rpc('get_public_app_visual_settings',{}),r=Array.isArray(rows)?rows[0]:rows,img=safeBgImage(r?.body_image_data);
+    if(!img)return;
+    // 画面に固定した背景レイヤー（スクロールしても画面いっぱい・iPhoneでもOK）
+    let bg=document.getElementById('appBg');
+    if(!bg){bg=document.createElement('div');bg.id='appBg';bg.setAttribute('aria-hidden','true');document.body.prepend(bg)}
+    const size=Number(r.body_size)||100;
+    bg.style.cssText=`position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(180deg,rgba(248,253,255,.82),rgba(238,249,246,.88)),url("${img}");background-size:cover,${size>100?size+'% auto':'cover'};background-position:center top,${Number(r.body_x??50)}% ${Number(r.body_y??0)}%;background-repeat:no-repeat,no-repeat`;
+  }catch(e){console.warn('背景を読み込めませんでした',e)}
+}
+document.addEventListener('DOMContentLoaded',applyAppBackground);
 async function loadPublicShops(){
   const rows=await api('/rest/v1/shop_public?select=*&is_published=eq.true&order=name.asc');
   return Array.isArray(rows)?rows:[];

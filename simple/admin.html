@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>もぐマップ 主催者ページ</title>
-<link rel="stylesheet" href="core.css?v=1">
+<link rel="stylesheet" href="core.css?v=2">
 <style>
-body{background:#f6f3ef}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:13px;font-weight:900;cursor:pointer;font-size:16px}
 .tab.on{background:var(--teal);color:#fff;border-color:var(--teal)}
@@ -86,7 +85,7 @@ body{background:#f6f3ef}
 </div></div>
 <div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
 <div id="toast"></div>
-<script src="core.js?v=1"></script>
+<script src="core.js?v=2"></script>
 <script src="lib/qrcode.js?v=1"></script>
 <script>
 const failed=r=>r===false||(Array.isArray(r)&&r[0]&&(r[0].ok===false||r[0].success===false));
