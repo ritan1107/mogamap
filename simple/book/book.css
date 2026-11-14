@@ -85,3 +85,53 @@ details p{margin:6px 0 0;font-size:14.5px}
 .next a{flex:1;text-align:center;text-decoration:none;font-weight:900;font-size:14px;border-radius:14px;padding:11px;background:#fff;border:1.5px solid var(--line);color:var(--teal)}
 .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
 @media print{body{background:#fff}.bar,.cta,.next,.toc{display:none!important}.chapter{box-shadow:none;break-inside:avoid}}
+
+/* ===== えらんで読むガイド ===== */
+.ask{margin:18px 2px 8px;font-weight:900;font-size:17px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:0;text-align:left;background:#fff;border-radius:20px;padding:14px 14px 13px;cursor:pointer;box-shadow:0 6px 16px rgba(120,90,60,.08);border:1.5px solid var(--line);font:inherit;color:var(--ink)}
+.tile:active{transform:scale(.97)}
+.tile .ti{font-size:30px;line-height:1.1}
+.tile b{font-size:16px;line-height:1.35}
+.tile small{font-size:12px;color:var(--muted);line-height:1.4}
+.tile.hot{border-color:var(--pink);background:linear-gradient(160deg,#fff1f6,#fff)}
+.host .tile.hot{border-color:var(--teal);background:linear-gradient(160deg,#ecf8f6,#fff)}
+.tile.wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px}
+.tile.wide div{flex:1}
+.topic{display:none}
+.sheet-bg{position:fixed;inset:0;background:#0007;z-index:50;display:none;align-items:flex-end;justify-content:center}
+.sheet-bg.on{display:flex}
+.sheet{background:var(--paper);width:100%;max-width:620px;max-height:92vh;overflow:auto;border-radius:26px 26px 0 0;padding:18px 18px 28px;animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet-top{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-18px;background:var(--paper);padding:6px 0 8px;z-index:2}
+.sheet-top h2{margin:0;font-size:20px}
+.close{border:0;background:#f1ebe4;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer;flex:0 0 38px}
+.sheet .topic{display:block}
+@media(min-width:640px){.sheet-bg{align-items:center}.sheet{border-radius:26px}}
+/* タブ */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#f1ebe4;border-radius:14px;padding:4px;margin:6px 0 10px}
+.tabs button{border:0;background:none;border-radius:11px;padding:10px;font:inherit;font-weight:900;font-size:15px;color:var(--muted);cursor:pointer}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px #0001}
+.tabpane{display:none}.tabpane.on{display:block}
+/* 写真・図 */
+.shot{display:block;width:100%;border-radius:14px;border:1.5px solid var(--line);margin-top:8px}
+.fig{margin-top:8px;border:1.5px solid var(--line);border-radius:14px;background:#fff;padding:10px 12px;font-size:14px;font-weight:800}
+.fig .row{display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:10px;padding:8px 10px;background:#f6f3ef;margin-top:6px}
+.fig .row:first-child{margin-top:0}
+.fig .hit{outline:3.5px solid #e61e28;outline-offset:2px;background:#fff}
+.fig .num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#e61e28;color:#fff;font-size:13px;font-weight:900;flex:0 0 24px}
+.fig .bar2{display:flex;align-items:center;gap:8px;background:#f1f1f1;border-radius:999px;padding:7px 12px;font-weight:700;color:#555}
+.fig .bar2 .url{flex:1;font-size:12px}
+.fig .icon{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border-radius:8px;font-size:17px;font-weight:900}
+.fig .btn2{border-radius:10px;padding:6px 14px;font-weight:900}
+.fig .blue{color:#1a73e8}
+.fig .gray{color:#888;font-weight:700}
+.mini-steps{list-style:none;margin:6px 0 0;padding:0;counter-reset:m}
+.mini-steps>li{counter-increment:m;margin-top:16px}
+.mini-steps>li>b{display:flex;gap:8px;align-items:center;font-size:16px}
+.mini-steps>li>b:before{content:counter(m);flex:0 0 28px;height:28px;border-radius:50%;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px}
+.host .mini-steps>li>b:before{background:var(--teal)}
+.mini-steps>li>span{display:block;font-size:14px;color:#5d554e;margin:2px 0 0 36px}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+.back-menu{display:block;width:100%;margin-top:18px;border:1.5px solid #cfe4e4;background:#fff;color:var(--teal);font:inherit;font-weight:900;border-radius:14px;padding:12px;cursor:pointer}
+.tile.wide b,.tile.wide small{display:block}
