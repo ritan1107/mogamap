@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>もぐめぐりBOOK｜もぐマップ スタンプラリー ガイド</title>
+<meta name="description" content="もぐマップ スタンプラリーのガイドブック。お客様向け「めぐる人のBOOK」と、お店向け「むかえる人のBOOK」。">
+<meta property="og:title" content="もぐめぐりBOOK｜もぐマップ スタンプラリー ガイド">
+<meta property="og:description" content="QRを読むだけでスタンプ。3つで1クリア、景品がもらえる！迷わない使い方ガイド。">
+<link rel="stylesheet" href="book.css?v=1">
+<style>
+.doors{display:grid;gap:14px;margin-top:18px}
+.door{display:flex;gap:14px;align-items:center;text-decoration:none;color:var(--ink);background:#fff;border-radius:26px;padding:18px;border:2px solid transparent;box-shadow:0 10px 24px rgba(120,90,60,.09);transition:transform .1s}
+.door:active{transform:scale(.98)}
+.door .em{flex:0 0 64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:34px}
+.door.g{border-color:#f6d3df}.door.g .em{background:linear-gradient(135deg,#ffe2c4,#fde0e8)}
+.door.h{border-color:#cfe8e3}.door.h .em{background:linear-gradient(135deg,#d7f2ea,#d9ebf7)}
+.door div{flex:1}
+.door small{display:block;font-size:11px;font-weight:900;letter-spacing:.12em}
+.door.g small{color:var(--pink)}.door.h small{color:var(--teal)}
+.door b{display:block;font-size:20px;line-height:1.4}
+.door span{display:block;font-size:13px;color:var(--muted)}
+.door i{font-style:normal;font-size:28px;color:#c9bcb0}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.three div{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:12px 6px;text-align:center;font-size:13px;font-weight:800;line-height:1.45}
+.three div b{display:block;font-size:28px}
+.three div small{display:block;font-weight:700;color:var(--muted);font-size:11px;margin-top:2px}
+.qrwrap{display:flex;gap:14px;align-items:center}
+.qrwrap #qr{flex:0 0 120px;background:#fff;border-radius:14px;padding:6px}
+.qrwrap #qr svg{width:100%;height:auto;display:block}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.links a{text-decoration:none;text-align:center;font-weight:900;font-size:14px;border-radius:14px;padding:11px 6px;background:#fff;border:1.5px solid #cfe4e4;color:var(--teal)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><a class="logo" href="./"><small>MOGU MAP</small>もぐめぐりBOOK</a><a class="pill" href="../">アプリを開く</a></div>
+
+  <header class="cover c-main">
+    <div class="vol">MOGU MAP STAMP RALLY GUIDE</div>
+    <h1>もぐめぐりBOOK</h1>
+    <p>めぐる人も、むかえる人も。<br>これ1冊で、もう迷わない。</p>
+    <div class="chips"><span>📷 QRでスタンプ</span><span>🎁 3つで1クリア</span><span>📲 ダウンロード不要</span></div>
+  </header>
+
+  <section class="chapter" style="margin-top:18px">
+    <h2 style="font-size:19px">🗺️ もぐマップ スタンプラリーって？</h2>
+    <p class="lead">スマホだけで参加できる、お店めぐりのスタンプラリーです。</p>
+    <div class="three">
+      <div><b>📷</b>お店でQRを読む<small>NFCならかざすだけ</small></div>
+      <div><b>🔴</b>スタンプが押される<small>通販で買ってもOK</small></div>
+      <div><b>🎁</b>3つで1クリア<small>クリアのたび景品</small></div>
+    </div>
+  </section>
+
+  <div class="doors">
+    <a class="door g" href="guest.html"><div class="em">🙋</div><div><small>FOR GUESTS ／ お客様</small><b>めぐる人のBOOK</b><span>参加のしかた・スタンプ・景品・お買い物</span></div><i>›</i></a>
+    <a class="door h" href="host.html"><div class="em">🏪</div><div><small>FOR SHOPS ／ お店の方</small><b>むかえる人のBOOK</b><span>準備・QRの置き方・お客様対応・ガイドライン</span></div><i>›</i></a>
+  </div>
+
+  <section class="chapter">
+    <h2 style="font-size:19px">📲 アプリはこちら</h2>
+    <div class="qrwrap">
+      <div id="qr" aria-label="お客様アプリのQRコード"></div>
+      <div><b>お客様アプリ</b><br><span style="font-size:14px;color:var(--muted)">スマホのカメラで読むと開きます。ホーム画面に追加しておくと便利です。</span></div>
+    </div>
+    <div class="links">
+      <a href="../">🙋 お客様アプリ</a>
+      <a href="../shop.html">🏪 お店アプリ</a>
+    </div>
+  </section>
+
+  <p class="foot">もぐマップ スタンプラリー ／ もぐめぐりBOOK<br><a href="../admin.html" style="color:var(--muted)">主催者の方</a></p>
+</div>
+<script src="../lib/qrcode.js?v=1"></script>
+<script>
+try{const q=qrcode(0,'M');q.addData(new URL('../',location.href).href);q.make();document.getElementById('qr').innerHTML=q.createSvgTag({cellSize:6,margin:1,scalable:true})}catch(e){console.warn(e)}
+</script>
+</body>
+</html>
