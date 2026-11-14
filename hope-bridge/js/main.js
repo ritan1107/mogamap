@@ -22,16 +22,36 @@ const CONFIG = {
     instagramUrl: ""
   },
 
+  /* --- メニュー（ページ）。href を変えるとリンク先が変わります --- */
   nav: [
-    { id:"service",   ja:"制作できるもの", en:"SERVICE" },
-    { id:"works",     ja:"制作実績",       en:"WORKS" },
-    { id:"price",     ja:"料金",           en:"PRICE" },
-    { id:"plan",      ja:"まとめて相談",   en:"PLAN" },
-    { id:"community", ja:"つながる活動",   en:"COMMUNITY" },
-    { id:"profile",   ja:"プロフィール",   en:"PROFILE" },
-    { id:"contact",   ja:"ご相談",         en:"CONTACT" }
+    { href:"service.html", page:"service", ja:"制作メニュー", en:"SERVICE" },
+    { href:"works.html",   page:"works",   ja:"制作実績",     en:"WORKS" },
+    { href:"price.html",   page:"price",   ja:"料金",         en:"PRICE" },
+    { href:"connect.html", page:"connect", ja:"つながる活動", en:"CONNECT" },
+    { href:"about.html",   page:"about",   ja:"りーたんについて", en:"ABOUT" }
   ],
 
+  /* --- 下層ページの見出し --- */
+  pages: {
+    service: { en:"SERVICE", title:"制作メニュー", lead:"手描き動画・LINEスタンプ・似顔絵・名刺・Web・動画編集まで。ひとつからでも、まとめてでもご相談いただけます。" },
+    works:   { en:"WORKS",   title:"制作実績",     lead:"手描き動画・似顔絵・LINEスタンプの一部をご紹介します。" },
+    price:   { en:"PRICE",   title:"料金のめやす", lead:"はじめての方でも頼みやすいように、めやすの料金を載せています。" },
+    connect: { en:"CONNECT", title:"つながる活動", lead:"人と人、仕事とチャンスをつなぐ活動をしています。" },
+    about:   { en:"ABOUT",   title:"りーたんについて", lead:"Hope Bridge Design の想いと、りーたんのこと。" }
+  },
+
+  /* --- トップページの案内カード --- */
+  digest: {
+    title: "知りたいところから、\nどうぞ。",
+    lead: "くわしい内容は、それぞれのページにまとめています。",
+    items: [
+      { href:"service.html", image:"@sv_movie",   en:"SERVICE", title:"制作メニュー",   text:"手描き動画・スタンプ・似顔絵・名刺・Webなど9種類。" },
+      { href:"works.html",   image:"@il1",        en:"WORKS",   title:"制作実績",       text:"動画・似顔絵・LINEスタンプの作品を見る。" },
+      { href:"price.html",   image:"@sv_sticker", en:"PRICE",   title:"料金のめやす",   text:"似顔絵 3,000円〜、スタンプ 16,000円〜ほか。" },
+      { href:"connect.html", image:"@dc2",        en:"CONNECT", title:"つながる活動",   text:"お繋ぎ・マルシェ・販路・スクールのご案内。" },
+      { href:"about.html",   image:"@pf",         en:"ABOUT",   title:"りーたんについて", text:"想いを見つけ、伝わる形に変えるクリエイター。" }
+    ]
+  },
   /* --- ファーストビュー --- */
   hero: {
     kicker: "イラスト・動画・デザイン・Web制作",
@@ -398,24 +418,11 @@ const SVC = (s,i) => `
       <ul class="chips">${s.list.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div></details>${s.more ? `<a class="s-more" href="${esc(s.more.href)}">${esc(s.more.label)}</a>` : ""}
     </article>`;
 
+const PAGE = (document.getElementById("app").dataset.page || "top");
 function render(){
   let no = 0; const N = () => ++no;
-  document.getElementById("app").innerHTML = `
-<header class="hd"><div class="wrap hd-in">
-  <a class="logo" href="#top"><b>${esc(B.shortName)}</b><small>${esc(B.tagline)}</small></a>
-  <nav class="nav" aria-label="メインメニュー">
-    ${C.nav.map(n => `<a href="#${n.id}">${esc(n.ja)}</a>`).join("")}
-    ${link(B.lineUrl, "LINEで相談", "btn sm")}
-  </nav>
-  <button class="burger" aria-label="メニューを開く" aria-expanded="false" id="burger"><span></span><span></span><span></span></button>
-</div></header>
-<nav class="drawer" aria-label="スマートフォンメニュー">
-  ${C.nav.map(n => `<a href="#${n.id}"><span>${esc(n.ja)}</span><span class="en">${esc(n.en)}</span></a>`).join("")}
-  ${link(B.lineUrl, K.button)}
-</nav>
-
-<main id="top">
-<section class="hero">
+  const SEC = {
+    hero: () => `<section class="hero">
   <div class="hero-visual">
     <img class="hv-wide" src="${md(C.hero.wide)}" alt="${esc(C.hero.slides.map(x => x.alt).join(" / "))}">
     <div class="hero-slides" id="heroSlides" role="img" aria-label="${esc(C.hero.slides.map(x => x.alt).join(" / "))}">
@@ -433,38 +440,34 @@ function render(){
       <div class="offer"><span class="tag">${esc(K.tag)}</span><span class="free">${esc(K.text)}</span></div>
       <div class="hero-cta">
         ${link(B.lineUrl, K.button)}
-        <a class="btn ghost" href="#service">制作できるものを見る</a>
+        <a class="btn ghost" href="service.html">制作できるものを見る</a>
       </div>
     </div>
   </div>
   <dl class="facts rv">${C.facts.map(f => `<div><dt>${esc(f.label)}</dt><dd>${esc(f.value)}</dd></div>`).join("")}</dl>
 </div>
 <div class="marquee" aria-hidden="true"><div class="marquee-in">${esc(C.hero.marquee.repeat(5))}</div></div>
-</section>
-
-<section class="campaign"><div class="wrap">
+</section>`,
+    campaign: () => `<section class="campaign"><div class="wrap">
   <div>
     <p class="c-head en">FREE CONSULTATION</p>
     <p class="c-main">${esc(K.band)}</p>
     <p class="c-note">${esc(K.bandNote)}</p>
   </div>
   ${link(B.lineUrl, K.button)}
-</div></section>
-
-<section class="sec alt">${chara("think","ch-head")}<div class="wrap">
+</div></section>`,
+    concern: () => `<section class="sec alt">${chara("think","ch-head")}<div class="wrap">
   ${head(N(), "CONCERN", C.concern.title)}
   <ul class="concerns rv">${C.concern.items.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
   <div class="philo rv">${lily("f","l-philo")}<div class="lbl">${esc(C.concern.philoLabel)}</div><h3>${nl(C.concern.philoTitle)}</h3><p>${esc(C.concern.philoText)}</p></div>
-</div></section>
-
-<section class="sec" id="service">${chara("idea","ch-head")}<div class="wrap">
+</div></section>`,
+    service: () => `<section class="sec" id="service">${chara("idea","ch-head")}<div class="wrap">
   ${head(N(), "SERVICE", C.services.title, C.services.lead)}
   <div class="services rv">${C.services.items.slice(0,3).map((s,i) => SVC(s,i)).join("")}</div>
   <details class="acc acc-more rv"><summary><span class="am-open">ほかの制作メニューを見る<small>（あと${C.services.items.length-3}種類）</small></span><span class="am-close">閉じる</span><i class="acc-ic" aria-hidden="true"></i></summary>
     <div class="services">${C.services.items.slice(3).map((s,i) => SVC(s,i+3)).join("")}</div></details>
-</div></section>
-
-<section class="sec dcard" id="dcard"><div class="wrap">
+</div></section>`,
+    dcard: () => `<section class="sec dcard" id="dcard"><div class="wrap">
   ${head(0, C.dcard.en, C.dcard.title, C.dcard.lead)}
   <div class="dc-before rv">
     <div class="dc-bimg"><img src="${md(C.dcard.before.image)}" alt="名刺を切らして困っている様子" loading="lazy"></div>
@@ -475,9 +478,8 @@ function render(){
     <li><div class="dc-img"><img src="${md(st.image)}" alt="${esc(st.title)}" loading="lazy"><b>${i+1}</b></div><h3>${esc(st.title)}</h3><p>${esc(st.text)}</p></li>`).join("")}</ol>
   <ul class="dc-merits">${C.dcard.merits.map(m => `<li>${esc(m)}</li>`).join("")}</ul>
   </div>
-</div></section>
-
-<section class="sec alt" id="works">${chara("point","ch-head")}<div class="wrap">
+</div></section>`,
+    works: () => `<section class="sec alt" id="works">${chara("point","ch-head")}<div class="wrap">
   ${head(N(), "WORKS", C.works.title, C.works.lead)}
   <div class="works-block rv">
     <div class="wb-head"><h3>手描き動画</h3><span class="en">HAND-DRAWN MOVIE</span><p>音声なしで、一部をくり返し再生しています。</p></div>
@@ -499,17 +501,15 @@ function render(){
     <div class="sticker-tags">${C.works.stickerTags.map(t => `<span>${esc(t)}</span>`).join("")}</div>
   </div>
   <div class="works-more rv"><p>${esc(C.works.moreText)}</p>${link(B.lineUrl, C.works.moreButton)}</div>
-</div></section>
-
-<section class="sec" id="why"><div class="wrap">
+</div></section>`,
+    why: () => `<section class="sec" id="why"><div class="wrap">
   ${head(N(), "WHY HAND-DRAWN", C.why.title, C.why.lead)}
   <div class="stats3 rv">${C.why.stats.map(x => `
     <div class="stat3"><div class="st-label">${esc(x.label)}</div><div class="st-big">${esc(x.big)}</div><p>${esc(x.text)}</p><small>${esc(x.src)}</small></div>`).join("")}</div>
   <div class="fit rv"><h3>${esc(C.why.fitTitle)}</h3>
     <ul>${C.why.fits.map(f => `<li><b>${esc(f.who)}</b><span>${esc(f.idea)}</span><em>${esc(f.len)}</em></li>`).join("")}</ul></div>
-</div></section>
-
-<section class="sec alt" id="price">${chara("cheer","ch-head")}<div class="wrap">
+</div></section>`,
+    price: () => `<section class="sec alt" id="price">${chara("cheer","ch-head")}<div class="wrap">
   ${head(N(), "PRICE", C.price.title, C.price.lead)}
   <details class="acc rv"><summary><span class="acc-t"><b>制作メニューの料金</b><small>似顔絵・スタンプ・名刺・Webなど${C.price.items.length}種類　<em>${esc(C.price.items[0].price)}円〜</em></small></span><i class="acc-ic" aria-hidden="true"></i></summary><div class="acc-body">
   <div class="pcards">${C.price.items.map(it => `
@@ -554,26 +554,23 @@ function render(){
     <ul>${C.price.notes.map(n => `<li>${esc(n)}</li>`).join("")}${C.price.taxNote ? `<li>${esc(C.price.taxNote)}</li>` : ""}</ul>
     <div class="works-more"><p>${esc(C.price.ctaText)}</p>${link(B.lineUrl, C.price.ctaButton)}</div>
   </div>
-</div></section>
-
-<section class="sec bundle" id="plan">${lily("c","l-plan")}<div class="wrap">
+</div></section>`,
+    plan: () => `<section class="sec bundle" id="plan">${lily("c","l-plan")}<div class="wrap">
   ${head(N(), "PLAN", C.plan.title, C.plan.lead)}
   <div class="price-list rv">${C.plan.items.map(p => `
     <div class="price-row">
       <div class="who"><small>${esc(p.en)}</small>${esc(p.who)}</div>
       <div class="combo">${p.combo.map(c => `<span>${esc(c)}</span>`).join(`<i>＋</i>`)}</div>
     </div>`).join("")}</div>
-</div></section>
-
-<section class="sec dark talk"><div class="wrap">${chara("coffee","ch-band")}
+</div></section>`,
+    talk: () => `<section class="sec dark talk"><div class="wrap">${chara("coffee","ch-band")}
   ${head(0, "LET'S TALK", C.talk.title)}
   ${voices(C.talk.voices)}
   <p style="max-width:34em;margin:0 auto;color:var(--on-dark)">${esc(C.talk.text)}</p>
   <p class="closing">${esc(C.talk.closing)}</p>
   <div class="contact-row">${link(B.lineUrl, C.talk.button, "btn")}</div>
-</div></section>
-
-<section class="sec alt" id="community">${chara("hug","ch-head")}<div class="wrap">
+</div></section>`,
+    community: () => `<section class="sec alt" id="community">${chara("hug","ch-head")}<div class="wrap">
   ${head(N(), C.community.en, C.community.title, C.community.lead)}
   ${voices(C.community.voices)}
   <div class="acts">${C.community.items.map((a,i) => `
@@ -592,9 +589,8 @@ function render(){
         <div class="ctas">${a.ctas.map((c,j) => link(c.url, c.label, j ? "btn ghost" : "btn")).join("")}</div>
       </div>
     </article>`).join("")}</div>
-</div></section>
-
-<section class="sec profile" id="profile">${lily("a","l-prof")}<div class="wrap">
+</div></section>`,
+    profile: () => `<section class="sec profile" id="profile">${lily("a","l-prof")}<div class="wrap">
   <div class="pf-grid">
     <div class="pf-photo rv">
       <div class="pf-frame"><img src="${md(C.profile.image)}" alt="${esc(C.profile.name)}のイメージ写真" loading="lazy"></div>
@@ -615,9 +611,8 @@ function render(){
       </div>
     </div>
   </div>
-</div></section>
-
-<section class="sec dark talk" id="contact"><div class="wrap">${chara("banzai","ch-band")}
+</div></section>`,
+    contact: () => `<section class="sec dark talk" id="contact"><div class="wrap">${chara("banzai","ch-band")}
   ${head(0, "CONTACT", C.final.title)}
   ${voices(C.final.voices)}
   <p style="max-width:34em;margin:0 auto;color:var(--on-dark)">${esc(C.final.text)}</p>
@@ -626,11 +621,43 @@ function render(){
     ${B.lineUrl ? link(B.lineUrl, C.final.button) : `<span class="btn" style="opacity:.6">${esc(C.final.button)}（LINEのURLを設定してください）</span>`}
     ${B.instagramId ? `<a class="btn ghost" style="color:#fff;border-color:#fff" href="${esc(B.instagramUrl)}" target="_blank" rel="noopener">Instagram @${esc(B.instagramId)}</a>` : ""}
   </div>
-</div></section>
+</div></section>`,
+    digest: () => `<section class="sec alt digest"><div class="wrap">
+  ${head(0, "MENU", C.digest.title, C.digest.lead)}
+  <div class="dg-grid">${C.digest.items.map(d => `<a class="dg" href="${esc(d.href)}"><span class="dg-img"><img src="${md(d.image)}" alt="" loading="lazy"></span><span class="dg-body"><span class="en">${esc(d.en)}</span><b>${esc(d.title)}</b><small>${esc(d.text)}</small><i class="dg-go" aria-hidden="true">→</i></span></a>`).join("")}</div>
+</div></section>`,
+    pagehead: () => { const P = C.pages[PAGE]; return P ? `<section class="page-hero"><div class="wrap"><nav class="crumb" aria-label="現在地"><a href="index.html">トップ</a><span>›</span>${esc(P.title)}</nav><p class="ph-en">${esc(P.en)}</p><h1>${esc(P.title)}</h1><p class="ph-lead">${esc(P.lead)}</p></div></section>` : ""; }
+  };
+  const LAYOUT = {
+    top:     ["hero","campaign","digest","concern","why","talk","contact"],
+    service: ["pagehead","service","dcard","why","plan","contact"],
+    works:   ["pagehead","works","contact"],
+    price:   ["pagehead","price","plan","contact"],
+    connect: ["pagehead","community","contact"],
+    about:   ["pagehead","profile","talk","contact"]
+  };
+  const MAIN = (LAYOUT[PAGE] || LAYOUT.top).map(k => SEC[k]()).join("\n");
+  document.getElementById("app").innerHTML = `
+<header class="hd"><div class="wrap hd-in">
+  <a class="logo" href="index.html"><b>${esc(B.shortName)}</b><small>${esc(B.tagline)}</small></a>
+  <nav class="nav" aria-label="メインメニュー">
+    ${C.nav.map(n => `<a href="${esc(n.href)}"${n.page===PAGE?' aria-current="page"':""}>${esc(n.ja)}</a>`).join("")}
+    ${link(B.lineUrl, "LINEで相談", "btn sm")}
+  </nav>
+  <button class="burger" aria-label="メニューを開く" aria-expanded="false" id="burger"><span></span><span></span><span></span></button>
+</div></header>
+<nav class="drawer" aria-label="スマートフォンメニュー">
+  <a href="index.html"><span>トップ</span><span class="en">HOME</span></a>
+  ${C.nav.map(n => `<a href="${esc(n.href)}"><span>${esc(n.ja)}</span><span class="en">${esc(n.en)}</span></a>`).join("")}
+  ${link(B.lineUrl, K.button)}
+</nav>
+
+<main id="top">
+${MAIN}
 </main>
 
 <footer class="ft"><div class="wrap">
-  <a class="logo" href="#top"><b>${esc(B.shortName)}</b></a>
+  <a class="logo" href="index.html"><b>${esc(B.shortName)}</b></a>
   <ul><li>${esc(B.name)}</li><li>${esc(B.tagline)}</li><li>拠点　${esc(B.area)}</li><li>代表　${esc(B.representative)}</li></ul>
   <p class="ft-links"><button type="button" class="pp-open" data-pp>${esc(C.privacy.title)}</button></p>
   <p class="tiny">© ${esc(B.name)}</p>
@@ -721,7 +748,7 @@ document.querySelectorAll("details").forEach(d => d.addEventListener("toggle", (
 (function(){
   if (typeof HAND === "undefined" || false || !("IntersectionObserver" in window)) return;
   if (C.decor && C.decor.writing === false) return;
-  const targets = [...document.querySelectorAll(".hero h1, .sec-head h2, .pf-sign")];
+  const targets = [...document.querySelectorAll(".hero h1, .page-hero h1, .sec-head h2, .pf-sign")];
   const hand = document.createElement("img");
   hand.src = HAND.d; hand.alt = ""; hand.className = "writer-hand"; hand.setAttribute("aria-hidden", "true");
   document.body.appendChild(hand);

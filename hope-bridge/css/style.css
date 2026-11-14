@@ -824,3 +824,33 @@ body.pp-lock{overflow:hidden}
   .hv-scroll{display:none}
 }
 .contact-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+/* ===== 下層ページの見出し ===== */
+.page-hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--olive-soft) 0%,var(--paper) 100%);padding-block:clamp(40px,7vw,80px) clamp(32px,5vw,56px);text-align:center}
+.page-hero::after{content:"";position:absolute;left:50%;bottom:-120px;width:min(900px,140vw);height:200px;transform:translateX(-50%);border-radius:50%;background:var(--paper);opacity:.6}
+.page-hero .wrap{position:relative;z-index:1;display:grid;justify-items:center;gap:6px}
+.crumb{font-size:12px;color:var(--ink-2);display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.crumb a{color:var(--olive);text-decoration:none}
+.ph-en{margin:0;font-family:var(--f-en);letter-spacing:.3em;color:var(--gold);font-size:14px}
+.page-hero h1{margin:0;font-family:var(--f-display);font-weight:600;font-size:clamp(28px,4.4vw,44px);letter-spacing:.08em;line-height:1.4}
+.ph-lead{margin:6px 0 0;max-width:36em;color:var(--ink-2);font-size:14.5px}
+.nav a[aria-current="page"]{color:var(--olive);font-weight:700;border-bottom:2px solid currentColor}
+
+/* ===== トップの案内カード ===== */
+.dg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px}
+.dg{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .3s,box-shadow .3s}
+.dg:hover{transform:translateY(-5px);box-shadow:0 14px 30px rgba(120,70,50,.12)}
+.dg-img{display:block;aspect-ratio:4/3;overflow:hidden;background:var(--paper-2);max-width:100%}
+.dg-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dg:hover .dg-img img{transform:scale(1.05)}
+.dg-body{position:relative;display:grid;gap:2px;padding:16px 18px 18px}
+.dg-body .en{font-family:var(--f-en);font-size:12px;letter-spacing:.2em;color:var(--gold)}
+.dg-body b{font-family:var(--f-display);font-size:18px}
+.dg-body small{font-size:13px;color:var(--ink-2);line-height:1.7;padding-right:28px}
+.dg-go{position:absolute;right:16px;bottom:16px;width:30px;height:30px;border-radius:50%;background:var(--olive);color:#fff;font-style:normal;display:grid;place-items:center;font-size:14px;transition:transform .3s}
+.dg:hover .dg-go{transform:translateX(4px)}
+@media (max-width:520px){.dg{flex-direction:row;align-items:stretch}.dg-img{width:38%;flex:0 0 38%;aspect-ratio:auto}.dg-body{align-content:center}}
+/* 下層ページ：最初のセクションの見出しはページ見出しと重なるので隠す */
+.page-hero + .sec > .wrap > .sec-head{display:none}
+.page-hero + .sec{padding-top:clamp(40px,6vw,64px)}
+.page-hero + .sec .chara-w.ch-head{display:none}
