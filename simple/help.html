@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>もぐマップ 使い方ガイド</title>
+<meta name="description" content="もぐマップ スタンプラリーの使い方。お客様・お店・主催者向けのかんたんガイド。">
+<link rel="stylesheet" href="core.css?v=1">
+<style>
+.hero{text-align:center;padding:8px 4px 4px}
+.hero h1{margin:0;font-size:24px;color:var(--teal)}
+.hero p{margin:6px 0 0;color:var(--muted);font-size:15px}
+.who{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 14px;position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0}
+.who button{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:10px 4px;font-weight:900;font-size:14px;cursor:pointer}
+.who button span{display:block;font-size:26px;line-height:1.2}
+.who button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.part{display:none}.part.on{display:block}
+.flow{display:flex;align-items:stretch;gap:6px;margin-top:10px}
+.flow div{flex:1;background:#fffaf3;border:1.5px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;font-size:13px;font-weight:800;line-height:1.4}
+.flow div b{display:block;font-size:24px}
+.flow i{align-self:center;font-style:normal;color:var(--pink);font-weight:900}
+.step{display:flex;gap:12px;margin-top:14px}
+.num{flex:0 0 34px;height:34px;border-radius:50%;background:var(--pink);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:17px}
+.step h4{margin:4px 0 2px;font-size:17px}
+.step p{margin:0;font-size:15px}
+.sec{margin-top:14px}
+.sec>h3{font-size:19px;display:flex;align-items:center;gap:8px;margin:0 0 4px}
+.tip{background:#effaf9;border-radius:14px;padding:10px 12px;margin-top:12px;font-size:14px}
+.warn{background:#fff3e6;border-radius:14px;padding:10px 12px;margin-top:12px;font-size:14px}
+.btnlike{display:inline-block;background:var(--pink);color:#fff;border-radius:9px;padding:1px 8px;font-weight:900;font-size:13px;white-space:nowrap}
+.btnlike.t{background:var(--teal)}
+.btnlike.g{background:#fff;color:var(--teal);border:1.5px solid #cfe4e4}
+details.faq{border-top:1.5px dashed var(--line);padding:10px 0}
+details.faq:first-of-type{border-top:0}
+details.faq summary{font-weight:900;cursor:pointer;color:var(--teal)}
+details.faq p{margin:6px 0 0;font-size:15px}
+.go{display:block;text-align:center;margin-top:14px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.toc a{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:800;color:var(--teal);text-decoration:none}
+.back-top{display:block;text-align:center;margin-top:22px;font-size:13px;color:var(--muted)}
+@media print{.who,.go,.back-top,.toc{display:none!important}.part{display:block!important;page-break-after:always}.card{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><small>MOGU MAP</small>使い方ガイド</div>
+    <a class="btn ghost small" href="./">アプリへ</a>
+  </header>
+
+  <div class="hero">
+    <h1>はじめての方へ 📖</h1>
+    <p>スマホだけで参加できる、お店めぐりのスタンプラリーです。<br>アプリのダウンロードはいりません。</p>
+  </div>
+
+  <div class="card sec" style="margin-top:14px">
+    <h3>🔄 しくみ</h3>
+    <div class="flow">
+      <div><b>📷</b>お店でQRを読む</div><i>→</i>
+      <div><b>🔴</b>スタンプが押される</div><i>→</i>
+      <div><b>🎁</b>3つで1クリア！景品</div>
+    </div>
+    <p style="font-size:15px;margin:12px 0 0">スタンプが<b>3つたまるたびに「1クリア」</b>。6つで2クリア、9つで3クリア…と、クリアするたびに景品がもらえます。クリアすると主催者にも自動でお知らせが届きます。</p>
+  </div>
+
+  <nav class="who" id="who">
+    <button data-p="customer" class="on"><span>🙋</span>お客様</button>
+    <button data-p="shop"><span>🏪</span>お店の方</button>
+    <button data-p="organizer"><span>🛠</span>主催者</button>
+  </nav>
+
+  <!-- ================= お客様 ================= -->
+  <section class="part on" id="customer">
+    <div class="toc"><a href="#c-start">はじめる</a><a href="#c-stamp">対面スタンプ</a><a href="#c-remote">遠隔スタンプ</a><a href="#c-clear">クリアと景品</a><a href="#c-my">マイページ</a><a href="#c-login">ログイン</a><a href="#c-faq">こまったとき</a></div>
+
+    <div class="card sec" id="c-start">
+      <h3>🙋 はじめる</h3>
+      <div class="step"><div class="num">1</div><div><h4>もぐマップを開く</h4><p>お店のポスターのQRコードを読むか、主催者から届いたリンクを開きます。</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4>名前を入れて参加</h4><p>はじめてボタンを押すと「スタンプラリーに参加」が出ます。名前（ニックネームでOK）を入れて <span class="btnlike">参加する</span>。</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4>ホーム画面に追加（おすすめ）</h4><p>次からすぐ開けます。<br>iPhone：下の共有ボタン <b>⬆</b> →「ホーム画面に追加」<br>Android：右上の <b>⋮</b> →「ホーム画面に追加」</p></div></div>
+      <div class="tip">💡 トップ画面のボタンは4つだけ。<br>🏪 対面スタンプ ／ 📦 遠隔スタンプ ／ 📖 スタンプ帳 ／ 👤 マイページ</div>
+    </div>
+
+    <div class="card sec" id="c-stamp">
+      <h3>🏪 対面スタンプ（お店にいるとき）</h3>
+      <div class="step"><div class="num">1</div><div><h4>「対面スタンプ」を押す</h4></div></div>
+      <div class="step"><div class="num">2</div><div><h4><span class="btnlike">📷 QRコードを読み取る</span> を押す</h4><p>はじめてのときは「カメラを使ってもいいですか？」と出るので「許可」を押します。</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4>お店のQRを枠に入れる</h4><p>「スタンプゲット！」と出たら完了です🎉</p></div></div>
+      <div class="tip">📱 <b>NFCタグがあるお店</b>は、スマホをタグにかざすだけ。<br>Android：そのまま開いてスタンプ。<br>iPhone：画面の上に出るお知らせを1回タップ。</div>
+      <div class="tip">🔢 QRが読めないときは「番号で押す」を開いて、お店を選び、お店で聞いた番号を入れてください。</div>
+    </div>
+
+    <div class="card sec" id="c-remote">
+      <h3>📦 遠隔スタンプ（通販・遠くから買ったとき）</h3>
+      <div class="step"><div class="num">1</div><div><h4>「遠隔スタンプ」を押す</h4></div></div>
+      <div class="step"><div class="num">2</div><div><h4>お店を選んで、買った証明を入れる</h4><p>写真（注文画面のスクショなど）、購入ページのURL、メモのどれか1つでOK。</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4><span class="btnlike t">お店に送る</span></h4><p>お店が確認するとスタンプが押されます。結果は同じ画面の「送ったもの」で見られます。</p></div></div>
+    </div>
+
+    <div class="card sec" id="c-clear">
+      <h3>🎁 クリアと景品</h3>
+      <p style="font-size:15px;margin:4px 0 0">スタンプ3つで「1クリア」。クリアすると <b>「🎁 景品がもらえます」</b> と出ます。</p>
+      <div class="step"><div class="num">1</div><div><h4>「スタンプ帳」を開く</h4><p>下の「クリアと景品」に、クリアした回数が出ています。</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4><span class="btnlike">受け取り画面</span> を押す</h4></div></div>
+      <div class="step"><div class="num">3</div><div><h4>その画面を主催者・スタッフに見せる</h4><p>景品を受け取ると「✅ 受け取りました」に変わります。</p></div></div>
+      <div class="tip">💡 トップ画面に「あと○個で次のクリア」が出ています。</div>
+    </div>
+
+    <div class="card sec" id="c-my">
+      <h3>👤 マイページ</h3>
+      <p style="font-size:15px;margin:6px 0 0">・<b>遠隔スタンプ用ID</b>：5桁の番号。お店に伝えると、お店がスタンプを押せます。<br>
+      ・<b>💬 お店とメッセージ</b>：お店を選んで質問や連絡を送れます。返信もここに届きます。<br>
+      ・<b>🔔 お知らせ</b>：スタンプや景品のお知らせが届きます。<br>
+      ・名前の変更もここからできます。</p>
+    </div>
+
+    <div class="card sec" id="c-login">
+      <h3>🔑 ログイン・ログアウト</h3>
+      <p style="font-size:15px;margin:4px 0 0">「あいことば」を決めておくと、ほかのスマホやブラウザでも同じスタンプが使えます。</p>
+      <div class="step"><div class="num">1</div><div><h4>マイページで「あいことば」を決める</h4><p>「🔑 ログイン設定」に好きな4桁の数字を入れて <span class="btnlike t">あいことばを決める</span>。<br><b>参加者ID（5桁）とあいことばはメモ</b>しておきましょう。</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4>ログアウト</h4><p>マイページの一番下の <span class="btnlike g">ログアウト</span>。</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4>ログイン</h4><p>右上の「未参加」→「前に参加した方」→ 参加者ID と あいことば を入れて <span class="btnlike t">ログイン</span>。</p></div></div>
+      <div class="warn">⚠️ あいことばを決めずにログアウトすると、そのスタンプには戻れません。<br>5回まちがえると15分間ログインできなくなります。</div>
+    </div>
+
+    <div class="card sec" id="c-faq">
+      <h3>❓ こまったとき</h3>
+      <details class="faq"><summary>スタンプが消えた／また参加画面が出る</summary><p>LINEの中で開いたときと、Safari・Chromeで開いたときは別あつかいになります。「前に参加した方」から <b>参加者ID＋あいことば</b> でログインすれば、同じスタンプに戻れます。<br>（あいことばを決めていない場合は、もとのブラウザで開いてマイページで決めてください）</p></details>
+      <details class="faq"><summary>カメラが起動しない</summary><p>「カメラを許可」を押していないかもしれません。<br>iPhone：設定 → Safari → カメラ →「許可」<br>Android：Chromeのアドレス欄の左のマーク → 権限 → カメラ →「許可」<br>それでもだめなときは「番号で押す」を使ってください。</p></details>
+      <details class="faq"><summary>「番号がちがうようです」と出る</summary><p>お店をまちがえて選んでいないか確認してください。わからないときはお店の方に聞いてください。</p></details>
+      <details class="faq"><summary>「もう押してあります」と出る</summary><p>そのお店のスタンプは1回だけです。ほかのお店をめぐってみてください。</p></details>
+      <details class="faq"><summary>機種変更するとき</summary><p>前のスマホのマイページで「あいことば」を決めておけば、新しいスマホで 参加者ID＋あいことば でログインするだけです。</p></details>
+      <details class="faq"><summary>あいことばを忘れた</summary><p>ログインしているスマホのマイページで、新しいあいことばに変えられます。ログアウトしてしまった場合は主催者に相談してください。</p></details>
+    </div>
+    <a class="btn pink go" href="./">さっそく始める →</a>
+  </section>
+
+  <!-- ================= お店の方 ================= -->
+  <section class="part" id="shop">
+    <div class="toc"><a href="#s-login">ログイン</a><a href="#s-qr">QR・NFC</a><a href="#s-inbox">お客様からの連絡</a><a href="#s-id">ID入力</a><a href="#s-mail">メール通知</a><a href="#s-faq">こまったとき</a></div>
+
+    <div class="card sec">
+      <h3>🏪 お店の方がやること</h3>
+      <p style="font-size:15px;margin:4px 0 0">① お店のQRをレジや入口に置く<br>② お客様から連絡が来たら確認する<br>これだけです。スタンプは、お客様がQRを読むと自動で押されます。</p>
+    </div>
+
+    <div class="card sec" id="s-login">
+      <h3>🔑 はじめてのログイン</h3>
+      <div class="step"><div class="num">1</div><div><h4>お店アプリを開く</h4><p>もぐマップの一番下の「お店の方はこちら」から開けます。</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4>お店を選んで「店舗ページPIN」を入れる</h4><p>PINは主催者から届きます。</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4><span class="btnlike t">ログイン</span></h4><p>一度ログインすると、そのスマホに保存されます。お店のスマホはホーム画面に追加しておくと便利です。</p></div></div>
+    </div>
+
+    <div class="card sec" id="s-qr">
+      <h3>📱 スタンプQR・NFCタグ</h3>
+      <div class="step"><div class="num">1</div><div><h4>「スタンプQR」タブを開く</h4><p>お店専用のQRコードが出ます。<br>（「スタンプ番号を入れてください」と出たら、主催者から届いた4桁を入れます）</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4>お客様に見せる・貼り出す</h4><p><span class="btnlike">大きく表示</span>：その場でスマホを見せる<br><span class="btnlike g">印刷する</span>：紙にしてレジ・入口に貼る</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4>（NFCタグを使うとき）URLを書き込む</h4><p><span class="btnlike g">NFCタグ用URLをコピー</span> → 無料アプリ「NFC Tools」などで、「書く」→「レコード追加」→「URL」に貼り付けて、タグにかざして書き込みます。</p></div></div>
+      <div class="warn">⚠️ QRやNFCには、お店のスタンプ番号が入っています。QRの写真をSNSなどにのせないでください。番号を変えたら、QRの貼り替えとNFCの書き直しが必要です。</div>
+    </div>
+
+    <div class="card sec" id="s-inbox">
+      <h3>📮 お客様からの連絡</h3>
+      <p style="font-size:15px;margin:4px 0 0">「📮 お客様」タブに、遠隔スタンプの申請とメッセージが届きます。新しい連絡があるとタブに数字が付きます。</p>
+      <div class="step"><div class="num">1</div><div><h4>📦 遠隔スタンプの申請</h4><p>写真やメモを確認して、<span class="btnlike">スタンプを押す</span> か <span class="btnlike g">見送る</span>。ひとことメッセージも添えられます。</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4>💬 メッセージ</h4><p>下の「お客様へ返信」に書いて <span class="btnlike t">送る</span>。お客様のマイページに届きます。</p></div></div>
+    </div>
+
+    <div class="card sec" id="s-id">
+      <h3>🔢 ID入力</h3>
+      <p style="font-size:15px;margin:4px 0 0">電話や対面で、お客様の「遠隔スタンプ用ID（5桁）」を聞いて、スタンプを押すこともできます。</p>
+    </div>
+
+    <div class="card sec" id="s-mail">
+      <h3>✉️ メール通知（使いたいお店だけ）</h3>
+      <div class="step"><div class="num">1</div><div><h4>「⚙️ 設定」タブを開く</h4></div></div>
+      <div class="step"><div class="num">2</div><div><h4>メールアドレスを入れて <span class="btnlike t">保存する</span></h4><p>確認のメールが届いたら設定完了です。</p></div></div>
+      <p style="font-size:15px;margin:10px 0 0">お客様から連絡が来ると「届きました」とメールでお知らせします（中身はお店アプリで確認）。止めたいときは <span class="btnlike g">通知を止める</span>。</p>
+    </div>
+
+    <div class="card sec" id="s-faq">
+      <h3>❓ こまったとき</h3>
+      <details class="faq"><summary>お客様が読み取っても「番号がちがう」と出る</summary><p>お店アプリの番号が古いかもしれません。「スタンプ番号を入れ直す」で主催者から届いた最新の番号を入れて、QRを作り直してください。</p></details>
+      <details class="faq"><summary>PINを忘れた／ログインできない</summary><p>主催者に連絡してください。新しいPINを発行してもらえます。</p></details>
+      <details class="faq"><summary>別のスマホでも見たい</summary><p>そのスマホでも同じようにログインすれば使えます。</p></details>
+    </div>
+    <a class="btn go" href="shop.html">お店アプリを開く →</a>
+  </section>
+
+  <!-- ================= 主催者 ================= -->
+  <section class="part" id="organizer">
+    <div class="toc"><a href="#o-first">最初の準備</a><a href="#o-shop">お店の登録</a><a href="#o-clear">クリアと景品</a><a href="#o-daily">ふだんの運営</a><a href="#o-faq">こまったとき</a></div>
+
+    <div class="card sec">
+      <h3>🗺 3つのページ</h3>
+      <p style="font-size:15px;margin:4px 0 0">🙋 <b>お客様アプリ</b>：<a href="./">simple/</a><br>
+      🏪 <b>お店アプリ</b>：<a href="shop.html">simple/shop.html</a><br>
+      🛠 <b>主催者ページ</b>：<a href="admin.html">simple/admin.html</a>（管理者PINが必要）<br>
+      データは全部つながっています。お店や参加者は元のもぐマップと共通です。</p>
+    </div>
+
+    <div class="card sec" id="o-first">
+      <h3>🧰 最初の準備（1回だけ）</h3>
+      <div class="step"><div class="num">1</div><div><h4>クリア記録の準備</h4><p>Supabase の「SQL Editor」に <b>setup.sql</b> を貼り付けて「Run」。これで「クリア通知」と「お客様のログイン」が使えるようになります。</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4>メール通知の準備（使う場合）</h4><p>Google Apps Script に <b>notify-apps-script.gs</b> を貼ってウェブアプリとして公開し、URLを設定します。</p></div></div>
+    </div>
+
+    <div class="card sec" id="o-shop">
+      <h3>🏪 お店の準備</h3>
+      <div class="step"><div class="num">1</div><div><h4>主催者ページを開いて管理者PINを入れる</h4></div></div>
+      <div class="step"><div class="num">2</div><div><h4>お店を「公開中」「スタンプ参加」にする</h4><p>ボタンを押すたびに切り替わります。</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4>スタンプ番号を決める</h4><p>4桁を入れて <span class="btnlike g">保存</span>、または <span class="btnlike g">自動</span> で作成。</p></div></div>
+      <div class="step"><div class="num">4</div><div><h4>店舗PINを発行してお店に送る</h4><p><span class="btnlike g">🔐 店舗PIN発行</span> を押すと、お店に送る文がコピーされます。LINEなどに貼って送ってください。</p></div></div>
+      <div class="step"><div class="num">5</div><div><h4>QRを印刷して配る</h4><p><span class="btnlike g">📱 QRを表示・印刷</span> でお店ごとのQRが出ます。NFCタグを使うときは「NFC用URLをコピー」。</p></div></div>
+    </div>
+
+    <div class="card sec" id="o-clear">
+      <h3>🎁 クリアと景品の渡し方</h3>
+      <div class="step"><div class="num">1</div><div><h4>「🎁 クリア通知」を見る</h4><p>誰が何クリアしたかが出ます。新しいクリアがあると数字とお知らせが出ます（ページを開いている間、1分ごとに確認）。</p></div></div>
+      <div class="step"><div class="num">2</div><div><h4>お客様の「受け取り画面」を確認</h4><p>名前・参加者ID・何クリアかが一覧と合っているか見ます。</p></div></div>
+      <div class="step"><div class="num">3</div><div><h4>景品を渡して <span class="btnlike">渡した</span> を押す</h4><p>お客様の画面も「受け取りました」に変わります。まちがえたら「取り消し」。</p></div></div>
+      <div class="tip">💡 クリアが一覧に出るのは、お客様がアプリを開いたときです。遠隔スタンプで3つ目がたまった人は、次に開いたときに出ます。</div>
+    </div>
+
+    <div class="card sec" id="o-daily">
+      <h3>📅 ふだんの運営</h3>
+      <p style="font-size:15px;margin:4px 0 0">・お店の店名・住所・電話・紹介文は「✏️ 基本情報」で直せます。<br>
+      ・QRの写真が出回ったかも？と思ったら、そのお店の番号を <span class="btnlike g">自動</span> で変えて、QR・NFCを作り直してください。<br>
+      ・お店とお客様のやり取りは、お店アプリで行われます。</p>
+    </div>
+
+    <div class="card sec" id="o-faq">
+      <h3>❓ こまったとき</h3>
+      <details class="faq"><summary>クリア通知に「準備がまだです」と出る</summary><p>setup.sql をまだ実行していません。「最初の準備」の1をしてください。</p></details>
+      <details class="faq"><summary>お店アプリで「メール通知は準備中」と出る</summary><p>メール通知の準備（Apps Script）がまだです。使わない場合はそのままで大丈夫です。</p></details>
+      <details class="faq"><summary>管理者PINがちがうと出る</summary><p>元のもぐマップと同じ管理者PINです。</p></details>
+    </div>
+    <a class="btn go" href="admin.html">主催者ページを開く →</a>
+  </section>
+
+  <a class="back-top" href="#">▲ 上へもどる</a>
+</div>
+<script>
+const parts=['customer','shop','organizer'],who=document.getElementById('who');
+function show(p){
+  if(!parts.includes(p))p='customer';
+  who.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  parts.forEach(x=>document.getElementById(x).classList.toggle('on',x===p));
+}
+who.onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;history.replaceState(null,'','#'+b.dataset.p);show(b.dataset.p);who.scrollIntoView({behavior:'smooth'})};
+// #shop や #s-qr のようなリンクにも対応
+function fromHash(){const h=location.hash.slice(1);if(!h)return show('customer');const el=document.getElementById(h);if(parts.includes(h))return show(h);if(el){const part=el.closest('.part');if(part)show(part.id);setTimeout(()=>el.scrollIntoView(),0)}}
+window.addEventListener('hashchange',fromHash);fromHash();
+</script>
+</body>
+</html>

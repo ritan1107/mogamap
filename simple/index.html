@@ -62,6 +62,12 @@
 .scan-frame{position:relative;width:68vw;max-width:300px;aspect-ratio:1;border-radius:28px;box-shadow:0 0 0 100vmax #0008;border:4px solid #fff}
 .scan-msg{position:absolute;top:calc(env(safe-area-inset-top) + 28px);left:0;right:0;text-align:center;color:#fff;font-weight:900;font-size:18px}
 .scan-close{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 30px);left:50%;transform:translateX(-50%);width:auto;padding:14px 34px;background:#fff;color:var(--ink)}
+.help-link{font-size:13px;font-weight:900;color:var(--teal);text-decoration:none;background:#fff;border:1.5px solid #cfe4e4;border-radius:999px;padding:3px 10px}
+.first-guide{display:flex;align-items:center;gap:12px;margin-top:12px;background:#fff;border:2px solid #f6d3df;border-radius:18px;padding:12px 14px;text-decoration:none;color:var(--ink);font-size:14px}.first-guide span{font-size:28px}.first-guide div{flex:1}.first-guide b{color:var(--pink);font-size:16px}.first-guide i{font-style:normal;font-size:24px;color:var(--pink)}
+.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#f3eee8;border-radius:14px;padding:4px;margin:10px 0 4px}
+.mode-tabs button{border:0;background:none;border-radius:11px;padding:9px;font-weight:900;font-size:15px;color:var(--muted);cursor:pointer}
+.mode-tabs button.on{background:#fff;color:var(--teal);box-shadow:0 2px 6px #0001}
+.login-box{margin-top:18px;border-top:1.5px dashed var(--line);padding-top:12px}
 .admin-link{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 .complete{text-align:center}
 .complete .code{font-size:28px;font-weight:900;letter-spacing:.1em;background:#fff1f6;border-radius:16px;padding:12px;margin:10px 0;color:var(--pink)}
@@ -71,7 +77,7 @@
 <div class="wrap">
   <header class="top">
     <div class="brand"><small>MOGU MAP</small>もぐマップ</div>
-    <span class="badge" id="who">未参加</span>
+    <div style="display:flex;gap:6px;align-items:center"><a class="help-link" href="help.html">❓使い方</a><button class="badge" id="who" style="border:0;cursor:pointer">未参加</button></div>
   </header>
 
   <!-- ホーム：4つのボタンだけ -->
@@ -81,6 +87,7 @@
       <div style="flex:1"><div class="muted" id="rallyTitle">スタンプラリー</div><div class="bar"><i id="pBar"></i></div></div>
     </div>
     <div class="clear-line hidden" id="clearLine"></div>
+    <a class="first-guide hidden" id="firstGuide" href="help.html"><span>🔰</span><div><b>はじめての方へ</b><br>使い方を見る（1分でわかります）</div><i>›</i></a>
     <div class="grid4">
       <button class="big b1" data-go="stamp"><span>🏪</span><b>対面スタンプ</b><small>お店にいるとき</small></button>
       <button class="big b2" data-go="remote"><span>📦</span><b>遠隔スタンプ</b><small>通販・遠くから</small></button>
@@ -171,13 +178,25 @@
 
 <!-- 参加登録 -->
 <div class="modal" id="joinModal"><div class="sheet">
-  <div class="sheet-head"><h2>スタンプラリーに参加</h2><button class="x" data-close="joinModal">×</button></div>
-  <div class="muted">名前を入れるだけで始められます。</div>
-  <label class="label" for="joinName" id="joinLabel">名前／ニックネーム</label>
-  <input id="joinName" placeholder="本名でなくてもOK">
-  <label class="label" for="joinUw">UW.ID（持っている人だけ）</label>
-  <input id="joinUw" placeholder="任意">
-  <button class="btn pink" id="joinBtn">参加する</button>
+  <div class="sheet-head"><h2 id="joinTitle">スタンプラリーに参加</h2><button class="x" data-close="joinModal">×</button></div>
+  <div class="mode-tabs"><button class="on" data-mode="new">はじめての方</button><button data-mode="login">前に参加した方</button></div>
+  <div id="modeNew">
+    <div class="muted">名前を入れるだけで始められます。</div>
+    <label class="label" for="joinName" id="joinLabel">名前／ニックネーム</label>
+    <input id="joinName" placeholder="本名でなくてもOK">
+    <label class="label" for="joinUw">UW.ID（持っている人だけ）</label>
+    <input id="joinUw" placeholder="任意">
+    <button class="btn pink" id="joinBtn">参加する</button>
+  </div>
+  <div id="modeLogin" class="hidden">
+    <div class="muted">マイページで決めた「あいことば」でログインできます。</div>
+    <label class="label" for="loginId">参加者ID（5桁）</label>
+    <input id="loginId" inputmode="numeric" autocomplete="username" placeholder="12345">
+    <label class="label" for="loginPin">あいことば（4桁）</label>
+    <input id="loginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="••••">
+    <button class="btn" id="loginBtn">ログイン</button>
+    <div class="status" id="loginStatus"></div>
+  </div>
 </div></div>
 
 <!-- コンプリート -->
@@ -263,6 +282,7 @@ function renderProgress(){
   $('bookNote').textContent=p?`${count}個 / ${total}店舗`:'参加すると、ここにスタンプがたまります';
   $('book').innerHTML=rs.length?rs.map(s=>`<div class="stamp ${stampIds.has(s.id)?'on':''}"><span class="stamp-inner">${esc(s.name)}</span></div>`).join(''):'<div class="muted">参加店舗はまだありません</div>';
   $('showComplete').classList.toggle('hidden',!progress?.completed);
+  $('firstGuide').classList.toggle('hidden',!!p);
   renderClears(count);
 }
 
@@ -306,7 +326,7 @@ function checkNewClears(){
 
 /* ---------- 参加登録 ---------- */
 let afterJoin=null;
-function openJoin(then){afterJoin=then||null;$('joinModal').classList.add('on');setTimeout(()=>$('joinName').focus(),200)}
+function openJoin(then,mode){afterJoin=then||null;setMode(mode||'new');$('joinModal').classList.add('on');setTimeout(()=>$('joinName').focus(),200)}
 $('joinBtn').onclick=async()=>{
   const name=$('joinName').value.trim(),uw=$('joinUw').value.trim();
   if(!name)return toast('名前を入力してください');
@@ -434,10 +454,58 @@ $('dmList').addEventListener('click',async e=>{
 });
 $('refreshDm').onclick=loadDm;
 
+/* ---------- かんたんログイン・ログアウト ---------- */
+let hasLogin=null;
+async function loadLoginStatus(){
+  const p=participant();if(!p)return;
+  try{hasLogin=!!(await rpc('mogu_login_status',auth(p)))}catch(e){console.warn(e);hasLogin=null}
+  const el=$('lgNow');if(!el)return;
+  el.innerHTML=hasLogin?`✅ あいことば設定ずみ。<br>ほかのスマホやブラウザでも <b>参加者ID ${esc(p.entryId||'')}</b> ＋ あいことば でログインできます。`
+    :hasLogin===false?'あいことばを決めておくと、ログアウトしたり、スマホを替えたりしても同じスタンプに戻れます。'
+    :'ログインの仕組みは準備中です。';
+  $('lgSave').textContent=hasLogin?'あいことばを変える':'あいことばを決める';
+}
+async function setLoginPin(){
+  const p=participant(),pin=$('lgPin').value.trim(),st=$('lgStatus');
+  if(!/^\d{4}$/.test(pin))return st.textContent='4桁の数字にしてください';
+  st.textContent='保存中…';
+  try{const r=await rpc('mogu_set_login_pin',{...auth(p),p_pin:pin});const id=r?.[0]?.entry_id;if(id&&!p.entryId){p.entryId=id;saveParticipant(p)}
+    $('lgPin').value='';await loadLoginStatus();$('lgStatus').textContent='保存しました。参加者IDとあいことばはメモしておいてください📝'}
+  catch(e){console.error(e);st.textContent=/mogu_set_login_pin|PGRST202/.test(errText(e))?'ログインの仕組みは準備中です':(errText(e)||'保存できませんでした')}
+}
+function logout(){
+  const p=participant();if(!p)return;
+  const msg=hasLogin?`ログアウトしますか？\n\nまた使うときは「前に参加した方」から\n参加者ID ${p.entryId} ＋ あいことば でログインできます。`
+    :'⚠️ あいことばをまだ決めていません。\nいまログアウトすると、このスタンプには戻れなくなります。\n\nそれでもログアウトしますか？';
+  if(!confirm(msg))return;
+  try{localStorage.removeItem(seenKey());localStorage.removeItem(PKEY)}catch{}
+  location.href=location.pathname;
+}
+function setMode(m){
+  document.querySelectorAll('.mode-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
+  $('modeNew').classList.toggle('hidden',m!=='new');$('modeLogin').classList.toggle('hidden',m!=='login');
+  $('joinTitle').textContent=m==='new'?'スタンプラリーに参加':'ログイン';
+}
+document.querySelector('.mode-tabs').onclick=e=>{const b=e.target.closest('[data-mode]');if(b)setMode(b.dataset.mode)};
+$('loginBtn').onclick=async()=>{
+  const id=$('loginId').value.trim(),pin=$('loginPin').value.trim(),st=$('loginStatus');
+  if(!id||!/^\d{4}$/.test(pin))return st.textContent='参加者IDと4桁のあいことばを入れてください';
+  $('loginBtn').disabled=true;st.textContent='確認中…';
+  try{
+    const x=(await rpc('mogu_login',{p_entry_id:id,p_pin:pin}))?.[0];
+    if(!x?.ok){st.textContent=x?.message||'ログインできませんでした';return}
+    saveParticipant({id:x.participant_id,token:x.participant_token,nickname:x.nickname||'',entryId:x.entry_id||id});
+    st.textContent='';$('loginPin').value='';$('joinModal').classList.remove('on');toast(`おかえりなさい、${x.nickname||''}さん`);
+    await loadProgress();setSeen(clears.length);
+    if(afterJoin){const f=afterJoin;afterJoin=null;f()}else if(document.querySelector('#v-mypage.on'))renderMy();
+  }catch(e){console.error(e);st.textContent=/mogu_login|PGRST202/.test(errText(e))?'ログインの仕組みは準備中です':'ログインできませんでした'}
+  finally{$('loginBtn').disabled=false}
+};
+
 /* ---------- マイページ ---------- */
 function renderMy(){
   const p=participant(),el=$('myCard');
-  if(!p){el.innerHTML='<h2>👤 マイページ</h2><div class="muted">まだ参加していません。</div><button class="btn pink" id="myJoin">参加する</button>';$('myJoin').onclick=()=>openJoin(renderMy);$('noticeCard').classList.add('hidden');$('dmCard').classList.add('hidden');return}
+  if(!p){el.innerHTML='<h2>👤 マイページ</h2><div class="muted">まだ参加していません。</div><button class="btn pink" id="myJoin">はじめて参加する</button><button class="btn ghost" id="myLogin">前に参加した方（ログイン）</button>';$('myJoin').onclick=()=>openJoin(renderMy);$('myLogin').onclick=()=>openJoin(renderMy,'login');$('noticeCard').classList.add('hidden');$('dmCard').classList.add('hidden');return}
   $('noticeCard').classList.remove('hidden');$('dmCard').classList.remove('hidden');
   const id=p.entryId||'-----';
   el.innerHTML=`<h2>👤 ${esc(p.nickname||'参加者')}さん</h2>
@@ -445,7 +513,13 @@ function renderMy(){
   <div class="idbox"><div><div class="muted">遠隔スタンプ用ID</div><strong>${esc(id)}</strong></div><button class="btn ghost small" id="copyId">コピー</button></div>
   <label class="label" for="myName">名前／ニックネーム</label><input id="myName" value="${esc(p.nickname||'')}">
   <label class="label" for="myUw">UW.ID（任意）</label><input id="myUw" value="${esc(p.uwId||'')}" placeholder="持っている人だけ">
-  <button class="btn ghost" id="saveMy">保存する</button><div class="status" id="myStatus"></div>`;
+  <button class="btn ghost" id="saveMy">保存する</button><div class="status" id="myStatus"></div>
+  <div class="login-box"><h3>🔑 ログイン設定</h3><div class="muted" id="lgNow">確認中…</div>
+  <label class="label" for="lgPin">あいことば（4桁の数字）</label><input id="lgPin" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="••••">
+  <button class="btn" id="lgSave">あいことばを決める</button><div class="status" id="lgStatus"></div>
+  <button class="btn ghost" id="logoutBtn">ログアウト</button></div>`;
+  loadLoginStatus();
+  $('lgSave').onclick=setLoginPin;$('logoutBtn').onclick=logout;
   $('copyId').onclick=async()=>{try{await copyText(id);toast('IDをコピーしました')}catch{toast('コピーできませんでした')}};
   $('saveMy').onclick=async()=>{const name=$('myName').value.trim(),uw=$('myUw').value.trim();if(!name)return $('myStatus').textContent='名前を入れてください';try{await rpc('save_participant_profile',{...auth(p),p_nickname:name,p_uw_id:uw||null});p.nickname=name;p.uwId=uw;saveParticipant(p);renderProgress();$('myStatus').textContent='保存しました'}catch(e){console.error(e);$('myStatus').textContent=errText(e).includes('UW.ID')?'UW.IDの形を確認してください':'保存できませんでした'}};
 }
@@ -463,6 +537,7 @@ function showComplete(){
   $('completeModal').classList.add('on');
 }
 $('showComplete').onclick=showComplete;
+$('who').onclick=()=>participant()?go('mypage'):openJoin(null,'new');
 
 /* ---------- QRコード読み取り ---------- */
 let scanStream=null,scanLoop=0;
