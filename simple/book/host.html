@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#c49a3a">
 <title>むかえる人のBOOK｜もぐめぐりBOOK（お店ガイドライン）</title>
 <meta name="description" content="もぐマップ スタンプラリー お店向けガイドライン。知りたいことをえらぶだけ。">
-<link rel="stylesheet" href="book.css?v=3">
+<link rel="stylesheet" href="book.css?v=5">
 </head>
 <body class="host">
 <div class="wrap">
@@ -21,12 +21,15 @@
     <p>やることは2つ。① QRを置く　② 連絡に返事する</p>
   </header>
 
-  <div class="ask">👇 なにを知りたい？</div>
+  <div class="search" data-search-box data-example="通知" data-chips="設定どこ,通知,番号がちがう,PIN忘れた,QR印刷,返信"></div>
+
+  <div class="ask">👇 または、えらぶ</div>
   <div class="tiles">
     <button class="tile hot wide" data-open="ready"><span class="ti">✅</span><div><b>はじめる準備</b><small>チェックリスト（最初にやろう）</small></div></button>
     <button class="tile" data-open="home-add"><span class="ti">📲</span><b>ホーム画面に追加</b><small>お店アプリをすぐ開く</small></button>
     <button class="tile" data-open="qr"><span class="ti">📱</span><b>QR・NFCを置く</b><small>印刷・かざすタグ</small></button>
     <button class="tile" data-open="inbox"><span class="ti">📮</span><b>連絡に返事する</b><small>遠隔スタンプ・メッセージ</small></button>
+    <button class="tile" data-open="settings"><span class="ti">⚙️</span><b>設定・通知</b><small>メール・アイコンの印</small></button>
     <button class="tile" data-open="buy"><span class="ti">🛍️</span><b>購入ページ</b><small>お客様にどう見える？</small></button>
     <button class="tile wide" data-open="rules"><span class="ti">🤝</span><div><b>ガイドライン</b><small>守ってほしいこと（○と×）</small></div></button>
     <button class="tile wide" data-open="help"><span class="ti">❓</span><div><b>こまったとき</b><small>番号がちがう・PINを忘れた など</small></div></button>
@@ -38,7 +41,7 @@
 </div>
 
 <!-- ここから下は、タイルを押したときに開く中身 -->
-<section class="topic" id="ready" data-title="✅ はじめる準備">
+<section class="topic" id="ready" data-title="✅ はじめる準備" data-keys="はじめて 最初 準備 チェック ログイン">
   <ul class="check">
     <li><input type="checkbox" id="k1"><label for="k1">主催者から <b>PIN</b> と <b>スタンプ番号</b> を受け取った</label></li>
     <li><input type="checkbox" id="k2"><label for="k2"><b>お店アプリ</b>でお店をえらび、PINでログイン</label></li>
@@ -50,11 +53,11 @@
   <p class="note">チェックはこのスマホに保存されます。</p>
 </section>
 
-<section class="topic" id="home-add" data-title="📲 ホーム画面に追加">
+<section class="topic" id="home-add" data-title="📲 ホーム画面に追加" data-keys="アイコン ホーム画面 追加 すぐ開く">
   <div data-include="homeadd" data-app="もぐマップ お店アプリ" data-url="../shop.html"></div>
 </section>
 
-<section class="topic" id="qr" data-title="📱 QR・NFCを置く">
+<section class="topic" id="qr" data-title="📱 QR・NFCを置く" data-keys="qr印刷 印刷 貼る nfc タグ 書き込み 大きく">
   <ol class="mini-steps">
     <li><b>お店アプリの「📱 スタンプQR」</b><span>番号を聞かれたら、主催者からの4桁を入力</span></li>
     <li><b><span class="k w">印刷する</span> → レジ・入口に貼る</b><span>その場で見せるなら <span class="k t">大きく表示</span></span></li>
@@ -63,7 +66,7 @@
   <div class="box love">🗣 声かけ例：「もぐマップの <b>📷QRコードを読み取る</b> で読んでくださいね」</div>
 </section>
 
-<section class="topic" id="inbox" data-title="📮 連絡に返事する">
+<section class="topic" id="inbox" data-title="📮 連絡に返事する" data-keys="返信 返事 メッセージ 遠隔 承認 見送る id">
   <p class="note" style="margin-top:0">お店アプリの「📮 お客様」に届きます（新着は数字が付きます）</p>
   <ol class="mini-steps">
     <li><b>📦 遠隔スタンプ</b><span>購入の写真を見て <span class="k">スタンプを押す</span> か <span class="k w">見送る</span></span></li>
@@ -72,6 +75,20 @@
   </ol>
   <div class="box tip">✉️ 「⚙️ 設定」でメール通知を登録すると見落とさない</div>
   <div class="box tip">🔴 「⚙️ 設定」→「アイコンに数字を出す」で、ホーム画面のアイコンに返事待ちの数が出ます（ホーム画面から開いたときに更新）</div>
+</section>
+
+<section class="topic" id="settings" data-title="⚙️ 設定・通知" data-keys="設定どこ 設定 歯車 ギア 通知 メール 数字 バッジ 見落とす 気づかない ログアウト">
+  <p class="note" style="margin-top:0">お店アプリにログインすると、右上に出ます</p>
+  <div class="fig" aria-hidden="true">
+    <div class="row" style="background:#fff"><span><b style="color:#397f87">お店アプリ</b></span><span style="display:flex;gap:6px;align-items:center"><span class="btn2" style="border:1.5px solid #cfe4e4;color:#397f87">❓使い方</span><span class="btn2 hit" style="background:#397f87;color:#fff">⚙️ 設定</span><span class="num">1</span></span></div>
+    <div class="row" style="background:#fff5f8;border:2px solid #f6d3df"><span>🔔 <b style="color:#e07a9b">通知をオンにしよう</b></span><span class="num">2</span></div>
+  </div>
+  <p class="note">①右上の「⚙️ 設定」か、②ピンクの「🔔 通知をオンにしよう」を押す</p>
+  <ol class="mini-steps">
+    <li><b>✉️ メール通知</b><span>メールアドレスを入れて <span class="k t">保存する</span> → 確認メールが届いたら完了</span></li>
+    <li><b>🔴 アイコンに数字を出す</b><span>ホーム画面の「もぐマップ店」から開いて <span class="k">数字を出す</span> →「許可」</span></li>
+    <li><b>👋 ログアウト</b><span>設定のいちばん下</span></li>
+  </ol>
 </section>
 
 <section class="topic" id="buy" data-title="🛍️ 購入ページ">
@@ -100,13 +117,15 @@
 </section>
 
 <section class="topic" id="help" data-title="❓ こまったとき">
-  <details><summary>お客様が読んでも「番号がちがう」</summary><p>「スタンプ番号を入れ直す」で最新の番号を入れ、QRを印刷し直す。</p></details>
-  <details><summary>PINを忘れた</summary><p>主催者に連絡すると新しいPINが届きます。</p></details>
+  <details data-keys="押せない エラー 番号がちがう"><summary>お客様が読んでも「番号がちがう」</summary><p>「スタンプ番号を入れ直す」で最新の番号を入れ、QRを印刷し直す。</p></details>
+  <details data-keys="pin忘れた パスワード ログインできない"><summary>PINを忘れた</summary><p>主催者に連絡すると新しいPINが届きます。</p></details>
   <details><summary>QRの写真が出回ったかも</summary><p>主催者に番号を変えてもらい、QR・NFCを作り直す。</p></details>
+  <details data-keys="設定どこ 歯車 通知 どこ"><summary>設定がどこかわからない</summary><p>お店アプリにログインして、右上の「⚙️ 設定」。<a href="#settings" data-open="settings">図で見る →</a></p></details>
+  <details data-keys="通知 気づかない 見落とす メール"><summary>連絡に気づかない</summary><p>「⚙️ 設定」でメール通知と、アイコンの数字をオンに。<a href="#settings" data-open="settings">やり方 →</a></p></details>
   <details><summary>別のスマホでも使いたい</summary><p>そのスマホでもお店をえらんでPINでログイン。</p></details>
   <details><summary>お客様のカメラが動かない</summary><p>「番号で押す」を案内して、番号は口頭で伝える。</p></details>
 </section>
 
-<script src="book.js?v=2"></script>
+<script src="book.js?v=3"></script>
 </body>
 </html>

@@ -86,3 +86,39 @@
     c.onchange=()=>{try{localStorage.setItem(k,c.checked?'1':'0')}catch{}};
   });
 })();
+
+// ---- 検索（ガイド・質問・ガイドラインをまとめてさがす） ----
+(function(){
+  const box=document.querySelector('[data-search-box]');if(!box)return;
+  const kata2hira=s=>s.replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+  const norm=s=>kata2hira(String(s||'').toLowerCase().normalize('NFKC')).replace(/[\s　、。・「」『』（）()！!？?…]/g,'');
+  const items=[];
+  document.querySelectorAll('section.topic').forEach(sec=>{
+    const t=sec.dataset.title||'';
+    items.push({kind:'項目',title:t,text:sec.textContent,keys:sec.dataset.keys||'',open:()=>sec.id,faq:null});
+    sec.querySelectorAll('details').forEach((d,i)=>items.push({kind:'Q&A',title:d.querySelector('summary').textContent,text:d.textContent,keys:d.dataset.keys||'',open:()=>sec.id,faq:d}));
+    sec.querySelectorAll('.rule').forEach(r=>items.push({kind:'ガイドライン',title:r.querySelector('b')?.textContent||'',text:r.textContent,keys:'',open:()=>sec.id,faq:null}));
+  });
+  items.forEach(it=>{it.nt=norm(it.title);it.nx=norm(it.text+' '+it.keys)});
+  box.innerHTML=`<div class="sbox"><input type="search" placeholder="🔎 こまったことを入力（例：${box.dataset.example||'押せない'}）" aria-label="ガイドを検索"><button type="button" class="sclear" aria-label="消す">×</button></div>
+    <div class="qchips">${(box.dataset.chips||'').split(',').filter(Boolean).map(c=>`<button type="button" data-q="${c}">${c}</button>`).join('')}</div>
+    <div class="sresults" role="list"></div>`;
+  const input=box.querySelector('input'),out=box.querySelector('.sresults');
+  function run(){
+    const q=input.value.trim();box.classList.toggle('typing',!!q);
+    if(!q){out.innerHTML='';return}
+    const terms=q.split(/[\s　]+/).map(norm).filter(Boolean);
+    const hits=items.map(it=>{let sc=0;for(const t of terms){if(it.nt.includes(t))sc+=5;else if(it.nx.includes(t))sc+=1;else return null}if(it.kind==='Q&A')sc+=1;return {it,sc}}).filter(Boolean).sort((a,b)=>b.sc-a.sc).slice(0,8);
+    out.innerHTML=hits.length?hits.map((h,i)=>`<button type="button" class="sres" data-i="${items.indexOf(h.it)}"><span class="skind">${h.it.kind}</span><b>${h.it.title.replace(/[<>&]/g,'')}</b><i>›</i></button>`).join('')
+      :`<div class="snone">見つかりませんでした。下の項目からえらんでください${box.dataset.contact?`<br>${box.dataset.contact}`:''}</div>`;
+  }
+  input.addEventListener('input',run);
+  box.querySelector('.sclear').onclick=()=>{input.value='';run();input.focus()};
+  box.querySelector('.qchips').onclick=e=>{const b=e.target.closest('[data-q]');if(!b)return;input.value=b.dataset.q;run()};
+  out.onclick=e=>{
+    const b=e.target.closest('.sres');if(!b)return;const it=items[+b.dataset.i];
+    const t=document.querySelector(`[data-open="${it.open()}"]`);
+    if(t)t.click();else{location.hash=it.open()}
+    if(it.faq){document.querySelectorAll('details').forEach(d=>d.open=false);it.faq.open=true;setTimeout(()=>it.faq.scrollIntoView({behavior:'smooth',block:'center'}),150)}
+  };
+})();

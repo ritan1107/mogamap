@@ -38,6 +38,8 @@
 .big-qr.on{display:flex}
 .big-qr svg{width:min(86vw,70vh);height:auto}
 .big-qr h2{font-size:26px;margin:10px 0 0}
+.notice-bar{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;border:2px solid #f6d3df;background:#fff5f8;border-radius:16px;padding:11px 13px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
+.notice-bar span{font-size:26px}.notice-bar div{flex:1}.notice-bar b{display:block;color:var(--pink)}.notice-bar small{font-size:12px;color:var(--muted)}.notice-bar i{font-style:normal;font-size:22px;color:var(--pink)}
 .foot{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 #printArea{display:none}
 @media print{
@@ -53,7 +55,7 @@
 <div class="wrap">
   <header class="top">
     <div class="brand"><small>MOGU MAP</small>お店アプリ</div>
-    <div style="display:flex;gap:6px"><a class="btn ghost small" href="book/host.html">❓使い方</a><button class="btn ghost small hidden" id="logout">ログアウト</button></div>
+    <div style="display:flex;gap:6px"><a class="btn ghost small" href="book/host.html">❓使い方</a><button class="btn small hidden" id="gear" style="background:var(--teal)">⚙️ 設定</button></div>
   </header>
 
   <!-- ログイン -->
@@ -73,6 +75,7 @@
   <!-- ログイン後 -->
   <section id="app" class="hidden">
     <div class="card" style="padding:12px 16px"><div class="muted">ログイン中</div><div class="shopname" id="shopName"></div></div>
+    <button class="notice-bar" id="noticeBar"><span>🔔</span><div><b>通知をオンにしよう</b><small>お客様からの連絡を見落とさない（メール・アイコンの数字）</small></div><i>›</i></button>
     <div class="tabs" style="margin-top:12px">
       <button class="tab on" data-tab="qr"><span>📱</span>スタンプQR</button>
       <button class="tab" data-tab="inbox"><span>📮</span>お客様<i class="dot hidden" id="inboxDot"></i></button>
@@ -145,6 +148,11 @@
         <button class="btn ghost" id="mOff">通知を止める</button>
         <div class="status" id="mStatus"></div>
       </div>
+      <div class="card">
+        <h3>👋 ログアウト</h3>
+        <div class="muted">別のお店でログインし直すときに使います。</div>
+        <button class="btn ghost" id="logout">ログアウト</button>
+      </div>
     </div>
   </section>
   <a class="foot" href="admin.html">主催者の方はこちら</a>
@@ -185,11 +193,14 @@ $('lBtn').onclick=async()=>{
 };
 $('logout').onclick=()=>{if(!confirm('ログアウトしますか？'))return;try{localStorage.removeItem(LKEY)}catch{}location.reload()};
 function enter(){
-  $('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');
+  $('login').classList.add('hidden');$('app').classList.remove('hidden');$('gear').classList.remove('hidden');
+  try{if(window.Notification&&Notification.permission==='granted')$('noticeBar').classList.add('hidden')}catch{}
   $('shopName').textContent=login.name||shops.find(s=>s.id===login.shopId)?.name||'';
-  setupQr();loadInbox(true);
+  setupQr();loadInbox(true);if(NOTIFY_URL)loadMail();
   timer=setInterval(()=>{if(document.visibilityState==='visible')loadInbox()},30000);
 }
+function goTab(name){const t=document.querySelector(`.tab[data-tab="${name}"]`);if(t)t.click();window.scrollTo({top:0,behavior:'smooth'})}
+$('gear').onclick=()=>goTab('set');$('noticeBar').onclick=()=>goTab('set');
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
@@ -292,7 +303,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 async function loadMail(){
   if(!NOTIFY_URL){$('mNow').textContent='メール通知は準備中です（主催者が設定中）';['mSave','mOff','mEmail'].forEach(id=>$(id).disabled=true);return}
   $('mNow').textContent='確認中…';
-  try{const r=await notifyCall({action:'status',shopId:login.shopId,pin:login.pin});$('mNow').textContent=r.ok?(r.email?`いまの通知先：${r.email}`:'いまはメール通知オフです'):(r.message||'確認できませんでした')}
+  try{const r=await notifyCall({action:'status',shopId:login.shopId,pin:login.pin});if(r.ok&&r.email)$('noticeBar').classList.add('hidden');$('mNow').textContent=r.ok?(r.email?`いまの通知先：${r.email}`:'いまはメール通知オフです'):(r.message||'確認できませんでした')}
   catch(e){console.error(e);$('mNow').textContent='確認できませんでした'}
 }
 async function saveMail(email){

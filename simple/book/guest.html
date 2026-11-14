@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#c49a3a">
 <title>めぐる人のBOOK｜もぐめぐりBOOK（お客様ガイド）</title>
 <meta name="description" content="もぐマップ スタンプラリー お客様ガイド。知りたいことをえらぶだけ。">
-<link rel="stylesheet" href="book.css?v=3">
+<link rel="stylesheet" href="book.css?v=5">
 </head>
 <body class="guest">
 <div class="wrap">
@@ -21,7 +21,9 @@
     <p>知りたいことを、えらぶだけ。</p>
   </header>
 
-  <div class="ask">👇 なにを知りたい？</div>
+  <div class="search" data-search-box data-example="押せない" data-chips="押せない,スタンプが消えた,カメラ,景品,ログイン,通販で買った"></div>
+
+  <div class="ask">👇 または、えらぶ</div>
   <div class="tiles">
     <button class="tile hot wide" data-open="home-add"><span class="ti">📲</span><div><b>ホーム画面に追加</b><small>アプリみたいにすぐ開ける（最初にやろう）</small></div></button>
     <button class="tile" data-open="start"><span class="ti">🙋</span><b>はじめる</b><small>参加のしかた</small></button>
@@ -39,7 +41,7 @@
 </div>
 
 <!-- ここから下は、タイルを押したときに開く中身 -->
-<section class="topic" id="home-add" data-title="📲 ホーム画面に追加">
+<section class="topic" id="home-add" data-title="📲 ホーム画面に追加" data-keys="アイコン ホーム画面 追加 保存 すぐ開く ショートカット line safari">
   <div data-include="homeadd" data-app="もぐマップ" data-url="../"></div>
 </section>
 
@@ -57,7 +59,7 @@
   <p class="note">迷ったらトップ画面に戻ればOK。</p>
 </section>
 
-<section class="topic" id="stamp" data-title="🏪 お店でスタンプ">
+<section class="topic" id="stamp" data-title="🏪 お店でスタンプ" data-keys="押せない 押し方 qr 読めない nfc かざす 番号 対面">
   <ol class="mini-steps">
     <li><b>「対面スタンプ」</b></li>
     <li><b><span class="k">📷 QRコードを読み取る</span></b><span>はじめはカメラの「許可」を押す</span></li>
@@ -67,7 +69,7 @@
   <div class="box tip">🔢 読めないときは「番号で押す」</div>
 </section>
 
-<section class="topic" id="remote" data-title="📦 通販でスタンプ">
+<section class="topic" id="remote" data-title="📦 通販でスタンプ" data-keys="通販で買った 遠隔 スクショ 申請 遠い ネット 購入">
   <ol class="mini-steps">
     <li><b>「お店・購入」→ <span class="k o">🛒 購入する</span></b></li>
     <li><b>注文画面のスクショを撮る</b></li>
@@ -76,7 +78,7 @@
   </ol>
 </section>
 
-<section class="topic" id="clear" data-title="🎁 クリアと景品">
+<section class="topic" id="clear" data-title="🎁 クリアと景品" data-keys="景品 プレゼント もらえる クリア 3つ 受け取り">
   <div class="clear" aria-label="3つで1クリア"><i>✓</i><i>✓</i><i>✓</i><em>＝ 1クリア</em><span class="gift">🎁</span></div>
   <p class="cap">6つで2クリア、9つで3クリア…</p>
   <ol class="mini-steps">
@@ -93,7 +95,7 @@
   </ol>
 </section>
 
-<section class="topic" id="login" data-title="🔑 ログイン">
+<section class="topic" id="login" data-title="🔑 ログイン" data-keys="ログアウト あいことば パスワード 機種変更 引き継ぎ 消えた id">
   <ol class="mini-steps">
     <li><b>マイページで「あいことば」を決める</b><span>4桁の数字。<b>参加者ID（5桁）とメモ</b></span></li>
     <li><b>別のスマホ・ブラウザでは</b><span>右上「未参加」→「前に参加した方」→ ID＋あいことば</span></li>
@@ -102,13 +104,13 @@
 </section>
 
 <section class="topic" id="help" data-title="❓ こまったとき">
-  <details><summary>スタンプが消えた／参加画面が出る</summary><p>LINEとSafariは別あつかい。「前に参加した方」から ID＋あいことば でログイン。</p></details>
-  <details><summary>カメラが動かない</summary><p>iPhone：設定 → Safari → カメラ →「許可」。Android：アドレス欄の左 → 権限 → カメラ。だめなら「番号で押す」。</p></details>
-  <details><summary>「番号がちがう」と出る</summary><p>えらんだお店を確認。わからなければお店の方へ。</p></details>
-  <details><summary>「もう押してあります」</summary><p>スタンプは1店舗1回です。</p></details>
-  <details><summary>あいことばを忘れた</summary><p>ログイン中ならマイページで変更。ログアウト後は主催者に相談。</p></details>
+  <details data-keys="未参加 リセット 消えた なくなった line safari"><summary>スタンプが消えた／参加画面が出る</summary><p>LINEとSafariは別あつかい。「前に参加した方」から ID＋あいことば でログイン。</p></details>
+  <details data-keys="カメラ 起動しない 真っ黒 許可 qr 読めない"><summary>カメラが動かない</summary><p>iPhone：設定 → Safari → カメラ →「許可」。Android：アドレス欄の左 → 権限 → カメラ。だめなら「番号で押す」。</p></details>
+  <details data-keys="押せない エラー 番号"><summary>「番号がちがう」と出る</summary><p>えらんだお店を確認。わからなければお店の方へ。</p></details>
+  <details data-keys="押せない 2回 二回"><summary>「もう押してあります」</summary><p>スタンプは1店舗1回です。</p></details>
+  <details data-keys="パスワード わすれた ログインできない"><summary>あいことばを忘れた</summary><p>ログイン中ならマイページで変更。ログアウト後は主催者に相談。</p></details>
 </section>
 
-<script src="book.js?v=2"></script>
+<script src="book.js?v=3"></script>
 </body>
 </html>
