@@ -14,7 +14,7 @@
       <li><b>右上の「追加」</b>
         <div class="fig" aria-hidden="true">
           <div class="row" style="background:#fff"><span class="gray">キャンセル</span><span>ホーム画面に追加</span><span class="btn2 blue hit">追加</span><span class="num">4</span></div>
-          <div class="row"><span class="icon" style="background:linear-gradient(135deg,#64c5c6,#ef9aaa);color:#fff">も</span><span style="flex:1">${app}</span></div>
+          <div class="row"><img src="../icons/apple-touch-icon.png" alt="" style="width:34px;height:34px;border-radius:9px;border:1px solid #eee"><span style="flex:1">${app}</span></div>
         </div>
       </li>
     </ol>
