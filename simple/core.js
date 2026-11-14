@@ -24,6 +24,14 @@ async function copyText(text){
   const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
 }
 function errText(e){return String(e?.message||e||'').replace(/^Error:\s*/,'')}
+// お店へのメール通知（Google Apps Script のURL。空なら通知機能はオフ）
+const NOTIFY_URL='';
+async function notifyCall(body){
+  if(!NOTIFY_URL)throw new Error('通知の準備がまだです');
+  const r=await fetch(NOTIFY_URL,{method:'POST',body:JSON.stringify(body)}); // text/plain で送る（Apps Script用）
+  return r.json();
+}
+function notifyShop(shopId,kind){if(NOTIFY_URL&&shopId)notifyCall({action:'notify',shopId,kind:kind||'message'}).catch(e=>console.warn('通知できませんでした',e))}
 async function loadPublicShops(){
   const rows=await api('/rest/v1/shop_public?select=*&is_published=eq.true&order=name.asc');
   return Array.isArray(rows)?rows:[];

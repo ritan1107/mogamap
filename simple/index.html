@@ -366,6 +366,7 @@ $('sendRemote').onclick=async()=>{
   try{
     const ph=await readPhoto(file);
     await rpc('submit_purchase_proof',{...auth(p),p_shop_id:shopId,p_uw_id:p.uwId||null,p_purchase_message:msg||null,p_purchase_url:url||null,p_proof_data:ph.data,p_proof_mime:ph.mime});
+    notifyShop(shopId,'remote');
     $('remoteUrl').value='';$('remoteMsg').value='';$('remotePhoto').value='';
     st.textContent='送りました。お店の確認を待ってください。';toast('📮 お店に送りました');loadSubs();
   }catch(e){console.error(e);st.textContent=errText(e).includes('すでに')?'このお店には確認待ちのものがあります':(errText(e)||'送信できませんでした')}
@@ -419,6 +420,7 @@ $('dmSend').onclick=async()=>{
     const thread=allSubs.filter(t=>(t.shop_id||t.store_id)===shopId&&isDm(t)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
     if(thread)await rpc('send_rally_message_from_participant',{...auth(p),p_submission_id:thread.id,p_message:text});
     else await rpc('submit_purchase_proof',{...auth(p),p_shop_id:shopId,p_uw_id:p.uwId||null,p_purchase_message:DM_MARK+' '+text,p_purchase_url:null,p_proof_data:null,p_proof_mime:null});
+    notifyShop(shopId,'message');
     $('dmText').value='';st.textContent='送りました。お店からの返信はここに届きます。';toast('💬 お店に送りました');await loadDm();
   }catch(e){console.error(e);st.textContent=errText(e).includes('すでに')?'このお店とのやり取りが下にあります。そこから続けて送ってください':'送れませんでした'}
   finally{$('dmSend').disabled=false}
@@ -427,7 +429,7 @@ $('dmList').addEventListener('click',async e=>{
   const b=e.target.closest('[data-reply]');if(!b)return;const p=participant();if(!p)return;
   const input=document.querySelector(`[data-reply-input="${CSS.escape(b.dataset.reply)}"]`),text=input?.value.trim();if(!text)return;
   b.disabled=true;
-  try{await rpc('send_rally_message_from_participant',{...auth(p),p_submission_id:b.dataset.reply,p_message:text});toast('送りました');await loadDm()}
+  try{await rpc('send_rally_message_from_participant',{...auth(p),p_submission_id:b.dataset.reply,p_message:text});const t=allSubs.find(x=>x.id===b.dataset.reply);notifyShop(t?.shop_id||t?.store_id,'message');toast('送りました');await loadDm()}
   catch(e){console.error(e);toast('送れませんでした');b.disabled=false}
 });
 $('refreshDm').onclick=loadDm;

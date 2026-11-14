@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="core.css?v=1">
 <style>
 body{background:#f3f7f6}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
 .tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:12px 4px;font-weight:900;cursor:pointer;font-size:15px;position:relative}
 .tab span{display:block;font-size:24px;line-height:1.2}
 .tab.on{background:var(--teal);color:#fff;border-color:var(--teal)}
@@ -70,6 +70,7 @@ body{background:#f3f7f6}
       <button class="tab on" data-tab="qr"><span>📱</span>スタンプQR</button>
       <button class="tab" data-tab="inbox"><span>📮</span>お客様<i class="dot hidden" id="inboxDot"></i></button>
       <button class="tab" data-tab="id"><span>🔢</span>ID入力</button>
+      <button class="tab" data-tab="set"><span>⚙️</span>設定</button>
     </div>
 
     <!-- スタンプQR -->
@@ -116,6 +117,19 @@ body{background:#f3f7f6}
         <input id="dNote">
         <button class="btn" id="dGrant">スタンプを押す</button>
         <div class="status" id="dStatus"></div>
+      </div>
+    </div>
+    <!-- 設定 -->
+    <div class="pane" id="p-set">
+      <div class="card">
+        <h3>✉️ メール通知（任意）</h3>
+        <div class="muted">お客様からメッセージや遠隔スタンプの申請が届いたら、このメールアドレスにお知らせが届きます。お客様の文章はメールにのらないので、内容はお店アプリで確認してください。</div>
+        <div class="status" id="mNow"></div>
+        <label class="label" for="mEmail">メールアドレス</label>
+        <input id="mEmail" type="email" inputmode="email" autocomplete="email" placeholder="shop@example.com">
+        <button class="btn" id="mSave">保存する</button>
+        <button class="btn ghost" id="mOff">通知を止める</button>
+        <div class="status" id="mStatus"></div>
       </div>
     </div>
   </section>
@@ -166,6 +180,7 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
   if(t.dataset.tab==='inbox')loadInbox();
+  if(t.dataset.tab==='set')loadMail();
 });
 
 /* ---------- スタンプQR ---------- */
@@ -237,6 +252,25 @@ $('iList').onclick=async e=>{
     toast(action==='approve'?'スタンプを押しました':'見送りにしました');await loadInbox();
   }catch(err){console.error(err);toast(errText(err)||'処理できませんでした');b.disabled=false}
 };
+
+/* ---------- メール通知 ---------- */
+async function loadMail(){
+  if(!NOTIFY_URL){$('mNow').textContent='メール通知は準備中です（主催者が設定中）';['mSave','mOff','mEmail'].forEach(id=>$(id).disabled=true);return}
+  $('mNow').textContent='確認中…';
+  try{const r=await notifyCall({action:'status',shopId:login.shopId,pin:login.pin});$('mNow').textContent=r.ok?(r.email?`いまの通知先：${r.email}`:'いまはメール通知オフです'):(r.message||'確認できませんでした')}
+  catch(e){console.error(e);$('mNow').textContent='確認できませんでした'}
+}
+async function saveMail(email){
+  const st=$('mStatus');st.textContent='保存中…';$('mSave').disabled=$('mOff').disabled=true;
+  try{
+    const r=await notifyCall({action:'register',shopId:login.shopId,pin:login.pin,email});
+    if(!r.ok){st.textContent=r.message||'保存できませんでした';return}
+    st.textContent=email?'保存しました。確認のメールを送りました📩':'メール通知を止めました';$('mEmail').value='';loadMail();
+  }catch(e){console.error(e);st.textContent='保存できませんでした'}
+  finally{$('mSave').disabled=$('mOff').disabled=false}
+}
+$('mSave').onclick=()=>{const v=$('mEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))return $('mStatus').textContent='メールアドレスを確認してください';saveMail(v)};
+$('mOff').onclick=()=>{if(confirm('メール通知を止めますか？'))saveMail('')};
 
 /* ---------- ID入力 ---------- */
 $('dGrant').onclick=async()=>{
