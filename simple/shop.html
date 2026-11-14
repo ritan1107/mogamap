@@ -7,8 +7,11 @@
 <link rel="icon" type="image/png" href="icons/favicon-48.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="もぐマップ店">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#c49a3a">
-<link rel="manifest" href="shop.webmanifest">
+<link rel="manifest" href="shop.webmanifest?v=2">
 <title>もぐマップ お店アプリ</title>
 <link rel="stylesheet" href="core.css?v=3">
 <style>
@@ -126,6 +129,13 @@
     <!-- 設定 -->
     <div class="pane" id="p-set">
       <div class="card">
+        <h3>🔴 アイコンに数字を出す</h3>
+        <div class="muted">LINEのように、ホーム画面の「もぐマップ店」アイコンに、返事待ちの数が出ます。</div>
+        <div class="status" id="bNow"></div>
+        <button class="btn pink" id="bOn">数字を出す（通知を許可）</button>
+        <div class="muted" style="margin-top:8px;font-size:13px">・ホーム画面に追加した「もぐマップ店」から開いたときに使えます<br>・数字はアプリを開いたとき・開いている間に更新されます</div>
+      </div>
+      <div class="card">
         <h3>✉️ メール通知（任意）</h3>
         <div class="muted">お客様からメッセージや遠隔スタンプの申請が届いたら、このメールアドレスにお知らせが届きます。お客様の文章はメールにのらないので、内容はお店アプリで確認してください。</div>
         <div class="status" id="mNow"></div>
@@ -184,7 +194,7 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
   if(t.dataset.tab==='inbox')loadInbox();
-  if(t.dataset.tab==='set')loadMail();
+  if(t.dataset.tab==='set'){loadMail();showBadgeState()}
 });
 
 /* ---------- スタンプQR ---------- */
@@ -227,6 +237,7 @@ async function loadInbox(first){
   const pend=rows.filter(r=>r.status==='pending'&&!isDm(r)).length,unanswered=rows.filter(r=>isDm(r)&&!msgs.some(m=>m.submission_id===r.id&&m.sender_type==='shop')).length,n=pend+unanswered;
   $('inboxDot').textContent=n;$('inboxDot').classList.toggle('hidden',!n);document.title=(n?`(${n}) `:'')+'もぐマップ お店アプリ';
   $('iStatus').textContent=`遠隔スタンプ確認待ち ${pend}件・返信待ちメッセージ ${unanswered}件`;
+  setBadge(n);
   renderInbox();
 }
 function renderInbox(){
@@ -256,6 +267,26 @@ $('iList').onclick=async e=>{
     toast(action==='approve'?'スタンプを押しました':'見送りにしました');await loadInbox();
   }catch(err){console.error(err);toast(errText(err)||'処理できませんでした');b.disabled=false}
 };
+
+/* ---------- アイコンの数字（バッジ） ---------- */
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(e=>console.warn(e));
+function setBadge(n){
+  try{if('setAppBadge' in navigator){n>0?navigator.setAppBadge(n):navigator.clearAppBadge()}}catch(e){console.warn(e)}
+}
+function showBadgeState(){
+  const el=$('bNow'),btn=$('bOn'),perm=window.Notification?Notification.permission:'unsupported';
+  if(!standalone){el.textContent='📲 まずホーム画面に追加して、そのアイコンから開いてください';btn.classList.add('hidden');return}
+  if(!('setAppBadge' in navigator)){el.textContent='このスマホでは数字を出せないようです（iPhoneは iOS 16.4 以上）';btn.classList.add('hidden');return}
+  if(perm==='granted'){el.textContent='✅ オンになっています';btn.classList.add('hidden')}
+  else if(perm==='denied'){el.textContent='通知がオフになっています。スマホの「設定」→「通知」→「もぐマップ店」をオンにしてください';btn.classList.add('hidden')}
+  else{el.textContent='';btn.classList.remove('hidden')}
+}
+$('bOn').onclick=async()=>{
+  try{if(window.Notification)await Notification.requestPermission()}catch(e){console.warn(e)}
+  showBadgeState();loadInbox();
+};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&login)loadInbox()});
 
 /* ---------- メール通知 ---------- */
 async function loadMail(){
