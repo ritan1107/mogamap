@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>もぐマップ 編集画面</title>
+<title>もぐマップ 主催者ページ</title>
 <link rel="stylesheet" href="core.css?v=1">
 <style>
 body{background:#f6f3ef}
@@ -36,48 +36,21 @@ body{background:#f6f3ef}
 .clear-item.done{background:#fff;border-color:var(--line);opacity:.75}
 .clear-item b{font-size:16px}
 .newdot{display:inline-block;min-width:22px;padding:1px 7px;border-radius:99px;background:var(--pink);color:#fff;font-size:13px;margin-left:6px}
+#qrSvg svg{width:100%;height:auto}
+#printArea{display:none}
+@media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important;text-align:center;padding-top:30mm}#printArea svg{width:110mm;height:110mm}#printArea h1{font-size:30pt;margin:0 0 4mm;color:#397f87}#printArea p{font-size:16pt;margin:3mm 0}}
 .top a{font-size:14px;color:var(--teal);font-weight:800;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><small>MOGU MAP</small>編集画面</div>
-    <a href="./">← スタンプラリーへ</a>
+    <div class="brand"><small>MOGU MAP</small>主催者ページ</div>
+    <a href="shop.html">お店アプリへ</a>
   </header>
 
-  <div class="tabs">
-    <button class="tab on" data-tab="shop">🏪 お店の方</button>
-    <button class="tab" data-tab="admin">🛠 管理者</button>
-  </div>
-
-  <!-- お店の方：遠隔スタンプの承認 -->
-  <section class="pane on" id="p-shop">
-    <div class="card">
-      <h2>📮 お客様からの連絡</h2>
-      <div class="muted">遠隔スタンプの申請と、お客様からのメッセージが届きます。</div>
-      <label class="label" for="sShop">お店</label>
-      <select id="sShop"><option value="">読み込み中…</option></select>
-      <label class="label" for="sPin">店舗ページPIN</label>
-      <input id="sPin" type="password" autocomplete="off">
-      <button class="btn" id="sOpen">届いたものを見る</button>
-      <div class="status" id="sStatus"></div>
-    </div>
-    <div id="sList"></div>
-    <div class="card hidden" id="sDirect">
-      <h3>🔢 参加者IDで直接スタンプ</h3>
-      <div class="muted">お客様の「遠隔スタンプ用ID（5桁）」を聞いて押すこともできます。</div>
-      <label class="label" for="dId">参加者ID</label>
-      <input id="dId" inputmode="numeric" placeholder="例：12345">
-      <label class="label" for="dNote">メモ（任意）</label>
-      <input id="dNote">
-      <button class="btn ghost" id="dGrant">スタンプを押す</button>
-      <div class="status" id="dStatus"></div>
-    </div>
-  </section>
-
   <!-- 管理者 -->
-  <section class="pane" id="p-admin">
+  <section id="p-admin">
     <div class="card">
       <h2>🛠 管理者メニュー</h2>
       <div class="muted">スタンプ参加・スタンプ番号・NFC用URL・お店の基本情報を編集します。</div>
@@ -105,71 +78,18 @@ body{background:#f6f3ef}
     <div id="aList"></div>
   </section>
 </div>
+<div class="modal" id="qrModal"><div class="sheet" style="text-align:center">
+  <div class="sheet-head"><h2 id="qrName" style="text-align:left"></h2><button class="x" data-close="qrModal">×</button></div>
+  <div id="qrSvg" style="max-width:300px;margin:10px auto"></div>
+  <div class="muted">お客様は「もぐマップ」の📷で読み取るとスタンプが押されます</div>
+  <button class="btn" id="qrPrint">印刷する</button>
+</div></div>
+<div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
 <div id="toast"></div>
 <script src="core.js?v=1"></script>
+<script src="lib/qrcode.js?v=1"></script>
 <script>
-/* ---------- タブ ---------- */
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
-  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
-});
 const failed=r=>r===false||(Array.isArray(r)&&r[0]&&(r[0].ok===false||r[0].success===false));
-
-/* ========== お店の方 ========== */
-let sRows=[],sMsgs=[];
-const bub=(who,text,at)=>`<div class="bubble ${who==='shop'?'me':'them'}">${esc(text)}<small>${who==='shop'?'お店':'お客様'}・${at?new Date(at).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):''}</small></div>`;
-(async()=>{
-  try{const shops=await loadPublicShops();$('sShop').innerHTML='<option value="">お店を選んでください</option>'+shops.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')}
-  catch(e){$('sShop').innerHTML='<option value="">読み込めませんでした</option>'}
-})();
-const sStatusText=s=>({pending:['確認待ち','wait'],approved:['スタンプ済み','ok'],rejected:['見送り','']}[s]||[s||'—','']);
-async function sLoad(){
-  const shopId=$('sShop').value,pin=$('sPin').value.trim(),st=$('sStatus');
-  if(!shopId||!pin)return st.textContent='お店とPINを入れてください';
-  st.textContent='読み込み中…';
-  try{
-    const [rows,msgs]=await Promise.all([rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}),rpc('list_rally_messages_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}).catch(e=>{console.warn(e);return []})]);
-    sMsgs=Array.isArray(msgs)?msgs:[];
-    sRows=(rows||[]).map(r=>({...r,id:r.submission_id||r.id,status:r.submission_status||r.status||'pending'}));
-    const pend=sRows.filter(r=>r.status==='pending').length;
-    const dms=sRows.filter(r=>String(r.purchase_message||'').startsWith('【DM・質問】')).length;
-    st.textContent=`遠隔スタンプ確認待ち ${pend}件・メッセージ ${dms}件`;$('sDirect').classList.remove('hidden');sRender();
-  }catch(e){console.error(e);sRows=[];sRender();$('sDirect').classList.add('hidden');st.textContent=errText(e).includes('PIN')?'PINがちがいます':'読み込めませんでした'}
-}
-function sRender(){
-  $('sList').innerHTML=sRows.length?sRows.map(r=>{
-    const [t,c]=sStatusText(r.status),dm=String(r.purchase_message||'').startsWith('【DM・質問】'),msg=String(r.purchase_message||'').replace(/^【DM・質問】\s*/,'');
-    const img=String(r.proof_data||'').startsWith('data:image/')?`<img class="proof" alt="購入の写真" src="${esc(r.proof_data)}">`:'';
-    const link=/^https:\/\//i.test(r.purchase_url||'')?`<a href="${esc(r.purchase_url)}" target="_blank" rel="noopener">購入ページを開く</a>`:'';
-    const acts=r.status==='pending'&&!dm?`<div class="acts"><button class="btn pink" data-act="approve" data-id="${esc(r.id)}">スタンプを押す</button><button class="btn ghost" data-act="reject" data-id="${esc(r.id)}">見送る</button></div>`:'';
-    return `<div class="item ${r.status==='pending'?'pending':''}"><div class="item-top"><span>${dm?'💬 ':''}${esc(r.nickname||'お客様')}さん</span><span class="badge ${c}">${dm?'質問':t}</span></div><div class="muted">${new Date(r.created_at).toLocaleString('ja-JP')}　ID ${esc(r.participant_entry_id||'—')}${r.uw_id?'　UW.ID '+esc(r.uw_id):''}</div>${msg?`<div>${escBr(msg)}</div>`:''}${link}${img}${r.response_message&&!sMsgs.some(m=>m.submission_id===r.id&&m.message_body===r.response_message)?bub('shop',r.response_message,r.updated_at):''}${sMsgs.filter(m=>m.submission_id===r.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)).map(m=>bub(m.sender_type,m.message_body,m.created_at)).join('')}${acts}<div class="reply"><input data-reply-input="${esc(r.id)}" placeholder="お客様へ返信"><button class="btn small" data-reply="${esc(r.id)}">送る</button></div></div>`;
-  }).join(''):'';
-}
-$('sOpen').onclick=sLoad;
-$('sList').onclick=async e=>{
-  const rb=e.target.closest('[data-reply]');
-  if(rb){const input=document.querySelector(`[data-reply-input="${CSS.escape(rb.dataset.reply)}"]`),text=input?.value.trim();if(!text)return;rb.disabled=true;
-    try{await rpc('send_rally_message_from_shop',{p_shop_id:$('sShop').value,p_shop_pin:$('sPin').value.trim(),p_submission_id:rb.dataset.reply,p_message:text});toast('お客様へ送りました');await sLoad()}catch(err){console.error(err);toast('送れませんでした');rb.disabled=false}
-    return}
-  const b=e.target.closest('[data-act]');if(!b)return;
-  const action=b.dataset.act,msg=prompt(action==='approve'?'お客様へのひとこと（任意）':'見送る理由（任意）');
-  if(msg===null)return;
-  b.disabled=true;
-  try{
-    const r=await rpc('resolve_purchase_submission',{p_shop_id:$('sShop').value,p_shop_pin:$('sPin').value.trim(),p_submission_id:b.dataset.id,p_action:action,p_response_message:msg||null});
-    if(failed(r))throw new Error(r?.[0]?.message||'処理できませんでした');
-    toast(action==='approve'?'スタンプを押しました':'見送りにしました');await sLoad();
-  }catch(e){console.error(e);toast(errText(e)||'処理できませんでした');b.disabled=false}
-};
-$('dGrant').onclick=async()=>{
-  const id=$('dId').value.trim(),st=$('dStatus');if(!id)return st.textContent='参加者IDを入れてください';
-  st.textContent='確認中…';
-  try{
-    const r=await rpc('grant_remote_participant_stamp',{p_shop_id:$('sShop').value,p_shop_pin:$('sPin').value.trim(),p_participant_entry_id:id,p_note:$('dNote').value.trim()||null}),x=r?.[0];
-    if(!x?.ok)return st.textContent='スタンプを押せませんでした';
-    $('dId').value='';$('dNote').value='';st.textContent=`${x.nickname||'参加者'}さんにスタンプを押しました（${x.stamp_count}/${x.total_shops}）`;
-  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('参加者ID')?'参加者IDが見つかりません':m.includes('PIN')?'PINがちがいます':'スタンプを押せませんでした'}
-};
 
 /* ========== 管理者 ========== */
 let aPin='',aShops=[],aCodes={},aFilter='all',aOpenEdit=new Set();
@@ -204,7 +124,7 @@ function aRender(){
       <button class="chip" data-a="pin" data-id="${id}">🔐 店舗PIN発行</button>
     </div>
     <div class="mini"><input id="code-${id}" inputmode="numeric" maxlength="4" value="${esc(code)}" placeholder="スタンプ番号4桁"><button class="btn ghost small" data-a="code" data-id="${id}">保存</button><button class="btn ghost small" data-a="regen" data-id="${id}">自動</button></div>
-    ${code?`<div class="nfc">📱 NFC用URL：${esc(nfcUrl(s.id,code))}</div><div class="chips"><button class="chip" data-a="copynfc" data-id="${id}">NFC用URLをコピー</button></div>`:'<div class="muted" style="font-size:13px">番号を保存すると、NFC用URLが出ます</div>'}
+    ${code?`<div class="nfc">📱 NFC用URL：${esc(nfcUrl(s.id,code))}</div><div class="chips"><button class="chip" data-a="qr" data-id="${id}">📱 QRを表示・印刷</button><button class="chip" data-a="copynfc" data-id="${id}">NFC用URLをコピー</button></div>`:'<div class="muted" style="font-size:13px">番号を保存すると、NFC用URLが出ます</div>'}
     ${aOpenEdit.has(s.id)?editForm(s):''}</div>`;
   }).join('')||'<div class="muted">該当するお店がありません</div>';
 }
@@ -227,6 +147,7 @@ $('aList').onclick=async e=>{
       if(a==='regen'&&aCodes[s.id]&&!confirm('番号を変えると、前の番号とNFCタグは使えなくなります。変えますか？'))return;
       const r=await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_new_code:code});if(failed(r))throw 0;aCodes[s.id]=code;toast('スタンプ番号を保存しました');
     }
+    else if(a==='qr'){openQr(s);return}
     else if(a==='copynfc'){await copyText(nfcUrl(s.id,aCodes[s.id]));toast('NFC用URLをコピーしました');return}
     else if(a==='pin'){
       if(!confirm(`${s.name} の店舗ページPINを新しく発行しますか？\n前のPINは使えなくなります。`))return;
@@ -247,6 +168,15 @@ $('aList').onclick=async e=>{
   }catch(err){console.error(err);toast(errText(err).includes('Invalid PIN')?'管理者PINがちがいます':'保存できませんでした')}
 };
 
+/* ========== QR表示・印刷 ========== */
+function openQr(s){
+  const code=aCodes[s.id];if(!code)return toast('先にスタンプ番号を保存してください');
+  const q=qrcode(0,'M');q.addData(nfcUrl(s.id,code));q.make();const svg=q.createSvgTag({cellSize:8,margin:2,scalable:true});
+  $('qrSvg').innerHTML=svg;$('printSvg').innerHTML=svg;$('qrName').textContent=$('printName').textContent=s.name;$('qrModal').classList.add('on');
+}
+$('qrPrint').onclick=()=>window.print();
+document.addEventListener('click',e=>{const c=e.target.closest('[data-close]');if(c)$(c.dataset.close).classList.remove('on')});
+
 /* ========== クリア通知（主催者） ========== */
 let cRows=[],cFilter='todo',cKnown=null,cTimer=null;
 async function cLoad(quiet){
@@ -258,7 +188,7 @@ async function cLoad(quiet){
     if(cKnown){const fresh=cRows.filter(r=>!cKnown.has(r.id));if(fresh.length){toast(`🎁 新しいクリアが${fresh.length}件あります`);try{if(window.Notification&&Notification.permission==='granted')new Notification('もぐマップ',{body:`${fresh[0].nickname||'参加者'}さんが${fresh[0].clear_no}クリアしました`})}catch{}}}
     cKnown=ids;
     $('cNew').textContent=todo.length;$('cNew').classList.toggle('hidden',!todo.length);
-    document.title=(todo.length?`(${todo.length}) `:'')+'もぐマップ 編集画面';
+    document.title=(todo.length?`(${todo.length}) `:'')+'もぐマップ 主催者ページ';
     cRender();
   }catch(e){console.error(e);$('cList').innerHTML=errText(e).includes('mogu_list_clears_admin')||errText(e).includes('PGRST202')?'<div class="muted" style="margin-top:8px">⚠️ クリア記録の準備（SQLの実行）がまだです。</div>':'<div class="muted" style="margin-top:8px">読み込めませんでした</div>'}
   if(!cTimer){cTimer=setInterval(()=>{if(document.visibilityState==='visible')cLoad(true)},60000);try{if(window.Notification&&Notification.permission==='default')Notification.requestPermission()}catch{}}

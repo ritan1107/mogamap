@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>もぐマップ お店アプリ</title>
+<link rel="stylesheet" href="core.css?v=1">
+<style>
+body{background:#f3f7f6}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:12px 4px;font-weight:900;cursor:pointer;font-size:15px;position:relative}
+.tab span{display:block;font-size:24px;line-height:1.2}
+.tab.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.dot{position:absolute;top:6px;right:8px;min-width:22px;padding:1px 6px;border-radius:99px;background:var(--pink);color:#fff;font-size:12px}
+.pane{display:none}.pane.on{display:block}
+.shopname{font-size:20px;font-weight:900;color:var(--teal)}
+.qrbox{background:#fff;border-radius:20px;padding:14px;text-align:center}
+.qrbox svg{width:100%;max-width:300px;height:auto}
+.qr-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.qr-actions .btn{font-size:15px;padding:12px;margin-top:10px}
+.item{border:1.5px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;background:#fff}
+.item.pending{border-color:#f0cf8a;background:#fffcf3}
+.item-top{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:900}
+.proof{max-width:100%;max-height:260px;border-radius:12px;margin-top:8px;display:block}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.acts .btn{margin:0;font-size:15px;padding:11px}
+.bubble{max-width:85%;padding:8px 11px;border-radius:14px;margin-top:7px;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.bubble small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.bubble.me{margin-left:auto;background:#e6f4f3}.bubble.them{background:#fdeef3}
+.reply{display:flex;gap:6px;margin-top:8px}.reply input{padding:9px 11px;font-size:15px}.reply .btn{margin:0;white-space:nowrap}
+.big-qr{position:fixed;inset:0;background:#fff;z-index:90;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.big-qr.on{display:flex}
+.big-qr svg{width:min(86vw,70vh);height:auto}
+.big-qr h2{font-size:26px;margin:10px 0 0}
+.foot{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
+#printArea{display:none}
+@media print{
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important;text-align:center;padding-top:30mm;font-family:inherit}
+  #printArea svg{width:110mm;height:110mm}
+  #printArea h1{font-size:30pt;margin:0 0 4mm;color:#397f87}
+  #printArea p{font-size:16pt;margin:3mm 0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><small>MOGU MAP</small>お店アプリ</div>
+    <button class="btn ghost small hidden" id="logout">ログアウト</button>
+  </header>
+
+  <!-- ログイン -->
+  <section id="login">
+    <div class="card">
+      <h2>🏪 お店の方のログイン</h2>
+      <div class="muted">一度ログインすると、このスマホに保存されます。</div>
+      <label class="label" for="lShop">お店</label>
+      <select id="lShop"><option value="">読み込み中…</option></select>
+      <label class="label" for="lPin">店舗ページPIN</label>
+      <input id="lPin" type="password" autocomplete="off">
+      <button class="btn" id="lBtn">ログイン</button>
+      <div class="status" id="lStatus"></div>
+    </div>
+  </section>
+
+  <!-- ログイン後 -->
+  <section id="app" class="hidden">
+    <div class="card" style="padding:12px 16px"><div class="muted">ログイン中</div><div class="shopname" id="shopName"></div></div>
+    <div class="tabs" style="margin-top:12px">
+      <button class="tab on" data-tab="qr"><span>📱</span>スタンプQR</button>
+      <button class="tab" data-tab="inbox"><span>📮</span>お客様<i class="dot hidden" id="inboxDot"></i></button>
+      <button class="tab" data-tab="id"><span>🔢</span>ID入力</button>
+    </div>
+
+    <!-- スタンプQR -->
+    <div class="pane on" id="p-qr">
+      <div class="card hidden" id="qrReady">
+        <h3>📱 お客様に読み取ってもらうQR</h3>
+        <div class="muted">お客様は「もぐマップ」の「📷 QRコードを読み取る」で読むだけ。スタンプが押されます。</div>
+        <div class="qrbox" id="qrSvg"></div>
+        <div class="qr-actions">
+          <button class="btn pink" id="qrBig">大きく表示</button>
+          <button class="btn ghost" id="qrPrint">印刷する</button>
+        </div>
+        <button class="btn ghost" id="qrCopy">NFCタグ用URLをコピー</button>
+        <div class="muted" style="margin-top:8px">NFCタグにこのURLを書き込むと、かざすだけでスタンプが押せます。</div>
+        <button class="btn ghost small" style="margin-top:12px" id="qrChange">スタンプ番号を入れ直す</button>
+      </div>
+      <div class="card hidden" id="qrSetup">
+        <h3>🔢 スタンプ番号の確認</h3>
+        <div class="muted">主催者から届いた4桁のスタンプ番号を入れてください。QRコードが作られます。</div>
+        <label class="label" for="qrCode">スタンプ番号（4桁）</label>
+        <input id="qrCode" inputmode="numeric" maxlength="4" placeholder="0000">
+        <button class="btn" id="qrSave">QRコードを作る</button>
+      </div>
+    </div>
+
+    <!-- お客様からの連絡 -->
+    <div class="pane" id="p-inbox">
+      <div class="card">
+        <div class="hrow" style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">📮 お客様からの連絡</h3><button class="btn ghost small" id="iRefresh">更新</button></div>
+        <div class="muted">遠隔スタンプの申請とメッセージが届きます。</div>
+        <div class="status" id="iStatus"></div>
+      </div>
+      <div id="iList"></div>
+    </div>
+
+    <!-- ID入力 -->
+    <div class="pane" id="p-id">
+      <div class="card">
+        <h3>🔢 参加者IDでスタンプ</h3>
+        <div class="muted">お客様の「遠隔スタンプ用ID（5桁）」を聞いて押せます。</div>
+        <label class="label" for="dId">参加者ID</label>
+        <input id="dId" inputmode="numeric" placeholder="例：12345">
+        <label class="label" for="dNote">メモ（任意）</label>
+        <input id="dNote">
+        <button class="btn" id="dGrant">スタンプを押す</button>
+        <div class="status" id="dStatus"></div>
+      </div>
+    </div>
+  </section>
+  <a class="foot" href="admin.html">主催者の方はこちら</a>
+</div>
+
+<div class="big-qr" id="bigQr"><div id="bigQrSvg"></div><h2 id="bigQrName"></h2><p class="muted">もぐマップの📷で読み取ってください</p><button class="btn ghost" style="width:auto;padding:12px 30px" id="bigQrClose">とじる</button></div>
+<div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
+<div id="toast"></div>
+<script src="core.js?v=1"></script>
+<script src="lib/qrcode.js?v=1"></script>
+<script>
+const LKEY='mogu_shop_login_v1',CKEY='mogu_shop_code_';
+let login=null,shops=[],rows=[],msgs=[],known=null,timer=null;
+const BASE=new URL('./',location.href).href;
+const stampUrl=code=>`${BASE}?nfc=${encodeURIComponent(login.shopId)}&c=${encodeURIComponent(code)}`;
+const bub=(who,text,at)=>`<div class="bubble ${who==='shop'?'me':'them'}">${esc(text)}<small>${who==='shop'?'お店':'お客様'}・${at?new Date(at).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):''}</small></div>`;
+const isDm=r=>String(r.purchase_message||'').startsWith('【DM・質問】');
+const failed=r=>r===false||(Array.isArray(r)&&r[0]&&(r[0].ok===false||r[0].success===false));
+function qrSvg(text){const q=qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag({cellSize:8,margin:2,scalable:true})}
+
+/* ---------- ログイン ---------- */
+(async()=>{
+  try{shops=await loadPublicShops();$('lShop').innerHTML='<option value="">お店を選んでください</option>'+shops.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')}
+  catch(e){$('lShop').innerHTML='<option value="">読み込めませんでした</option>'}
+  try{login=JSON.parse(localStorage.getItem(LKEY)||'null')}catch{}
+  if(login)enter();
+})();
+$('lBtn').onclick=async()=>{
+  const shopId=$('lShop').value,pin=$('lPin').value.trim(),st=$('lStatus');
+  if(!shopId||!pin)return st.textContent='お店とPINを入れてください';
+  st.textContent='確認中…';
+  try{
+    await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}); // PINが違えばエラー
+    login={shopId,pin,name:shops.find(s=>s.id===shopId)?.name||''};
+    try{localStorage.setItem(LKEY,JSON.stringify(login))}catch{}
+    st.textContent='';enter();
+  }catch(e){console.error(e);st.textContent=errText(e).includes('PIN')?'PINがちがいます':'ログインできませんでした'}
+};
+$('logout').onclick=()=>{if(!confirm('ログアウトしますか？'))return;try{localStorage.removeItem(LKEY)}catch{}location.reload()};
+function enter(){
+  $('login').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');
+  $('shopName').textContent=login.name||shops.find(s=>s.id===login.shopId)?.name||'';
+  setupQr();loadInbox(true);
+  timer=setInterval(()=>{if(document.visibilityState==='visible')loadInbox()},30000);
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
+  if(t.dataset.tab==='inbox')loadInbox();
+});
+
+/* ---------- スタンプQR ---------- */
+function codeFrom(v){
+  if(v==null)return '';
+  if(typeof v==='string'||typeof v==='number')return String(v);
+  if(Array.isArray(v))return codeFrom(v[0]);
+  return String(v.stamp_code??v.code??v.get_shop_stamp_code_by_shared_pin??'');
+}
+async function setupQr(){
+  let code='';
+  try{code=codeFrom(await rpc('get_shop_stamp_code_by_shared_pin',{p_shop_id:login.shopId,p_pin:login.pin})).trim()}catch(e){console.warn('番号を自動で取得できませんでした',e)}
+  if(!/^\d{3,4}$/.test(code)){try{code=localStorage.getItem(CKEY+login.shopId)||''}catch{}}
+  /^\d{3,4}$/.test(code)?showQr(code):showSetup();
+}
+function showQr(code){
+  login.code=code;const url=stampUrl(code),svg=qrSvg(url);
+  $('qrSvg').innerHTML=svg;$('bigQrSvg').innerHTML=svg;$('printSvg').innerHTML=svg;
+  $('bigQrName').textContent=$('printName').textContent=$('shopName').textContent;
+  $('qrReady').classList.remove('hidden');$('qrSetup').classList.add('hidden');
+}
+function showSetup(){$('qrReady').classList.add('hidden');$('qrSetup').classList.remove('hidden')}
+$('qrSave').onclick=()=>{const code=$('qrCode').value.trim();if(!/^\d{4}$/.test(code))return toast('4桁の数字を入れてください');try{localStorage.setItem(CKEY+login.shopId,code)}catch{}showQr(code);toast('QRコードを作りました')};
+$('qrChange').onclick=()=>{$('qrCode').value=login.code||'';showSetup()};
+$('qrBig').onclick=()=>$('bigQr').classList.add('on');
+$('bigQrClose').onclick=()=>$('bigQr').classList.remove('on');
+$('qrPrint').onclick=()=>window.print();
+$('qrCopy').onclick=async()=>{try{await copyText(stampUrl(login.code));toast('URLをコピーしました')}catch{toast('コピーできませんでした')}};
+
+/* ---------- お客様からの連絡 ---------- */
+async function loadInbox(first){
+  try{
+    const [r,m]=await Promise.all([rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:login.shopId,p_shop_pin:login.pin}),rpc('list_rally_messages_for_shop_pin',{p_shop_id:login.shopId,p_shop_pin:login.pin}).catch(()=>[])]);
+    rows=(r||[]).map(x=>({...x,id:x.submission_id||x.id,status:x.submission_status||x.status||'pending'}));msgs=Array.isArray(m)?m:[];
+  }catch(e){console.error(e);$('iStatus').textContent=errText(e).includes('PIN')?'PINが変わったようです。ログインし直してください':'読み込めませんでした';return}
+  // 新着チェック（お客様からの新しい申請・メッセージ）
+  const keys=new Set([...rows.map(r=>'s'+r.id),...msgs.filter(m=>m.sender_type!=='shop').map(m=>'m'+(m.message_id||m.id||m.created_at))]);
+  if(known&&!first){const fresh=[...keys].filter(k=>!known.has(k)).length;if(fresh)toast(`📮 お客様から新しい連絡が${fresh}件`)}
+  known=keys;
+  const pend=rows.filter(r=>r.status==='pending'&&!isDm(r)).length,unanswered=rows.filter(r=>isDm(r)&&!msgs.some(m=>m.submission_id===r.id&&m.sender_type==='shop')).length,n=pend+unanswered;
+  $('inboxDot').textContent=n;$('inboxDot').classList.toggle('hidden',!n);document.title=(n?`(${n}) `:'')+'もぐマップ お店アプリ';
+  $('iStatus').textContent=`遠隔スタンプ確認待ち ${pend}件・返信待ちメッセージ ${unanswered}件`;
+  renderInbox();
+}
+function renderInbox(){
+  const label={pending:['確認待ち','wait'],approved:['スタンプ済み','ok'],rejected:['見送り','']};
+  $('iList').innerHTML=rows.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).map(r=>{
+    const dm=isDm(r),[t,c]=label[r.status]||[r.status,''],msg=String(r.purchase_message||'').replace(/^【DM・質問】\s*/,'');
+    const img=String(r.proof_data||'').startsWith('data:image/')?`<img class="proof" alt="購入の写真" src="${esc(r.proof_data)}">`:'';
+    const link=/^https:\/\//i.test(r.purchase_url||'')?`<a href="${esc(r.purchase_url)}" target="_blank" rel="noopener">購入ページを開く</a>`:'';
+    const acts=r.status==='pending'&&!dm?`<div class="acts"><button class="btn pink" data-act="approve" data-id="${esc(r.id)}">スタンプを押す</button><button class="btn ghost" data-act="reject" data-id="${esc(r.id)}">見送る</button></div>`:'';
+    const thread=msgs.filter(m=>m.submission_id===r.id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)).map(m=>bub(m.sender_type,m.message_body,m.created_at)).join('');
+    const resp=r.response_message&&!msgs.some(m=>m.submission_id===r.id&&m.message_body===r.response_message)?bub('shop',r.response_message,r.updated_at):'';
+    return `<div class="item ${r.status==='pending'&&!dm?'pending':''}"><div class="item-top"><span>${dm?'💬 ':'📦 '}${esc(r.nickname||'お客様')}さん</span><span class="badge ${dm?'':c}">${dm?'メッセージ':t}</span></div><div class="muted">${new Date(r.created_at).toLocaleString('ja-JP')}　ID ${esc(r.participant_entry_id||'—')}${r.uw_id?'　UW.ID '+esc(r.uw_id):''}</div>${msg?bub('customer',msg,r.created_at):''}${link}${img}${resp}${thread}${acts}<div class="reply"><input data-reply-input="${esc(r.id)}" placeholder="お客様へ返信"><button class="btn small" data-reply="${esc(r.id)}">送る</button></div></div>`;
+  }).join('')||'<div class="card muted" style="margin-top:10px">まだ連絡はありません</div>';
+}
+$('iRefresh').onclick=()=>loadInbox();
+$('iList').onclick=async e=>{
+  const rb=e.target.closest('[data-reply]');
+  if(rb){const input=document.querySelector(`[data-reply-input="${CSS.escape(rb.dataset.reply)}"]`),text=input?.value.trim();if(!text)return;rb.disabled=true;
+    try{await rpc('send_rally_message_from_shop',{p_shop_id:login.shopId,p_shop_pin:login.pin,p_submission_id:rb.dataset.reply,p_message:text});toast('お客様へ送りました');await loadInbox()}catch(err){console.error(err);toast('送れませんでした');rb.disabled=false}
+    return}
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const action=b.dataset.act,msg=prompt(action==='approve'?'お客様へのひとこと（任意）':'見送る理由（任意）');
+  if(msg===null)return;b.disabled=true;
+  try{
+    const r=await rpc('resolve_purchase_submission',{p_shop_id:login.shopId,p_shop_pin:login.pin,p_submission_id:b.dataset.id,p_action:action,p_response_message:msg||null});
+    if(failed(r))throw new Error(r?.[0]?.message||'処理できませんでした');
+    toast(action==='approve'?'スタンプを押しました':'見送りにしました');await loadInbox();
+  }catch(err){console.error(err);toast(errText(err)||'処理できませんでした');b.disabled=false}
+};
+
+/* ---------- ID入力 ---------- */
+$('dGrant').onclick=async()=>{
+  const id=$('dId').value.trim(),st=$('dStatus');if(!id)return st.textContent='参加者IDを入れてください';
+  st.textContent='確認中…';
+  try{
+    const r=await rpc('grant_remote_participant_stamp',{p_shop_id:login.shopId,p_shop_pin:login.pin,p_participant_entry_id:id,p_note:$('dNote').value.trim()||null}),x=r?.[0];
+    if(!x?.ok)return st.textContent='スタンプを押せませんでした';
+    $('dId').value='';$('dNote').value='';st.textContent=`${x.nickname||'参加者'}さんにスタンプを押しました（${x.stamp_count}/${x.total_shops}）`;
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('参加者ID')?'参加者IDが見つかりません':m.includes('PIN')?'PINがちがいます':'スタンプを押せませんでした'}
+};
+</script>
+</body>
+</html>
