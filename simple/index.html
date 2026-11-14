@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>もぐマップ スタンプラリー</title>
 <meta name="description" content="もぐマップのスタンプラリー。対面スタンプ・遠隔スタンプ・スタンプ帳・マイページ。">
-<link rel="stylesheet" href="core.css?v=2">
+<link rel="stylesheet" href="core.css?v=3">
 <style>
 .progress-card{display:flex;align-items:center;gap:14px}
 .progress-num{font-size:30px;font-weight:900;color:var(--pink);white-space:nowrap}
@@ -68,6 +68,13 @@
 .mode-tabs button{border:0;background:none;border-radius:11px;padding:9px;font-weight:900;font-size:15px;color:var(--muted);cursor:pointer}
 .mode-tabs button.on{background:#fff;color:var(--teal);box-shadow:0 2px 6px #0001}
 .login-box{margin-top:18px;border-top:1.5px dashed var(--line);padding-top:12px}
+.welcome{position:relative;overflow:hidden;min-height:150px;border-radius:28px;padding:20px 18px;margin-bottom:12px;color:#fff;background:linear-gradient(135deg,#64c5c6 0%,#78b8e4 52%,#ef9aaa 100%);box-shadow:0 16px 32px rgba(94,163,177,.22)}
+.welcome:after{content:'★  ●  ★';position:absolute;right:16px;bottom:-7px;color:#ffffff55;font-size:32px;letter-spacing:7px;transform:rotate(-8deg)}
+.welcome .eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;opacity:.9}
+.welcome h1{margin:4px 0 0;font-size:22px;line-height:1.35;text-shadow:0 2px 8px #0002}
+.welcome p{margin:4px 0 0;font-size:14px;font-weight:700;text-shadow:0 1px 6px #0002}
+.welcome-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.welcome-tags span{background:#ffffff38;border:1px solid #ffffff66;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:900}
 .admin-link{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 .complete{text-align:center}
 .complete .code{font-size:28px;font-weight:900;letter-spacing:.1em;background:#fff1f6;border-radius:16px;padding:12px;margin:10px 0;color:var(--pink)}
@@ -82,6 +89,12 @@
 
   <!-- ホーム：4つのボタンだけ -->
   <section class="view on" id="v-home">
+    <div class="welcome" id="welcome">
+      <div class="eyebrow">HOKKAIDO / PEOPLE &amp; PLACES</div>
+      <h1>めぐる、たべる、つながる</h1>
+      <p>お店をめぐって、スタンプを集めよう。</p>
+      <div class="welcome-tags"><span>🗺️ めぐる</span><span>🍴 たべる</span><span>🎁 もらえる</span></div>
+    </div>
     <div class="card progress-card">
       <div class="progress-num" id="pNum">0<small> / 0</small></div>
       <div style="flex:1"><div class="muted" id="rallyTitle">スタンプラリー</div><div class="bar"><i id="pBar"></i></div></div>
@@ -228,7 +241,7 @@
 </div>
 
 <div id="toast"></div>
-<script src="core.js?v=2"></script>
+<script src="core.js?v=3"></script>
 <script>
 let shops=[],settings={},progress=null,stampIds=new Set(),notices=[],subs=[],allSubs=[],dmMsgs=[],clears=[];
 const PER_CLEAR=3; // スタンプいくつで1クリアか
