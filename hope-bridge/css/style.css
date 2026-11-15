@@ -854,3 +854,11 @@ body.pp-lock{overflow:hidden}
 .page-hero + .sec > .wrap > .sec-head{display:none}
 .page-hero + .sec{padding-top:clamp(40px,6vw,64px)}
 .page-hero + .sec .chara-w.ch-head{display:none}
+
+/* privacy policy page */
+.pp-doc{max-width:46em;margin:0 auto;background:#fff;border-radius:20px;padding:clamp(22px,5vw,44px);line-height:1.95;box-shadow:0 8px 28px rgba(80,50,30,.08)}
+.pp-doc h2{font-size:1.06rem;margin:1.8em 0 .4em;padding-left:.7em;border-left:4px solid var(--accent,#ef9f80)}
+.pp-doc ul{margin:.4em 0 0;padding-left:1.4em}
+.pp-doc .pp-cta{text-align:center;margin-top:2em}
+.pp-doc .pp-sign{text-align:right;margin-top:1.6em;font-size:.92rem;opacity:.8}
+a.pp-open{color:inherit}

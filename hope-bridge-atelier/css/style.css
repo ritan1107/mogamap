@@ -540,3 +540,13 @@ footer .ftag{font-family:var(--f-hand);opacity:.85;margin-bottom:24px}
 .dg-b b::after{content:" →";color:var(--peach-dk)}
 @media (max-width:560px){.dg{flex-direction:row;align-items:stretch}.dg-img{width:40%;flex:0 0 40%;aspect-ratio:auto;padding:10px 8px 0}.dg-img img{width:100%}.dg-b{align-content:center;padding:12px 14px}.dg-b b{font-size:1.02rem}}
 .page-hero + .works .sec-title{display:none}
+
+/* privacy policy */
+.policy{max-width:46em;margin:0 auto;background:var(--paper,#fffdf6);border:2px solid var(--wood-lt,#d9b98f);border-radius:20px;padding:clamp(22px,5vw,44px);line-height:1.9}
+.policy h2{font-family:var(--f-title,inherit);font-size:1.08rem;color:var(--wood-dk,#5a3a22);margin:1.8em 0 .4em;padding-left:.7em;border-left:4px solid var(--sun,#f7d66b)}
+.policy ul{margin:.4em 0 0;padding-left:1.4em}
+.policy li{margin:.2em 0}
+.policy .pp-intro{margin-top:0}
+.policy .pp-line{text-align:center;margin-top:2em}
+.policy .pp-sign{text-align:right;margin-top:1.6em;font-size:.92rem;color:var(--ink-soft,#6b5a4c)}
+footer .copyr a{color:inherit}

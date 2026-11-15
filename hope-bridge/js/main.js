@@ -37,7 +37,8 @@ const CONFIG = {
     works:   { en:"WORKS",   title:"制作実績",     lead:"手描き動画・似顔絵・LINEスタンプの一部をご紹介します。" },
     price:   { en:"PRICE",   title:"料金のめやす", lead:"はじめての方でも頼みやすいように、めやすの料金を載せています。" },
     connect: { en:"CONNECT", title:"つながる活動", lead:"人と人、仕事とチャンスをつなぐ活動をしています。" },
-    about:   { en:"ABOUT",   title:"りーたんについて", lead:"Hope Bridge Design の想いと、りーたんのこと。" }
+    about:   { en:"ABOUT",   title:"りーたんについて", lead:"Hope Bridge Design の想いと、りーたんのこと。" },
+    privacy: { en:"PRIVACY POLICY", title:"プライバシーポリシー", lead:"お預かりする情報の取り扱いについて" }
   },
 
   /* --- トップページの案内カード --- */
@@ -626,6 +627,12 @@ function render(){
   ${head(0, "MENU", C.digest.title, C.digest.lead)}
   <div class="dg-grid">${C.digest.items.map(d => `<a class="dg" href="${esc(d.href)}"><span class="dg-img"><img src="${md(d.image)}" alt="" loading="lazy"></span><span class="dg-body"><span class="en">${esc(d.en)}</span><b>${esc(d.title)}</b><small>${esc(d.text)}</small><i class="dg-go" aria-hidden="true">→</i></span></a>`).join("")}</div>
 </div></section>`,
+    privacy: () => `<section class="sec pp-page"><div class="wrap"><div class="pp-doc">
+  <p>${esc(C.privacy.intro)}</p>
+  ${C.privacy.sections.map(x => `<h2>${esc(x.h)}</h2><p>${esc(x.p)}</p>${x.list ? `<ul>${x.list.map(l => `<li>${esc(l)}</li>`).join("")}</ul>` : ""}`).join("")}
+  ${B.lineUrl ? `<p class="pp-cta">${link(B.lineUrl, "公式LINEで問い合わせる", "btn")}</p>` : ""}
+  <p class="pp-sign">${esc(C.privacy.date)}<br>${esc(C.privacy.signature)}</p>
+</div></div></section>`,
     pagehead: () => { const P = C.pages[PAGE]; return P ? `<section class="page-hero"><div class="wrap"><nav class="crumb" aria-label="現在地"><a href="index.html">トップ</a><span>›</span>${esc(P.title)}</nav><p class="ph-en">${esc(P.en)}</p><h1>${esc(P.title)}</h1><p class="ph-lead">${esc(P.lead)}</p></div></section>` : ""; }
   };
   const LAYOUT = {
@@ -634,7 +641,8 @@ function render(){
     works:   ["pagehead","works","contact"],
     price:   ["pagehead","price","plan","contact"],
     connect: ["pagehead","community","contact"],
-    about:   ["pagehead","profile","talk","contact"]
+    about:   ["pagehead","profile","talk","contact"],
+    privacy: ["pagehead","privacy"]
   };
   const MAIN = (LAYOUT[PAGE] || LAYOUT.top).map(k => SEC[k]()).join("\n");
   document.getElementById("app").innerHTML = `
@@ -659,7 +667,7 @@ ${MAIN}
 <footer class="ft"><div class="wrap">
   <a class="logo" href="index.html"><b>${esc(B.shortName)}</b></a>
   <ul><li>${esc(B.name)}</li><li>${esc(B.tagline)}</li><li>拠点　${esc(B.area)}</li><li>代表　${esc(B.representative)}</li></ul>
-  <p class="ft-links"><button type="button" class="pp-open" data-pp>${esc(C.privacy.title)}</button></p>
+  <p class="ft-links"><a class="pp-open" href="privacy.html">${esc(C.privacy.title)}</a></p>
   <p class="tiny">© ${esc(B.name)}</p>
 </div></footer>
 
