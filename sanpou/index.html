@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta property="og:type" content="restaurant">
+<meta property="og:title" content="東京風 山寶ラーメン｜延岡市昭和町のラーメンとお好み焼き">
+<meta property="og:description" content="東京で修業した醤油ラーメンと、お好み焼き。駐車場あり・入口スロープ・個室あり。">
+<meta property="og:image" content="img/sign_logo.webp">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>東京風 山寶ラーメン</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="宮崎県延岡市昭和町の東京風 山寶（さんぽう）ラーメン。東京で修業した醤油ラーメンと、延岡駅前から続くお好み焼きが一緒に食べられるお店。駐車場あり・入口スロープ・個室あり。日本語・English・Tagalog対応。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Yomogi&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Restaurant","name":"東京風 山寶ラーメン","alternateName":"さんぽうラーメン","servesCuisine":["ラーメン","お好み焼き","定食"],"address":{"@type":"PostalAddress","addressRegion":"宮崎県","addressLocality":"延岡市","streetAddress":"昭和町2丁目71-2","addressCountry":"JP"},"telephone":"+81-80-5917-0310","openingHours":["Mo-Su 11:00-14:00","We-Sa 18:00-20:00"],"priceRange":"¥150〜¥1500","hasMenu":true,"availableLanguage":["ja","en","tl"],"amenityFeature":[{"@type":"LocationFeatureSpecification","name":"駐車場","value":true},{"@type":"LocationFeatureSpecification","name":"車椅子対応スロープ","value":true},{"@type":"LocationFeatureSpecification","name":"個室","value":true}]}
+</script>
+</head>
+<body>
+<style>
+/* Layout: 明るい町の食堂。白7・赤2・黄1。写真が主役、のれんは「入口」と「区切り」にだけ使う。
+   導線＝①入店演出 → ②何の店か3秒でわかるFV → ③信頼（紹介実績） → ④食べたい（おすすめ3品・名物） → ⑤価格の安心 → ⑥応援したい（ものがたり） → ⑦不安の解消（設備・FAQ） → ⑧行き方 → ⑨最後のひと押し */
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --cream:#FFF3D6; --cream2:#FFF8E8;
+  --red:#D7261E; --red-dk:#A8170F; --red-lt:#FDE9E5;
+  --yellow:#FFD23F; --yellow-dk:#E3B000;
+  --ink:#2E221D; --muted:#76665D; --line:#EFE2CE;
+  --shadow:0 12px 32px rgba(120,62,24,.12);
+  --f-pop:"Mochiy Pop One","Zen Maru Gothic","Hiragino Maru Gothic ProN",sans-serif;
+  --f-body:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Meiryo",sans-serif;
+  --f-hand:"Yomogi","Zen Maru Gothic",cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.85;font-weight:500;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--paper)}
+a{color:inherit}
+img{display:block;max-width:100%;height:auto}
+h1,h2,h3,h4{margin:0;font-weight:400;line-height:1.4;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--yellow-dk);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;font-size:1rem;line-height:1.3;text-decoration:none;cursor:pointer;border:0;border-radius:999px;padding:14px 26px;transition:transform .15s,box-shadow .15s,background .15s}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 4px 0 var(--red-dk)}
+.btn-red:hover{transform:translateY(2px);box-shadow:0 2px 0 var(--red-dk)}
+.btn-yellow{background:var(--yellow);color:var(--ink);box-shadow:0 4px 0 var(--yellow-dk)}
+.btn-yellow:hover{transform:translateY(2px);box-shadow:0 2px 0 var(--yellow-dk)}
+.btn-line{background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn-line:hover{background:var(--cream2)}
+.btn-lg{font-size:1.08rem;padding:16px 32px}
+.btn svg{width:18px;height:18px;flex:none}
+
+/* ---------- gate（のれんをくぐる） ---------- */
+.gate{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;align-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#FFF6DD 0%,var(--bg) 60%);padding:0 max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));transition:opacity .45s .7s,visibility .45s .7s}
+.gate.out{opacity:0;visibility:hidden}
+.gate-noren{position:relative;width:min(760px,112%);max-width:112%;aspect-ratio:1600/600;margin-top:calc(-2% + env(safe-area-inset-top,0px));flex:none;transform-origin:50% 30%}
+.gate-noren img{position:absolute;inset:0;width:100%;height:100%}
+.gate-noren .no{opacity:0}
+.gate-noren .nc-wrap{position:absolute;inset:0;transform-origin:50% 15%;animation:sway 3.8s ease-in-out infinite}
+.gate-word{position:absolute;left:3%;right:4%;top:30%;height:44%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));pointer-events:none}
+.gate-word span{display:grid;place-items:center;font-family:var(--f-pop);font-size:clamp(1.4rem,6.6vw,3rem);color:#fff;text-shadow:0 3px 0 rgba(110,10,0,.35)}
+.gate-body{text-align:center;max-width:420px;margin-block:auto;padding-bottom:4vh;display:grid;gap:10px;justify-items:center}
+.gate-dish{width:clamp(110px,30vw,150px);aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:var(--shadow);border:5px solid var(--paper);margin-bottom:4px;animation:pop2 .6s .2s cubic-bezier(.3,1.5,.5,1) both}
+.gate-dish img{width:100%;height:100%;object-fit:cover}
+@keyframes pop2{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.gate-hello-x{font-family:var(--f-hand);color:var(--muted);font-size:1.05rem}
+.gate-body h2{font-family:var(--f-pop);font-size:clamp(2rem,8vw,2.8rem);color:var(--red);line-height:1.2}
+.gate-body p.lead{color:var(--muted)}
+.gate-body .btn{margin-top:8px;min-width:260px}
+.gate-links{display:flex;gap:18px;margin-top:4px}
+.gate-links button{font:inherit;font-size:.92rem;background:none;border:0;cursor:pointer;color:var(--muted);text-decoration:underline;text-underline-offset:4px}
+.gate.entering .nc-wrap{animation:part .4s ease-in forwards}
+.gate.entering .no{animation:openUp .4s ease-out forwards}
+.gate.entering .gate-noren{animation:walkIn .85s .3s cubic-bezier(.55,0,.8,.4) forwards}
+.gate.entering .gate-body{animation:fadeDown .4s ease-in forwards}
+@keyframes sway{0%,100%{transform:skewX(0)}50%{transform:skewX(-2deg) rotate(.4deg)}}
+@keyframes part{to{opacity:0;transform:scaleY(1.05)}}
+@keyframes openUp{from{opacity:0}to{opacity:1}}
+@keyframes walkIn{to{transform:scale(3.2) translateY(18%);opacity:0}}
+@keyframes fadeDown{to{opacity:0;transform:translateY(30px)}}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0;margin-right:auto}
+.brand img{width:42px;height:auto;flex:none}
+.brand b{display:block;font-family:var(--f-pop);font-size:1.02rem;line-height:1.25}
+.brand>span{min-width:0}
+.brand small{display:block;font-size:.72rem;color:var(--muted);line-height:1.3}
+.gnav{display:flex;gap:4px}
+.gnav a{text-decoration:none;font-weight:700;font-size:.92rem;padding:8px 12px;border-radius:999px}
+.gnav a:hover{background:var(--cream)}
+.top .btn{padding:10px 18px;font-size:.92rem}
+.menu-btn{display:none;font:inherit;font-weight:700;font-size:.8rem;background:var(--paper);border:2px solid var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+@media (max-width:900px){.gnav,.top .btn{display:none}.menu-btn{display:block}}
+#sheet{position:fixed;inset:0;z-index:70;background:var(--bg);padding:calc(18px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) 30px max(20px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:6px;transform:translateY(-100%);visibility:hidden;transition:transform .4s cubic-bezier(.7,0,.2,1),visibility .4s;overflow-y:auto}
+#sheet.open{transform:none;visibility:visible}
+#sheet .close{align-self:flex-end;font:inherit;font-weight:700;background:none;border:2px solid var(--ink);border-radius:999px;padding:6px 16px;cursor:pointer;margin-bottom:10px}
+#sheet a.item{display:flex;justify-content:space-between;align-items:center;text-decoration:none;font-family:var(--f-pop);font-size:1.2rem;padding:14px 4px;border-bottom:1px solid var(--line)}
+#sheet a.item::after{content:"→";color:var(--red)}
+#sheet .btn{margin-top:18px}
+
+/* ---------- section common ---------- */
+section{padding-block:clamp(64px,10vw,112px);scroll-margin-top:64px}
+.sh{text-align:center;margin-bottom:clamp(30px,5vw,52px);display:grid;justify-items:center;gap:10px}
+.label{display:inline-block;font-size:.76rem;font-weight:900;letter-spacing:.18em;color:var(--red);background:var(--red-lt);border-radius:999px;padding:2px 14px}
+.sh h2{font-family:var(--f-pop);font-size:clamp(1.55rem,4.2vw,2.5rem)}
+.sh h2 em{font-style:normal;color:var(--red)}
+.sh p{color:var(--muted);max-width:34em;text-wrap:pretty}
+.bg-cream{background:var(--cream2)}
+.bg-paper{background:var(--paper)}
+.anim .pre{opacity:0;transform:translateY(22px)}
+.anim .pre.in{opacity:1;transform:none;transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.3,1)}
+
+/* ---------- hero ---------- */
+.hero{padding-block:0 clamp(48px,7vw,80px);background:linear-gradient(var(--paper),var(--bg));position:relative;overflow:hidden}
+.valance{height:clamp(72px,13vw,170px);overflow:hidden;position:relative}
+.valance img{width:min(100%,1400px);min-width:640px;position:absolute;left:50%;top:-6%;transform:translateX(-50%)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:clamp(28px,5vw,64px);align-items:center;padding-top:clamp(18px,4vw,40px)}
+@media (max-width:860px){.hero-grid{grid-template-columns:minmax(0,1fr)}}
+.hero-copy{display:grid;gap:18px;justify-items:start}
+.hero-copy .logo{width:clamp(96px,12vw,128px)}
+.eyebrow{font-weight:700;font-size:.92rem;color:var(--red);display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:22px;height:2px;background:currentColor}
+.hero h1{font-family:var(--f-pop);font-size:clamp(1.95rem,5.4vw,3.3rem);line-height:1.32;letter-spacing:.01em}
+.hero h1 .mark{background:linear-gradient(transparent 62%,var(--yellow) 62%);padding:0 .08em}
+.hero h1 .r{color:var(--red)}
+.hero .lead{color:var(--muted);font-size:1.05rem;max-width:30em}
+.trust{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.trust li{display:flex;align-items:center;gap:6px;font-size:.84rem;font-weight:700;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.trust svg{width:16px;height:16px;color:var(--red);flex:none}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.hours-mini{font-size:.86rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
+.hours-mini b{color:var(--ink)}
+.hero-visual{position:relative}
+.hero-photo{border-radius:28px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:884/560;background:var(--cream)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:55% 40%}
+.bubble{position:absolute;left:clamp(-10px,-1vw,0px);top:-18px;font-family:var(--f-hand);font-size:clamp(1rem,2.6vw,1.2rem);background:var(--paper);border-radius:18px;padding:6px 16px;box-shadow:var(--shadow);transform:rotate(-4deg)}
+.bubble::after{content:"";position:absolute;left:28px;bottom:-8px;width:16px;height:16px;background:var(--paper);transform:rotate(45deg)}
+.sticker{position:absolute;right:-6px;bottom:-22px;width:clamp(104px,15vw,128px);aspect-ratio:1;border-radius:50%;background:var(--yellow);display:grid;place-items:center;text-align:center;font-weight:900;font-size:clamp(.72rem,1.6vw,.82rem);line-height:1.35;transform:rotate(9deg);box-shadow:0 6px 0 var(--yellow-dk)}
+.sticker b{display:block;font-family:var(--f-pop);font-weight:400;font-size:1.35em;color:var(--red)}
+
+/* ---------- proof band ---------- */
+.proof{background:var(--yellow);padding-block:16px}
+.proof .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 18px;text-align:center}
+.proof p{font-weight:700}
+.proof a{font-weight:900;text-decoration:none;border-bottom:2px solid var(--ink)}
+
+/* ---------- signature menu ---------- */
+.top3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.5vw,28px)}
+@media (max-width:860px){.top3{grid-template-columns:minmax(0,1fr);max-width:480px;margin-inline:auto}}
+.dish{background:var(--paper);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative}
+.dish .ph{aspect-ratio:1/1;overflow:hidden;background:var(--cream)}
+.dish .ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.dish:hover .ph img{transform:scale(1.05)}
+.rank{position:absolute;top:14px;left:14px;font-family:var(--f-pop);font-size:.86rem;background:var(--red);color:#fff;border-radius:999px;padding:3px 14px}
+.rank.y{background:var(--yellow);color:var(--ink)}
+.dish .body{padding:18px 22px 22px;display:grid;gap:6px;flex:1;align-content:start}
+.dish h3{font-family:var(--f-pop);font-size:1.22rem}
+.dish p{font-size:.92rem;color:var(--muted)}
+.body .price,.tx .price{font-family:var(--f-body);font-weight:900;font-size:1.7rem;color:var(--red);font-variant-numeric:tabular-nums;line-height:1.2;margin-top:4px}
+.body .price small,.tx .price small{font-size:.9rem;color:var(--ink);font-weight:700;margin-left:2px}
+.body .price.ask{font-size:1rem;color:var(--muted)}
+
+/* USP：ラーメン × お好み焼き */
+.usp{margin-top:clamp(56px,8vw,90px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(10px,2vw,22px);align-items:center}
+.usp figure{margin:0;display:grid;gap:10px;text-align:center}
+.usp figure div{aspect-ratio:1/1;border-radius:50%;overflow:hidden;box-shadow:var(--shadow);background:var(--cream)}
+.usp figure img{width:100%;height:100%;object-fit:cover}
+.usp figcaption{font-family:var(--f-pop);font-size:clamp(1rem,2.6vw,1.3rem)}
+.usp .x{width:clamp(44px,7vw,64px);aspect-ratio:1;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-family:var(--f-pop);font-size:clamp(1.2rem,3vw,1.8rem)}
+.usp-text{text-align:center;margin-top:24px;display:grid;gap:8px;justify-items:center}
+.usp-text h3{font-family:var(--f-pop);font-size:clamp(1.3rem,3.6vw,1.9rem)}
+.usp-text p{color:var(--muted);max-width:32em}
+
+.lemon{margin-top:clamp(56px,8vw,90px);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(20px,4vw,48px);align-items:center;background:var(--paper);border-radius:28px;padding:clamp(16px,3vw,30px);box-shadow:var(--shadow)}
+@media (max-width:760px){.lemon{grid-template-columns:minmax(0,1fr)}}
+.lemon .ph{aspect-ratio:1/1;border-radius:20px;overflow:hidden}
+.lemon .ph img{width:100%;height:100%;object-fit:cover}
+.lemon .tx{display:grid;gap:10px;justify-items:start}
+.lemon .kick{font-size:.82rem;font-weight:900;background:var(--yellow);border-radius:999px;padding:2px 12px}
+.lemon h3{font-family:var(--f-pop);font-size:clamp(1.4rem,3.6vw,2rem)}
+.lemon p{color:var(--muted)}
+
+/* ---------- full menu ---------- */
+.tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.tab{font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;border:0;border-radius:999px;padding:10px 20px;background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff;box-shadow:none}
+.menu-card{max-width:760px;margin:0 auto;background:var(--paper);border-radius:24px;padding:clamp(18px,3vw,34px);box-shadow:var(--shadow)}
+.mlist{list-style:none;margin:0;padding:0}
+.mlist li{display:grid;align-items:baseline;gap:10px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.mlist li:last-child{border-bottom:0}
+.mlist .nm{font-weight:700}
+.mlist .nm small{display:block;font-size:.78rem;font-weight:500;color:var(--muted);line-height:1.4}
+.mlist .tag{font-size:.7rem;font-weight:900;color:#fff;background:var(--red);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.mlist .tag.y{background:var(--yellow);color:var(--ink)}
+.mlist .dots{border-bottom:2px dotted var(--line);height:1px;align-self:center}
+.mlist .pr{font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mlist .pr.ask{font-weight:500;font-size:.86rem;color:var(--muted)}
+.mlist li{grid-template-columns:minmax(0,auto) minmax(20px,1fr) auto}
+.menu-note{text-align:center;font-size:.84rem;color:var(--muted);margin-top:18px}
+
+/* ---------- story ---------- */
+.story-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(28px,5vw,64px);align-items:center}
+@media (max-width:860px){.story-grid{grid-template-columns:minmax(0,1fr)}}
+.story-ph{position:relative;max-width:440px;margin-inline:auto;width:100%}
+.story-ph .main{border-radius:200px 200px 24px 24px;overflow:hidden;aspect-ratio:3/4;box-shadow:var(--shadow);background:var(--cream)}
+.story-ph .main img{width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.story-ph .sub{position:absolute;right:-12px;bottom:-26px;width:46%;border-radius:18px;overflow:hidden;border:6px solid var(--paper);box-shadow:var(--shadow);aspect-ratio:4/3}
+.story-ph .sub img{width:100%;height:100%;object-fit:cover}
+.story-tx{display:grid;gap:16px}
+.story-tx h2{font-family:var(--f-pop);font-size:clamp(1.5rem,4vw,2.3rem)}
+.story-tx p{max-width:36em}
+.story-tx strong{background:linear-gradient(transparent 62%,var(--yellow) 62%);font-weight:900}
+.quote{font-family:var(--f-hand);font-size:clamp(1.15rem,3vw,1.4rem);color:var(--red);border-left:4px solid var(--red);padding-left:14px}
+.steps{list-style:none;margin:clamp(48px,7vw,72px) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;counter-reset:s}
+@media (max-width:760px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.steps li{background:var(--paper);border-radius:20px;padding:18px;box-shadow:var(--shadow);display:grid;gap:4px;align-content:start}
+.steps .when{font-size:.76rem;font-weight:900;color:var(--red);letter-spacing:.1em}
+.steps b{font-family:var(--f-pop);font-weight:400;font-size:1.02rem;line-height:1.45}
+.steps span{font-size:.86rem;color:var(--muted)}
+.steps li:last-child{background:var(--red);color:#fff}
+.steps li:last-child .when,.steps li:last-child span{color:#FFE7A0}
+
+/* ---------- welcome / facilities ---------- */
+.personas{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:34px}
+.personas span{font-weight:700;background:var(--paper);border-radius:999px;padding:8px 18px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.personas span b{color:var(--red)}
+.feat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.feat{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.feat div{background:var(--paper);border-radius:20px;padding:20px;display:grid;grid-template-columns:48px minmax(0,1fr);gap:4px 14px;align-items:start;box-shadow:var(--shadow)}
+.feat svg{width:48px;height:48px;grid-row:span 2;color:var(--red)}
+.feat h3{font-weight:900;font-size:1.02rem;line-height:1.4}
+.feat p{font-size:.86rem;color:var(--muted);line-height:1.6}
+@media (max-width:480px){.feat div{grid-template-columns:minmax(0,1fr);text-align:left}.feat svg{grid-row:auto;width:40px;height:40px}}
+
+/* ---------- media ---------- */
+.yt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:820px;margin:0 auto}
+@media (max-width:640px){.yt{grid-template-columns:minmax(0,1fr)}}
+.yt a{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--paper);border-radius:20px;padding:18px;text-decoration:none;box-shadow:var(--shadow);transition:transform .2s}
+.yt a:hover{transform:translateY(-3px)}
+.yt .play{width:64px;height:46px;border-radius:12px;background:#FF0033;display:grid;place-items:center}
+.yt .play::after{content:"";border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff;margin-left:3px}
+.yt small{display:block;font-size:.76rem;color:var(--muted)}
+.yt b{font-family:var(--f-pop);font-weight:400;font-size:1.15rem}
+.yt .go{color:var(--red);font-weight:900}
+
+/* ---------- gallery ---------- */
+.gal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(120px,17vw,200px);gap:12px}
+.gal figure{margin:0;border-radius:18px;overflow:hidden;position:relative;background:var(--cream)}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.gal figure:hover img{transform:scale(1.05)}
+.gal figcaption{position:absolute;left:10px;bottom:10px;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.92);border-radius:999px;padding:1px 10px}
+.gal .b{grid-column:span 2;grid-row:span 2}
+.gal .w{grid-column:span 2}
+@media (max-width:640px){.gal{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:clamp(120px,38vw,180px)}}
+
+/* ---------- faq ---------- */
+.faq{max-width:760px;margin:0 auto;display:grid;gap:10px}
+.faq details{background:var(--paper);border-radius:16px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:16px 50px 16px 20px;font-weight:700;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"Q";color:var(--red);font-family:var(--f-pop);margin-right:10px}
+.faq summary::after{content:"+";position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:1.4rem;color:var(--red);transition:transform .2s}
+.faq details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+.faq details p{padding:0 20px 18px 46px;color:var(--muted)}
+
+/* ---------- access ---------- */
+.acc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,40px);align-items:start}
+@media (max-width:860px){.acc{grid-template-columns:minmax(0,1fr)}}
+.acc .ph{border-radius:24px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
+.acc .ph img{width:100%;height:100%;object-fit:cover}
+.acc .cap{font-size:.86rem;color:var(--muted);margin-top:10px}
+.info{background:var(--paper);border-radius:24px;padding:clamp(20px,3vw,30px);box-shadow:var(--shadow)}
+.info h3{font-family:var(--f-pop);font-size:1.3rem;margin-bottom:12px}
+.info dl{margin:0;display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:12px 14px}
+.info dt{font-weight:900;font-size:.88rem;color:var(--red)}
+.info dd{margin:0;font-size:.95rem;line-height:1.7}
+.todo{display:inline-block;font-size:.76rem;font-weight:700;color:var(--muted);background:var(--cream);border-radius:4px;padding:0 8px}
+.info .cta-row{margin-top:20px}
+
+/* ---------- final cta ---------- */
+.final{background:var(--red);color:#fff;text-align:center;padding-block:clamp(60px,9vw,96px);position:relative;overflow:hidden}
+.final .wrap{display:grid;gap:16px;justify-items:center;position:relative}
+.final h2{font-family:var(--f-pop);font-size:clamp(1.6rem,5vw,2.8rem)}
+.final p{color:#FFE7DE;max-width:32em}
+.final .cta-row{justify-content:center}
+.final .btn-line{background:transparent;color:#fff;box-shadow:inset 0 0 0 2px #fff}
+.final .btn-line:hover{background:rgba(255,255,255,.12)}
+.final-noren{width:min(520px,90%);margin:0 auto -6px;opacity:.95}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink);color:#EADFD6;padding-block:40px calc(96px + env(safe-area-inset-bottom,0px));font-size:.88rem}
+footer .wrap{display:grid;gap:18px}
+footer .fb{display:flex;align-items:center;gap:12px}
+footer .fb img{width:52px}
+footer .fb b{font-family:var(--f-pop);font-weight:400;font-size:1.15rem;color:#fff}
+footer nav{display:flex;flex-wrap:wrap;gap:6px 18px}
+footer nav a{text-decoration:none}
+footer nav a:hover{text-decoration:underline}
+footer .copy{color:#A89A90;font-size:.78rem}
+
+/* ---------- dock (mobile) ---------- */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:45;display:none;gap:8px;padding:10px max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(8px);box-shadow:0 -6px 20px rgba(120,62,24,.12);transform:translateY(110%);transition:transform .35s}
+.dock.show{transform:none}
+.dock a{flex:1 1 0;display:grid;justify-items:center;gap:2px;text-decoration:none;font-size:.74rem;font-weight:700;border-radius:14px;padding:6px 4px}
+.dock a svg{width:22px;height:22px}
+.dock a.main{background:var(--red);color:#fff}
+@media (max-width:900px){.dock{display:flex}}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}html{scroll-behavior:auto}.pre{opacity:1;transform:none}}
+
+/* ---------- 言語切り替え ---------- */
+:root[lang="zh-CN"]{--f-pop:"ZCOOL KuaiLe","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;--f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif}
+:root[lang="ko"]{--f-pop:"Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;--f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.lang{position:relative}
+.lang-btn{display:flex;align-items:center;gap:6px;font:inherit;font-weight:700;font-size:.86rem;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer;white-space:nowrap}
+.lang-btn:hover{background:var(--cream2)}
+.lang-btn svg{width:18px;height:18px;color:var(--red)}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:60;background:var(--paper);border-radius:16px;box-shadow:var(--shadow);padding:6px;display:grid;min-width:170px}
+.lang-menu[hidden]{display:none}
+.lang-menu button{font:inherit;font-weight:700;text-align:left;background:none;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;color:var(--ink)}
+.lang-menu button:hover{background:var(--cream)}
+.lang-menu button[aria-pressed="true"]{color:var(--red)}
+.lang-menu button[aria-pressed="true"]::after{content:" ✓"}
+.langs-row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.langs-row.left{justify-content:flex-start;margin-bottom:8px}
+.langs-row button{font:inherit;font-size:.8rem;font-weight:700;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.langs-row button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+@media (max-width:420px){.brand small{display:none}.brand b{font-size:.92rem}.lang-btn{padding:6px 10px}}
+.takeout{text-align:center;margin:-8px 0 18px}
+.takeout span{display:inline-block;font-weight:900;color:#fff;background:var(--red);border-radius:999px;padding:4px 18px;transform:rotate(-2deg);box-shadow:0 3px 0 var(--red-dk)}
+.mlist .nm small{display:block}
+.mlist li.has-th{grid-template-columns:76px minmax(0,auto) minmax(20px,1fr) auto;align-items:center}
+.mlist .tag{display:inline-block;white-space:nowrap}
+.mlist .th{width:76px;height:57px;object-fit:cover;border-radius:10px;background:var(--cream)}
+@media (max-width:420px){.mlist li.has-th{grid-template-columns:60px minmax(0,1fr) auto}.mlist li.has-th .dots{display:none}.mlist .th{width:60px;height:45px}}
+
+/* ---------- ひみつのミッション ---------- */
+.mission{max-width:860px;margin:0 auto 22px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(16px,3vw,28px);align-items:start;background:var(--cream2);border:2.5px dashed var(--yellow-dk);border-radius:26px;padding:clamp(20px,4vw,34px);position:relative}
+.m-stamp{position:relative;width:clamp(72px,12vw,96px);aspect-ratio:1;border-radius:50%;background:var(--yellow);display:grid;place-items:center;box-shadow:0 5px 0 var(--yellow-dk);transform:rotate(-8deg);animation:wiggle 3.2s ease-in-out infinite}
+.m-stamp svg{width:50%;height:50%;color:var(--ink)}
+.m-stamp span{position:absolute;right:-6px;top:-8px;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-family:var(--f-pop);display:grid;place-items:center;font-size:1rem}
+@keyframes wiggle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(6deg) scale(1.04)}}
+.m-body{display:grid;gap:10px}
+.m-kick{font-size:.78rem;font-weight:900;letter-spacing:.16em;color:var(--red)}
+.m-body h3{font-family:var(--f-pop);font-size:clamp(1.3rem,3.6vw,1.8rem);line-height:1.4}
+.m-body p{color:var(--muted)}
+.m-body strong{color:var(--ink);background:linear-gradient(transparent 60%,var(--yellow) 60%)}
+.m-videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:6px}
+.vid{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--paper);border-radius:18px;padding:14px;text-decoration:none;box-shadow:var(--shadow);transition:transform .2s}
+.vid:hover{transform:translateY(-3px) rotate(-1deg)}
+.vid .tt{width:48px;height:48px;border-radius:14px;background:#111;display:grid;place-items:center;box-shadow:-2px -2px 0 #25F4EE,2px 2px 0 #FE2C55}
+.vid .tt svg{width:24px;height:24px;color:#fff}
+.vid small{display:block;font-size:.74rem;color:var(--muted)}
+.vid b{font-weight:900}
+.vid .go{color:var(--red);font-weight:900}
+.m-hint{font-family:var(--f-hand);font-size:1.02rem;color:var(--red)!important}
+.yt.one{grid-template-columns:minmax(0,420px);justify-content:center}
+@media (max-width:640px){.mission{grid-template-columns:minmax(0,1fr)}.m-videos{grid-template-columns:minmax(0,1fr)}.m-stamp{position:absolute;right:16px;top:-26px;width:64px}}
+
+/* ---------- 看板ロゴ ---------- */
+.brand img.sign{width:auto;height:40px;border-radius:6px;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.brand small{white-space:nowrap}
+@media (max-width:520px){.brand img.sign{height:34px}.brand small{display:none}}
+.logo-sign{width:clamp(260px,34vw,440px);height:auto;border-radius:12px;box-shadow:0 6px 0 rgba(160,120,0,.25),var(--shadow);transform:rotate(-1.5deg)}
+@media (max-width:860px){.logo-sign{width:min(100%,380px)}}
+footer .fb img.sign{width:min(220px,60vw);height:auto;border-radius:8px}
+
+/* ---------- トップの看板（画面いっぱい） ---------- */
+.signboard{margin:0;background:#ccc800;border-bottom:6px solid #2E221D;box-shadow:0 10px 24px rgba(80,60,0,.18);line-height:0;position:relative}
+.signboard img{display:block;width:min(100%,1080px);max-width:none;height:auto;margin:0 auto}
+.signboard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 30%,transparent 80%,rgba(0,0,0,.06));pointer-events:none}
+.hero .hero-grid{padding-top:clamp(28px,5vw,56px)}
+.brand{transition:opacity .3s,transform .3s}
+.top.at-top .brand{opacity:0;transform:translateY(-6px);pointer-events:none}
+.info dd small{display:block;color:var(--muted);font-size:.82rem}
+.info dd b{font-weight:700}
+.info a.tel{font-weight:900;font-size:1.05rem;text-decoration:none;border-bottom:2px solid var(--yellow)}
+/* ---------- 宣伝バナー ---------- */
+.promo{margin:clamp(56px,8vw,90px) 0 0;position:relative}
+.promo img{width:100%;border-radius:24px;box-shadow:var(--shadow)}
+.promo figcaption{text-align:right;font-size:.76rem;color:var(--muted);margin-top:8px}
+/* ---------- お好み焼きパネル ---------- */
+.mlist li.grp{display:block;font-family:var(--f-pop);color:var(--red);font-size:1.02rem;border-bottom:2px solid var(--red-lt);padding:20px 0 6px}
+.mlist li.okono-hero{display:block;border:0;padding:0 0 4px}
+.okono-hero figure{margin:0;position:relative}
+.okono-hero img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px}
+.okono-hero figcaption{position:absolute;right:10px;bottom:8px;font-size:.7rem;color:#fff;background:rgba(0,0,0,.45);border-radius:999px;padding:0 8px}
+.okono-hero p{font-size:.86rem;margin-top:10px;text-align:center;font-weight:900;color:#fff;background:var(--ink);border-radius:999px;padding:4px 14px}
+.gal figcaption .img-note{font-size:.62rem;font-weight:500;color:var(--muted)}
+
+/* ---------- 下層ページ構成 ---------- */
+section{padding-block:clamp(56px,8vw,96px)}
+.page-head{background:var(--paper);border-bottom:1px solid var(--line);padding-block:clamp(28px,5vw,56px) clamp(26px,4vw,44px)}
+.crumb{display:flex;gap:8px;align-items:center;font-size:.8rem;color:var(--muted)}
+.crumb a{color:var(--red);font-weight:700;text-decoration:none}
+.ph-en{font-size:.76rem;font-weight:900;letter-spacing:.24em;color:var(--red);margin-top:18px}
+.page-head h1{font-family:var(--f-pop);font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.3}
+.pick .more{text-align:center;margin-top:36px}
+.nav-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.nav-cards{grid-template-columns:minmax(0,1fr)}}
+.nav-card{display:grid;grid-template-columns:clamp(96px,14vw,150px) minmax(0,1fr) auto;gap:18px;align-items:center;background:var(--paper);border-radius:22px;padding:12px;text-decoration:none;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s}
+.nav-card:hover{transform:translateY(-4px)}
+.nav-card .ph{aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:var(--cream)}
+.nav-card .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.nav-card:hover .ph img{transform:scale(1.06)}
+.nav-card .tx{display:grid;gap:2px;min-width:0}
+.nav-card .en{font-size:.7rem;font-weight:900;letter-spacing:.2em;color:var(--red)}
+.nav-card h3{font-family:var(--f-pop);font-size:clamp(1.1rem,2.6vw,1.3rem)}
+.nav-card p{font-size:.84rem;color:var(--muted);line-height:1.6}
+.nav-card .arw{width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;margin-right:8px;transition:transform .25s}
+.nav-card:hover .arw{transform:translateX(4px)}
+.info-strip{background:var(--paper);padding-block:clamp(40px,6vw,64px);border-top:1px solid var(--line)}
+.is-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:28px;align-items:center}
+@media (max-width:860px){.is-grid{grid-template-columns:minmax(0,1fr)}}
+.is-grid h3{font-weight:900;font-size:.84rem;letter-spacing:.12em;color:var(--red);margin-bottom:6px}
+.is-grid p{font-size:.95rem;line-height:1.75}
+.is-grid p small{display:block;color:var(--muted);font-size:.82rem}
+.is-grid .tel{font-weight:900;font-size:1.1rem;text-decoration:none;border-bottom:2px solid var(--yellow)}
+.tel-line{margin-top:6px}
+.is-cta{display:grid;gap:10px}
+.recommend{padding-top:0}
+.recommend .promo{margin-top:0}
+.next{background:var(--cream2);padding-block:clamp(44px,6vw,68px)}
+.next h2{font-family:var(--f-pop);font-size:1.25rem;text-align:center;margin-bottom:20px}
+.mini-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.mini-cards{grid-template-columns:minmax(0,1fr)}}
+.mini-card{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--paper);border-radius:16px;padding:10px 16px 10px 10px;text-decoration:none;font-weight:700;box-shadow:var(--shadow);transition:transform .2s}
+.mini-card:hover{transform:translateY(-3px)}
+.mini-card img{width:56px;height:56px;object-fit:cover;border-radius:12px}
+.mini-card b{color:var(--red)}
+.back{text-align:center;margin-top:24px}
+.gnav a.on{background:var(--red-lt);color:var(--red)}
+.dock a.on:not(.main){color:var(--red)}
+/* ---------- すっきり調整 ---------- */
+.view:not([data-view="home"]) .sh .label,.story-tx .label{display:none}
+.page-head + section{padding-top:clamp(32px,5vw,56px)}
+@media (max-width:860px){
+  .pick .top3{max-width:none;gap:12px}
+  .pick .dish{flex-direction:row;align-items:stretch;border-radius:20px}
+  .pick .dish .ph{width:clamp(110px,32vw,150px);flex:none;aspect-ratio:1/1}
+  .pick .dish .body{padding:12px 14px;gap:2px;align-content:center}
+  .pick .dish h3{font-size:1.02rem}
+  .pick .dish p:not(.price){font-size:.8rem;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pick .dish .price{font-size:1.35rem}
+  .pick .rank{top:8px;left:8px;font-size:.7rem;padding:2px 10px}
+}
+.signboard img{-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-2.5-3.36V3h2.5zM14 3c.6 2.6 2.4 4.1 5 4.3v2.6c-2-.1-3.7-.8-5-2" fill="currentColor"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5l3 3.2-1.8 2.4a12 12 0 0 0 5.1 5.1l2.4-1.8 3.2 3-1.7 3.1c-.4.7-1.2 1-2 .8C9.5 18 6 14.5 4.7 9.2c-.2-.8.1-1.6.8-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.6" fill="currentColor"/></symbol>
+    <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3 11h18a9 9 0 0 1-18 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 7c0-2 1.5-2 1.5-4M12 7c0-2 1.5-2 1.5-4M16 7c0-2 1.5-2 1.5-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5M5 16h14M3 11h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="8" cy="16.5" r="1.8" fill="currentColor"/><circle cx="16" cy="16.5" r="1.8" fill="currentColor"/></symbol>
+    <symbol id="i-lang" viewBox="0 0 24 24"><path d="M4 5h10v8H9l-3 3v-3H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 9h6v8h-2v3l-3-3h-3v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-slope" viewBox="0 0 48 48"><path d="M4 40 L44 22 V40Z" fill="currentColor" opacity=".18"/><path d="M4 40 L44 22 V40Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="17" cy="14" r="3.5" fill="currentColor"/><path d="M17 18v8h7l3 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="29" r="6" fill="none" stroke="currentColor" stroke-width="2.5"/></symbol>
+    <symbol id="i-room" viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="32" rx="4" fill="currentColor" opacity=".18"/><rect x="6" y="8" width="36" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M6 16h36" stroke="currentColor" stroke-width="2.5"/><rect x="14" y="24" width="9" height="16" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="20.5" cy="32" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-p" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="10" fill="currentColor" opacity=".18"/><rect x="6" y="6" width="36" height="36" rx="10" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M19 34V15h7a6 6 0 0 1 0 12h-7" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></symbol>
+    <symbol id="i-talk" viewBox="0 0 48 48"><path d="M6 10h22v14H16l-6 6v-6H6z" fill="currentColor" opacity=".18"/><path d="M6 10h22v14H16l-6 6v-6H6z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 18h14v14h-4v6l-6-6h-8v-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-ice" viewBox="0 0 48 48"><path d="M16 22l8 22 8-22z" fill="currentColor" opacity=".18"/><path d="M16 22l8 22 8-22z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2.5"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 48 48"><rect x="8" y="18" width="32" height="24" rx="3" fill="currentColor" opacity=".18"/><rect x="8" y="18" width="32" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M6 18h36M24 18v24M24 18c-3-8-12-8-10-2 1 3 10 2 10 2zM24 18c3-8 12-8 10-2-1 3-10 2-10 2z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- 入口：のれんをくぐる -->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gTitle" hidden>
+  <div class="gate-noren" id="gateNoren" aria-hidden="true">
+    <img class="no" src="img/noren_open.webp" alt="" width="1600" height="600">
+    <div class="nc-wrap"><img src="img/noren_closed.webp" alt="" width="1600" height="600"><div class="gate-word"><span>山</span><span>寶</span><span>拉</span><span>麺</span></div></div>
+  </div>
+  <div class="gate-body">
+    <div class="gate-dish"><img src="img/m_shoyu.webp" alt="" width="600" height="600"></div>
+    <div class="langs-row" role="group" aria-label="Language"><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="en">English</button><button type="button" data-lang="tl">Tagalog</button><button type="button" data-lang="zh">中文</button><button type="button" data-lang="ko">한국어</button></div>
+    <h2 id="gTitle" data-i="g_title">いらっしゃい！</h2>
+    <p class="lead" data-i="g_lead">東京風ラーメンと、お好み焼きの店。</p>
+    <button class="btn btn-red btn-lg" type="button" data-enter="" data-i="g_enter">のれんをくぐる</button>
+    <div class="gate-links"><button type="button" data-enter="#menu" data-i="g_menu">メニューへ</button><button type="button" data-enter="#access" data-i="g_access">行き方へ</button></div>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home"><img class="sign" src="img/sign_logo.webp" alt="東京風 山寶ラーメン" width="1304" height="334"><span><b class="sr" data-i="title">東京風 山寶ラーメン</b><small data-i="brand_sub">さんぽう｜延岡市昭和町</small></span></a>
+    <nav class="gnav" aria-label="ページ内">
+      <a href="#menu" data-i="nav_menu">メニュー</a><a href="#story" data-i="nav_story">ものがたり</a><a href="#guide" data-i="nav_first">はじめての方へ</a><a href="#access" data-i="nav_access">アクセス</a>
+    </nav>
+    <div class="lang" id="langPick">
+      <button class="lang-btn" type="button" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu"><svg aria-hidden="true"><use href="#i-globe"/></svg><span id="langCur">日本語</span><span class="sr">Language</span></button>
+      <div class="lang-menu" id="langMenu" hidden><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="en">English</button><button type="button" data-lang="tl">Tagalog</button><button type="button" data-lang="zh">中文（简体）</button><button type="button" data-lang="ko">한국어</button></div>
+    </div>
+    <a class="btn btn-red hdr-cta" href="#access"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="dir">行き方</span></a>
+    <button class="menu-btn" type="button" id="sheetOpen" aria-controls="sheet" aria-expanded="false">MENU</button>
+  </div>
+</header>
+
+<div id="sheet" aria-hidden="true">
+  <button class="close" type="button" data-sclose data-i="close">とじる</button>
+  <div class="langs-row left" role="group" aria-label="Language"><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="en">English</button><button type="button" data-lang="tl">Tagalog</button><button type="button" data-lang="zh">中文</button><button type="button" data-lang="ko">한국어</button></div>
+  <a class="item" href="#home" data-sclose data-i="home">トップ</a>
+  <a class="item" href="#menu" data-sclose data-i="s_full">全メニューと価格</a>
+  <a class="item" href="#story" data-sclose data-i="s_story">店主のものがたり</a>
+  <a class="item" href="#guide" data-sclose data-i="nav_first">はじめての方へ</a>
+  <a class="item" href="#faq" data-sclose data-i="s_faq">よくある質問</a>
+  <a class="item" href="#access" data-sclose data-i="s_access">アクセス・営業時間</a>
+  <a class="btn btn-red btn-lg" href="#access" data-sclose data-i="s_cta">お店への行き方を見る</a>
+</div>
+
+<main id="top">
+<div class="view" data-view="home">
+<section class="hero" aria-labelledby="h1">
+  <h2 class="signboard"><img src="img/sign_logo.webp" alt="東京風 山寶ラーメン" width="1304" height="334" fetchpriority="high"></h2>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow" data-i="eyebrow">延岡市昭和町の、ラーメンとお好み焼きの店</p>
+      <h1 id="h1" data-i="h1"><span class="mark">「ただいま！」</span>と<br>言いたくなる、<br><span class="r">東京の味。</span></h1>
+      <p class="lead" data-i="hero_lead">東京で修業した醤油ラーメンと、延岡駅前から焼き続けてきたお好み焼き。両方いっしょに食べられる、ママの店です。</p>
+      <ul class="trust">
+        <li><svg aria-hidden="true"><use href="#i-play"/></svg><span data-i="trust1">インフルエンサーが紹介</span></li>
+        <li><svg aria-hidden="true"><use href="#i-car"/></svg><span data-i="park">駐車場 5〜8台</span></li>
+        <li><svg aria-hidden="true"><use href="#i-lang"/></svg><span data-i="langs3">日本語・English・Tagalog</span></li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn btn-red btn-lg" href="#menu"><svg aria-hidden="true"><use href="#i-bowl"/></svg><span data-i="cta_menu">メニューを見る</span></a>
+        <a class="btn btn-line btn-lg" href="#access"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="dir">行き方</span></a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-photo"><img src="img/owner_shop.webp" alt="店主がラーメンの丼を手に、笑顔で迎えている店内" width="884" height="505" fetchpriority="high"></div>
+      <p class="bubble" aria-hidden="true"><span id="bubble">いらっしゃい！</span></p>
+      <div class="sticker" aria-hidden="true"><span data-i="sticker">ラーメンも<b>お好み焼き</b>も！</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="proof">
+  <div class="wrap"><p data-i="proof">宮崎のインフルエンサー「りょーやん」さん・「のべしる」さんに紹介されました</p><a href="#media" data-i="proof_a">動画にひみつのお得情報あり →</a></div>
+</div>
+
+<section class="pick">
+  <div class="wrap">
+    <div class="sh"><span class="label">MENU</span><h2 data-i="menu_h">はじめてなら、<em>この3杯</em>から。</h2></div>
+    <div class="top3">
+      <article class="dish pre"><span class="rank" data-i="no1">人気 No.1</span>
+        <div class="ph"><img src="img/m_shoyu.webp" alt="山寶しょうゆラーメン。メンマ、わかめ、味玉、ネギ" width="600" height="600" loading="lazy"></div>
+        <div class="body"><h3 data-i="shoyu">山寶しょうゆラーメン</h3><p data-i="shoyu_p">東京で修業して持ち帰った、すっきり醤油の一杯。お店の看板です。</p><p class="price" data-yen="650" data-big></p></div>
+      </article>
+      <article class="dish pre"><span class="rank y" data-i="hook">クセになる</span>
+        <div class="ph"><img src="img/m_spicy_menu.webp" alt="山寶ラーメン ピリ辛。もやし、味玉、メンマ、わかめ" width="600" height="600" loading="lazy"></div>
+        <div class="body"><h3 data-i="spicy">山寶ラーメン ピリ辛</h3><p data-i="spicy_p">あとを引くほどよい辛さ。味玉ふたつ、わかめともやしもたっぷり。</p><p class="price" data-yen="750" data-big></p></div>
+      </article>
+      <article class="dish pre">
+        <div class="ph"><img src="img/m_tonkotsu_menu.webp" alt="とんこつラーメン。チャーシュー、キクラゲ、メンマ、味玉" width="600" height="600" loading="lazy"></div>
+        <div class="body"><h3 data-i="tonkotsu">とんこつラーメン</h3><p data-i="tonkotsu_p">まろやかなとんこつに、厚切りチャーシューとキクラゲ。九州の方にも。</p><p class="price" data-yen="700" data-big></p></div>
+      </article>
+    </div>
+    <p class="more"><a class="btn btn-red btn-lg" href="#menu"><span data-i="more_menu">メニューをすべて見る</span> →</a></p>
+  </div>
+</section>
+
+<section class="home-nav bg-cream">
+  <div class="wrap">
+    <div class="sh"><span class="label">ABOUT</span><h2 data-i="nav_title">山寶をもっと知る</h2></div>
+    <div class="nav-cards">
+      <a class="nav-card pre" href="#menu"><div class="ph"><img src="img/banner_ramen_okonomi.webp" alt="" loading="lazy"></div><div class="tx"><span class="en">MENU</span><h3 data-i="nav_menu">メニュー</h3><p data-i="nc_menu">ラーメン・お好み焼き・セット・お酒まで、全メニューと価格</p></div><b class="arw" aria-hidden="true">→</b></a>
+      <a class="nav-card pre" href="#story"><div class="ph"><img src="img/owner.webp" alt="" loading="lazy" style="object-position:50% 25%"></div><div class="tx"><span class="en">STORY</span><h3 data-i="s_story">店主のものがたり</h3><p data-i="nc_story">6人の子を育てたママが、東京で修業した一杯</p></div><b class="arw" aria-hidden="true">→</b></a>
+      <a class="nav-card pre" href="#guide"><div class="ph"><img src="img/interior.webp" alt="" loading="lazy"></div><div class="tx"><span class="en">GUIDE</span><h3 data-i="nav_first">はじめての方へ</h3><p data-i="nc_guide">駐車場・スロープ・個室・言葉のこと、よくある質問</p></div><b class="arw" aria-hidden="true">→</b></a>
+      <a class="nav-card pre" href="#access"><div class="ph"><img src="img/exterior.webp" alt="" loading="lazy"></div><div class="tx"><span class="en">ACCESS</span><h3 data-i="nav_access">アクセス</h3><p data-i="nc_access">営業時間・住所・電話・地図</p></div><b class="arw" aria-hidden="true">→</b></a>
+    </div>
+  </div>
+</section>
+
+<section class="info-strip">
+  <div class="wrap">
+    <div class="is-grid">
+      <div><h3 data-i="hours">営業時間</h3><p data-i="dd_hours"><b>お昼の部（毎日）</b><br>11:00〜14:00<br><b>夜の部（水・木・金・土）</b><br>18:00〜20:00（L.O.）<br><small>月・火・日曜は夜の部お休みです</small></p></div>
+      <div><h3 data-i="dt_addr">住所</h3><p data-i="addr">宮崎県延岡市<span style="white-space:nowrap">昭和町2丁目71-2</span></p><p class="tel-line"><a class="tel" href="tel:08059170310">080-5917-0310</a></p></div>
+      <div class="is-cta"><a class="btn btn-red" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="gmap">Googleマップで開く</span></a><a class="btn btn-line" href="tel:08059170310"><svg aria-hidden="true"><use href="#i-phone"/></svg><span data-i="call">電話する</span></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <img class="final-noren" src="img/noren_open.webp" alt="" width="1600" height="600" loading="lazy">
+  <div class="wrap">
+    <h2 data-i="fn_h">今日のごはん、山寶にしよう。</h2>
+    <p data-i="fn_p">食べに来てくれること。写真をSNSにのせてくれること。お友だちに教えてくれること。<br>それが、ママへのいちばんの応援です。</p>
+    <div class="cta-row"><a class="btn btn-yellow btn-lg" href="#access"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="fn_b1">お店への行き方</span></a><a class="btn btn-line btn-lg" href="#menu" data-i="fn_b2">メニューをもう一度見る</a></div>
+  </div>
+</section>
+</div>
+<div class="view" data-view="menu" hidden>
+  <header class="page-head">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Breadcrumb"><a href="#home" data-i="home">トップ</a><span aria-hidden="true">›</span><span data-i="nav_menu">メニュー</span></nav>
+      <p class="ph-en">MENU</p>
+      <h1 data-i="nav_menu">メニュー</h1>
+    </div>
+  </header>
+<section id="fullmenu" class="bg-cream">
+  <div class="wrap">
+    <div class="sh"><h2 class="sr" data-i="fm_h">全メニュー</h2><p data-i="fm_p">ラーメンは650円から。セット、おつまみ、お酒もそろっています。</p></div>
+    <div class="tabs" role="tablist" aria-label="Menu">
+      <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true" data-i="ramen">ラーメン</button>
+      <button class="tab" role="tab" id="tO" aria-controls="pO" aria-selected="false" tabindex="-1" data-i="okonomi">お好み焼き</button>
+      <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1" data-i="tab2">セット</button>
+      <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1" data-i="tab3">単品・おつまみ</button>
+      <button class="tab" role="tab" id="t4" aria-controls="p4" aria-selected="false" tabindex="-1" data-i="tab4">ソフトドリンク</button>
+      <button class="tab" role="tab" id="t5" aria-controls="p5" aria-selected="false" tabindex="-1" data-i="tab5">お酒</button>
+    </div>
+    <p class="takeout"><span data-i="takeout">お持ち帰りできます！</span></p>
+    <div class="menu-card">
+      <ul class="mlist" id="p1" role="tabpanel" aria-labelledby="t1">
+        <li class="has-th"><img class="th" src="img/menu/shoyu.webp" alt="" loading="lazy"><span class="nm"><span data-i="shoyu">山寶しょうゆラーメン</span><span class="tag" data-i="t_pop">人気</span></span><span class="dots"></span><span class="pr" data-yen="650"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/spicy.webp" alt="" loading="lazy"><span class="nm" data-i="spicy">山寶ラーメン ピリ辛</span><span class="dots"></span><span class="pr" data-yen="750"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/konjac.webp" alt="" loading="lazy"><span class="nm" data-i="konjac">山寶ラーメン こんにゃくピリ辛</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/tonkotsu.webp" alt="" loading="lazy"><span class="nm" data-i="tonkotsu">とんこつラーメン</span><span class="dots"></span><span class="pr" data-yen="700"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/shio.webp" alt="" loading="lazy"><span class="nm" data-i="shio">しおラーメン</span><span class="dots"></span><span class="pr" data-yen="650"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/miso.webp" alt="" loading="lazy"><span class="nm" data-i="miso">みそラーメン</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/misoveg.webp" alt="" loading="lazy"><span class="nm" data-i="misoveg">みそやさいラーメン</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/veg.webp" alt="" loading="lazy"><span class="nm" data-i="veg">やさいラーメン</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/lemon.webp" alt="" loading="lazy"><span class="nm"><span data-i="lemon">レモンラーメン</span><span class="tag y" data-i="t_light">さっぱり</span></span><span class="dots"></span><span class="pr" data-yen="700"></span></li>
+      </ul>
+      <ul class="mlist" id="pO" role="tabpanel" aria-labelledby="tO" hidden>
+        <li class="okono-hero"><figure><img src="img/okonomi_image.webp" alt="鉄板の上で焼きあがったお好み焼き。ソース、マヨネーズ、かつお節、青のり" width="1400" height="788" loading="lazy"><figcaption data-i="img_note">※写真はイメージです</figcaption></figure><p data-i="okono_note">夜の部（水〜土）限定・お持ち帰りできます</p></li>
+        <li class="grp" data-i="okonomi">お好み焼き</li>
+        <li><span class="nm" data-i="buta_tama">ブタ玉</span><span class="dots"></span><span class="pr" data-yen="700"></span></li>
+        <li><span class="nm" data-i="corn_tama">コーン玉</span><span class="dots"></span><span class="pr" data-yen="600"></span></li>
+        <li><span class="nm" data-i="ika_tama">イカ玉</span><span class="dots"></span><span class="pr" data-yen="750"></span></li>
+        <li><span class="nm" data-i="tako_tama">タコ玉</span><span class="dots"></span><span class="pr" data-yen="750"></span></li>
+        <li><span class="nm" data-i="ebi_tama">エビ玉</span><span class="dots"></span><span class="pr" data-yen="700"></span></li>
+        <li><span class="nm" data-i="mochi_cheese">もち・チーズ玉</span><span class="dots"></span><span class="pr" data-yen="650"></span></li>
+        <li><span class="nm" data-i="buta_yama">ブタ玉 山芋たっぷりチーズ</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li><span class="nm" data-i="mix_tama">ミックス玉<small>イカ・ブタ・エビ・タコ</small></span><span class="dots"></span><span class="pr" data-yen="850"></span></li>
+        <li><span class="nm" data-i="mix_yama">ミックス 山芋たっぷりチーズ<small>イカ・ブタ・エビ・タコ</small></span><span class="dots"></span><span class="pr" data-yen="1000"></span></li>
+        <li class="grp" data-i="grp_modan">もだん焼き（そば入り）</li>
+        <li><span class="nm" data-i="buta_modan">ブタもだん</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li><span class="nm" data-i="ika_modan">イカもだん</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li><span class="nm" data-i="ebi_modan">エビもだん</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li><span class="nm" data-i="ikabuta_modan">イカ・ブタもだん</span><span class="dots"></span><span class="pr" data-yen="850"></span></li>
+        <li><span class="nm" data-i="mix_modan">ミックスもだん<small>イカ・ブタ・エビ・タコ</small></span><span class="dots"></span><span class="pr" data-yen="900"></span></li>
+        <li><span class="nm" data-i="mix_yama_modan">ミックス 山芋たっぷりチーズもだん<small>イカ・ブタ・エビ・タコ・コーン</small></span><span class="dots"></span><span class="pr" data-yen="1050"></span></li>
+        <li class="grp" data-i="grp_noodle">うどん・焼きそば</li>
+        <li><span class="nm" data-i="udon">醤油うどん</span><span class="dots"></span><span class="pr" data-yen="500"></span></li>
+        <li><span class="nm" data-i="yakisoba">焼きそば</span><span class="dots"></span><span class="pr" data-yen="650"></span></li>
+      </ul>
+      <ul class="mlist" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+        <li class="has-th"><img class="th" src="img/menu/set1.webp" alt="" loading="lazy"><span class="nm"><span data-i="set1">ラーメン＆半チャーハンセット</span><span class="tag" data-i="t_pop">人気</span></span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/set2.webp" alt="" loading="lazy"><span class="nm" data-i="set2">ラーメン＆餃子セット（6個）</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/set5.webp" alt="" loading="lazy"><span class="nm" data-i="set5">山寶ラーメン＆チャーシュー丼セット</span><span class="dots"></span><span class="pr" data-yen="800"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/set6.webp" alt="" loading="lazy"><span class="nm" data-i="set6">ラーメン＆チャーシュー丼セット（大）</span><span class="dots"></span><span class="pr" data-yen="900"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/set4.webp" alt="" loading="lazy"><span class="nm" data-i="set4">ラーメン＆チャーシュー丼セット</span><span class="dots"></span><span class="pr" data-yen="1000"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/set3.webp" alt="" loading="lazy"><span class="nm" data-i="set3">とんこつラーメン＆唐揚げセット（5個）</span><span class="dots"></span><span class="pr" data-yen="1000"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/set7.webp" alt="" loading="lazy"><span class="nm" data-i="set7">とんこつラーメン＆唐揚げセット（4個）</span><span class="dots"></span><span class="pr" data-yen="1000"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/chashudon.webp" alt="" loading="lazy"><span class="nm" data-i="chashudon">チャーシュー丼<small>スープ付き</small></span><span class="dots"></span><span class="pr" data-yen="500"></span></li>
+      </ul>
+      <ul class="mlist" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+        <li class="has-th"><img class="th" src="img/menu/gyoza.webp" alt="" loading="lazy"><span class="nm" data-i="gyoza">餃子（7個）</span><span class="dots"></span><span class="pr" data-yen="350"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/karaage.webp" alt="" loading="lazy"><span class="nm" data-i="karaage">唐揚げ</span><span class="dots"></span><span class="pr" data-yen="350"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/nankotsu.webp" alt="" loading="lazy"><span class="nm" data-i="nankotsu">なんこつ</span><span class="dots"></span><span class="pr" data-yen="500"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/edamame.webp" alt="" loading="lazy"><span class="nm" data-i="edamame">枝豆</span><span class="dots"></span><span class="pr" data-yen="200"></span></li>
+        <li class="has-th"><img class="th" src="img/menu/rice.webp" alt="" loading="lazy"><span class="nm" data-i="rice">ライス</span><span class="dots"></span><span class="pr" data-yen="150"></span></li>
+      </ul>
+      <ul class="mlist" id="p4" role="tabpanel" aria-labelledby="t4" hidden>
+        <li><span class="nm" data-i="cola">コーラ</span><span class="dots"></span><span class="pr" data-yen="200"></span></li>
+        <li><span class="nm" data-i="oolong">ウーロン茶</span><span class="dots"></span><span class="pr" data-yen="200"></span></li>
+        <li><span class="nm" data-i="orange">オレンジジュース</span><span class="dots"></span><span class="pr" data-yen="200"></span></li>
+        <li><span class="nm" data-i="mango">マンゴージュース</span><span class="dots"></span><span class="pr" data-yen="350"></span></li>
+      </ul>
+      <ul class="mlist" id="p5" role="tabpanel" aria-labelledby="t5" hidden>
+        <li><span class="nm" data-i="draft">生ビール</span><span class="dots"></span><span class="pr" data-yen="500"></span></li>
+        <li><span class="nm" data-i="draft_s">生ビール<small>期間限定 5〜10月</small></span><span class="dots"></span><span class="pr" data-yen="500"></span></li>
+        <li><span class="nm" data-i="bottle_l">ビール大瓶<small>アサヒ</small></span><span class="dots"></span><span class="pr" data-yen="700"></span></li>
+        <li><span class="nm" data-i="bottle_m">ビール中瓶<small>アサヒ・キリン</small></span><span class="dots"></span><span class="pr" data-yen="600"></span></li>
+        <li><span class="nm" data-i="tokyo_hb">トーキョーハイボール</span><span class="dots"></span><span class="pr" data-yen="400"></span></li>
+        <li><span class="nm" data-i="highball">ハイボール</span><span class="dots"></span><span class="pr" data-yen="400"></span></li>
+        <li><span class="nm" data-i="kou_hb">焼酎甲類ハイボール</span><span class="dots"></span><span class="pr" data-yen="400"></span></li>
+        <li><span class="nm" data-i="lemon_sour">レモンサワー</span><span class="dots"></span><span class="pr" data-yen="400"></span></li>
+        <li><span class="nm" data-i="ume">梅干し割</span><span class="dots"></span><span class="pr" data-yen="400"></span></li>
+        <li><span class="nm" data-i="chuhai">酎ハイ<small>マンゴー・ラムネ・グレープ</small></span><span class="dots"></span><span class="pr" data-yen="400"></span></li>
+        <li><span class="nm" data-i="shochu">焼酎<small>麦・芋・米・泡盛・黒糖</small></span><span class="dots"></span><span class="pr" data-yen="300"></span></li>
+        <li><span class="nm" data-i="shochu5">焼酎（5合）</span><span class="dots"></span><span class="pr" data-yen="1500"></span></li>
+        <li><span class="nm" data-i="sake">日本酒<small>月桂冠・升付き</small></span><span class="dots"></span><span class="pr" data-yen="350"></span></li>
+        <li><span class="nm" data-i="whisky">ウイスキー</span><span class="dots"></span><span class="pr" data-yen="400"></span></li>
+      </ul>
+    </div>
+    <p class="menu-note" data-i="fm_note">※価格は税込です。変更になる場合があるので、最新の価格は店内メニューでご確認ください。</p>
+  </div>
+</section>
+<section class="recommend">
+  <div class="wrap">
+    <figure class="promo pre">
+      <img src="img/banner_ramen_okonomi.webp" alt="東京風 山寶ラーメン 自慢の一杯。醤油ラーメンとお好み焼き" width="1400" height="788" loading="lazy">
+      <figcaption data-i="img_note">※写真はイメージです</figcaption>
+    </figure>
+    <div class="usp-text pre"><h3 data-i="usp_h">ラーメン屋さんで、<br>お好み焼きも食べられる。</h3><p data-i="usp_p">はじまりは延岡駅前のお好み焼き屋さん。だから山寶では、ラーメンと鉄板のお好み焼きを、いっしょに楽しめます。お好み焼きは夜の部（水〜土）限定です。</p></div>
+
+    <div class="lemon pre">
+      <div class="ph"><img src="img/m_lemon.webp" alt="レモンラーメン" width="900" height="900" loading="lazy"></div>
+      <div class="tx"><span class="kick" data-i="l_kick">さっぱり派に</span><h3 data-i="lemon">レモンラーメン</h3><p data-i="l_p">澄んだ塩スープに、輪切りのレモン。最後のひと口まで軽やかで、暑い日や〆の一杯にもぴったりです。</p><p class="price" data-yen="700" data-big></p><a class="btn btn-line" href="#menu" data-i="l_btn">全メニューと価格を見る</a></div>
+    </div>
+  </div>
+</section>
+  <section class="next">
+    <div class="wrap">
+      <h2 data-i="next_title">ほかのページも見る</h2>
+      <div class="mini-cards"><a class="mini-card" href="#story"><img src="img/owner.webp" alt="" loading="lazy"><span data-i="s_story">店主のものがたり</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#guide"><img src="img/interior.webp" alt="" loading="lazy"><span data-i="nav_first">はじめての方へ</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#access"><img src="img/exterior.webp" alt="" loading="lazy"><span data-i="nav_access">アクセス</span><b aria-hidden="true">→</b></a></div>
+      <p class="back"><a class="btn btn-line" href="#home" data-i="back_home">トップへ戻る</a></p>
+    </div>
+  </section>
+</div>
+<div class="view" data-view="story" hidden>
+  <header class="page-head">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Breadcrumb"><a href="#home" data-i="home">トップ</a><span aria-hidden="true">›</span><span data-i="s_story">店主のものがたり</span></nav>
+      <p class="ph-en">STORY</p>
+      <h1 data-i="s_story">店主のものがたり</h1>
+    </div>
+  </header>
+<section id="story-body">
+  <div class="wrap">
+    <div class="story-grid">
+      <div class="story-ph pre">
+        <div class="main"><img src="img/owner.webp" alt="赤いニット帽の店主が、丼を手に笑っている" width="320" height="425" loading="lazy"></div>
+      </div>
+      <div class="story-tx pre">
+        <span class="label" style="justify-self:start">STORY</span>
+        <h2 data-i="st_h">6人の子を育てたママが、<br>東京で修業した一杯。</h2>
+        <p data-i="st_p1">店主はフィリピン出身。子どもたちがまだ小さいころに夫に先立たれ、日本にぽつんと残されました。孤独と忙しさに追われながら、<strong>6人の子どもをひとりで育て上げてきました。</strong></p>
+        <p data-i="st_p2">それでも明るさは消えませんでした。歌って、踊って、おいしいものを食べ歩く。日本に来て約40年、日本語はいまもカタコトまじり。でもその笑顔に会いに、今日もお客さんがやってきます。</p>
+        <p class="quote" data-i="st_q">ガッツリさんも、子連れのママも、<br>車椅子の方も、学生さんも。だれでも来てね。</p>
+      </div>
+    </div>
+    <ol class="steps">
+      <li class="pre"><span class="when" data-i="s1w">はじまり</span><b data-i="s1b">延岡駅で<br>お好み焼き屋を開店</b><span data-i="s1s">鉄板の前に立つ日々が始まる。</span></li>
+      <li class="pre"><span class="when" data-i="s2w">移転</span><b data-i="s2b">昭和町へ<br>お店を移す</b><span data-i="s2s">いまのお店の場所へ。</span></li>
+      <li class="pre"><span class="when" data-i="s3w">50代で</span><b data-i="s3b">東京のラーメン屋で<br>修業</b><span data-i="s3s">50代での新しい挑戦。</span></li>
+      <li class="pre"><span class="when" data-i="s4w">いま</span><b data-i="s4b">東京の味を<br>延岡へ</b><span data-i="s4s">ラーメンとお好み焼きの店に。</span></li>
+    </ol>
+  </div>
+</section>
+<section id="media" class="bg-paper">
+  <div class="wrap">
+    <div class="sh"><span class="label">MEDIA</span><h2 data-i="md_h">宮崎のSNSで<br>紹介されました！</h2><p data-i="md_p">お店の雰囲気は、動画がいちばん伝わります。</p></div>
+    <div class="mission pre">
+      <div class="m-stamp" aria-hidden="true"><svg><use href="#i-search"/></svg><span>?</span></div>
+      <div class="m-body">
+        <p class="m-kick" data-i="m_kick">ひみつのミッション</p>
+        <h3 data-i="m_h">りょーやんさんの動画に、<br>ひみつのお得情報が…！</h3>
+        <p data-i="m_p">宮崎のTikToker・りょーやんさんが、2本の動画で山寶を紹介してくれました。動画のどこかに<strong>ひみつのお得情報</strong>がかくれています。見つけたら、注文のときにお店でこっそり教えてね。</p>
+        <div class="m-videos">
+          <a class="vid" href="https://vt.tiktok.com/ZSpXU1ArH/" target="_blank" rel="noopener"><span class="tt" aria-hidden="true"><svg><use href="#i-note"/></svg></span><span><small>りょーやん｜TikTok</small><b data-i="v1">動画 その1を見る</b></span><span class="go" aria-hidden="true">↗</span></a>
+          <a class="vid" href="https://vt.tiktok.com/ZSpXUe8f1/" target="_blank" rel="noopener"><span class="tt" aria-hidden="true"><svg><use href="#i-note"/></svg></span><span><small>りょーやん｜TikTok</small><b data-i="v2">動画 その2を見る</b></span><span class="go" aria-hidden="true">↗</span></a>
+        </div>
+        <p class="m-hint" data-i="m_hint">見つけた人だけの、お楽しみです。</p>
+      </div>
+    </div>
+    <div class="yt one">
+      <a class="pre" href="https://www.youtube.com/results?search_query=%E3%81%AE%E3%81%B9%E3%81%97%E3%82%8B+%E5%B1%B1%E5%AF%B3%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span><span><small data-i="yt2">延岡の情報YouTuber</small><b data-i="yt2n">のべしる さん</b></span><span class="go" aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+<section id="gallery">
+  <div class="wrap">
+    <div class="sh"><span class="label">GALLERY</span><h2 data-i="g_h">お店の雰囲気</h2><p data-i="g_p">黄色い看板をくぐると、にぎやかなテーブルが待っています。</p></div>
+    <div class="gal">
+      <figure class="b"><img src="img/exterior.webp" alt="黄色い看板と赤いのぼりが目印のお店の外観" loading="lazy"><figcaption data-i="gc1">黄色い看板が目印</figcaption></figure>
+      <figure class="w"><img src="img/interior.webp" alt="カウンター席とテーブル席がある店内" loading="lazy"><figcaption data-i="gc2">カウンター席・テーブル席</figcaption></figure>
+      <figure><img src="img/m_lemon.webp" alt="レモンラーメン" loading="lazy"><figcaption data-i="lemon">レモンラーメン</figcaption></figure>
+      <figure><img src="img/okonomi.webp" alt="鉄板のお好み焼き（イメージ）" loading="lazy"><figcaption><span data-i="okonomi">お好み焼き</span> <span class="img-note" data-i="img_note">※写真はイメージです</span></figcaption></figure>
+      <figure class="w"><img src="img/guests.webp" alt="テーブルを囲むお客さんたち" loading="lazy"><figcaption data-i="gc5">みんなでワイワイ</figcaption></figure>
+      <figure><img src="img/m_spicy_menu.webp" alt="山寶ラーメン ピリ辛" loading="lazy"><figcaption data-i="gc6">ピリ辛</figcaption></figure>
+      <figure><img src="img/m_shoyu.webp" alt="山寶しょうゆラーメン" loading="lazy"><figcaption data-i="shoyu_s">しょうゆ</figcaption></figure>
+    </div>
+  </div>
+</section>
+  <section class="next">
+    <div class="wrap">
+      <h2 data-i="next_title">ほかのページも見る</h2>
+      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/m_shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#guide"><img src="img/interior.webp" alt="" loading="lazy"><span data-i="nav_first">はじめての方へ</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#access"><img src="img/exterior.webp" alt="" loading="lazy"><span data-i="nav_access">アクセス</span><b aria-hidden="true">→</b></a></div>
+      <p class="back"><a class="btn btn-line" href="#home" data-i="back_home">トップへ戻る</a></p>
+    </div>
+  </section>
+</div>
+<div class="view" data-view="guide" hidden>
+  <header class="page-head">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Breadcrumb"><a href="#home" data-i="home">トップ</a><span aria-hidden="true">›</span><span data-i="nav_first">はじめての方へ</span></nav>
+      <p class="ph-en">GUIDE</p>
+      <h1 data-i="nav_first">はじめての方へ</h1>
+    </div>
+  </header>
+<section id="welcome" class="bg-cream">
+  <div class="wrap">
+    <div class="sh"><span class="label">FOR EVERYONE</span><h2 data-i="w_h">だれでも、<em>気軽に</em>どうぞ。</h2><p data-i="w_p">はじめてでも、家族連れでも、海外の方でも。安心して来られるお店です。</p></div>
+    <div class="personas"><span data-i="p1"><b>ガッツリ</b>食べたい方</span><span data-i="p2"><b>子連れ</b>のママ・パパ</span><span data-i="p3"><b>車椅子</b>の方</span><span data-i="p4"><b>学生</b>さん</span><span data-i="p5"><b>海外</b>の方</span></div>
+    <div class="feat">
+      <div class="pre"><svg aria-hidden="true"><use href="#i-slope"/></svg><h3 data-i="f1h">入口はスロープ</h3><p data-i="f1p">車椅子やベビーカーでも入りやすい入口です。</p></div>
+      <div class="pre"><svg aria-hidden="true"><use href="#i-room"/></svg><h3 data-i="f2h">個室あり</h3><p data-i="f2p">家族の食事や、仲間との集まりにも。</p></div>
+      <div class="pre"><svg aria-hidden="true"><use href="#i-p"/></svg><h3 data-i="park">駐車場 5〜8台</h3><p data-i="f3p">お店の前に停められます。</p></div>
+      <div class="pre"><svg aria-hidden="true"><use href="#i-ice"/></svg><h3 data-i="f4h">お子さまにサービス</h3><p data-i="f4p">ジュースやアイスのサービスがあります。</p></div>
+      <div class="pre"><svg aria-hidden="true"><use href="#i-talk"/></svg><h3 data-i="f5h">3つの言葉でOK</h3><p data-i="f5p">日本語・English・Tagalog で注文できます。</p></div>
+      <div class="pre"><svg aria-hidden="true"><use href="#i-gift"/></svg><h3 data-i="f6h">お持ち帰りOK</h3><p data-i="f6p">おうちでも、山寶の味を楽しめます。</p></div>
+    </div>
+  </div>
+</section>
+<section id="faq" class="bg-cream">
+  <div class="wrap">
+    <div class="sh"><span class="label">FAQ</span><h2 data-i="s_faq">よくある質問</h2></div>
+    <div class="faq">
+      <details><summary data-i="q1">駐車場はありますか？</summary><p data-i="a1">はい、お店の前に5〜8台ほど停められます。</p></details>
+      <details><summary data-i="q2">子ども連れでも大丈夫ですか？</summary><p data-i="a2">大歓迎です。個室もあり、お子さまにはジュースやアイスのサービスもあります。</p></details>
+      <details><summary data-i="q3">車椅子で入れますか？</summary><p data-i="a3">入口はスロープになっているので、車椅子やベビーカーでも入りやすいです。</p></details>
+      <details><summary data-i="q4">日本語が話せなくても大丈夫？／Do you speak English?</summary><p data-i="a4">Yes! English and Tagalog are OK. 英語・タガログ語で対応できます。</p></details>
+      <details><summary data-i="q7">お好み焼きはいつ食べられますか？</summary><p data-i="a7">お好み焼きは、夜の部（水・木・金・土 18:00〜）限定のメニューです。</p></details>
+      <details><summary data-i="q5">ラーメン以外もありますか？</summary><p data-i="a5">お好み焼き・鉄板料理、セットメニュー、餃子・唐揚げ・枝豆などのおつまみもあります。ハイボールやレモンサワー、焼酎などお酒もそろっています。</p></details>
+      <details><summary data-i="q6">持ち帰りはできますか？</summary><p data-i="a6">はい、お持ち帰りできます。おみやげラーメンもあるので、お店でお声がけください。</p></details>
+    </div>
+  </div>
+</section>
+  <section class="next">
+    <div class="wrap">
+      <h2 data-i="next_title">ほかのページも見る</h2>
+      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/m_shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#story"><img src="img/owner.webp" alt="" loading="lazy"><span data-i="s_story">店主のものがたり</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#access"><img src="img/exterior.webp" alt="" loading="lazy"><span data-i="nav_access">アクセス</span><b aria-hidden="true">→</b></a></div>
+      <p class="back"><a class="btn btn-line" href="#home" data-i="back_home">トップへ戻る</a></p>
+    </div>
+  </section>
+</div>
+<div class="view" data-view="access" hidden>
+  <header class="page-head">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Breadcrumb"><a href="#home" data-i="home">トップ</a><span aria-hidden="true">›</span><span data-i="nav_access">アクセス</span></nav>
+      <p class="ph-en">ACCESS</p>
+      <h1 data-i="nav_access">アクセス</h1>
+    </div>
+  </header>
+<section id="access-body">
+  <div class="wrap">
+    <div class="sh"><span class="label">ACCESS</span><h2 data-i="ac_h">お店への行き方</h2><p data-i="ac_p">延岡市昭和町。黄色い看板と、赤い「ラーメン」ののぼりが目印です。</p></div>
+    <div class="acc">
+      <div class="pre"><div class="ph"><img src="img/exterior.webp" alt="東京風 山寶ラーメンの外観。黄色い看板に「山寶ラーメン」「お好み焼き」" width="1200" height="675" loading="lazy"></div><p class="cap" data-i="ac_cap">この看板が見えたら到着です。</p></div>
+      <div class="info pre">
+        <h3 data-i="title">東京風 山寶ラーメン</h3>
+        <dl>
+          <dt data-i="dt_addr">住所</dt><dd data-i="addr">宮崎県延岡市<span style="white-space:nowrap">昭和町2丁目71-2</span></dd>
+          <dt data-i="hours">営業時間</dt><dd data-i="dd_hours"><b>お昼の部（毎日）</b><br>11:00〜14:00<br><b>夜の部（水・木・金・土）</b><br>18:00〜20:00（L.O.）<br><small>月・火・日曜は夜の部お休みです</small></dd>
+          <dt data-i="dt_closed">定休日</dt><dd data-i="dd_closed">なし（夜の部は月・火・日曜お休み）</dd>
+          <dt data-i="dt_tel">電話</dt><dd><a class="tel" href="tel:08059170310">080-5917-0310</a></dd>
+          <dt data-i="dt_park">駐車場</dt><dd data-i="dd_park">あり（5〜8台）</dd>
+          <dt data-i="dt_fac">設備</dt><dd data-i="dd_fac">入口スロープ・個室あり</dd>
+          <dt data-i="dt_lang">言語</dt><dd data-i="dd_lang">日本語・English・Tagalog</dd>
+        </dl>
+        <div class="cta-row"><a class="btn btn-red" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="gmap">Googleマップで開く</span></a><a class="btn btn-line" href="tel:08059170310"><svg aria-hidden="true"><use href="#i-phone"/></svg><span data-i="call">電話する</span></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+  <section class="next">
+    <div class="wrap">
+      <h2 data-i="next_title">ほかのページも見る</h2>
+      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/m_shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#story"><img src="img/owner.webp" alt="" loading="lazy"><span data-i="s_story">店主のものがたり</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#guide"><img src="img/interior.webp" alt="" loading="lazy"><span data-i="nav_first">はじめての方へ</span><b aria-hidden="true">→</b></a></div>
+      <p class="back"><a class="btn btn-line" href="#home" data-i="back_home">トップへ戻る</a></p>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fb"><img class="sign" src="img/sign_logo.webp" alt="" width="1304" height="334" loading="lazy"><span><b data-i="title">東京風 山寶ラーメン</b><br><span data-i="ft_sub">さんぽう｜宮崎県延岡市昭和町</span></span></div>
+    <nav aria-label="Footer"><a href="#menu" data-i="nav_menu">メニュー</a><a href="#menu" data-i="fm_h">全メニュー</a><a href="#story" data-i="nav_story">ものがたり</a><a href="#guide" data-i="nav_first">はじめての方へ</a><a href="#faq" data-i="s_faq">よくある質問</a><a href="#access" data-i="nav_access">アクセス</a></nav>
+    <p class="copy">© <span data-i="title">東京風 山寶ラーメン</span></p>
+  </div>
+</footer>
+
+<nav class="dock" id="dock" aria-label="Quick links">
+  <a href="#menu"><svg aria-hidden="true"><use href="#i-bowl"/></svg><span data-i="nav_menu">メニュー</span></a>
+  <a href="#access"><svg aria-hidden="true"><use href="#i-clock"/></svg><span data-i="hours">営業時間</span></a>
+  <a class="main" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="dk_map">地図で行く</span></a>
+</nav>
+
+<script>
+/* 翻訳データ：[English, Tagalog, 中文(简体), 한국어]。日本語はページの元の文章を使う */
+var T={
+nc_access:["Hours, address, phone & map","Oras, address, telepono at mapa","营业时间・地址・电话・地图","영업시간・주소・전화・지도"],
+nc_guide:["Parking, ramp, private room, languages & FAQ","Paradahan, ramp, private room, wika at FAQ","停车、坡道、包间、语言与常见问题","주차・경사로・개별실・언어, 자주 묻는 질문"],
+nc_story:["A mom of six who trained in Tokyo","Nanay ng anim na nag-training sa Tokyo","养大6个孩子的妈妈，在东京修业的一碗","여섯 아이를 키운 엄마가 도쿄에서 배운 한 그릇"],
+nc_menu:["Ramen, okonomiyaki, sets & drinks — full menu with prices","Ramen, okonomiyaki, sets at inumin — buong menu at presyo","拉面、大阪烧、套餐和酒水，全部菜单与价格","라멘・오코노미야키・세트・주류까지 전체 메뉴와 가격"],
+nav_title:["Get to know Sanpou","Kilalanin ang Sanpou","更多了解山宝","산포 더 알아보기"],
+more_menu:["See the full menu","Tingnan ang buong menu","查看全部菜单","전체 메뉴 보기"],
+next_title:["More pages","Iba pang pahina","其他页面","다른 페이지"],
+back_home:["Back to home","Bumalik sa home","返回首页","홈으로"],
+home:["Home","Home","首页","홈"],
+okono_note:["Dinner only (Wed–Sat) · Takeout available","Hapunan lang (Miy–Sab) · Pwedeng i-take out","仅限晚间（周三〜周六）・可外带","저녁 한정 (수~토)・포장 가능"],
+yakisoba:["Yakisoba (fried noodles)","Yakisoba (pritong noodles)","日式炒面","야키소바"],
+udon:["Soy sauce udon","Shoyu udon","酱油乌冬面","간장 우동"],
+grp_noodle:["Udon & Yakisoba","Udon at Yakisoba","乌冬面・日式炒面","우동・야키소바"],
+mix_yama_modan:["Mixed modan-yaki with yam & extra cheese<small>Squid, pork, shrimp, octopus, corn</small>","Mixed modan-yaki na may yam at maraming keso<small>Pusit, baboy, hipon, pugita, mais</small>","什锦山药多芝士摩登烧<small>鱿鱼・猪肉・虾・章鱼・玉米</small>","믹스 마 듬뿍 치즈 모단야키<small>오징어・돼지고기・새우・문어・옥수수</small>"],
+mix_modan:["Mixed modan-yaki<small>Squid, pork, shrimp, octopus</small>","Mixed modan-yaki<small>Pusit, baboy, hipon, pugita</small>","什锦摩登烧<small>鱿鱼・猪肉・虾・章鱼</small>","믹스 모단야키<small>오징어・돼지고기・새우・문어</small>"],
+ikabuta_modan:["Squid & pork modan-yaki","Modan-yaki na pusit at baboy","鱿鱼猪肉摩登烧","오징어・돼지고기 모단야키"],
+ebi_modan:["Shrimp modan-yaki","Modan-yaki na hipon","虾仁摩登烧","새우 모단야키"],
+ika_modan:["Squid modan-yaki","Modan-yaki na pusit","鱿鱼摩登烧","오징어 모단야키"],
+buta_modan:["Pork modan-yaki","Modan-yaki na baboy","猪肉摩登烧","돼지고기 모단야키"],
+grp_modan:["Modan-yaki (okonomiyaki with noodles)","Modan-yaki (okonomiyaki na may noodles)","摩登烧（加面的大阪烧）","모단야키 (면이 들어간 오코노미야키)"],
+mix_yama:["Mixed with yam & extra cheese<small>Squid, pork, shrimp, octopus</small>","Mixed na may yam at maraming keso<small>Pusit, baboy, hipon, pugita</small>","什锦山药多芝士大阪烧<small>鱿鱼・猪肉・虾・章鱼</small>","믹스 마 듬뿍 치즈<small>오징어・돼지고기・새우・문어</small>"],
+mix_tama:["Mixed okonomiyaki<small>Squid, pork, shrimp, octopus</small>","Mixed okonomiyaki<small>Pusit, baboy, hipon, pugita</small>","什锦大阪烧<small>鱿鱼・猪肉・虾・章鱼</small>","믹스 오코노미야키<small>오징어・돼지고기・새우・문어</small>"],
+buta_yama:["Pork okonomiyaki with yam & extra cheese","Okonomiyaki na baboy, yam at maraming keso","猪肉山药多芝士大阪烧","돼지고기 마 듬뿍 치즈 오코노미야키"],
+mochi_cheese:["Mochi & cheese okonomiyaki","Okonomiyaki na mochi at keso","年糕芝士大阪烧","떡・치즈 오코노미야키"],
+ebi_tama:["Shrimp okonomiyaki","Okonomiyaki na hipon","虾仁大阪烧","새우 오코노미야키"],
+tako_tama:["Octopus okonomiyaki","Okonomiyaki na pugita","章鱼大阪烧","문어 오코노미야키"],
+ika_tama:["Squid okonomiyaki","Okonomiyaki na pusit","鱿鱼大阪烧","오징어 오코노미야키"],
+corn_tama:["Corn okonomiyaki","Okonomiyaki na mais","玉米大阪烧","옥수수 오코노미야키"],
+buta_tama:["Pork okonomiyaki","Okonomiyaki na baboy","猪肉大阪烧","돼지고기 오코노미야키"],
+img_note:["*Photo is for illustration only.","*Larawan para sa ilustrasyon lamang.","※图片仅供参考","※사진은 이미지입니다"],
+a7:["Okonomiyaki is a dinner-only item (Wed–Sat from 18:00).","Ang okonomiyaki ay para lang sa hapunan (Miy–Sab, mula 18:00).","大阪烧是晚间限定菜单（周三〜周六 18:00起）。","오코노미야키는 저녁 영업(수~토 18:00~) 한정 메뉴예요."],
+q7:["When can I get okonomiyaki?","Kailan pwedeng umorder ng okonomiyaki?","什么时候能吃到大阪烧？","오코노미야키는 언제 먹을 수 있나요?"],
+t_night:["Dinner only","Hapunan lang","仅限晚间","저녁 한정"],
+call:["Call","Tumawag","打电话","전화하기"],
+dd_closed:["Open every day (no dinner Mon, Tue, Sun)","Bukas araw-araw (walang hapunan Lun, Mar, Ling)","无休（周一、周二、周日晚间休息）","연중무휴 (월・화・일 저녁 휴무)"],
+hm_d:["<b>Dinner</b> 18:00–20:00 L.O. (Wed–Sat)","<b>Hapunan</b> 18:00–20:00 L.O. (Miy–Sab)","<b>晚间</b> 18:00〜20:00 最后点餐（周三〜周六）","<b>저녁</b> 18:00~20:00 L.O. (수~토)"],
+hm_l:["<b>Lunch</b> 11:00–14:00 (daily)","<b>Tanghali</b> 11:00–14:00 (araw-araw)","<b>午间</b> 11:00〜14:00（每天）","<b>점심</b> 11:00~14:00 (매일)"],
+proof:["Featured by Miyazaki influencers Ryoyan and Nobeshiru","Na-feature ng Miyazaki influencers na sina Ryoyan at Nobeshiru","宫崎网红「Ryoyan」和「Nobeshiru」都介绍过我们","미야자키 인플루언서 ‘료얀’·‘노베시루’님이 소개해 주셨어요"],
+proof_a:["A secret deal is hidden in the video →","May secret deal sa video →","视频里藏着秘密优惠 →","영상 속 비밀 혜택 찾기 →"],
+trust1:["Featured by influencers","Na-feature ng influencers","网红推荐","인플루언서 소개"],
+md_h:["Featured by<br>Miyazaki influencers","Na-feature ng<br>Miyazaki influencers","宫崎的网红<br>介绍过我们","미야자키 인플루언서가<br>소개했어요"],
+m_kick:["SECRET MISSION","SECRET MISSION","秘密任务","비밀 미션"],
+m_h:["A secret deal is hidden<br>in Ryoyan’s videos!","May secret deal na nakatago<br>sa mga video ni Ryoyan!","Ryoyan的视频里，<br>藏着秘密优惠……！","료얀님 영상 속에<br>비밀 혜택이…!"],
+m_p:["Miyazaki TikToker Ryoyan introduced Sanpou in two videos. Somewhere in them is a <strong>secret deal</strong>. Found it? Whisper it to us when you order!","Ipinakilala ng Miyazaki TikToker na si Ryoyan ang Sanpou sa dalawang video. May nakatagong <strong>secret deal</strong> sa mga ito. Nahanap mo? Ibulong mo sa amin pag-order mo!","宫崎的TikTok博主Ryoyan用两支视频介绍了山宝。视频里的某个地方藏着<strong>秘密优惠</strong>。找到了吗？点餐时悄悄告诉我们吧！","미야자키 틱톡커 료얀님이 영상 두 편으로 산포를 소개해 주셨어요. 영상 어딘가에 <strong>비밀 혜택</strong>이 숨어 있어요. 찾으셨나요? 주문할 때 살짝 알려 주세요!"],
+v1:["Watch video 1","Panoorin ang video 1","观看视频1","영상 1 보기"],
+v2:["Watch video 2","Panoorin ang video 2","观看视频2","영상 2 보기"],
+m_hint:["A little treat, only for those who find it.","Para lang sa makakahanap!","只有找到的人才有的小惊喜。","찾은 분만의 작은 즐거움이에요."],
+shoyu_s:["Shoyu","Shoyu","酱油","간장"],
+tab2:["Sets","Sets","套餐","세트"],
+tab3:["Sides & Snacks","Sides at Pulutan","单品・下酒菜","단품・안주"],
+tab4:["Soft drinks","Soft drinks","软饮料","소프트드링크"],
+tab5:["Alcohol","Alak","酒类","주류"],
+takeout:["Takeout available!","Pwedeng i-take out!","可以外带！","포장 가능해요!"],
+set1:["Ramen & half fried rice set","Ramen at half sinangag set","拉面＋半份炒饭套餐","라멘＆반 볶음밥 세트"],
+set2:["Ramen & gyoza set (6 pcs)","Ramen at gyoza set (6 piraso)","拉面＋煎饺套餐（6个）","라멘＆교자 세트 (6개)"],
+set3:["Tonkotsu ramen & karaage set (5 pcs)","Tonkotsu ramen at karaage set (5 piraso)","豚骨拉面＋炸鸡套餐（5块）","돈코츠 라멘＆가라아게 세트 (5개)"],
+set7:["Tonkotsu ramen & karaage set (4 pcs)","Tonkotsu ramen at karaage set (4 piraso)","豚骨拉面＋炸鸡套餐（4块）","돈코츠 라멘＆가라아게 세트 (4개)"],
+set4:["Ramen & chashu rice bowl set","Ramen at chashu don set","拉面＋叉烧饭套餐","라멘＆차슈덮밥 세트"],
+set5:["Sanpou ramen & chashu rice bowl set","Sanpou ramen at chashu don set","山宝拉面＋叉烧饭套餐","산포 라멘＆차슈덮밥 세트"],
+set6:["Ramen & chashu rice bowl set (large)","Ramen at chashu don set (malaki)","拉面＋叉烧饭套餐（大）","라멘＆차슈덮밥 세트 (대)"],
+gyoza:["Gyoza (7 pcs)","Gyoza (7 piraso)","煎饺（7个）","교자 (7개)"],
+edamame:["Edamame","Edamame","毛豆","에다마메(풋콩)"],
+cola:["Cola","Cola","可乐","콜라"],
+oolong:["Oolong tea","Oolong tea","乌龙茶","우롱차"],
+orange:["Orange juice","Orange juice","橙汁","오렌지 주스"],
+draft_s:["Draft beer<small>Seasonal, May–Oct</small>","Draft beer<small>Seasonal, Mayo–Oktubre</small>","生啤酒<small>期间限定 5〜10月</small>","생맥주<small>기간 한정 5~10월</small>"],
+bottle_l:["Large bottled beer<small>Asahi</small>","Malaking bote ng beer<small>Asahi</small>","大瓶啤酒<small>朝日</small>","병맥주 대병<small>아사히</small>"],
+bottle_m:["Medium bottled beer<small>Asahi, Kirin</small>","Katamtamang bote ng beer<small>Asahi, Kirin</small>","中瓶啤酒<small>朝日・麒麟</small>","병맥주 중병<small>아사히・기린</small>"],
+tokyo_hb:["Tokyo Highball","Tokyo Highball","东京嗨棒","도쿄 하이볼"],
+highball:["Highball","Highball","嗨棒（威士忌苏打）","하이볼"],
+kou_hb:["Shochu highball","Shochu highball","烧酒嗨棒","소주 하이볼"],
+lemon_sour:["Lemon sour","Lemon sour","柠檬沙瓦","레몬사와"],
+ume:["Shochu with pickled plum","Shochu na may umeboshi","梅干兑烧酒","우메보시 소주"],
+chuhai:["Chu-hi<small>Mango, ramune, grape</small>","Chu-hi<small>Mango, ramune, grape</small>","酎嗨<small>芒果・波子汽水・葡萄</small>","추하이<small>망고・라무네・포도</small>"],
+shochu:["Shochu<small>Barley, sweet potato, rice, awamori, brown sugar</small>","Shochu<small>Barley, kamote, bigas, awamori, brown sugar</small>","烧酒<small>麦・芋・米・泡盛・黑糖</small>","소주<small>보리・고구마・쌀・아와모리・흑설탕</small>"],
+shochu5:["Shochu (5-go bottle, 900 ml)","Shochu (5-go na bote, 900 ml)","烧酒（5合瓶，900ml）","소주 (5홉, 900ml)"],
+sake:["Sake<small>Gekkeikan, served in a masu box</small>","Sake<small>Gekkeikan, nasa masu na kahon</small>","日本酒<small>月桂冠・附木升</small>","사케<small>겟케이칸・나무 됫박 포함</small>"],
+whisky:["Whisky","Whisky","威士忌","위스키"],
+title:["Tokyo-style Sanpou Ramen","Tokyo-style Sanpou Ramen","东京风 山宝拉面","도쿄풍 산포 라멘"],
+brand_sub:["Sanpou | Showa-machi, Nobeoka","Sanpou | Showa-machi, Nobeoka","山宝 | 延冈市昭和町","산포 | 노베오카시 쇼와마치"],
+g_title:["Welcome!","Tuloy po kayo!","欢迎光临！","어서 오세요!"],
+g_lead:["Tokyo-style ramen & okonomiyaki.","Tokyo-style ramen at okonomiyaki.","东京风拉面和大阪烧的小店。","도쿄풍 라멘과 오코노미야키 가게."],
+g_enter:["Step through the noren","Pumasok sa noren","掀开门帘，进店","노렌을 지나 들어가기"],
+g_menu:["See the menu","Tingnan ang menu","看菜单","메뉴 보기"],
+g_access:["How to get here","Paano pumunta","怎么去","오시는 길"],
+nav_menu:["Menu","Menu","菜单","메뉴"],
+nav_story:["Our Story","Ang Kwento","店主故事","스토리"],
+nav_first:["First Visit","Unang Bisita","初次光临","처음 오시는 분"],
+nav_access:["Access","Lokasyon","交通","오시는 길"],
+dir:["Directions","Direksyon","路线","길찾기"],
+close:["Close","Isara","关闭","닫기"],
+s_full:["Full menu & prices","Buong menu at presyo","全部菜单与价格","전체 메뉴·가격"],
+s_story:["The owner's story","Kwento ng may-ari","店主的故事","사장님 이야기"],
+s_faq:["FAQ","Mga madalas itanong","常见问题","자주 묻는 질문"],
+s_access:["Access & hours","Lokasyon at oras","交通与营业时间","오시는 길·영업시간"],
+s_cta:["Get directions","Tingnan ang direksyon","查看路线","길찾기 보기"],
+eyebrow:["Ramen & okonomiyaki in Showa-machi, Nobeoka","Ramen at okonomiyaki sa Showa-machi, Nobeoka","延冈市昭和町的拉面与大阪烧店","노베오카 쇼와마치의 라멘·오코노미야키 가게"],
+h1:['A taste of Tokyo<br>that makes you say<br><span class="mark r">“I’m home!”</span>','Lasang Tokyo na<br>parang<br><span class="mark r">nasa bahay ka lang.</span>','让人想说<br><span class="mark">“我回来了！”</span>的<br><span class="r">东京味道。</span>','<span class="mark">“다녀왔어요!”</span><br>라고 말하고 싶은<br><span class="r">도쿄의 맛.</span>'],
+hero_lead:["Shoyu ramen she learned in Tokyo, and okonomiyaki grilled since her days by Nobeoka Station. Enjoy both at Mama’s place.","Shoyu ramen na natutunan sa Tokyo, at okonomiyaki mula pa noong panahon sa Nobeoka Station. Pareho mong matitikman sa restaurant ni Mama.","在东京修业学成的酱油拉面，加上从延冈站前一路做到现在的大阪烧。在妈妈的店里，两样都能一次吃到。","도쿄에서 수련한 간장 라멘과, 노베오카역 앞 시절부터 구워 온 오코노미야키. 둘 다 함께 즐길 수 있는 엄마의 가게예요."],
+park:["Parking for 5–8 cars","Paradahan para sa 5–8 kotse","停车位 5〜8个","주차 5~8대"],
+langs3:["Japanese・English・Tagalog","Japanese・English・Tagalog","日语・英语・他加禄语","일본어・영어・타갈로그어"],
+cta_menu:["See the menu","Tingnan ang menu","查看菜单","메뉴 보기"],
+lunch:["Lunch","Tanghali","午间","점심"],
+dinner:["Dinner","Hapunan","晚间","저녁"],
+sticker:["Ramen <b>&amp; Okonomi-yaki</b>!","Ramen <b>at Okonomi-yaki</b>!","拉面<b>大阪烧</b>都有！","라멘도<b>오코노미야키</b>도!"],
+menu_h:["First time? Start with <em>these 3 bowls.</em>","Unang beses? Subukan ang <em>3 bowl na ito.</em>","第一次来，就从<em>这3碗</em>开始。","처음이라면 <em>이 세 그릇</em>부터."],
+menu_p:["Can’t decide? Go for our No.1, the shoyu ramen.","Hindi makapili? Subukan ang No.1 namin, ang shoyu ramen.","拿不定主意，就点最受欢迎的酱油拉面。","고민된다면 가장 인기 있는 간장 라멘으로."],
+no1:["Most popular","Pinakasikat","人气No.1","인기 No.1"],
+hook:["Addictive","Nakakaadik","越吃越想吃","중독성 최고"],
+shoyu:["Sanpou Shoyu Ramen","Sanpou Shoyu Ramen","山宝酱油拉面","산포 간장 라멘"],
+shoyu_p:["A clean, light soy-sauce ramen she brought back from Tokyo. Our signature bowl.","Malinis at magaan na shoyu ramen mula Tokyo. Ang signature bowl namin.","从东京修业带回来的清爽酱油拉面，本店招牌。","도쿄에서 배워 온 깔끔한 간장 라멘. 가게의 간판 메뉴예요."],
+spicy:["Sanpou Ramen, Spicy","Sanpou Ramen, Maanghang","山宝拉面 微辣","산포 라멘 매콤"],
+spicy_p:["Just the right kick. Two seasoned eggs, plenty of seaweed and bean sprouts.","Tamang anghang. May dalawang itlog, maraming seaweed at togue.","辣得刚好，越吃越香。两颗溏心蛋，满满的海带芽和豆芽。","자꾸 생각나는 적당한 매운맛. 맛달걀 두 개에 미역과 숙주도 듬뿍."],
+tonkotsu:["Tonkotsu (Pork Bone) Ramen","Tonkotsu Ramen","豚骨拉面","돈코츠 라멘"],
+tonkotsu_p:["Creamy pork-bone broth with thick-cut chashu and wood-ear mushrooms.","Malapot na pork-bone soup na may makapal na chashu at kikurage.","醇厚豚骨汤，配厚切叉烧和木耳。","부드러운 돈코츠 국물에 두툼한 차슈와 목이버섯."],
+ask_big:["Price at the shop","Presyo sa tindahan","价格请在店内确认","가격은 매장에서"],
+ask:["Ask in shop","Sa tindahan","店内确认","매장 문의"],
+ramen:["Ramen","Ramen","拉面","라멘"],
+okonomi:["Okonomiyaki","Okonomiyaki","大阪烧","오코노미야키"],
+usp_h:["A ramen shop<br>with okonomiyaki, too.","Ramen shop na may<br>okonomiyaki din.","在拉面店，<br>也能吃到大阪烧。","라멘 가게에서<br>오코노미야키까지."],
+usp_p:["We started as an okonomiyaki shop by Nobeoka Station. That’s why at Sanpou you can enjoy ramen and griddle-cooked okonomiyaki together. Okonomiyaki is served at dinner only (Wed–Sat).","Nagsimula kami bilang okonomiyaki shop malapit sa Nobeoka Station. Kaya sa Sanpou, sabay mong matitikman ang ramen at okonomiyaki. Ang okonomiyaki ay sa hapunan lang (Miy–Sab).","我们最早是延冈站前的大阪烧店。所以在山宝，拉面和铁板大阪烧可以一起享用，大阪烧仅限晚间（周三〜周六）供应。","시작은 노베오카역 앞 오코노미야키 가게였어요. 그래서 산포에서는 라멘과 철판 오코노미야키를 함께 즐길 수 있어요. 오코노미야키는 저녁 영업(수~토) 한정이에요."],
+l_kick:["Light & refreshing","Para sa gusto ng magaan","喜欢清爽的你","산뜻한 맛을 원한다면"],
+lemon:["Lemon Ramen","Lemon Ramen","柠檬拉面","레몬 라멘"],
+l_p:["Clear salt broth topped with lemon slices. Light to the last sip — perfect on hot days or to finish the night.","Malinaw na salt broth na may hiwa ng lemon. Magaan hanggang huling higop — perfect sa mainit na araw.","清澈的盐味汤底配上柠檬片，清爽到最后一口。热天或收尾来一碗正合适。","맑은 소금 국물에 레몬 슬라이스. 마지막 한 입까지 산뜻해서 더운 날이나 마무리로 딱이에요."],
+l_btn:["See full menu & prices","Tingnan ang buong menu at presyo","查看全部菜单与价格","전체 메뉴·가격 보기"],
+fm_h:["Full Menu","Buong Menu","全部菜单","전체 메뉴"],
+fm_p:["Ramen from ¥650. Sets, small plates and drinks too.","Ramen mula ¥650. May sets, pulutan at inumin din.","拉面650日元起，套餐、下酒菜和酒水也很齐全。","라멘은 650엔부터. 세트, 안주, 술도 있어요."],
+t_pop:["Popular","Sikat","人气","인기"],
+t_light:["Light","Magaan","清爽","산뜻"],
+t_orig:["Our roots","Orihinal","起点之味","원조의 맛"],
+konjac:["Sanpou Ramen, Spicy with Konjac","Sanpou Ramen, Maanghang na may Konjac","山宝拉面 魔芋微辣","산포 라멘 곤약 매콤"],
+miso:["Miso Ramen","Miso Ramen","味噌拉面","미소 라멘"],
+misoveg:["Miso Veggie Ramen","Miso Gulay Ramen","味噌蔬菜拉面","미소 야채 라멘"],
+veg:["Veggie Ramen","Gulay Ramen","蔬菜拉面","야채 라멘"],
+ankake:["Ankake Ramen (thick sauce)","Ankake Ramen (malapot na sarsa)","勾芡拉面","앙카케 라멘"],
+shio:["Shio (Salt) Ramen","Shio Ramen","盐味拉面","시오(소금) 라멘"],
+chashudon:["Chashu rice bowl<small>with soup</small>","Chashu don<small>may kasamang sabaw</small>","叉烧饭<small>附汤</small>","차슈덮밥<small>국물 포함</small>"],
+chahan:["Fried rice<small>with soup</small>","Sinangag (fried rice)<small>may kasamang sabaw</small>","炒饭<small>附汤</small>","볶음밥<small>국물 포함</small>"],
+rice:["Rice","Kanin","米饭","공깃밥"],
+karaage:["Karaage (fried chicken)","Karaage (fried chicken)","日式炸鸡","가라아게"],
+nankotsu:["Fried chicken cartilage","Pritong cartilage ng manok","炸鸡软骨","닭연골 튀김"],
+teppan:["Griddle dishes & set meals","Teppan dishes at set meals","铁板料理・定食","철판 요리・정식"],
+soft:["Soft drinks<small>Cola, orange, oolong tea</small>","Soft drinks<small>Cola, orange, oolong tea</small>","软饮料<small>可乐・橙汁・乌龙茶</small>","소프트드링크<small>콜라・오렌지・우롱차</small>"],
+mango:["Mango juice","Mango juice","芒果汁","망고 주스"],
+draft:["Draft beer","Draft beer","生啤酒","생맥주"],
+bottle:["Bottled beer<small>Large / medium (Asahi, Kirin)</small>","Bottled beer<small>Large / medium (Asahi, Kirin)</small>","瓶装啤酒<small>大瓶・中瓶（朝日・麒麟）</small>","병맥주<small>대병・중병(아사히・기린)</small>"],
+fm_note:["*Prices include tax and may change. Please check the menu in the shop for the latest prices.","*Kasama na ang tax at maaaring magbago ang presyo. Tingnan ang menu sa tindahan.","※价格含税，可能会有变动，最新价格请以店内菜单为准。","※가격은 세금 포함이며 변경될 수 있어요. 최신 가격은 매장 메뉴를 확인해 주세요."],
+st_h:["A bowl from a mom of six<br>who trained in Tokyo.","Isang bowl mula sa nanay ng anim<br>na nag-training sa Tokyo.","养大6个孩子的妈妈，<br>在东京修业学成的一碗。","여섯 아이를 키운 엄마가<br>도쿄에서 배워 온 한 그릇."],
+st_p1:["The owner is from the Philippines. Her husband passed away while their children were still small, leaving her alone in Japan. Through loneliness and endless busy days, <strong>she raised six children on her own.</strong>","Ang may-ari ay mula sa Pilipinas. Maagang pumanaw ang kanyang asawa habang maliliit pa ang mga anak, kaya naiwan siyang mag-isa sa Japan. Sa gitna ng lungkot at pagod, <strong>mag-isa niyang pinalaki ang anim na anak.</strong>","店主来自菲律宾。孩子们还小的时候，丈夫就先走了，她一个人被留在日本。在孤独与忙碌中，<strong>她独自把6个孩子抚养长大。</strong>","사장님은 필리핀 출신이에요. 아이들이 아직 어릴 때 남편을 먼저 떠나보내고 일본에 홀로 남겨졌어요. 외로움과 바쁜 나날 속에서도 <strong>여섯 아이를 혼자 키워 냈습니다.</strong>"],
+st_p2:["Still, her cheerfulness never faded. She sings, dances, and loves hunting for good food. After about 40 years in Japan her Japanese is still a little broken — but people keep coming back for her smile.","Pero hindi nawala ang kanyang saya. Kumakanta, sumasayaw, at mahilig mag-food trip. Halos 40 taon na siya sa Japan at medyo putol-putol pa rin ang Japanese niya — pero bumabalik ang mga customer para sa kanyang ngiti.","即使如此，她的开朗从未消失。唱歌、跳舞、到处找好吃的。来日本约40年，日语还是有点生硬，但大家就是冲着她的笑容而来。","그래도 밝음은 사라지지 않았어요. 노래하고, 춤추고, 맛있는 걸 찾아다니죠. 일본에 온 지 약 40년, 일본어는 아직 서툴지만 그 웃음을 보러 오늘도 손님들이 찾아와요."],
+st_q:["Big eaters, moms with kids,<br>wheelchair users, students — everyone’s welcome!","Malakas kumain, mga nanay na may anak,<br>naka-wheelchair, estudyante — welcome kayong lahat!","饭量大的、带孩子的妈妈、<br>坐轮椅的、学生们，大家都来吧！","잘 먹는 분도, 아이와 함께인 엄마도,<br>휠체어 이용자도, 학생도. 누구든 오세요!"],
+s1w:["The start","Simula","起点","시작"],
+s1b:["Opened an okonomiyaki shop<br>at Nobeoka Station","Nagbukas ng okonomiyaki shop<br>sa Nobeoka Station","在延冈站<br>开了大阪烧店","노베오카역에서<br>오코노미야키 가게 오픈"],
+s1s:["Days at the griddle began.","Nagsimula ang mga araw sa harap ng teppan.","开始了站在铁板前的日子。","철판 앞에 서는 나날의 시작."],
+s2w:["Moved","Lumipat","搬迁","이전"],
+s2b:["Moved the shop<br>to Showa-machi","Inilipat ang shop<br>sa Showa-machi","店铺搬到<br>昭和町","가게를<br>쇼와마치로 이전"],
+s2s:["Where we are today.","Kung nasaan kami ngayon.","就是现在的店址。","지금의 가게 자리로."],
+s3w:["In her 50s","Sa edad 50+","50多岁时","50대에"],
+s3b:["Trained at a<br>Tokyo ramen shop","Nag-training sa<br>ramen shop sa Tokyo","在东京拉面店<br>修业","도쿄 라멘 가게에서<br>수련"],
+s3s:["A new challenge in her 50s.","Bagong hamon sa edad 50+.","50多岁的新挑战。","50대의 새로운 도전."],
+s4w:["Now","Ngayon","现在","지금"],
+s4b:["Bringing Tokyo’s taste<br>to Nobeoka","Dinala ang lasang Tokyo<br>sa Nobeoka","把东京的味道<br>带回延冈","도쿄의 맛을<br>노베오카로"],
+s4s:["A ramen & okonomiyaki shop.","Ramen at okonomiyaki shop.","成为拉面与大阪烧的店。","라멘과 오코노미야키 가게로."],
+w_h:["Everyone’s <em>welcome.</em>","Welcome ang <em>lahat.</em>","欢迎大家<em>随时光临</em>。","누구든 <em>편하게</em> 오세요."],
+w_p:["First-timers, families, visitors from abroad — come and relax with us.","Unang beses man, may kasamang pamilya, o galing sa ibang bansa — welcome kayo.","第一次来、带家人来、从海外来，都可以放心光临。","처음이어도, 가족과 함께여도, 해외에서 오셔도 안심하고 오세요."],
+p1:["<b>Big</b> eaters","<b>Malakas</b> kumain","<b>饭量大</b>的人","<b>든든하게</b> 먹고 싶은 분"],
+p2:["Families <b>with kids</b>","Pamilya <b>na may bata</b>","<b>带孩子</b>的爸妈","<b>아이와 함께</b>인 엄마·아빠"],
+p3:["<b>Wheelchair</b> users","<b>Naka-wheelchair</b>","<b>坐轮椅</b>的朋友","<b>휠체어</b> 이용자"],
+p4:["<b>Students</b>","<b>Estudyante</b>","<b>学生</b>","<b>학생</b>"],
+p5:["Visitors from <b>abroad</b>","Galing sa <b>ibang bansa</b>","<b>海外</b>游客","<b>해외</b>에서 오신 분"],
+f1h:["Ramp at the entrance","May ramp sa pasukan","入口有坡道","입구 경사로"],
+f1p:["Easy access for wheelchairs and strollers.","Madaling pumasok kahit naka-wheelchair o stroller.","轮椅、婴儿车也方便进出。","휠체어나 유모차도 쉽게 들어올 수 있어요."],
+f2h:["Private room","May private room","有包间","개별실 있음"],
+f2p:["For family meals and get-togethers.","Para sa pamilya at barkada.","适合家庭聚餐和朋友聚会。","가족 식사나 모임에도."],
+f3p:["Park right in front of the shop.","Pwedeng pumarada sa harap ng shop.","可停在店门口。","가게 앞에 주차할 수 있어요."],
+f4h:["Treats for kids","May treat para sa bata","儿童小惊喜","어린이 서비스"],
+f4p:["Kids get a juice or ice cream treat.","May juice o ice cream para sa mga bata.","小朋友有果汁或冰淇淋赠送。","아이에게 주스나 아이스크림 서비스가 있어요."],
+f5h:["3 languages spoken","3 wika, OK!","可用3种语言","3개 언어 OK"],
+f5p:["Order in Japanese, English or Tagalog.","Pwedeng umorder sa Japanese, English o Tagalog.","可用日语、英语、他加禄语点餐。","일본어·영어·타갈로그어로 주문할 수 있어요."],
+f6h:["Takeout OK","Pwedeng i-take out","可以外带","포장 가능"],
+f6p:["Enjoy Sanpou’s taste at home.","Matikman ang Sanpou sa bahay.","在家也能吃到山宝的味道。","집에서도 산포의 맛을."],
+md_p:["Videos show the vibe best.","Mas makikita ang vibe sa video.","店里的氛围，看视频最清楚。","가게 분위기는 영상이 가장 잘 전해요."],
+yt1:["Miyazaki YouTuber","Miyazaki YouTuber","宫崎YouTuber","미야자키 유튜버"],
+yt2:["Nobeoka local YouTuber","Nobeoka local YouTuber","延冈本地资讯YouTuber","노베오카 정보 유튜버"],
+yt1n:["Ryoyan","Ryoyan","Ryoyan（りょうやん）","료얀(りょうやん)"],
+yt2n:["Nobeshiru","Nobeshiru","Nobeshiru（のべしる）","노베시루(のべしる)"],
+g_h:["Inside the shop","Sa loob ng shop","店内氛围","가게 분위기"],
+g_p:["Step past the yellow sign and a lively table awaits.","Pagpasok sa dilaw na signboard, masayang mesa ang naghihintay.","走进黄色招牌，热闹的餐桌在等你。","노란 간판을 지나면 북적이는 테이블이 기다려요."],
+gc1:["Look for the yellow sign","Hanapin ang dilaw na sign","认准黄色招牌","노란 간판이 표시"],
+gc2:["Counter & table seats","Counter at mesa","吧台座・餐桌座","카운터석・테이블석"],
+gc5:["Good times together","Masayang kainan","大家热热闹闹","다 함께 왁자지껄"],
+gc6:["Spicy","Maanghang","微辣","매콤"],
+q1:["Is there parking?","May paradahan ba?","有停车场吗？","주차장이 있나요?"],
+a1:["Yes, about 5–8 cars can park in front of the shop.","Oo, mga 5–8 kotse ang pwedeng pumarada sa harap.","有的，店门口可停5〜8辆车。","네, 가게 앞에 5~8대 정도 주차할 수 있어요."],
+q2:["Can I bring kids?","Pwede bang magsama ng bata?","可以带孩子去吗？","아이와 함께 가도 되나요?"],
+a2:["Of course! There’s a private room, and kids get a juice or ice cream treat.","Siyempre! May private room, at may juice o ice cream para sa mga bata.","非常欢迎！有包间，小朋友还有果汁或冰淇淋赠送。","대환영이에요! 개별실이 있고, 아이에게는 주스나 아이스크림 서비스도 있어요."],
+q3:["Is it wheelchair accessible?","Pwede ba ang naka-wheelchair?","坐轮椅可以进去吗？","휠체어로 들어갈 수 있나요?"],
+a3:["The entrance has a ramp, so wheelchairs and strollers can get in easily.","May ramp sa pasukan kaya madaling makapasok ang wheelchair at stroller.","入口是坡道，轮椅和婴儿车都方便进出。","입구가 경사로라서 휠체어나 유모차도 들어오기 쉬워요."],
+q4:["Do you speak English?","Pwede bang mag-Tagalog?","不会日语也可以吗？","일본어를 못해도 괜찮나요?"],
+a4:["Yes! We speak English and Tagalog.","Oo naman! Tagalog at English, OK lang.","可以！店里能用英语和他加禄语交流（暂时没有会说中文的员工，可以指着菜单点餐）。","괜찮아요! 영어와 타갈로그어로 대응할 수 있어요. (한국어 대응은 어렵지만, 메뉴를 가리켜 주문할 수 있어요.)"],
+q5:["Do you have anything besides ramen?","May iba pa ba bukod sa ramen?","除了拉面还有别的吗？","라멘 말고도 있나요?"],
+a5:["Yes — okonomiyaki and griddle dishes, set menus, and snacks like gyoza, karaage and edamame. Plenty of drinks too: highballs, lemon sours, shochu and more.","Oo — okonomiyaki, teppan dishes, set menu, at pulutan tulad ng gyoza, karaage at edamame. Marami ring inumin: highball, lemon sour, shochu at iba pa.","有大阪烧、铁板料理、套餐，以及煎饺、炸鸡、毛豆等下酒菜。嗨棒、柠檬沙瓦、烧酒等酒类也很齐全。","오코노미야키, 철판 요리, 세트 메뉴, 교자・가라아게・에다마메 같은 안주도 있어요. 하이볼, 레몬사와, 소주 등 술도 다양해요."],
+q6:["Can I take food home?","Pwede bang mag-take out?","可以外带吗？","포장되나요?"],
+a6:["Yes, takeout is available. We also have take-home ramen — just ask at the shop.","Oo, pwedeng i-take out. May pasalubong na ramen din — magtanong lang sa shop.","可以外带。还有伴手礼拉面，请在店内询问。","네, 포장 가능해요. 선물용 라멘도 있으니 매장에 말씀해 주세요."],
+ac_h:["How to get here","Paano pumunta","如何前往","오시는 길"],
+ac_p:["Showa-machi, Nobeoka. Look for the yellow sign and the red “ラーメン” flags.","Showa-machi, Nobeoka. Hanapin ang dilaw na sign at pulang “ラーメン” flags.","延冈市昭和町。认准黄色招牌和红色“ラーメン”旗子。","노베오카시 쇼와마치. 노란 간판과 빨간 ‘ラーメン’ 깃발이 표시예요."],
+ac_cap:["When you see this sign, you’re here!","Pag nakita mo ang sign na ito, nandito ka na!","看到这个招牌就到了。","이 간판이 보이면 도착이에요."],
+dt_addr:["Address","Address","地址","주소"],
+hours:["Hours","Oras","营业时间","영업시간"],
+dt_closed:["Closed","Sarado","定休日","정기휴일"],
+dt_tel:["Phone","Telepono","电话","전화"],
+dt_park:["Parking","Paradahan","停车场","주차장"],
+dt_fac:["Facilities","Pasilidad","设施","시설"],
+dt_lang:["Languages","Wika","语言","언어"],
+addr:["2-71-2 Showa-machi, Nobeoka, Miyazaki","2-71-2 Showa-machi, Nobeoka, Miyazaki","宫崎县延冈市昭和町2丁目71-2","미야자키현 노베오카시 쇼와마치 2초메 71-2"],
+todo_addr:["TBA","TBA","待补充","추후 안내"],
+todo:["TBA","TBA","待补充","추후 안내"],
+dd_hours:["<b>Lunch (daily)</b> 11:00–14:00<br><b>Dinner (Wed–Sat)</b> 18:00–20:00 (last order)<br><small>No dinner service on Mon, Tue and Sun</small>","<b>Tanghali (araw-araw)</b> 11:00–14:00<br><b>Hapunan (Miy–Sab)</b> 18:00–20:00 (last order)<br><small>Walang hapunan tuwing Lunes, Martes at Linggo</small>","<b>午间（每天）</b> 11:00〜14:00<br><b>晚间（周三〜周六）</b> 18:00〜20:00（最后点餐）<br><small>周一、周二、周日晚间休息</small>","<b>점심 (매일)</b> 11:00~14:00<br><b>저녁 (수~토)</b> 18:00~20:00 (라스트 오더)<br><small>월・화・일요일은 저녁 영업 휴무</small>"],
+dd_park:["Yes (5–8 cars)","Meron (5–8 kotse)","有（5〜8辆）","있음 (5~8대)"],
+dd_fac:["Entrance ramp, private room","Ramp sa pasukan, private room","入口坡道・有包间","입구 경사로・개별실"],
+dd_lang:["Japanese, English, Tagalog","Japanese, English, Tagalog","日语・英语・他加禄语","일본어・영어・타갈로그어"],
+gmap:["Open in Google Maps","Buksan sa Google Maps","在Google地图中打开","구글 지도에서 열기"],
+fn_h:["Let’s eat at Sanpou today.","Kain tayo sa Sanpou ngayon!","今天就吃山宝吧！","오늘 한 끼는 산포에서."],
+fn_p:["Come eat with us, post your photos, tell your friends.<br>That’s the best way to cheer Mama on.","Kumain dito, i-post ang photos, at sabihan ang mga kaibigan.<br>Iyan ang pinakamagandang suporta kay Mama.","来吃饭、把照片发到社交平台、告诉朋友们，<br>就是对妈妈最好的支持。","먹으러 와 주시고, 사진을 SNS에 올리고, 친구에게 알려 주세요.<br>그게 엄마에게 가장 큰 응원이에요."],
+fn_b1:["Get directions","Tingnan ang direksyon","查看路线","길찾기"],
+fn_b2:["See the menu again","Tingnan ulit ang menu","再看一次菜单","메뉴 다시 보기"],
+ft_sub:["Sanpou | Showa-machi, Nobeoka, Miyazaki","Sanpou | Showa-machi, Nobeoka, Miyazaki","山宝｜宫崎县延冈市昭和町","산포 | 미야자키현 노베오카시 쇼와마치"],
+dk_map:["Map","Mapa","地图","지도"]
+};
+(function(){
+  var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ss={get:function(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}};
+  var ls={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+  // ---------- 言語切り替え ----------
+  var LANGS={ja:{i:-1,code:'ja',short:'日本語'},en:{i:0,code:'en',short:'EN'},tl:{i:1,code:'tl',short:'TL'},zh:{i:2,code:'zh-CN',short:'中文'},ko:{i:3,code:'ko',short:'한국어'}};
+  var FONTS={zh:'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=ZCOOL+KuaiLe&display=swap',ko:'https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@500;700;900&display=swap'};
+  var BUBBLE={ja:['いらっしゃい！','Welcome!','Mabuhay!','おかえり〜！'],en:['Welcome!','いらっしゃい！','Mabuhay!','Come on in!'],tl:['Mabuhay!','Tuloy po!','Welcome!','いらっしゃい！'],zh:['欢迎光临！','Welcome!','いらっしゃい！','Mabuhay!'],ko:['어서 오세요!','Welcome!','いらっしゃい！','Mabuhay!']};
+  var nodes=$$('[data-i]'); nodes.forEach(function(el){ el._ja=el.innerHTML; });
+  var yenNodes=$$('[data-yen]'), cur='ja', jaTitle=document.title;
+  function fmtYen(n,big,l){ var s=Number(n).toLocaleString('ja-JP'); return l==='ja'? (big? s+'<small>円</small>' : s+'円') : (big? '<small>¥</small>'+s : '¥'+s); }
+  function setLang(l,save){
+    if(!LANGS[l]) l='ja'; cur=l; var L=LANGS[l];
+    document.documentElement.lang=L.code;
+    if(FONTS[l] && !document.getElementById('font-'+l)){ var k=document.createElement('link'); k.rel='stylesheet'; k.href=FONTS[l]; k.id='font-'+l; document.head.appendChild(k); }
+    nodes.forEach(function(el){ var key=el.getAttribute('data-i'); el.innerHTML = (L.i<0 || !T[key]) ? el._ja : T[key][L.i]; });
+    yenNodes.forEach(function(el){ el.innerHTML=fmtYen(el.getAttribute('data-yen'),el.hasAttribute('data-big'),l); });
+    document.title = L.i<0 ? jaTitle : T.title[L.i];
+    $('#langCur').textContent=L.short;
+    $$('[data-lang]').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-lang')===l ? 'true':'false'); });
+    wi=0; bubble.textContent=BUBBLE[l][0];
+    if(save) ls.set('sanpo-lang',l);
+  }
+  function detect(){
+    var saved=ls.get('sanpo-lang'); if(saved && LANGS[saved]) return saved;
+    var list=(navigator.languages||[navigator.language||'ja']);
+    for(var i=0;i<list.length;i++){ var c=(list[i]||'').toLowerCase();
+      if(c.indexOf('ja')===0) return 'ja'; if(c.indexOf('en')===0) return 'en';
+      if(c.indexOf('fil')===0||c.indexOf('tl')===0) return 'tl'; if(c.indexOf('zh')===0) return 'zh'; if(c.indexOf('ko')===0) return 'ko'; }
+    return 'ja';
+  }
+  var langBtn=$('#langBtn'), langMenu=$('#langMenu');
+  function setMenu(o){ langMenu.hidden=!o; langBtn.setAttribute('aria-expanded',o?'true':'false'); }
+  langBtn.addEventListener('click',function(e){ e.stopPropagation(); setMenu(langMenu.hidden); });
+  document.addEventListener('click',function(e){ if(!langMenu.hidden && !$('#langPick').contains(e.target)) setMenu(false); });
+  $$('[data-lang]').forEach(function(b){ b.addEventListener('click',function(){ setLang(b.getAttribute('data-lang'),true); setMenu(false); }); });
+
+  // ---------- のれんをくぐる（1セッション1回） ----------
+  var gate=$('#gate'), busy=false;
+  if(!ss.get('sanpo-gate')){ gate.hidden=false; document.documentElement.style.overflow='hidden'; }
+  function enter(target){
+    if(busy) return; busy=true; ss.set('sanpo-gate','1');
+    function done(){ gate.hidden=true; document.documentElement.style.overflow=''; if(target){ location.hash=target; } }
+    if(reduce){ done(); return; }
+    gate.classList.add('entering','out'); setTimeout(done,1150);
+  }
+  $$('[data-enter]').forEach(function(b){ b.addEventListener('click',function(){ enter(b.getAttribute('data-enter')); }); });
+  $('#gateNoren').addEventListener('click',function(){ enter(''); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(!gate.hidden) enter(''); setSheet(false); setMenu(false); } });
+
+  // ---------- スマホのメニュー ----------
+  var sheet=$('#sheet'), sBtn=$('#sheetOpen');
+  function setSheet(o){ sheet.classList.toggle('open',o); sheet.setAttribute('aria-hidden',o?'false':'true'); sBtn.setAttribute('aria-expanded',o?'true':'false'); }
+  sBtn.addEventListener('click',function(){ setSheet(true); });
+  $$('[data-sclose]').forEach(function(el){ el.addEventListener('click',function(){ setSheet(false); }); });
+
+  // ---------- 吹き出し ----------
+  var bubble=$('#bubble'), wi=0;
+  bubble.style.transition='opacity .22s';
+  if(!reduce) setInterval(function(){ var w=BUBBLE[cur]; wi=(wi+1)%w.length; bubble.style.opacity=0; setTimeout(function(){ bubble.textContent=w[wi]; bubble.style.opacity=1; },220); },3000);
+
+  // ---------- タブ ----------
+  var tabs=$$('.tab');
+  function select(t){ tabs.forEach(function(x){ var on=x===t; x.setAttribute('aria-selected',on?'true':'false'); x.tabIndex=on?0:-1; $('#'+x.getAttribute('aria-controls')).hidden=!on; }); }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){ select(t); });
+    t.addEventListener('keydown',function(e){ var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(d){ var n=tabs[(i+d+tabs.length)%tabs.length]; select(n); n.focus(); } });
+  });
+
+  // ---------- ふわっと表示 ----------
+  var pres=$$('.pre');
+  if('IntersectionObserver' in window && !reduce){
+    document.documentElement.classList.add('anim');
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+    pres.forEach(function(el){ if(el.getBoundingClientRect().top<innerHeight) el.classList.add('in'); else io.observe(el); });
+  }
+
+  // ---------- 下の固定ボタン ----------
+  var dock=$('#dock');
+  var topBar=document.querySelector('.top'), board=document.querySelector('.signboard');
+  function onScroll(){ dock.classList.toggle('show',scrollY>520); topBar.classList.toggle('at-top', board.getBoundingClientRect().bottom>60); }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  // ---------- ページ切り替え（#menu #story #guide #access） ----------
+  var views=$$('.view');
+  function route(){
+    var h=decodeURIComponent((location.hash||'').slice(1))||'home'; if(h==='top') h='home';
+    var v=document.querySelector('.view[data-view="'+h+'"]'), target=null;
+    if(!v){ target=document.getElementById(h); v=target? target.closest('.view') : null; }
+    if(!v){ v=views[0]; target=null; }
+    views.forEach(function(x){ x.hidden = x!==v; });
+    v.querySelectorAll('.pre').forEach(function(e){ e.classList.add('in'); });
+    $$('.gnav a,.dock a').forEach(function(a){ a.classList.toggle('on', a.getAttribute('href')==='#'+v.getAttribute('data-view')); });
+    if(target) target.scrollIntoView(); else window.scrollTo(0,0);
+    onScroll();
+  }
+  addEventListener('hashchange',route); route();
+
+  setLang(detect(),false);
+})();
+</script>
+
+</body>
+</html>
