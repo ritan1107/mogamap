@@ -69,6 +69,18 @@
 .acts2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.acts2 .btn{font-size:15px;padding:12px 6px}
 #report{display:none}
 @media print{body>*:not(#report){display:none!important}#report{display:block!important;font-size:11pt;color:#222}#report h1{font-size:18pt;margin:0 0 2mm}#report h2{font-size:13pt;margin:6mm 0 2mm;border-bottom:1px solid #999}#report table{width:100%;border-collapse:collapse}#report td,#report th{border:1px solid #bbb;padding:1.5mm 2mm;text-align:left}#report .k{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm}#report .k div{border:1px solid #bbb;padding:2mm}#report .k b{display:block;font-size:15pt}}
+.add-card textarea#nPaste{margin-top:10px}
+.nhead{font-weight:900;margin:14px 0 4px;color:var(--teal)}
+.ngrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ngrid label{display:block;font-size:12px;font-weight:900;color:#6b5d50}
+.ngrid label.full{grid-column:1/-1}
+.ngrid input,.ngrid select,.ngrid textarea{margin-top:3px;padding:9px 11px;font-size:15px}
+.ngrid input.filled,.ngrid select.filled,.ngrid textarea.filled{background:#effaf9;border-color:#bfe3e1}
+.nchecks{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-weight:800;font-size:14px}
+.nchecks input{width:auto;margin-right:4px}
+.warn-dup{background:#fff3e6;border-radius:12px;padding:9px 12px;font-size:14px;font-weight:800;color:#a8742a;margin-bottom:8px}
+.nresult{margin-top:14px;background:#e9f7f2;border-radius:16px;padding:14px}
+.nresult .pin{font-size:26px;font-weight:900;letter-spacing:.12em;color:var(--teal)}
 .top a{font-size:14px;color:var(--teal);font-weight:800;text-decoration:none}
 </style>
 </head>
@@ -133,6 +145,35 @@
     <!-- 🎁 クリア と 🏪 お店 -->
     <div class="opane" id="o-clear"></div>
     <div class="opane" id="o-shops">
+    <div class="card add-card">
+      <h3>➕ お店を追加（コピペでOK）</h3>
+      <div class="muted">お店からもらった情報を、そのまま貼り付けてください。店名・住所・電話・URLなどを自動で振り分けます。</div>
+      <button class="btn ghost small" id="nTpl" style="margin-top:10px">📋 お店に送る「質問文」をコピー</button>
+      <textarea id="nPaste" rows="7" placeholder="ここに貼り付け（LINEやメールの文章のままでOK）"></textarea>
+      <div id="nForm" class="hidden">
+        <div class="nhead">👀 読み取った内容（直せます）</div>
+        <div class="warn-dup hidden" id="nDup"></div>
+        <div class="ngrid">
+          <label>店名<input id="n_name"></label>
+          <label class="full">住所<input id="n_address"></label>
+          <label>電話<input id="n_phone" inputmode="tel"></label>
+          <label>ジャンル<select id="n_category"><option value="cafe">カフェ</option><option value="food">お食事処</option><option value="izakaya">居酒屋</option><option value="seafood">海鮮系</option><option value="other">その他</option></select></label>
+          <label class="full">紹介文<textarea id="n_description" rows="3"></textarea></label>
+          <label class="full">🛒 購入・通販ページ<input id="n_point_purchase_url" inputmode="url"></label>
+          <label class="full">👥 コミュニティ<input id="n_community_url" inputmode="url"></label>
+          <label class="full">🌐 ホームページ<input id="n_website_url" inputmode="url"></label>
+          <label>📸 Instagram<input id="n_instagram_url" inputmode="url"></label>
+          <label>💬 LINE<input id="n_line_url" inputmode="url"></label>
+          <label>f Facebook<input id="n_facebook_url" inputmode="url"></label>
+          <label>𝕏 X<input id="n_x_url" inputmode="url"></label>
+          <label class="full">✉️ 連絡用メール<input id="n_owner_email" inputmode="email"></label>
+        </div>
+        <div class="nchecks"><label><input type="checkbox" id="n_publish" checked> お客様アプリに出す</label><label><input type="checkbox" id="n_rally" checked> スタンプラリーに参加</label></div>
+        <button class="btn pink" id="nAdd">このお店を追加する</button>
+        <div class="status" id="nStatus"></div>
+      </div>
+      <div class="nresult hidden" id="nResult"></div>
+    </div>
     <div class="card hidden" id="aTools">
       <input id="aSearch" placeholder="🔎 店名・住所で探す">
       <div class="chips" id="aFilter">
@@ -352,6 +393,133 @@ async function pSave(start,end){
 }
 $('pSave').onclick=()=>{const s=$('pStart').value,e=$('pEnd').value;if(!s&&!e)return $('pStatus').textContent='スタートか終了を入れてください';pSave(s?new Date(s).toISOString():null,e?new Date(e).toISOString():null)};
 $('pClear').onclick=()=>{if(confirm('期間をなくしますか？（いつでもスタンプが押せるようになります）'))pSave(null,null)};
+
+/* ========== ➕ お店をコピペで追加 ========== */
+const N_FIELDS=['name','address','phone','category','description','point_purchase_url','community_url','website_url','instagram_url','line_url','facebook_url','x_url','owner_email'];
+const N_TPL=`【もぐマップ 掲載情報】
+店名：
+住所：
+電話：
+ジャンル（カフェ・お食事・居酒屋・海鮮・その他）：
+お店の紹介（100文字くらい）：
+通販・購入ページのURL：
+コミュニティのURL：
+ホームページ：
+Instagram：
+LINE：
+連絡用メール：`;
+$('nTpl').onclick=async()=>{try{await copyText(N_TPL);toast('質問文をコピーしました。お店にLINEなどで送ってください')}catch{toast('コピーできませんでした')}};
+function guessCategory(t){
+  if(/カフェ|喫茶|珈琲|コーヒー|スイーツ|ケーキ|cafe|coffee/i.test(t))return 'cafe';
+  if(/居酒屋|酒場|バー|BAR|焼き鳥|焼鳥|ビール|日本酒/i.test(t))return 'izakaya';
+  if(/海鮮|寿司|鮨|魚|かに|カニ|蟹|うに|ウニ|いくら/.test(t))return 'seafood';
+  if(/食堂|レストラン|ラーメン|そば|うどん|定食|弁当|パン|ベーカリー|料理|お食事|飲食|焼肉|カレー|ピザ|洋食|和食|中華/.test(t))return 'food';
+  return '';
+}
+function catFromLabel(v){const c=guessCategory(v);if(c)return c;if(/その他/.test(v))return 'other';return ''}
+function classifyUrl(u){
+  const h=u.toLowerCase();
+  if(/instagram\.com|instagr\.am/.test(h))return 'instagram_url';
+  if(/facebook\.com|fb\.com|fb\.me/.test(h))return 'facebook_url';
+  if(/(^|\/\/|\.)(x|twitter)\.com/.test(h))return 'x_url';
+  if(/lin\.ee|line\.me|page\.line|liff\.line/.test(h))return 'line_url';
+  if(/base\.shop|thebase\.in|\.base\.ec|stores\.jp|shopify|myshopify|booth\.pm|minne\.com|creema\.jp|rakuten|amazon\.|yahoo\.co\.jp\/.*shop|shopping\.yahoo|colorme|makeshop|cart|shop|store|ec\./.test(h))return 'point_purchase_url';
+  if(/community|circle|discord|slack|note\.com\/.*membership|openchat|onlinesalon|salon|lounge/.test(h))return 'community_url';
+  return 'website_url';
+}
+const LABELS=[
+  ['name',/^(店名|店舗名|お店の名前|お店の名称|屋号|名称|ショップ名|サロン名|事業者名|会社名)/],
+  ['address',/^(住所|所在地|場所|店舗住所|アクセス)/],
+  ['phone',/^(電話番号|電話|TEL|ＴＥＬ|tel|Tel|携帯)/],
+  ['category',/^(ジャンル|カテゴリー?|業種|種類|業態)/],
+  ['description',/^(お店の紹介|紹介文?|説明|PR|ＰＲ|ひとこと|自己紹介|お店について|メッセージ|コメント)/],
+  ['point_purchase_url',/^(通販|購入|ネットショップ|オンラインショップ|ポイント|ショップURL|販売ページ|ECサイト)/],
+  ['community_url',/^(コミュニティ)/],
+  ['instagram_url',/^(Instagram|instagram|インスタグラム|インスタ)/],
+  ['facebook_url',/^(Facebook|facebook|フェイスブック)/],
+  ['x_url',/^(X|Ｘ|Twitter|twitter|ツイッター)(\s|：|:|$)/],
+  ['line_url',/^(LINE|ライン|公式LINE|LINE公式)/],
+  ['owner_email',/^(連絡用メール|メールアドレス|メール|Email|E-mail|e-mail|mail)/],
+  ['website_url',/^(ホームページ|HP|ＨＰ|ウェブサイト|Webサイト|WEBサイト|サイト|URL|Web|WEB)/],
+];
+function parseShopText(raw){
+  const out={},used=new Set();
+  const text=String(raw||'').normalize('NFKC').replace(/\r/g,'');
+  const lines=text.split('\n').map(l=>l.trim());
+  const clean=v=>v.replace(/^[\s:：=＝\-ー・]+/,'').trim();
+  for(let i=0;i<lines.length;i++){
+    let line=lines[i].replace(/^[■□●○◆◇・\-*★☆【\[]+\s*/,'').replace(/[】\]]/,'：');
+    if(!line)continue;
+    for(const [key,re] of LABELS){
+      const m=line.match(re);if(!m)continue;
+      let v=clean(line.slice(m[0].length).replace(/^[（(][^）)]*[）)]/,''));
+      if(!v&&lines[i+1]&&!LABELS.some(([,r])=>r.test(lines[i+1]))){v=lines[i+1].trim();used.add(i+1)}
+      if(key==='description'){let j=i+1;while(lines[j]&&!LABELS.some(([,r])=>r.test(lines[j].replace(/^[■□●○◆◇・\-*★☆【\[]+\s*/,'')))&&!/^https?:/.test(lines[j])){if(!used.has(j))v+=(v?'\n':'')+lines[j];used.add(j);j++}}
+      if(v&&!out[key]){out[key]=key.endsWith('_url')?(v.match(/https?:\/\/\S+/)||[v])[0]:v}
+      used.add(i);break;
+    }
+  }
+  // URLは中身で振り分け
+  (text.match(/https?:\/\/[^\s"'<>（）()「」、。]+/g)||[]).forEach(u=>{
+    if(Object.values(out).some(v=>v===u))return;
+    const k=classifyUrl(u);if(!out[k])out[k]=u;else if(k==='website_url'&&!out.point_purchase_url&&/shop|store/.test(u))out.point_purchase_url=u;
+  });
+  // 電話・メール・住所
+  if(!out.phone){const m=text.match(/0\d{1,4}[-ー‐\s]?\d{1,4}[-ー‐\s]?\d{3,4}/);if(m)out.phone=m[0].replace(/[ー‐\s]/g,'-')}
+  if(!out.owner_email){const m=text.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);if(m)out.owner_email=m[0]}
+  if(!out.address){const l=lines.find((l,i)=>!used.has(i)&&/(〒\s?\d{3}-?\d{4})|(北海道|東京都|大阪府|京都府|.{2,3}県).{0,8}(市|区|町|村|郡)|^.{1,6}(市|区)./.test(l)&&!/https?:/.test(l));if(l)out.address=l.replace(/^〒?\s?\d{3}-?\d{4}\s*/,'')}
+  // あいさつの行は使わない
+  const GREET=/お世話になって|お世話になります|よろしく|宜しく|こんにちは|こんばんは|おはよう|はじめまして|初めまして|ありがとうございます|失礼します|お願いします|お願い致します|以下|下記/;
+  const isPlain=(l,i)=>l&&!used.has(i)&&!GREET.test(l)&&!/https?:|@|^〒|^0\d|【もぐマップ/.test(l)&&l!==out.address&&!(out.phone&&l.includes(out.phone.replace(/-/g,'')))&&!(out.phone&&l.includes(out.phone));
+  // 店名がなければ、最初のふつうの行（「〜です」「〜と申します」は取る）
+  if(!out.name){const i=lines.findIndex((l,i)=>isPlain(l,i)&&l.length<=40);if(i>=0){out.name=lines[i].replace(/^[■□●○◆◇・\-*★☆]+\s*/,'').replace(/^(店名は|お店は|わたしたちは|私たちは)/,'').replace(/(です|と申します|でございます|になります)[。!！]*$/,'').trim();used.add(i)}}
+  // 紹介文がなければ、残りのふつうの行
+  if(!out.description){const rest=lines.filter((l,i)=>isPlain(l,i)&&!/^(TEL|ＴＥＬ|電話)/i.test(l));if(rest.length)out.description=rest.join('\n')}
+  if(out.owner_email)out.owner_email=out.owner_email.replace(/^mailto:/,'');
+  out.category=catFromLabel(out.category||'')||guessCategory((out.name||'')+' '+(out.description||''))||'other';
+  return out;
+}
+function nFill(){
+  const raw=$('nPaste').value;
+  if(!raw.trim()){$('nForm').classList.add('hidden');return}
+  const d=parseShopText(raw);
+  N_FIELDS.forEach(k=>{const el=$('n_'+k);el.value=d[k]||'';el.classList.toggle('filled',!!d[k]&&k!=='category')});
+  $('n_category').classList.add('filled');
+  $('nForm').classList.remove('hidden');$('nResult').classList.add('hidden');$('nStatus').textContent='';
+  nDupCheck();
+}
+function nDupCheck(){
+  const nm=$('n_name').value.trim().normalize('NFKC').replace(/\s/g,'');
+  const hit=nm&&aShops.find(s=>String(s.name||'').normalize('NFKC').replace(/\s/g,'')===nm);
+  $('nDup').classList.toggle('hidden',!hit);if(hit)$('nDup').textContent=`⚠️ 同じ名前のお店「${hit.name}」がもう登録されています`;
+}
+$('nPaste').addEventListener('input',()=>{clearTimeout(window._nT);window._nT=setTimeout(nFill,250)});
+$('n_name').addEventListener('input',nDupCheck);
+$('nAdd').onclick=async()=>{
+  const data={};N_FIELDS.forEach(k=>data[k]=$('n_'+k).value.trim());data.publish=$('n_publish').checked;data.rally=$('n_rally').checked;
+  const st=$('nStatus');
+  if(!data.name)return st.textContent='店名を入れてください';
+  const bad=N_FIELDS.filter(k=>k.endsWith('_url')&&data[k]&&!/^https?:\/\//.test(data[k]));
+  if(bad.length)return st.textContent='URLは https:// から始まる形にしてください';
+  if(!$('nDup').classList.contains('hidden')&&!confirm('同じ名前のお店があります。それでも追加しますか？'))return;
+  $('nAdd').disabled=true;st.textContent='追加中…';
+  try{
+    const r=(await rpc('mogu_admin_add_shop',{p_admin_pin:aPin,p_data:data}))?.[0];
+    if(!r?.shop_id)throw new Error('追加できませんでした');
+    const shopUrl=new URL('shop.html',NFC_BASE).href,guide=new URL('book/host.html',NFC_BASE).href;
+    const msg=`【もぐマップ スタンプラリー】\n${data.name} 様\nご登録ありがとうございます！\n\nお店アプリ：${shopUrl}\n店舗ページPIN：${r.shop_pin}\n\nお店アプリでお店を選んで、このPINでログインしてください。\nスタンプ用のQRコードはログイン後「📱 スタンプQR」から印刷できます。\n\n使い方ガイド：${guide}`;
+    $('nResult').innerHTML=`<b>✅ 「${esc(data.name)}」を追加しました</b>
+      <div class="muted" style="margin-top:6px">店舗ページPIN（お店に伝えます）</div><div class="pin">${esc(r.shop_pin)}</div>
+      <div class="muted">スタンプ番号：${esc(r.stamp_code)}（お店アプリに自動で出ます）</div>
+      <div class="qr-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><a class="btn" style="background:#06c755;margin:0" target="_blank" rel="noopener" href="https://line.me/R/msg/text/?${encodeURIComponent(msg)}">LINEで送る</a><button class="btn ghost" style="margin:0" id="nCopyMsg">案内文をコピー</button></div>
+      <button class="btn ghost small" style="margin-top:10px" id="nNext">続けて別のお店を追加</button>`;
+    $('nResult').classList.remove('hidden');$('nForm').classList.add('hidden');st.textContent='';
+    $('nCopyMsg').onclick=async()=>{try{await copyText(msg);toast('コピーしました')}catch{toast('コピーできませんでした')}};
+    $('nNext').onclick=()=>{$('nPaste').value='';$('nResult').classList.add('hidden');$('nPaste').focus()};
+    aLoad().then(()=>$('nResult').scrollIntoView({behavior:'smooth',block:'center'}));
+  }catch(e){console.error(e);st.textContent=errText(e).includes('Invalid PIN')?'管理者PINがちがいます':(errText(e)||'追加できませんでした')}
+  finally{$('nAdd').disabled=false}
+};
 </script>
 </body>
 </html>
