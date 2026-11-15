@@ -39,7 +39,7 @@ async function applyAppBackground(){
     const rows=await rpc('get_public_app_visual_settings',{}),r=Array.isArray(rows)?rows[0]:rows,img=safeBgImage(r?.body_image_data);
     // トップ画像（元のもぐマップのホーム上部と同じ）
     const hero=safeBgImage(r?.hero_image_data),w=document.getElementById('welcome');
-    if(hero&&w){w.style.backgroundImage=`linear-gradient(135deg,rgba(52,177,183,.58),rgba(114,184,228,.54),rgba(239,154,170,.58)),url("${hero}")`;w.style.backgroundSize=`cover,${Number(r.hero_size)||100}% auto`;w.style.backgroundPosition=`center,${Number(r.hero_x??50)}% ${Number(r.hero_y??50)}%`;w.style.backgroundRepeat='no-repeat,no-repeat'}
+    if(hero&&w&&!w.dataset.fixed){w.style.backgroundImage=`linear-gradient(135deg,rgba(52,177,183,.58),rgba(114,184,228,.54),rgba(239,154,170,.58)),url("${hero}")`;w.style.backgroundSize=`cover,${Number(r.hero_size)||100}% auto`;w.style.backgroundPosition=`center,${Number(r.hero_x??50)}% ${Number(r.hero_y??50)}%`;w.style.backgroundRepeat='no-repeat,no-repeat'}
     if(!img)return;
     // 画面に固定した背景レイヤー（スクロールしても画面いっぱい・iPhoneでもOK）
     let bg=document.getElementById('appBg');

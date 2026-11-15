@@ -73,6 +73,13 @@
 .mode-tabs button{border:0;background:none;border-radius:11px;padding:9px;font-weight:900;font-size:15px;color:var(--muted);cursor:pointer}
 .mode-tabs button.on{background:#fff;color:var(--teal);box-shadow:0 2px 6px #0001}
 .login-box{margin-top:18px;border-top:1.5px dashed var(--line);padding-top:12px}
+.top-card{border-radius:26px;overflow:hidden;background:#fff;margin-bottom:12px;box-shadow:0 14px 30px rgba(94,163,177,.2);border:1.5px solid #e7eef0}
+.top-card img{display:block;width:100%;height:auto;aspect-ratio:1200/675;object-fit:cover;background:#e9f6f8}
+.top-text{padding:12px 16px 14px;background:linear-gradient(135deg,#f2fbfb,#fff5f8)}
+.top-text h1{margin:0;font-size:21px;line-height:1.35;color:#d9475a;letter-spacing:.02em}
+.top-text p{margin:2px 0 0;font-size:15px;font-weight:800;color:var(--ink)}
+.top-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.top-tags span{background:#fff;border:1.5px solid #f0dcc8;border-radius:999px;padding:2px 8px;font-size:11.5px;white-space:nowrap;font-weight:900;color:#7a6250}
 .welcome{position:relative;overflow:hidden;min-height:150px;border-radius:28px;padding:20px 18px;margin-bottom:12px;color:#fff;background:linear-gradient(135deg,#64c5c6 0%,#78b8e4 52%,#ef9aaa 100%);box-shadow:0 16px 32px rgba(94,163,177,.22)}
 .welcome:after{content:'★  ●  ★';position:absolute;right:16px;bottom:-7px;color:#ffffff55;font-size:32px;letter-spacing:7px;transform:rotate(-8deg)}
 .welcome .eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;opacity:.9}
@@ -119,11 +126,13 @@
 
   <!-- ホーム：4つのボタンだけ -->
   <section class="view on" id="v-home">
-    <div class="welcome" id="welcome">
-      <div class="eyebrow">HOKKAIDO / PEOPLE &amp; PLACES</div>
-      <h1>めぐる、たべる、つながる</h1>
-      <p>お店をめぐって、スタンプを集めよう。</p>
-      <div class="welcome-tags"><span>🗺️ めぐる</span><span>🍴 たべる</span><span>🎁 もらえる</span></div>
+    <div class="top-card" id="welcome" data-fixed="1">
+      <img src="img/top.jpg?v=1" alt="もぐマップ：お店をめぐって、たべて、つながる街のイラスト" width="1200" height="675" fetchpriority="high">
+      <div class="top-text">
+        <h1>めぐる、たべる、つながる</h1>
+        <p>お店をめぐって、スタンプを集めよう 🎯</p>
+        <div class="top-tags"><span>🗺️ めぐる</span><span>🍴 たべる</span><span>📷 スタンプ</span><span>🎁 もらえる</span></div>
+      </div>
     </div>
     <div class="card progress-card">
       <div class="progress-num" id="pNum">0<small> / 0</small></div>
@@ -295,7 +304,7 @@
 </div>
 
 <div id="toast"></div>
-<script src="core.js?v=3"></script>
+<script src="core.js?v=4"></script>
 <script>
 let shops=[],settings={},progress=null,stampIds=new Set(),notices=[],subs=[],allSubs=[],dmMsgs=[],clears=[];
 const PER_CLEAR=3; // スタンプいくつで1クリアか
