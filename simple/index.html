@@ -112,6 +112,8 @@
 .sd-sec{margin-top:16px}.sd-sec>b{display:block;font-size:14px;color:#6b5d50;margin-bottom:4px}
 .buy-guide{background:#fff8ec;border-radius:16px;padding:12px;margin-top:12px;font-size:14px}
 .buy-guide ol{margin:6px 0 0;padding-left:20px}
+.period-bar{border-radius:18px;padding:12px 14px;margin-bottom:12px;font-weight:900;font-size:15px;text-align:center;background:#fff3d9;color:#a8742a;border:2px solid #f3d79b}
+.period-bar.open{background:#e9f7f2;color:#2f8a69;border-color:#bfe6d6;font-size:13px}
 .admin-link{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 .complete{text-align:center}
 .complete .code{font-size:28px;font-weight:900;letter-spacing:.1em;background:#fff1f6;border-radius:16px;padding:12px;margin:10px 0;color:var(--pink)}
@@ -134,6 +136,7 @@
         <div class="top-tags"><span>🗺️ めぐる</span><span>🍴 たべる</span><span>📷 スタンプ</span><span>🎁 もらえる</span></div>
       </div>
     </div>
+    <div class="period-bar hidden" id="periodBar"></div>
     <div class="card progress-card">
       <div class="progress-num" id="pNum">0<small> / 0</small></div>
       <div style="flex:1"><div class="muted" id="rallyTitle">スタンプラリー</div><div class="bar"><i id="pBar"></i></div></div>
@@ -431,7 +434,7 @@ async function claim(shopId,code){
     const before=seenClears();
     await loadProgress();
     const s=shops.find(y=>y.id===shopId);showPon(s?.name||'',false,clears.length>before);
-  }catch(e){console.error(e);toast('スタンプを押せませんでした')}
+  }catch(e){console.error(e);const m=errText(e);toast(m.includes('スタンプラリー')?m.replace(/^.*?(スタンプラリー)/,'$1'):'スタンプを押せませんでした')}
 }
 $('claimStamp').onclick=()=>{const code=$('stampCode').value.trim();claim($('stampShop').value,code).then(()=>{$('stampCode').value=''})};
 let ponClear=false;
@@ -715,8 +718,19 @@ function readNfcParams(){
   return{shop,code};
 }
 
+async function loadPeriod(){
+  try{const r=(await rpc('mogu_get_period',{}))?.[0];if(!r)return;
+    const d=v=>new Date(v).toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),el=$('periodBar');
+    el.className='period-bar';
+    if(r.status==='before')el.textContent=`⏳ スタンプラリーは ${d(r.starts_at)} からスタート！`;
+    else if(r.status==='after')el.textContent=`🏁 スタンプラリーは終了しました（${d(r.ends_at)} まで）。ありがとうございました！`;
+    else if(r.status==='open'&&r.ends_at){el.classList.add('open');el.textContent=`📅 開催中：${d(r.ends_at)} まで`}
+    else el.classList.add('hidden');
+  }catch(e){console.warn(e)}
+}
 (async()=>{
   const nfc=readNfcParams();
+  loadPeriod();
   await loadSettings();await loadShops();await loadProgress();
   if(nfc){
     go('stamp');$('stampShop').value=nfc.shop;

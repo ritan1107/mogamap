@@ -326,7 +326,7 @@ $('dGrant').onclick=async()=>{
     const r=await rpc('grant_remote_participant_stamp',{p_shop_id:login.shopId,p_shop_pin:login.pin,p_participant_entry_id:id,p_note:$('dNote').value.trim()||null}),x=r?.[0];
     if(!x?.ok)return st.textContent='スタンプを押せませんでした';
     $('dId').value='';$('dNote').value='';st.textContent=`${x.nickname||'参加者'}さんにスタンプを押しました（${x.stamp_count}/${x.total_shops}）`;
-  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('参加者ID')?'参加者IDが見つかりません':m.includes('PIN')?'PINがちがいます':'スタンプを押せませんでした'}
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('参加者ID')?'参加者IDが見つかりません':m.includes('PIN')?'PINがちがいます':m.includes('スタンプラリー')?m.replace(/^.*?(スタンプラリー)/,'$1'):'スタンプを押せませんでした'}
 };
 </script>
 </body>

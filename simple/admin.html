@@ -42,26 +42,97 @@
 #qrSvg svg{width:100%;height:auto}
 #printArea{display:none}
 @media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important;text-align:center;padding-top:30mm}#printArea svg{width:110mm;height:110mm}#printArea h1{font-size:30pt;margin:0 0 4mm;color:#397f87}#printArea p{font-size:16pt;margin:3mm 0}}
+.otabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 4px;position:sticky;top:0;z-index:5;padding:6px 0;background:rgba(246,252,251,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.otabs button{position:relative;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 2px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;color:var(--ink)}
+.otabs button span{display:block;font-size:20px;line-height:1.2}
+.otabs button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.otabs .newdot{position:absolute;top:2px;right:4px;margin:0;font-style:normal}
+.opane{display:none}.opane.on{display:block}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.kpi{background:#f6fbfa;border:1.5px solid #e1efec;border-radius:16px;padding:10px 12px}
+.kpi b{display:block;font-size:26px;line-height:1.2;color:var(--teal)}
+.kpi small{font-size:12px;color:var(--muted);font-weight:800}
+.kpi.pk b{color:var(--pink)}
+.srow{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1.5px dashed var(--line);font-size:14px}
+.srow:last-child{border-bottom:0}
+.srow .no{font-weight:900;color:var(--muted);text-align:center}
+.srow .no.top{color:#fff;background:var(--pink);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.srow .nm{font-weight:800;min-width:0}
+.srow .nm small{display:block;font-weight:700;color:var(--muted);font-size:12px}
+.srow .val{font-weight:900;text-align:right;white-space:nowrap}
+.sbar{height:7px;border-radius:9px;background:#eef2f1;margin-top:4px;overflow:hidden}.sbar i{display:block;height:100%;background:linear-gradient(90deg,#5fb3b3,#e07a9b);border-radius:9px}
+.days{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:10px;overflow-x:auto;padding-bottom:22px;position:relative}
+.days div{flex:0 0 22px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.days div i{display:block;width:16px;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#e07a9b,#5fb3b3)}
+.days div b{font-size:10px;color:var(--ink)}
+.days div small{position:absolute;bottom:-18px;font-size:9px;color:var(--muted);white-space:nowrap}
+.acts2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.acts2 .btn{font-size:15px;padding:12px 6px}
+#report{display:none}
+@media print{body>*:not(#report){display:none!important}#report{display:block!important;font-size:11pt;color:#222}#report h1{font-size:18pt;margin:0 0 2mm}#report h2{font-size:13pt;margin:6mm 0 2mm;border-bottom:1px solid #999}#report table{width:100%;border-collapse:collapse}#report td,#report th{border:1px solid #bbb;padding:1.5mm 2mm;text-align:left}#report .k{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm}#report .k div{border:1px solid #bbb;padding:2mm}#report .k b{display:block;font-size:15pt}}
 .top a{font-size:14px;color:var(--teal);font-weight:800;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><small>MOGU MAP</small>主催者ページ</div>
-    <span><a href="help.html#organizer">❓使い方</a>　<a href="shop.html">お店アプリへ</a>　<a href="../?map=1">🗺️ 元の地図版</a></span>
+    <div class="brand" style="white-space:nowrap"><small>MOGU MAP</small>主催者ページ</div>
+    <span style="font-size:12px;text-align:right;line-height:1.8"><a href="help.html#organizer">❓使い方</a>　<a href="shop.html">お店アプリへ</a>　<a href="../?map=1">🗺️ 元の地図版</a></span>
   </header>
 
   <!-- 管理者 -->
   <section id="p-admin">
     <div class="card">
       <h2>🛠 管理者メニュー</h2>
-      <div class="muted">スタンプ参加・スタンプ番号・NFC用URL・お店の基本情報を編集します。</div>
+      <div class="muted">集計・クリア通知・期間・お店の設定を管理します。</div>
       <label class="label" for="aPin">管理者PIN</label>
       <input id="aPin" type="password" autocomplete="off">
       <button class="btn" id="aOpen">開く</button>
       <div class="status" id="aStatus"></div>
     </div>
+    <div class="otabs hidden" id="oTabs">
+      <button class="on" data-o="stats"><span>📊</span>集計</button>
+      <button data-o="clear"><span>🎁</span>クリア<i class="newdot hidden" id="cNew2"></i></button>
+      <button data-o="period"><span>📅</span>期間</button>
+      <button data-o="shops"><span>🏪</span>お店</button>
+    </div>
+
+    <!-- 📊 集計 -->
+    <div class="opane on" id="o-stats">
+      <div class="card hidden" id="sCard">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h3 style="margin:0">📊 集計</h3><button class="btn ghost small" id="sRefresh">更新</button></div>
+        <div class="chips" id="sScope"><button class="chip on" data-s="all">全期間</button><button class="chip" data-s="period">設定した期間だけ</button></div>
+        <div class="muted" id="sAt"></div>
+        <div class="kpis" id="sKpis"></div>
+      </div>
+      <div class="card hidden" id="sShopsCard"><h3>🏪 お店ごと（スタンプ数・来た人）</h3><div id="sShops"></div></div>
+      <div class="card hidden" id="sRankCard"><h3>🏆 参加者ランキング</h3><div id="sRank"></div><button class="btn ghost small hidden" id="sMore" style="margin-top:10px">もっと見る</button></div>
+      <div class="card hidden" id="sDailyCard"><h3>📈 日ごとのスタンプ</h3><div id="sDaily"></div></div>
+      <div class="card hidden" id="sOut">
+        <h3>📄 レポート</h3>
+        <div class="muted">終了後のまとめや、関係者への共有に使えます。</div>
+        <div class="acts2"><button class="btn" id="sPrint">印刷・PDFにする</button><button class="btn ghost" id="sCsv">表計算ファイル（CSV）</button></div>
+      </div>
+    </div>
+
+    <!-- 📅 期間 -->
+    <div class="opane" id="o-period">
+      <div class="card">
+        <h3>📅 スタンプラリーの期間</h3>
+        <div class="muted">期間の前と後は、お客様アプリに「開始前です」「終了しました」と出て、スタンプが押せなくなります（対面・遠隔・ID入力すべて）。空のままなら、いつでも押せます。</div>
+        <div class="status" id="pNow"></div>
+        <label class="label" for="pStart">スタート</label>
+        <input id="pStart" type="datetime-local">
+        <label class="label" for="pEnd">終了</label>
+        <input id="pEnd" type="datetime-local">
+        <button class="btn" id="pSave">期間を保存する</button>
+        <button class="btn ghost" id="pClear">期間をなくす（いつでも押せる）</button>
+        <div class="status" id="pStatus"></div>
+      </div>
+    </div>
+
+    <!-- 🎁 クリア と 🏪 お店 -->
+    <div class="opane" id="o-clear"></div>
+    <div class="opane" id="o-shops">
     <div class="card hidden" id="aTools">
       <input id="aSearch" placeholder="🔎 店名・住所で探す">
       <div class="chips" id="aFilter">
@@ -79,6 +150,7 @@
       <div id="cList"></div>
     </div>
     <div id="aList"></div>
+    </div>
   </section>
 </div>
 <div class="modal" id="qrModal"><div class="sheet" style="text-align:center">
@@ -88,6 +160,7 @@
   <button class="btn" id="qrPrint">印刷する</button>
 </div></div>
 <div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
+<div id="report"></div>
 <div id="toast"></div>
 <script src="core.js?v=4"></script>
 <script src="lib/qrcode.js?v=1"></script>
@@ -106,6 +179,7 @@ async function aLoad(){
     let codes=[];try{codes=await rpc('list_shop_stamp_codes_by_admin_pin',{p_admin_pin:pin})}catch(e){console.warn(e)}
     aPin=pin;aShops=Array.isArray(rows)?rows:[];aCodes={};(codes||[]).forEach(x=>aCodes[x.shop_id]=x.stamp_code||'');
     st.textContent=`${aShops.length}店舗`;$('aTools').classList.remove('hidden');aRender();cLoad();
+    $('oTabs').classList.remove('hidden');$('o-clear').appendChild($('cCard'));sLoad();pLoad();
   }catch(e){console.error(e);st.textContent=errText(e).includes('Invalid PIN')?'管理者PINがちがいます':'読み込めませんでした';$('aTools').classList.add('hidden');$('aList').innerHTML=''}
 }
 $('aOpen').onclick=aLoad;
@@ -208,6 +282,76 @@ $('cList').onclick=async e=>{
   try{await rpc('mogu_set_reward_given',{p_admin_pin:aPin,p_event_id:b.dataset.give,p_given:give});toast(give?'景品を渡した記録をつけました':'取り消しました');await cLoad()}
   catch(err){console.error(err);toast('保存できませんでした');b.disabled=false}
 };
+
+/* ========== タブ（集計・クリア・期間・お店） ========== */
+$('oTabs').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;
+  $('oTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.opane').forEach(p=>p.classList.toggle('on',p.id==='o-'+b.dataset.o));
+  if(b.dataset.o==='stats')sLoad();if(b.dataset.o==='clear')cLoad();if(b.dataset.o==='period')pLoad();};
+new MutationObserver(()=>{$('cNew2').textContent=$('cNew').textContent;$('cNew2').classList.toggle('hidden',$('cNew').classList.contains('hidden'))}).observe($('cNew'),{attributes:true,childList:true,characterData:true,subtree:true});
+
+/* ========== 📊 集計 ========== */
+let sData=null,sScope='all',sShowAll=false;
+const jst=v=>v?new Date(v).toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+const jstDate=v=>v?new Date(v).toLocaleDateString('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'numeric',day:'numeric'}):'—';
+async function sLoad(){
+  if(!aPin)return;
+  try{sData=await rpc('mogu_admin_stats',{p_admin_pin:aPin,p_scope:sScope})}catch(e){console.error(e);$('sCard').classList.remove('hidden');$('sKpis').innerHTML='<div class="muted">集計を読み込めませんでした</div>';return}
+  ['sCard','sShopsCard','sRankCard','sDailyCard','sOut'].forEach(id=>$(id).classList.remove('hidden'));
+  sRender();
+}
+function sRender(){
+  const d=sData,t=d.totals||{};
+  const per=d.period||{};
+  $('sAt').textContent=`${jst(d.generated_at)} 時点${sScope==='period'?`（期間：${per.starts_at?jstDate(per.starts_at):'はじめ'} 〜 ${per.ends_at?jstDate(per.ends_at):'いま'}）`:'（全期間）'}`;
+  const k=(v,l,c)=>`<div class="kpi ${c||''}"><b>${v??0}</b><small>${l}</small></div>`;
+  $('sKpis').innerHTML=k(t.participants,'参加した人')+k(t.active,'スタンプを押した人')+k(t.stamps,'スタンプ合計','pk')+k(`${t.onsite}<small style="font-size:13px"> / ${t.remote}</small>`,'対面 / 通販・遠隔')
+    +k(t.clears,'クリア回数（3つで1）','pk')+k(t.clear_people,'クリアした人')+k(t.rewards_given,'景品を渡した数')+k(t.avg_stamps??0,'1人あたり平均');
+  const shops=d.shops||[],max=Math.max(1,...shops.map(s=>s.stamps));
+  $('sShops').innerHTML=shops.length?shops.map((s,i)=>`<div class="srow"><span class="no ${i<3&&s.stamps?'top':''}">${i+1}</span><div class="nm">${esc(s.name)}${s.rally?'':' <small style="display:inline">（今は不参加）</small>'}<small>来た人 ${s.people}人・対面 ${s.onsite}／遠隔 ${s.remote}・最後 ${jst(s.last_at)}</small><div class="sbar"><i style="width:${s.stamps/max*100}%"></i></div></div><span class="val">${s.stamps}個</span></div>`).join(''):'<div class="muted">まだありません</div>';
+  const rk=d.ranking||[],show=sShowAll?rk:rk.slice(0,10);
+  $('sRank').innerHTML=rk.length?show.map(r=>`<div class="srow"><span class="no ${r.rank<=3?'top':''}">${r.rank}</span><div class="nm">${esc(r.nickname)}<small>ID ${esc(r.entry_id||'—')}・${r.clears}クリア・最後 ${jst(r.last_at)}</small></div><span class="val">${r.stamps}個</span></div>`).join(''):'<div class="muted">まだありません</div>';
+  $('sMore').classList.toggle('hidden',rk.length<=10);$('sMore').textContent=sShowAll?'上位10人だけ表示':`もっと見る（${rk.length}人）`;
+  const days=(d.daily||[]).filter(x=>x.stamps||x.new_participants),dm=Math.max(1,...days.map(x=>x.stamps));
+  $('sDaily').innerHTML=days.length?`<div class="days">${days.map(x=>`<div title="${x.date}：スタンプ${x.stamps}・新しい参加${x.new_participants}"><b>${x.stamps||''}</b><i style="height:${Math.max(2,x.stamps/dm*90)}px"></i><small>${x.date.slice(5).replace('-','/')}</small></div>`).join('')}</div><div class="muted">スタンプが押された日・参加があった日だけ表示</div>`:'<div class="muted">まだありません</div>';
+}
+$('sRefresh').onclick=()=>sLoad();
+$('sMore').onclick=()=>{sShowAll=!sShowAll;sRender()};
+$('sScope').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;sScope=b.dataset.s;$('sScope').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));sLoad()};
+$('sPrint').onclick=()=>{
+  if(!sData)return;const d=sData,t=d.totals||{};
+  $('report').innerHTML=`<h1>もぐマップ スタンプラリー 集計レポート</h1><div>${$('sAt').textContent}</div>
+  <h2>全体</h2><div class="k">${[['参加した人',t.participants],['押した人',t.active],['スタンプ合計',t.stamps],['対面／遠隔',`${t.onsite}／${t.remote}`],['クリア回数',t.clears],['クリアした人',t.clear_people],['景品を渡した数',t.rewards_given],['1人あたり平均',t.avg_stamps??0]].map(([a,b])=>`<div>${a}<b>${b??0}</b></div>`).join('')}</div>
+  <h2>お店ごと</h2><table><tr><th>順位</th><th>お店</th><th>スタンプ</th><th>来た人</th><th>対面</th><th>遠隔</th></tr>${(d.shops||[]).map((s,i)=>`<tr><td>${i+1}</td><td>${esc(s.name)}</td><td>${s.stamps}</td><td>${s.people}</td><td>${s.onsite}</td><td>${s.remote}</td></tr>`).join('')}</table>
+  <h2>参加者ランキング（上位）</h2><table><tr><th>順位</th><th>名前</th><th>ID</th><th>スタンプ</th><th>クリア</th></tr>${(d.ranking||[]).map(r=>`<tr><td>${r.rank}</td><td>${esc(r.nickname)}</td><td>${esc(r.entry_id||'')}</td><td>${r.stamps}</td><td>${r.clears}</td></tr>`).join('')}</table>
+  <h2>日ごと</h2><table><tr><th>日付</th><th>スタンプ</th><th>新しい参加</th></tr>${(d.daily||[]).filter(x=>x.stamps||x.new_participants).map(x=>`<tr><td>${x.date}</td><td>${x.stamps}</td><td>${x.new_participants}</td></tr>`).join('')}</table>`;
+  window.print();
+};
+$('sCsv').onclick=()=>{
+  if(!sData)return;const d=sData,t=d.totals||{},q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+  const rows=[['もぐマップ スタンプラリー 集計',$('sAt').textContent],[],['全体'],['参加した人',t.participants],['スタンプを押した人',t.active],['スタンプ合計',t.stamps],['対面',t.onsite],['通販・遠隔',t.remote],['クリア回数',t.clears],['クリアした人',t.clear_people],['景品を渡した数',t.rewards_given],['1人あたり平均',t.avg_stamps??0],[],
+    ['お店ごと'],['順位','お店','スタンプ','来た人','対面','遠隔','最後に押された日時'],...(d.shops||[]).map((s,i)=>[i+1,s.name,s.stamps,s.people,s.onsite,s.remote,jst(s.last_at)]),[],
+    ['参加者ランキング'],['順位','名前','参加者ID','スタンプ','クリア','最初','最後'],...(d.ranking||[]).map(r=>[r.rank,r.nickname,r.entry_id,r.stamps,r.clears,jst(r.first_at),jst(r.last_at)]),[],
+    ['日ごと'],['日付','スタンプ','新しい参加'],...(d.daily||[]).map(x=>[x.date,x.stamps,x.new_participants])];
+  const csv='﻿'+rows.map(r=>r.map(q).join(',')).join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`もぐマップ集計_${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+};
+
+/* ========== 📅 期間 ========== */
+const toLocalInput=v=>{if(!v)return '';const d=new Date(v),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`};
+async function pLoad(){
+  try{const r=(await rpc('mogu_get_period',{}))?.[0]||{};
+    $('pStart').value=toLocalInput(r.starts_at);$('pEnd').value=toLocalInput(r.ends_at);
+    $('pNow').textContent={none:'いまは期間なし（いつでも押せます）',before:`⏳ 開始前（${jst(r.starts_at)} から）`,open:`✅ 開催中${r.ends_at?`（${jst(r.ends_at)} まで）`:''}`,after:`🏁 終了しました（${jst(r.ends_at)} まで）`}[r.status]||'';
+  }catch(e){console.error(e);$('pNow').textContent='期間を読み込めませんでした'}
+}
+async function pSave(start,end){
+  const st=$('pStatus');st.textContent='保存中…';
+  try{await rpc('mogu_set_period',{p_admin_pin:aPin,p_starts_at:start,p_ends_at:end});st.textContent='保存しました';await pLoad()}
+  catch(e){console.error(e);st.textContent=errText(e).includes('終了日')?'終了日はスタートより後にしてください':'保存できませんでした'}
+}
+$('pSave').onclick=()=>{const s=$('pStart').value,e=$('pEnd').value;if(!s&&!e)return $('pStatus').textContent='スタートか終了を入れてください';pSave(s?new Date(s).toISOString():null,e?new Date(e).toISOString():null)};
+$('pClear').onclick=()=>{if(confirm('期間をなくしますか？（いつでもスタンプが押せるようになります）'))pSave(null,null)};
 </script>
 </body>
 </html>
