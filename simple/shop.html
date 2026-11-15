@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#c49a3a">
 <link rel="manifest" href="shop.webmanifest?v=2">
 <title>もぐマップ お店アプリ</title>
-<link rel="stylesheet" href="core.css?v=3">
+<link rel="stylesheet" href="core.css?v=4">
 <style>
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
 .tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:12px 4px;font-weight:900;cursor:pointer;font-size:15px;position:relative}
@@ -40,6 +40,11 @@
 .big-qr h2{font-size:26px;margin:10px 0 0}
 .notice-bar{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;border:2px solid #f6d3df;background:#fff5f8;border-radius:16px;padding:11px 13px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
 .notice-bar span{font-size:26px}.notice-bar div{flex:1}.notice-bar b{display:block;color:var(--pink)}.notice-bar small{font-size:12px;color:var(--muted)}.notice-bar i{font-style:normal;font-size:22px;color:var(--pink)}
+.rbox{margin-top:14px;border-top:1.5px dashed var(--line);padding-top:12px}
+.rurl{font-size:12px;word-break:break-all;background:#effaf9;border-radius:10px;padding:8px 10px;margin-top:8px;color:var(--teal)}
+.titem{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1.5px dashed var(--line);padding:9px 0;font-size:14px}
+.titem:last-child{border-bottom:0}
+.titem small{display:block;color:var(--muted);font-size:12px}
 .foot{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 #printArea{display:none}
 @media print{
@@ -79,7 +84,7 @@
     <div class="tabs" style="margin-top:12px">
       <button class="tab on" data-tab="qr"><span>📱</span>スタンプQR</button>
       <button class="tab" data-tab="inbox"><span>📮</span>お客様<i class="dot hidden" id="inboxDot"></i></button>
-      <button class="tab" data-tab="id"><span>🔢</span>ID入力</button>
+      <button class="tab" data-tab="id"><span>📨</span>遠隔</button>
       <button class="tab" data-tab="set"><span>⚙️</span>設定</button>
     </div>
 
@@ -118,6 +123,27 @@
 
     <!-- ID入力 -->
     <div class="pane" id="p-id">
+      <div class="card">
+        <h3>📨 遠隔スタンプのURL・QRを送る</h3>
+        <div class="muted">通販や遠くのお客様に送ると、開くだけでスタンプが押されます。<b>1つのURLで1人・1回だけ</b>使えます。</div>
+        <label class="label" for="rNote">だれに送る？（メモ・任意）</label>
+        <input id="rNote" placeholder="例：〇〇様 11/15 通販ご注文">
+        <label class="label" for="rHours">使える期間</label>
+        <select id="rHours"><option value="24">24時間</option><option value="168" selected>7日間</option><option value="720">30日間</option></select>
+        <button class="btn pink" id="rMake">URLとQRを作る</button>
+        <div class="status" id="rStatus"></div>
+        <div class="rbox hidden" id="rBox">
+          <div class="qrbox" id="rQr"></div>
+          <div class="rurl" id="rUrl"></div>
+          <div class="qr-actions"><a class="btn" id="rLine" target="_blank" rel="noopener" style="background:#06c755">LINEで送る</a><button class="btn ghost" id="rCopy">文章ごとコピー</button></div>
+          <button class="btn ghost hidden" id="rShare">ほかのアプリで送る</button>
+          <div class="muted" style="margin-top:8px;font-size:13px">お店で見せるときは、このQRをお客様のもぐマップ「📷 QRコードを読み取る」で読んでもらってもOK。</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">🧾 送ったURL</h3><button class="btn ghost small" id="rRefresh">更新</button></div>
+        <div id="rList"><div class="muted">まだありません</div></div>
+      </div>
       <div class="card">
         <h3>🔢 参加者IDでスタンプ</h3>
         <div class="muted">お客様の「遠隔スタンプ用ID（5桁）」を聞いて押せます。</div>
@@ -205,6 +231,7 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
   if(t.dataset.tab==='inbox')loadInbox();
+  if(t.dataset.tab==='id')loadTickets();
   if(t.dataset.tab==='set'){loadMail();showBadgeState()}
 });
 
@@ -317,6 +344,39 @@ async function saveMail(email){
 }
 $('mSave').onclick=()=>{const v=$('mEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))return $('mStatus').textContent='メールアドレスを確認してください';saveMail(v)};
 $('mOff').onclick=()=>{if(confirm('メール通知を止めますか？'))saveMail('')};
+
+/* ---------- 遠隔スタンプのURL・QR ---------- */
+const ticketUrl=tk=>`${BASE}?rt=${encodeURIComponent(tk)}`;
+const fmt=v=>new Date(v).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+let lastTicket=null;
+$('rMake').onclick=async()=>{
+  const st=$('rStatus');st.textContent='作成中…';$('rMake').disabled=true;
+  try{
+    const r=(await rpc('mogu_create_remote_ticket',{p_shop_id:login.shopId,p_shop_pin:login.pin,p_note:$('rNote').value.trim()||null,p_hours:+$('rHours').value}))?.[0];
+    if(!r?.token)throw new Error('作れませんでした');
+    lastTicket=r;const url=ticketUrl(r.token),name=$('shopName').textContent;
+    const text=`【もぐマップ】${name}の遠隔スタンプです🎯\nこのURLを開くとスタンプが押されます（1回だけ・${fmt(r.expires_at)}まで）\n${url}`;
+    $('rQr').innerHTML=qrSvg(url);$('rUrl').textContent=url;
+    $('rLine').href='https://line.me/R/msg/text/?'+encodeURIComponent(text);
+    $('rCopy').onclick=async()=>{try{await copyText(text);toast('コピーしました')}catch{toast('コピーできませんでした')}};
+    $('rShare').classList.toggle('hidden',!navigator.share);
+    $('rShare').onclick=()=>navigator.share({title:'もぐマップ 遠隔スタンプ',text}).catch(()=>{});
+    $('rBox').classList.remove('hidden');st.textContent='できました！LINEなどでお客様に送ってください';$('rNote').value='';
+    loadTickets();setTimeout(()=>$('rBox').scrollIntoView({behavior:'smooth',block:'center'}),100);
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('PIN')?'PINが変わったようです。ログインし直してください':m.includes('対象')?'このお店は今スタンプラリー対象ではありません':'作れませんでした'}
+  finally{$('rMake').disabled=false}
+};
+async function loadTickets(){
+  try{
+    const rows=await rpc('mogu_list_remote_tickets',{p_shop_id:login.shopId,p_shop_pin:login.pin})||[];
+    $('rList').innerHTML=rows.length?rows.map(t=>{
+      const used=!!t.used_at,exp=!used&&new Date(t.expires_at)<new Date();
+      const badge=used?'<span class="badge ok">使われました</span>':exp?'<span class="badge">期限切れ</span>':'<span class="badge wait">まだ</span>';
+      return `<div class="titem"><div>${esc(t.note||'（メモなし）')}<small>${fmt(t.created_at)} 作成${used?`・${esc(t.used_nickname||'')}さん（ID ${esc(t.used_entry_id||'')}）が ${fmt(t.used_at)} に使用`:`・${fmt(t.expires_at)} まで`}</small></div>${badge}</div>`;
+    }).join(''):'<div class="muted">まだありません</div>';
+  }catch(e){console.error(e);$('rList').innerHTML='<div class="muted">読み込めませんでした</div>'}
+}
+$('rRefresh').onclick=loadTickets;
 
 /* ---------- ID入力 ---------- */
 $('dGrant').onclick=async()=>{

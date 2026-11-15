@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>もぐマップ スタンプラリー</title>
 <meta name="description" content="もぐマップのスタンプラリー。対面スタンプ・遠隔スタンプ・スタンプ帳・マイページ。">
-<link rel="stylesheet" href="core.css?v=3">
+<link rel="stylesheet" href="core.css?v=4">
 <style>
 .progress-card{display:flex;align-items:center;gap:14px}
 .progress-num{font-size:30px;font-weight:900;color:var(--pink);white-space:nowrap}
@@ -676,7 +676,7 @@ $('who').onclick=()=>participant()?go('mypage'):openJoin(null,'new');
 let scanStream=null,scanLoop=0;
 function loadJsQR(){return window.jsQR?Promise.resolve():new Promise((ok,ng)=>{const sc=document.createElement('script');sc.src='lib/jsqr.js?v=1';sc.onload=ok;sc.onerror=()=>ng(new Error('読み取り機能を読み込めませんでした'));document.head.appendChild(sc)})}
 function parseStampUrl(text){
-  try{const u=new URL(text,location.href),shop=u.searchParams.get('nfc'),code=u.searchParams.get('c');return shop?{shop,code}:null}catch{return null}
+  try{const u=new URL(text,location.href),shop=u.searchParams.get('nfc'),code=u.searchParams.get('c'),rt=u.searchParams.get('rt');return rt?{rt}:shop?{shop,code}:null}catch{return null}
 }
 async function startScan(){
   if(!participant()){openJoin(startScan);return}
@@ -696,6 +696,7 @@ async function startScan(){
         const img=ctx.getImageData(0,0,c.width,c.height),hit=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
         if(hit?.data){
           const st=parseStampUrl(hit.data);
+          if(st&&st.rt){stopScan();redeemTicket(st.rt);return}
           if(st&&st.code){stopScan();go('stamp');$('stampShop').value=st.shop;claim(st.shop,st.code);return}
           $('scanMsg').textContent='もぐマップのQRコードではないようです';
         }
@@ -711,8 +712,21 @@ $('scanBtn').onclick=startScan;$('scanClose').onclick=stopScan;
 /* ---------- NFC・リンクから開いたとき ----------
    NFCタグに書くURL： …/simple/?nfc=お店ID&c=4桁番号  → 開くだけでスタンプ
                       …/simple/?nfc=お店ID           → お店を選んだ状態で番号入力へ */
+/* 遠隔スタンプのURL（お店から届いた ?rt=…）を開いたとき */
+async function redeemTicket(tk){
+  const p=participant();
+  if(!p){openJoin(()=>redeemTicket(tk));return}
+  try{
+    const x=(await rpc('mogu_redeem_remote_ticket',{p_participant_id:p.id,p_participant_token:p.token,p_ticket:tk}))?.[0];
+    if(!x?.ok){toast(x?.message||'このURLは使えません');go('home');return}
+    const before=seenClears();
+    await loadProgress();
+    showPon(x.shop_name||'',!!x.already,!x.already&&clears.length>before);
+  }catch(e){console.error(e);const m=errText(e);toast(m.includes('スタンプラリー')?m.replace(/^.*?(スタンプラリー)/,'$1'):'スタンプを押せませんでした')}
+}
 function readNfcParams(){
-  const q=new URLSearchParams(location.search),shop=q.get('nfc'),code=q.get('c');
+  const q=new URLSearchParams(location.search),shop=q.get('nfc'),code=q.get('c'),rt=q.get('rt');
+  if(rt){history.replaceState(null,'',location.pathname);return{rt}}
   if(!shop)return null;
   history.replaceState(null,'',location.pathname); // 番号をアドレス欄に残さない
   return{shop,code};
@@ -732,6 +746,7 @@ async function loadPeriod(){
   const nfc=readNfcParams();
   loadPeriod();
   await loadSettings();await loadShops();await loadProgress();
+  if(nfc&&nfc.rt){redeemTicket(nfc.rt);return}
   if(nfc){
     go('stamp');$('stampShop').value=nfc.shop;
     if(nfc.code)claim(nfc.shop,nfc.code);

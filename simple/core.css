@@ -31,7 +31,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal2);b
 .sheet{background:#fff;border-radius:24px;padding:20px;width:100%;max-width:520px;max-height:92vh;overflow:auto}
 .sheet-head{display:flex;justify-content:space-between;align-items:center}
 .x{border:0;background:#f3eee8;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:900;background:var(--pink2);color:var(--pink)}
+.badge{display:inline-block;white-space:nowrap;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:900;background:var(--pink2);color:var(--pink)}
 .badge.ok{background:#e3f5ec;color:var(--ok)}
 .badge.wait{background:#fff3d9;color:#c08a1e}
 .row{display:flex;gap:8px;align-items:center}
