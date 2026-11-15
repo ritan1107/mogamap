@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" href="../simple/icons/favicon-48.png">
+<link rel="apple-touch-icon" href="../simple/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="もぐナビ">
+<meta name="theme-color" content="#c49a3a">
+<title>もぐナビ｜地域のお店・サービスをさがす</title>
+<meta name="description" content="地域を選ぶと、お店・宿泊・サロン・サービスがどれくらいあるか一目でわかる。地図と一覧でさがせます。">
+<link rel="stylesheet" href="../simple/core.css?v=4">
+<link rel="stylesheet" href="lib/leaflet.css">
+<style>
+.wrap{max-width:640px}
+.hero{border-radius:26px;padding:18px;color:#fff;background:linear-gradient(135deg,#64c5c6 0%,#78b8e4 52%,#ef9aaa 100%);box-shadow:0 14px 30px rgba(94,163,177,.2)}
+.hero h1{margin:0;font-size:22px}
+.hero p{margin:4px 0 0;font-size:14px;font-weight:700}
+.crumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:16px 2px 8px;font-weight:900;font-size:14px}
+.crumb button{border:0;background:none;color:var(--teal);font:inherit;cursor:pointer;padding:0}
+.crumb span{color:var(--muted)}
+.ask{font-weight:900;font-size:17px;margin:14px 2px 8px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rbtn{display:flex;justify-content:space-between;align-items:center;border:1.5px solid var(--line);background:#fff;border-radius:18px;padding:14px;font:inherit;cursor:pointer;color:var(--ink);box-shadow:0 6px 14px rgba(120,90,60,.06);text-align:left}
+.rbtn b{font-size:17px}
+.rbtn .n{font-size:22px;font-weight:900;color:var(--pink)}
+.rbtn .n small{font-size:12px;color:var(--muted);margin-left:2px}
+.rbtn.zero{opacity:.45}
+.genres{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.gbtn{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:9px 2px;font:inherit;cursor:pointer;color:var(--ink);text-align:center}
+.gbtn i{display:block;font-style:normal;font-size:24px;line-height:1.2}
+.gbtn b{display:block;font-size:20px;color:var(--teal);line-height:1.2}
+.gbtn small{font-size:11px;font-weight:800;color:var(--muted)}
+.gbtn.on{border-color:var(--teal);background:#e9f5f4;box-shadow:0 0 0 2px #397f8722}
+.gbtn.zero b{color:#c9bcb0}
+.total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;background:#fff;border-radius:16px;padding:12px 14px;border:1.5px solid var(--line)}
+.total b{font-size:26px;color:var(--pink)}
+.vt{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#f1ebe4;border-radius:14px;padding:4px;margin-top:12px}
+.vt button{border:0;background:none;border-radius:11px;padding:10px;font:inherit;font-weight:900;cursor:pointer;color:var(--muted)}
+.vt button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px #0001}
+#map{height:420px;border-radius:20px;margin-top:10px;border:1.5px solid var(--line);z-index:0}
+.mapnote{font-size:13px;color:var(--muted);margin-top:6px}
+.pcard{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:12px;margin-top:9px;cursor:pointer}
+.pcard .ic{flex:0 0 42px;height:42px;border-radius:13px;background:#fff6ea;display:flex;align-items:center;justify-content:center;font-size:22px}
+.pcard h3{margin:0;font-size:16px;color:var(--ink)}
+.pcard .addr{font-size:12.5px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tag{font-size:11px;font-weight:900;border-radius:999px;padding:1px 8px;background:#effaf9;color:var(--teal)}
+.tag.p{background:#fde8ef;color:var(--pink)}.tag.g{background:#f3eee8;color:#8a7a6a}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.links .btn{margin:0;font-size:14px;padding:11px 6px}
+.links .btn.navi{grid-column:1/-1;font-size:16px}
+.btn.buy{background:linear-gradient(135deg,#ff9c3b,#ef7a9b)}.btn.comm{background:#4caf87}
+.search{margin-top:10px}
+.leaflet-popup-content{font-family:inherit;font-size:14px}
+.leaflet-popup-content b{display:block;font-size:15px}
+.leaflet-popup-content button{margin-top:6px;border:0;background:var(--teal);color:#fff;border-radius:10px;padding:6px 10px;font-weight:900;cursor:pointer}
+.loading{text-align:center;color:var(--muted);padding:30px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><small>MOGU NAVI</small>もぐナビ</div>
+    <a class="help-link btn ghost small" href="../simple/">🎯 スタンプラリー</a>
+  </header>
+  <div class="hero">
+    <h1>地域のお店・サービスをさがそう</h1>
+    <p>地域をえらぶと、どんなお店がいくつあるか一目でわかります。</p>
+  </div>
+
+  <div class="crumb" id="crumb"></div>
+  <div id="step"></div>
+
+  <div id="result" class="hidden">
+    <div class="total"><span style="font-weight:900">この地域の加盟店・サービス</span><b id="total">0<small style="font-size:13px;color:var(--muted)"> 件</small></b></div>
+    <div class="genres" id="genres"></div>
+    <input class="search" id="q" placeholder="🔎 お店の名前・キーワード">
+    <div class="vt"><button class="on" data-v="list">📋 一覧</button><button data-v="map">🗺️ 地図</button></div>
+    <div id="mapBox" class="hidden"><div id="map"></div><div class="mapnote" id="mapNote"></div></div>
+    <div id="list"></div>
+  </div>
+  <div class="loading" id="loading">読み込み中…</div>
+</div>
+
+<div class="modal" id="detail"><div class="sheet">
+  <div class="sheet-head"><span class="badge" id="dCat"></span><button class="x" data-close="detail">×</button></div>
+  <div id="dBody"></div>
+</div></div>
+<div id="toast"></div>
+
+<script src="../simple/core.js?v=4"></script>
+<script src="lib/leaflet.js"></script>
+<script>
+/* ---------- 分類 ---------- */
+const GENRES=[['food','🍴','飲食'],['stay','🛏️','宿泊・民泊'],['salon','💆','サロン'],['shop','🛍️','お店'],['service','🔧','サービス']];
+const GICON=Object.fromEntries(GENRES.map(g=>[g[0],g[1]])),GNAME=Object.fromEntries(GENRES.map(g=>[g[0],g[2]]));
+function genreOf(p){
+  const m=p.main||'',t=`${p.name||''} ${p.sub||''} ${p.description||''}`;
+  if(m==='飲食店')return 'food';if(m==='宿泊')return 'stay';if(m==='美容')return 'salon';if(m==='買い物')return 'shop';
+  if(/宿|泊|民泊|ホテル|旅館|ゲストハウス|コテージ|グランピング|キャンプ場/.test(t))return 'stay';
+  if(/サロン|美容|エステ|ネイル|まつ|ヘア|整体|リラク|ヘナ|脱毛|マッサージ|アロマ|ヨガ/.test(t))return 'salon';
+  if(/ショップ|販売|雑貨|専門店|農園|商店|ストア|直売|物産/.test(t))return 'shop';
+  if(/カフェ|食|料理|スイーツ|パン|菓子|珈琲|コーヒー|ラーメン/.test(t))return 'food';
+  return 'service';
+}
+const AREAS=[['北海道',['北海道']],['東北',['青森県','岩手県','宮城県','秋田県','山形県','福島県']],['関東',['茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県']],['中部',['新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県']],['近畿',['三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県']],['中国・四国',['鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県']],['九州・沖縄',['福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県']]];
+const HK=[['道央',/札幌|小樽|江別|千歳|恵庭|北広島|石狩|当別|新篠津|岩見沢|美唄|三笠|夕張|栗山|長沼|由仁|南幌|月形|滝川|砂川|歌志内|赤平|芦別|深川|奈井江|上砂川|浦臼|新十津川|雨竜|妹背牛|秩父別|北竜|沼田|苫小牧|白老|厚真|安平|むかわ|室蘭|登別|伊達|洞爺湖|壮瞥|豊浦|余市|仁木|赤井川|積丹|古平|ニセコ|倶知安|京極|喜茂別|留寿都|真狩|蘭越|岩内|共和|泊村|神恵内|寿都|黒松内|島牧|日高|平取|新冠|新ひだか|浦河|様似|えりも/],
+ ['道南',/函館|北斗|七飯|鹿部|森町|八雲|長万部|今金|せたな|江差|上ノ国|厚沢部|乙部|奥尻|松前|福島町|知内|木古内/],
+ ['道北',/旭川|富良野|美瑛|上富良野|中富良野|南富良野|占冠|東川|東神楽|当麻|比布|愛別|上川|鷹栖|士別|名寄|和寒|剣淵|下川|美深|音威子府|中川|幌加内|稚内|利尻|礼文|豊富|幌延|天塩|遠別|初山別|羽幌|苫前|小平|留萌|増毛|猿払|浜頓別|中頓別|枝幸/],
+ ['道東',/帯広|音更|士幌|上士幌|鹿追|新得|清水|芽室|中札内|更別|大樹|広尾|幕別|池田|豊頃|本別|足寄|陸別|浦幌|釧路|厚岸|浜中|標茶|弟子屈|鶴居|白糠|根室|別海|中標津|標津|羅臼|北見|網走|紋別|美幌|津別|斜里|清里|小清水|訓子府|置戸|佐呂間|遠軽|湧別|滝上|興部|西興部|雄武|大空/]];
+function areaOf(p){if(p.online_only||!p.prefecture)return 'オンライン';const a=AREAS.find(a=>a[1].includes(p.prefecture));return a?a[0]:'その他'}
+function hkOf(p){const a=p.address||'';const h=HK.find(h=>h[1].test(a));return h?h[0]:'その他の町'}
+
+/* ---------- 状態 ---------- */
+let places=[],sel={area:null,pref:null,hk:null},genre=null,view='list',map=null,layer=null;
+const count=(arr,f)=>arr.reduce((m,p)=>{const k=f(p);m[k]=(m[k]||0)+1;return m},{});
+
+async function loadPlaces(){
+  const rows=await rpc('mogu_navi_places',{});
+  places=(rows||[]).map(p=>({...p,_g:genreOf(p),_area:areaOf(p),_hk:p.prefecture==='北海道'?hkOf(p):null,_onmap:!!(p.precise&&p.lat!=null&&p.lng!=null)}));
+}
+async function geocodeMissing(){
+  // 住所から地図の位置を少しずつ調べる（開いている間だけ・最大8回）
+  for(let i=0;i<8;i++){
+    if(!places.some(p=>p.precise&&p.lat==null))return;
+    try{const r=await fetch(API+'/functions/v1/mogu-navi-geocode',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},body:'{}'}).then(r=>r.json());
+      if(r&&r.found>0){await loadPlaces();render()}
+      if(!r||!(r.remaining>0))return;
+    }catch(e){console.warn('位置を調べられませんでした',e);return}
+    await new Promise(ok=>setTimeout(ok,16000));
+  }
+}
+/* ---------- 地域をえらぶ ---------- */
+function render(){
+  const cr=[`<button data-go="top">🗾 ぜんぶの地域</button>`];
+  if(sel.area)cr.push(`<span>›</span><button data-go="area">${esc(sel.area)}</button>`);
+  if(sel.pref&&sel.pref!==sel.area)cr.push(`<span>›</span><button data-go="pref">${esc(sel.pref)}</button>`);
+  if(sel.hk)cr.push(`<span>›</span><b>${esc(sel.hk)}</b>`);
+  $('crumb').innerHTML=cr.join('');
+  let html='';
+  if(!sel.area){
+    const c=count(places,p=>p._area);
+    html=`<div class="total" style="margin-top:4px"><span style="font-weight:900">登録されているお店・サービス</span><b>${places.length}<small style="font-size:13px;color:var(--muted)"> 件</small></b></div><div class="ask">👇 地域をえらんでください</div><div class="rgrid">${[...AREAS.map(a=>a[0]),'オンライン'].filter(a=>c[a]).map(a=>`<button class="rbtn" data-area="${esc(a)}"><b>${esc(a)}</b><span class="n">${c[a]}<small>件</small></span></button>`).join('')}</div>`;
+  }else if(sel.area==='北海道'&&!sel.hk&&!sel.pref){
+    const c=count(places.filter(p=>p._area==='北海道'),p=>p._hk);
+    html=`<div class="ask">👇 北海道のどのあたり？</div><div class="rgrid">${['道央','道南','道北','道東','その他の町'].map(h=>`<button class="rbtn ${c[h]?'':'zero'}" data-hk="${esc(h)}"><b>${esc(h)}</b><span class="n">${c[h]||0}<small>件</small></span></button>`).join('')}<button class="rbtn" data-hk="*"><b>ぜんぶ見る</b><span class="n">${places.filter(p=>p._area==='北海道').length}<small>件</small></span></button></div>`;
+  }else if(sel.area!=='北海道'&&sel.area!=='オンライン'&&!sel.pref){
+    const c=count(places.filter(p=>p._area===sel.area),p=>p.prefecture);
+    const prefs=(AREAS.find(a=>a[0]===sel.area)||[,[]])[1].filter(x=>c[x]);
+    html=`<div class="ask">👇 都道府県をえらんでください</div><div class="rgrid">${prefs.map(x=>`<button class="rbtn" data-pref="${esc(x)}"><b>${esc(x)}</b><span class="n">${c[x]}<small>件</small></span></button>`).join('')}<button class="rbtn" data-pref="*"><b>ぜんぶ見る</b><span class="n">${places.filter(p=>p._area===sel.area).length}<small>件</small></span></button></div>`;
+  }
+  $('step').innerHTML=html;
+  const ready=!html;
+  $('result').classList.toggle('hidden',!ready);
+  if(ready)renderResult();
+}
+$('step').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.area){sel={area:b.dataset.area,pref:null,hk:null};if(sel.area==='オンライン')sel.pref='*'}
+  else if(b.dataset.hk){sel.hk=b.dataset.hk==='*'?null:b.dataset.hk;sel.pref='北海道'}
+  else if(b.dataset.pref){sel.pref=b.dataset.pref==='*'?'*':b.dataset.pref}
+  genre=null;render();window.scrollTo({top:$('crumb').offsetTop-10,behavior:'smooth'})};
+$('crumb').onclick=e=>{const b=e.target.closest('[data-go]');if(!b)return;const g=b.dataset.go;
+  if(g==='top')sel={area:null,pref:null,hk:null};else if(g==='area')sel={area:sel.area,pref:null,hk:null};else if(g==='pref')sel={...sel,hk:null,pref:sel.area==='北海道'?null:sel.pref};
+  genre=null;render()};
+
+/* ---------- 結果（件数・地図・一覧） ---------- */
+function current(){
+  return places.filter(p=>(!sel.area||p._area===sel.area)&&(!sel.pref||sel.pref==='*'||p.prefecture===sel.pref)&&(!sel.hk||p._hk===sel.hk));
+}
+function renderResult(){
+  const base=current(),c=count(base,p=>p._g);
+  $('total').innerHTML=`${base.length}<small style="font-size:13px;color:var(--muted)"> 件</small>`;
+  $('genres').innerHTML=GENRES.map(([k,i,n])=>`<button class="gbtn ${genre===k?'on':''} ${c[k]?'':'zero'}" data-g="${k}"><i>${i}</i><b>${c[k]||0}</b><small>${n}</small></button>`).join('');
+  const q=$('q').value.trim().toLowerCase();
+  const rows=base.filter(p=>(!genre||p._g===genre)&&(!q||`${p.name} ${p.address} ${p.description||''} ${p.sub||''}`.toLowerCase().includes(q)));
+  $('list').innerHTML=rows.length?rows.map(p=>`<div class="pcard" data-id="${esc(p.id)}"><div class="ic">${GICON[p._g]}</div><div style="flex:1;min-width:0"><h3>${esc(p.name)}</h3><div class="addr">📍 ${esc(p.online_only?'オンライン':p.address||'')}</div><div class="tags"><span class="tag">${GNAME[p._g]}</span>${p.rally?'<span class="tag p">🎯 スタンプラリー</span>':''}${p.point_purchase_url?'<span class="tag">🛒 通販</span>':''}${p._onmap?'':'<span class="tag g">地図なし</span>'}</div></div></div>`).join(''):'<div class="card muted" style="margin-top:10px">この条件のお店はまだありません</div>';
+  if(view==='map')drawMap(rows);
+}
+$('genres').onclick=e=>{const b=e.target.closest('[data-g]');if(!b)return;genre=genre===b.dataset.g?null:b.dataset.g;renderResult()};
+$('q').oninput=()=>renderResult();
+document.querySelector('.vt').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;view=b.dataset.v;
+  document.querySelectorAll('.vt button').forEach(x=>x.classList.toggle('on',x===b));
+  $('mapBox').classList.toggle('hidden',view!=='map');$('list').classList.toggle('hidden',view==='map');renderResult()};
+function drawMap(rows){
+  if(!map){map=L.map('map',{zoomControl:true});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map)}
+  if(layer)layer.remove();layer=L.layerGroup().addTo(map);
+  const pts=rows.filter(p=>p._onmap);
+  pts.forEach(p=>{const m=L.marker([p.lat,p.lng]).addTo(layer);m.bindPopup(`<b>${esc(p.name)}</b>${GICON[p._g]} ${GNAME[p._g]}<br><button data-id="${esc(p.id)}">くわしく見る</button>`)});
+  setTimeout(()=>{map.invalidateSize();if(pts.length)map.fitBounds(L.latLngBounds(pts.map(p=>[p.lat,p.lng])).pad(.2),{maxZoom:15});else map.setView([43.06,141.35],7)},50);
+  const off=rows.length-pts.length;
+  $('mapNote').textContent=`地図に${pts.length}件。${off?`住所が地図で確認できない${off}件は「📋 一覧」で見られます。`:''}`;
+}
+document.getElementById('map').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(b)openDetail(b.dataset.id)});
+
+/* ---------- くわしく ---------- */
+function safeUrl(v){try{const u=new URL(String(v||'').trim());return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}}
+const ext=(u,l,c)=>{const s=safeUrl(u);return s?`<a class="btn ${c||'ghost'}" target="_blank" rel="noopener noreferrer" href="${esc(s)}">${l}</a>`:''};
+function openDetail(id){
+  const p=places.find(x=>x.id===id);if(!p)return;
+  const nav=p._onmap?`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`:(p.precise?`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.address)}`:'');
+  $('dCat').textContent=`${GICON[p._g]} ${GNAME[p._g]}`;
+  $('dBody').innerHTML=`<h2 style="margin:8px 0 2px">${esc(p.name)}</h2><div class="muted">📍 ${esc(p.online_only?'オンライン':p.address||'')}</div>
+   <div class="tags">${p.rally?'<span class="tag p">🎯 スタンプラリー参加店</span>':''}${p.job?'<span class="tag">💼 スタッフ募集</span>':''}${p.volunteer?'<span class="tag">🤝 ボランティア募集</span>':''}</div>
+   <p style="font-size:15px;white-space:pre-wrap">${esc(p.description||'紹介は準備中です。')}</p>
+   ${p.phone?`<div>☎️ <a href="tel:${esc(p.phone)}">${esc(p.phone)}</a></div>`:''}
+   <div class="links">${nav?`<a class="btn navi" target="_blank" rel="noopener" href="${esc(nav)}">🗺️ Googleマップでナビ</a>`:''}${ext(p.point_purchase_url,'🛒 購入する','buy')}${ext(p.community_url,'👥 コミュニティ','comm')}${ext(p.website_url,'🌐 ホームページ')}${ext(p.instagram_url,'📸 Instagram')}${ext(p.line_url,'💬 LINE')}${ext(p.facebook_url,'f Facebook')}${ext(p.x_url,'𝕏 X')}${p.rally?`<a class="btn pink" href="../simple/">🎯 スタンプラリーへ</a>`:''}</div>
+   ${nav?'':'<p class="muted" style="font-size:13px;margin-top:10px">住所が地図で確認できないため、ナビは出していません。</p>'}`;
+  $('detail').classList.add('on');
+}
+$('list').onclick=e=>{const c=e.target.closest('[data-id]');if(c)openDetail(c.dataset.id)};
+document.addEventListener('click',e=>{const c=e.target.closest('[data-close]');if(c)$(c.dataset.close).classList.remove('on')});
+$('detail').addEventListener('click',e=>{if(e.target===$('detail'))$('detail').classList.remove('on')});
+
+(async()=>{
+  try{await loadPlaces()}catch(e){console.error(e);$('loading').textContent='読み込めませんでした。少し待ってから開き直してください';return}
+  $('loading').classList.add('hidden');render();geocodeMissing();
+})();
+</script>
+</body>
+</html>
