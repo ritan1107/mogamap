@@ -45,6 +45,10 @@
 .titem{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1.5px dashed var(--line);padding:9px 0;font-size:14px}
 .titem:last-child{border-bottom:0}
 .titem small{display:block;color:var(--muted);font-size:12px}
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.egrid label{display:block;font-size:12px;font-weight:900;color:#6b5d50}
+.egrid label.full{grid-column:1/-1}
+.egrid input,.egrid select,.egrid textarea{margin-top:3px;padding:9px 11px;font-size:15px}
 .foot{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
 #printArea{display:none}
 @media print{
@@ -157,6 +161,26 @@
     </div>
     <!-- 設定 -->
     <div class="pane" id="p-set">
+      <div class="card" id="eCard">
+        <h3>✏️ お店の情報</h3>
+        <div class="muted">お客様アプリの「お店・購入」に出る内容です。直したら「保存する」を押してください。</div>
+        <div class="egrid">
+          <label class="full">店名<input id="e_name"></label>
+          <label class="full">住所<input id="e_address"></label>
+          <label>電話<input id="e_phone" inputmode="tel"></label>
+          <label>ジャンル<select id="e_main"><option>飲食店</option><option>美容</option><option>宿泊</option><option>買い物</option><option>その他</option></select></label>
+          <label class="full">紹介文<textarea id="e_description" rows="4"></textarea></label>
+          <label class="full">🛒 購入・通販ページ<input id="e_point_purchase_url" inputmode="url" placeholder="https://"></label>
+          <label class="full">👥 コミュニティ<input id="e_community_url" inputmode="url" placeholder="https://"></label>
+          <label class="full">🌐 ホームページ<input id="e_website_url" inputmode="url" placeholder="https://"></label>
+          <label>📸 Instagram<input id="e_instagram_url" inputmode="url" placeholder="https://"></label>
+          <label>💬 LINE<input id="e_line_url" inputmode="url" placeholder="https://"></label>
+          <label>f Facebook<input id="e_facebook_url" inputmode="url" placeholder="https://"></label>
+          <label>𝕏 X<input id="e_x_url" inputmode="url" placeholder="https://"></label>
+        </div>
+        <button class="btn" id="eSave">保存する</button>
+        <div class="status" id="eStatus"></div>
+      </div>
       <div class="card">
         <h3>🔴 アイコンに数字を出す</h3>
         <div class="muted">LINEのように、ホーム画面の「もぐマップ店」アイコンに、返事待ちの数が出ます。</div>
@@ -232,7 +256,7 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
   if(t.dataset.tab==='inbox')loadInbox();
   if(t.dataset.tab==='id')loadTickets();
-  if(t.dataset.tab==='set'){loadMail();showBadgeState()}
+  if(t.dataset.tab==='set'){loadMail();showBadgeState();loadEdit()}
 });
 
 /* ---------- スタンプQR ---------- */
@@ -325,6 +349,39 @@ $('bOn').onclick=async()=>{
   showBadgeState();loadInbox();
 };
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&login)loadInbox()});
+
+/* ---------- お店の情報を直す ---------- */
+const E_URLS=['point_purchase_url','community_url','website_url','instagram_url','line_url','facebook_url','x_url'];
+let eShop=null;
+const mainFromCat=c=>({food:'飲食店',cafe:'飲食店',izakaya:'飲食店',seafood:'飲食店','お食事処':'飲食店','カフェ':'飲食店','居酒屋':'飲食店','海鮮系':'飲食店'}[c]||'その他');
+async function loadEdit(){
+  try{shops=await loadPublicShops()}catch{}
+  eShop=shops.find(s=>s.id===login.shopId)||null;
+  const off=!eShop;
+  $('eCard').querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=off);
+  if(off){$('eStatus').textContent='このお店は今お客様アプリに出ていない（非公開）ため、ここでは直せません。主催者に連絡してください';return}
+  $('eStatus').textContent='';
+  $('e_name').value=eShop.name||'';$('e_address').value=eShop.address||'';$('e_phone').value=eShop.phone||'';$('e_description').value=eShop.description||'';
+  $('e_main').value=['飲食店','美容','宿泊','買い物','その他'].includes(eShop.main_category)?eShop.main_category:mainFromCat(eShop.category);
+  E_URLS.forEach(k=>$('e_'+k).value=eShop[k]||'');
+}
+$('eSave').onclick=async()=>{
+  if(!eShop)return;const st=$('eStatus');
+  const v={};E_URLS.forEach(k=>v[k]=$('e_'+k).value.trim());
+  const bad=E_URLS.find(k=>v[k]&&!/^https:\/\/\S+$/.test(v[k]));
+  if(bad)return st.textContent='URLは https:// から始まる形にしてください';
+  if(!$('e_name').value.trim())return st.textContent='店名を入れてください';
+  $('eSave').disabled=true;st.textContent='保存中…';
+  try{
+    await rpc('update_shop_details_by_pin',{p_shop_id:login.shopId,p_pin:login.pin,p_name:$('e_name').value.trim(),p_address:$('e_address').value.trim(),p_main_category:$('e_main').value,p_subcategory:eShop.subcategory||null,
+      p_description:$('e_description').value,p_phone:$('e_phone').value.trim(),p_stamp_rally_enabled:!!eShop.stamp_rally_enabled,
+      p_community_url:v.community_url,p_point_purchase_url:v.point_purchase_url,
+      p_spot_job_enabled:!!eShop.spot_job_enabled,p_spot_job_title:eShop.spot_job_title||'',p_spot_job_description:eShop.spot_job_description||'',p_spot_job_hourly_wage:eShop.spot_job_hourly_wage??null,p_spot_job_schedule:eShop.spot_job_schedule||'',p_spot_job_payment_method:eShop.spot_job_payment_method||'',p_spot_job_contact:eShop.spot_job_contact||'',
+      p_website_url:v.website_url,p_instagram_url:v.instagram_url,p_facebook_url:v.facebook_url,p_x_url:v.x_url,p_line_url:v.line_url});
+    st.textContent='保存しました。お客様アプリにすぐ反映されます';$('shopName').textContent=$('e_name').value.trim();await loadEdit();st.textContent='保存しました。お客様アプリにすぐ反映されます';
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('Invalid PIN')?'PINが変わったようです。ログインし直してください':m.includes('Invalid URL')?'URLは https:// から始まる形にしてください':'保存できませんでした'}
+  finally{$('eSave').disabled=false}
+};
 
 /* ---------- メール通知 ---------- */
 async function loadMail(){
