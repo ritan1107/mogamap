@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>もぐマップ 主催者専用</title>
+<link rel="icon" type="image/png" href="icons/favicon-48.png">
+<link rel="stylesheet" href="core.css?v=4">
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><div class="brand"><small>MOGU MAP</small>主催者専用</div><a class="btn ghost small" href="./">お客様アプリへ</a></header>
+  <div class="card">
+    <h2>🔐 元の地図版</h2>
+    <div class="muted">このページは主催者だけが見られます。管理者PINを入れてください。</div>
+    <label class="label" for="pin">管理者PIN</label>
+    <input id="pin" type="password" autocomplete="off">
+    <button class="btn" id="go">開く</button>
+    <div class="status" id="st"></div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="core.js?v=4"></script>
+<script>
+$('go').onclick=async()=>{
+  const pin=$('pin').value.trim(),st=$('st');if(!pin)return st.textContent='管理者PINを入れてください';
+  st.textContent='確認中…';
+  try{
+    const ok=await rpc('verify_organizer_pin',{p_pin:pin});
+    if(ok!==true){st.textContent='管理者PINがちがいます';return}
+    try{sessionStorage.setItem('mogu_map_ok','1')}catch{}
+    location.replace('../?map=1');
+  }catch(e){console.error(e);st.textContent='確認できませんでした'}
+};
+$('pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click()});
+</script>
+</body>
+</html>
