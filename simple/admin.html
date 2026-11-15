@@ -101,6 +101,7 @@
       <button class="btn" id="aOpen">開く</button>
       <div class="status" id="aStatus"></div>
     </div>
+    <a class="card hidden" id="mapLink" href="../?map=1" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);padding:12px 16px"><span style="font-size:24px">🗺️</span><span style="flex:1"><b>元の地図版を開く</b><br><small class="muted">主催者だけが見られます（背景・トップ画像の変更など）</small></span><span style="color:var(--teal);font-size:20px">›</span></a>
     <div class="otabs hidden" id="oTabs">
       <button class="on" data-o="stats"><span>📊</span>集計</button>
       <button data-o="clear"><span>🎁</span>クリア<i class="newdot hidden" id="cNew2"></i></button>
@@ -220,7 +221,7 @@ async function aLoad(){
     let codes=[];try{codes=await rpc('list_shop_stamp_codes_by_admin_pin',{p_admin_pin:pin})}catch(e){console.warn(e)}
     aPin=pin;aShops=Array.isArray(rows)?rows:[];aCodes={};(codes||[]).forEach(x=>aCodes[x.shop_id]=x.stamp_code||'');
     st.textContent=`${aShops.length}店舗`;$('aTools').classList.remove('hidden');aRender();cLoad();
-    $('oTabs').classList.remove('hidden');$('o-clear').appendChild($('cCard'));sLoad();pLoad();
+    $('oTabs').classList.remove('hidden');$('mapLink').classList.remove('hidden');try{sessionStorage.setItem('mogu_map_ok','1')}catch{}$('o-clear').appendChild($('cCard'));sLoad();pLoad();
   }catch(e){console.error(e);st.textContent=errText(e).includes('Invalid PIN')?'管理者PINがちがいます':'読み込めませんでした';$('aTools').classList.add('hidden');$('aList').innerHTML=''}
 }
 $('aOpen').onclick=aLoad;
