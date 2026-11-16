@@ -95,6 +95,7 @@
 .welcome-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .welcome-tags span{background:#ffffff38;border:1px solid #ffffff66;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:900}
 .wide-btn{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;border:2px solid #cfe0f5;background:linear-gradient(160deg,#f3f8ff,#fff);border-radius:22px;padding:15px 16px;cursor:pointer;text-align:left;box-shadow:0 8px 20px rgba(120,90,60,.09)}
+.info-btn{text-decoration:none;color:inherit;border-color:#f6d3df;background:linear-gradient(160deg,#fff1f6,#fff)}.new-dot{font-style:normal;font-size:11px;background:var(--pink);color:#fff;border-radius:999px;padding:2px 7px;vertical-align:middle}
 .wide-btn span{font-size:36px}.wide-btn div{flex:1}.wide-btn b{display:block;font-size:19px}.wide-btn small{color:var(--muted);font-size:13px}.wide-btn i{font-style:normal;font-size:26px;color:var(--teal)}
 .shop-filter{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}
 .shop-filter button{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:900;cursor:pointer;color:var(--ink)}
@@ -157,6 +158,7 @@
       <button class="big b3" data-go="book"><span>📖</span><b>スタンプ帳</b><small>集めたスタンプ</small></button>
       <button class="big b4" data-go="mypage"><span>👤</span><b>マイページ</b><small>自分の情報</small></button>
     </div>
+    <a class="wide-btn info-btn" href="info.html"><span>📣</span><div><b>お知らせ・マルシェ情報 <em class="new-dot hidden" id="infoNew">NEW</em></b><small>イベント告知・お店紹介・CM動画</small></div><i>›</i></a>
     <button class="wide-btn" data-go="shops"><span>🛍️</span><div><b>お店・購入</b><small>お店の情報を見る・通販で買う・コミュニティ</small></div><i>›</i></button>
     <a class="admin-link" href="shop.html">お店の方はこちら</a>
   </section>
@@ -774,6 +776,10 @@ function useQrText(text){
   if(st&&(st.code||st.lq||st.shop)){toast('お店にあるQRコードは、お店で「📷 QRコードを読み取る」から読み取ってください');return true}
   return false;
 }
+async function checkInfoNew(){
+  try{const t=await rpc('mogu_posts_latest',{});const seen=+(localStorage.getItem('mogu_info_seen')||0);
+    $('infoNew').classList.toggle('hidden',!(t&&new Date(t).getTime()>seen))}catch(e){console.warn(e)}
+}
 async function claimLive(token){
   const p=participant();
   if(!p){openJoin(()=>claimLive(token));return}
@@ -860,6 +866,9 @@ async function loadPeriod(){
   await loadSettings();await loadShops();await syncStyle();fillShopSelects();await loadProgress();
   if(nfc&&nfc.rt){redeemTicket(nfc.rt);return}
   if(nfc&&nfc.lq){claimLive(nfc.lq);return}
+  const qs=new URLSearchParams(location.search).get('shop');
+  if(qs&&shops.some(s=>s.id===qs)){history.replaceState(null,'',location.pathname);go('shops');openShop(qs)}
+  checkInfoNew();
   if(nfc){
     go('stamp');$('stampShop').value=nfc.shop;
     if(nfc.code)claim(nfc.shop,nfc.code);

@@ -28,6 +28,11 @@
 .paste-row{display:flex;gap:8px}.paste-row input{flex:1}.paste-row .btn{width:auto;margin:0;white-space:nowrap}
 .prow{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff}.prow .tg{display:inline-block;font-size:11px;font-weight:900;border-radius:999px;padding:1px 8px;margin-left:4px;background:#effaf9;color:var(--teal)}.prow .tg.r{background:#fff3e6;color:#c26a12}.prow .tg.g{background:#f3eee8;color:#8a7a6a}
 .st-line{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px dashed var(--line);padding:6px 0;font-size:14px}.st-line small{color:var(--muted);font-weight:700}.st-line button{flex:0 0 auto}
+.kpick{display:grid;grid-template-columns:1fr 1fr;gap:6px}.kpick button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 4px;font:inherit;font-weight:900;font-size:13.5px;cursor:pointer;color:var(--ink)}.kpick button.on{border-color:var(--pink);background:#fff3f7}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.two .btn{margin:0}
+.imgpick{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.imgpick img{width:100%;max-height:220px;object-fit:cover;border-radius:12px}
+.chk{display:flex;gap:8px;align-items:center;margin-top:12px;font-weight:800}.chk input{width:auto}
+.prw{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff}.prw .st{font-size:11.5px;font-weight:900;border-radius:999px;padding:1px 8px;margin-right:4px}.st.published{background:#e9f5f4;color:var(--teal)}.st.draft{background:#f3eee8;color:#8a7a6a}.st.trash{background:#fde8e8;color:#c0392b}.prw .chips{margin-top:6px}
 .shop{border:1.5px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;background:#fff}
 .shop h4{margin:0 0 4px;font-size:16px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
@@ -49,8 +54,8 @@
 #qrSvg svg{width:100%;height:auto}
 #printArea{display:none}
 @media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important;text-align:center;padding-top:30mm}#printArea svg{width:110mm;height:110mm}#printArea h1{font-size:30pt;margin:0 0 4mm;color:#397f87}#printArea p{font-size:16pt;margin:3mm 0}}
-.otabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0 4px;position:sticky;top:0;z-index:5;padding:6px 0;background:rgba(246,252,251,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-.otabs button{position:relative;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 2px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;color:var(--ink)}
+.otabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:12px 0 4px;position:sticky;top:0;z-index:5;padding:6px 0;background:rgba(246,252,251,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.otabs button{position:relative;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 1px;font:inherit;font-weight:900;font-size:11.5px;cursor:pointer;color:var(--ink)}
 .otabs button span{display:block;font-size:20px;line-height:1.2}
 .otabs button.on{background:var(--teal);border-color:var(--teal);color:#fff}
 .otabs .newdot{position:absolute;top:2px;right:4px;margin:0;font-style:normal}
@@ -114,6 +119,7 @@
       <button data-o="clear"><span>🎁</span>クリア<i class="newdot hidden" id="cNew2"></i></button>
       <button data-o="period"><span>📅</span>期間</button>
       <button data-o="people"><span>👥</span>参加者</button>
+      <button data-o="posts"><span>📣</span>お知らせ</button>
       <button data-o="shops"><span>🏪</span>お店</button>
     </div>
 
@@ -136,6 +142,29 @@
     </div>
 
     <!-- 📅 期間 -->
+    <div class="opane" id="o-posts">
+      <div class="card" id="pfCard">
+        <h3 id="pfTitle">📣 お知らせを書く</h3>
+        <div class="muted">ここに書いたものが「もぐマップ情報局」に出ます。<a href="info.html" target="_blank" rel="noopener">情報局を開く ›</a></div>
+        <label class="label">種類</label>
+        <div class="kpick" id="pfKind"><button class="on" data-k="news">📢 お知らせ</button><button data-k="event">🎪 マルシェ・イベント</button><button data-k="shop">🏪 お店紹介</button><button data-k="video">🎬 動画</button></div>
+        <label class="label" for="pfT">タイトル</label><input id="pfT" maxlength="100" placeholder="例）12月のクリスマスマルシェ開催！">
+        <div id="pfEvent" class="hidden"><div class="two"><div><label class="label" for="pfDate">開催日</label><input id="pfDate" type="date"></div><div><label class="label" for="pfPlace">場所</label><input id="pfPlace" placeholder="例）札幌駅前広場"></div></div></div>
+        <div id="pfShopBox" class="hidden"><label class="label" for="pfShop">紹介するお店</label><select id="pfShop"></select></div>
+        <label class="label" for="pfB">本文</label><textarea id="pfB" rows="6" maxlength="5000" placeholder="内容を書いてください。URLはそのままリンクになります。"></textarea>
+        <label class="label">画像（1枚）</label>
+        <div class="imgpick"><img id="pfImgPrev" class="hidden" alt=""><label class="btn ghost small" style="width:auto;margin:0">🖼️ 画像を選ぶ<input type="file" accept="image/*" id="pfImg" hidden></label><button class="btn ghost small hidden" id="pfImgDel" style="width:auto;margin:0">画像をはずす</button></div>
+        <label class="label" for="pfV">動画のURL（CM動画など）</label><input id="pfV" inputmode="url" placeholder="YouTube・Instagram・TikTokのURLを貼るだけ">
+        <div class="muted" style="font-size:12.5px">YouTube（ショートも）・Instagramリール・TikTok・Vimeoはページの中で再生されます</div>
+        <label class="label" for="pfL">ボタンのリンク（任意）</label><input id="pfL" inputmode="url" placeholder="https://…（申込みページ・通販など）">
+        <input id="pfLL" placeholder="ボタンの文字（例：申し込む）" style="margin-top:6px">
+        <label class="chk"><input type="checkbox" id="pfPin"> 📌 注目にする（いちばん上に出す）</label>
+        <div class="two" style="margin-top:12px"><button class="btn ghost" id="pfDraft">下書き保存</button><button class="btn pink" id="pfPub">公開する</button></div>
+        <button class="btn ghost small hidden" id="pfCancel" style="width:auto">編集をやめる</button>
+        <div class="status" id="pfStatus"></div>
+      </div>
+      <div class="card"><h3>📝 書いたもの</h3><div id="pfList"></div></div>
+    </div>
     <div class="opane" id="o-people">
       <div class="card">
         <h3>👥 参加者の内訳</h3>
@@ -373,7 +402,7 @@ $('cList').onclick=async e=>{
 $('oTabs').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;
   $('oTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.opane').forEach(p=>p.classList.toggle('on',p.id==='o-'+b.dataset.o));
-  if(b.dataset.o==='stats')sLoad();if(b.dataset.o==='people'){ptLoad();pqLoad()}if(b.dataset.o==='clear')cLoad();if(b.dataset.o==='period')pLoad();};
+  if(b.dataset.o==='stats')sLoad();if(b.dataset.o==='posts'){pfShops();pfLoad()}if(b.dataset.o==='people'){ptLoad();pqLoad()}if(b.dataset.o==='clear')cLoad();if(b.dataset.o==='period')pLoad();};
 new MutationObserver(()=>{$('cNew2').textContent=$('cNew').textContent;$('cNew2').classList.toggle('hidden',$('cNew').classList.contains('hidden'))}).observe($('cNew'),{attributes:true,childList:true,characterData:true,subtree:true});
 
 /* ========== 📊 集計 ========== */
@@ -439,6 +468,46 @@ async function pSave(start,end){
 }
 $('pSave').onclick=()=>{const s=$('pStart').value,e=$('pEnd').value;if(!s&&!e)return $('pStatus').textContent='スタートか終了を入れてください';pSave(s?new Date(s).toISOString():null,e?new Date(e).toISOString():null)};
 $('pClear').onclick=()=>{if(confirm('期間をなくしますか？（いつでもスタンプが押せるようになります）'))pSave(null,null)};
+
+/* ========== 📣 お知らせ ========== */
+let pf={kind:'news',id:null,img:null,keepImg:false},pfPosts=[];
+const PFK={news:'📢 お知らせ',event:'🎪 マルシェ・イベント',shop:'🏪 お店紹介',video:'🎬 動画'};
+function pfKindSet(k){pf.kind=k;$('pfKind').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));$('pfEvent').classList.toggle('hidden',k!=='event');$('pfShopBox').classList.toggle('hidden',k!=='shop')}
+$('pfKind').onclick=e=>{const b=e.target.closest('[data-k]');if(b)pfKindSet(b.dataset.k)};
+function pfShops(){const cur=$('pfShop').value;$('pfShop').innerHTML='<option value="">（お店を選ぶ）</option>'+aShops.filter(s=>s.is_published).map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');$('pfShop').value=cur}
+function pfImgShow(src){$('pfImgPrev').src=src||'';$('pfImgPrev').classList.toggle('hidden',!src);$('pfImgDel').classList.toggle('hidden',!src)}
+// 画像は横1080pxまでに小さくして保存
+function shrink(file){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{let w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,1080/Math.max(w,h));const c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL('image/jpeg',q);while(d.length>600000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng(new Error('img'))};im.src=u})}
+$('pfImg').onchange=async()=>{const f=$('pfImg').files?.[0];$('pfImg').value='';if(!f)return;try{pf.img=await shrink(f);pf.keepImg=false;pfImgShow(pf.img)}catch{toast('画像を読みこめませんでした')}};
+$('pfImgDel').onclick=()=>{pf.img=null;pf.keepImg=false;pfImgShow('')};
+function pfReset(){pf={kind:'news',id:null,img:null,keepImg:false};['pfT','pfB','pfV','pfL','pfLL','pfDate','pfPlace'].forEach(i=>$(i).value='');$('pfShop').value='';$('pfPin').checked=false;pfKindSet('news');pfImgShow('');$('pfTitle').textContent='📣 お知らせを書く';$('pfCancel').classList.add('hidden')}
+$('pfCancel').onclick=()=>{pfReset();$('pfStatus').textContent=''};
+async function pfSave(status){
+  const st=$('pfStatus'),t=$('pfT').value.trim();if(!t)return st.textContent='タイトルを入れてください';
+  if(pf.kind==='shop'&&!$('pfShop').value)return st.textContent='紹介するお店を選んでください';
+  const body={id:pf.id||'',kind:pf.kind,title:t,body:$('pfB').value,video_url:$('pfV').value.trim(),link_url:$('pfL').value.trim(),link_label:$('pfLL').value.trim(),
+    shop_id:pf.kind==='shop'?$('pfShop').value:'',event_date:pf.kind==='event'?$('pfDate').value:'',event_place:pf.kind==='event'?$('pfPlace').value.trim():'',
+    pinned:$('pfPin').checked,status,image_data:pf.keepImg?'':(pf.img||''),keep_image:pf.keepImg};
+  st.textContent='保存中…';
+  try{await rpc('mogu_admin_save_post',{p_admin_pin:aPin,p_post:body});st.textContent=status==='published'?'公開しました！情報局に出ています':'下書きに保存しました（まだ見えません）';pfReset();pfLoad()}
+  catch(e){console.error(e);const m=errText(e);st.textContent=/URL|タイトル|本文|画像/.test(m)?m.replace(/^.*?((URL|タイトル|本文|画像)[^"]*).*$/,'$1'):'保存できませんでした'}
+}
+$('pfDraft').onclick=()=>pfSave('draft');$('pfPub').onclick=()=>pfSave('published');
+async function pfLoad(){
+  try{pfPosts=await rpc('mogu_admin_list_posts',{p_admin_pin:aPin})||[]}catch(e){console.error(e);$('pfList').textContent='読み込めませんでした';return}
+  const SN={published:'公開中',draft:'下書き',trash:'ゴミ箱'};
+  $('pfList').innerHTML=pfPosts.length?pfPosts.map(p=>`<div class="prw"><span class="st ${p.status}">${SN[p.status]}</span>${p.pinned?'📌 ':''}<b>${esc(p.title)}</b><br><small class="muted">${PFK[p.kind]||''}・${jst(p.updated_at)}</small>
+    <div class="chips">${p.status==='trash'?`<button class="chip on" data-pa="restore" data-id="${p.id}">↩️ 元に戻す</button><button class="chip off" data-pa="purge" data-id="${p.id}">完全に消す</button>`:
+    `<button class="chip" data-pa="edit" data-id="${p.id}">✏️ 編集</button>${p.status==='published'?`<button class="chip" data-pa="unpublish" data-id="${p.id}">非公開にする</button>`:`<button class="chip on" data-pa="publish" data-id="${p.id}">公開する</button>`}<button class="chip off" data-pa="trash" data-id="${p.id}">🗑️ ゴミ箱へ</button>`}</div></div>`).join(''):'<div class="muted">まだありません。上から書いてみてね</div>';
+}
+$('pfList').onclick=async e=>{
+  const b=e.target.closest('[data-pa]');if(!b)return;const a=b.dataset.pa,p=pfPosts.find(x=>x.id===b.dataset.id);if(!p)return;
+  if(a==='edit'){pfShops();pfKindSet(p.kind);pf.id=p.id;$('pfT').value=p.title||'';$('pfB').value=p.body||'';$('pfV').value=p.video_url||'';$('pfL').value=p.link_url||'';$('pfLL').value=p.link_label||'';$('pfDate').value=p.event_date||'';$('pfPlace').value=p.event_place||'';$('pfShop').value=p.shop_id||'';$('pfPin').checked=!!p.pinned;pf.img=p.image_data||null;pf.keepImg=!!p.image_data;pfImgShow(p.image_data||'');$('pfTitle').textContent='✏️ お知らせを編集';$('pfCancel').classList.remove('hidden');$('pfCard').scrollIntoView({behavior:'smooth'});return}
+  if(a==='purge'){const w=prompt('【2段階目】完全に消します。もう元に戻せません。\n消す場合は「完全に消す」と入力してください');if(w===null)return;if(w.trim()!=='完全に消す')return toast('入力がちがうので消していません')}
+  if(a==='trash'&&!confirm('ゴミ箱に入れますか？（情報局から見えなくなります。元に戻せます）'))return;
+  try{await rpc('mogu_admin_post_action',{p_admin_pin:aPin,p_id:p.id,p_action:a});toast({publish:'公開しました',unpublish:'非公開にしました',trash:'ゴミ箱に入れました',restore:'元に戻しました（下書き）',purge:'完全に消しました'}[a]);pfLoad()}
+  catch(err){console.error(err);toast('できませんでした')}
+};
 
 /* ========== 👥 参加者 ========== */
 async function ptLoad(){

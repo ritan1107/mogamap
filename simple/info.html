@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://lgidhjxowpueglduphzp.supabase.co; media-src 'self' blob: data: https:; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://www.instagram.com https://www.tiktok.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" href="icons/favicon-48.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#c49a3a">
+<title>もぐマップ情報局｜お知らせ・マルシェ・お店紹介</title>
+<meta name="description" content="もぐマップのお知らせ、マルシェ・イベント情報、お店紹介、CM動画。">
+<link rel="stylesheet" href="core.css?v=4">
+<style>
+.ihero{position:relative;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 12px 26px rgba(120,90,60,.12)}
+.ihero img{display:block;width:100%;height:170px;object-fit:cover;object-position:center 40%}
+.ihero div{padding:12px 16px 14px}
+.ihero h1{margin:0;font-size:22px;color:var(--ink)}
+.ihero p{margin:3px 0 0;color:var(--muted);font-weight:700;font-size:14px}
+.kinds{display:flex;gap:6px;overflow-x:auto;margin:14px -2px 4px;padding:2px;scrollbar-width:none}
+.kinds::-webkit-scrollbar{display:none}
+.kinds button{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-weight:900;font-size:14px;cursor:pointer;color:var(--ink)}
+.kinds button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.post{background:#fff;border-radius:22px;margin-top:14px;overflow:hidden;box-shadow:0 8px 20px rgba(120,90,60,.09);border:1.5px solid var(--line)}
+.post.pin{border-color:#f3c48f}
+.post .pimg{display:block;width:100%;max-height:420px;object-fit:cover;background:#f6f1ea}
+.post .pin-l{background:#fff3e6;color:#c26a12;font-weight:900;font-size:12.5px;padding:5px 14px}
+.post .in{padding:14px 16px 16px}
+.post .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--muted);font-weight:700}
+.kt{border-radius:999px;padding:2px 10px;font-weight:900;font-size:12px}
+.kt.news{background:#e9f5f4;color:var(--teal)}.kt.event{background:#fde8ef;color:var(--pink)}.kt.shop{background:#fff3e6;color:#c26a12}.kt.video{background:#efeafc;color:#6a4fc2}
+.post h2{margin:6px 0 4px;font-size:19px;line-height:1.4;color:var(--ink)}
+.post .when{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;font-weight:900;font-size:14px}
+.post .when span{background:#fff8ef;border:1.5px solid #f3dcc0;border-radius:12px;padding:4px 10px}
+.post .body{font-size:15px;line-height:1.75;white-space:normal;word-break:break-word;margin-top:6px}
+.post .body a{color:var(--teal);word-break:break-all}
+.vbox{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;margin-top:10px}
+.vbox.tall{aspect-ratio:9/16;max-width:340px;margin-left:auto;margin-right:auto}
+.vbox iframe,.vbox video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlink{display:flex;align-items:center;gap:10px;margin-top:10px;border:1.5px solid var(--line);border-radius:14px;padding:12px;text-decoration:none;color:var(--ink);font-weight:900}
+.vlink span{font-size:26px}
+.plinks{display:grid;gap:8px;margin-top:12px}
+.plinks .btn{margin:0}
+.empty{text-align:center;color:var(--muted);padding:40px 10px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./" style="text-decoration:none;color:inherit"><small>MOGU MAP</small>もぐマップ情報局</a>
+    <a class="btn ghost small" href="./" style="width:auto;margin:0">🎯 スタンプへ</a>
+  </header>
+
+  <div class="ihero">
+    <img src="img/top.jpg?v=1" alt="もぐマップの街のイラスト" width="1200" height="675">
+    <div><h1>📣 お知らせ・マルシェ情報</h1><p>イベントの告知、おすすめのお店、CM動画をお届けします</p></div>
+  </div>
+
+  <div class="kinds" id="kinds">
+    <button class="on" data-k="">すべて</button>
+    <button data-k="news">📢 お知らせ</button>
+    <button data-k="event">🎪 マルシェ・イベント</button>
+    <button data-k="shop">🏪 お店紹介</button>
+    <button data-k="video">🎬 動画</button>
+  </div>
+  <div id="posts"><div class="empty">読み込み中…</div></div>
+</div>
+<div id="toast"></div>
+
+<script src="core.js?v=4"></script>
+<script>
+const KIND={news:['📢','お知らせ'],event:['🎪','マルシェ・イベント'],shop:['🏪','お店紹介'],video:['🎬','動画']};
+let posts=[],kind=new URLSearchParams(location.search).get('k')||'';
+
+function safeUrl(v){try{const u=new URL(String(v||'').trim());return u.protocol==='https:'?u:null}catch{return null}}
+// 本文：改行とURLだけ反映（HTMLは入れない）
+function bodyHtml(t){
+  return esc(t||'').replace(/https:\/\/[^\s<]+/g,m=>`<a href="${m}" target="_blank" rel="noopener noreferrer">${m}</a>`).replace(/\n/g,'<br>');
+}
+// 動画URL → 埋めこみ
+function videoHtml(raw){
+  const u=safeUrl(raw);if(!u)return '';
+  const h=u.hostname.replace(/^www\.|^m\./,''),p=u.pathname;let m;
+  if(h==='youtu.be'&&(m=p.match(/^\/([\w-]{6,})/)))return yt(m[1],false);
+  if(h.endsWith('youtube.com')){
+    if((m=p.match(/^\/shorts\/([\w-]{6,})/)))return yt(m[1],true);
+    if((m=p.match(/^\/(?:embed|live)\/([\w-]{6,})/)))return yt(m[1],false);
+    const v=u.searchParams.get('v');if(v&&/^[\w-]{6,}$/.test(v))return yt(v,false);
+  }
+  if(h==='instagram.com'&&(m=p.match(/^\/(p|reel|reels|tv)\/([\w-]+)/)))return `<div class="vbox tall"><iframe src="https://www.instagram.com/${m[1]==='reels'?'reel':m[1]}/${m[2]}/embed" loading="lazy" allowfullscreen title="Instagram"></iframe></div>`;
+  if(h==='tiktok.com'&&(m=p.match(/\/video\/(\d+)/)))return `<div class="vbox tall"><iframe src="https://www.tiktok.com/embed/v2/${m[1]}" loading="lazy" allowfullscreen title="TikTok"></iframe></div>`;
+  if(h==='vimeo.com'&&(m=p.match(/^\/(\d+)/)))return `<div class="vbox"><iframe src="https://player.vimeo.com/video/${m[1]}" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen title="Vimeo"></iframe></div>`;
+  if(/\.(mp4|webm|mov)$/i.test(p))return `<div class="vbox"><video src="${esc(u.href)}" controls playsinline preload="metadata"></video></div>`;
+  return `<a class="vlink" href="${esc(u.href)}" target="_blank" rel="noopener noreferrer"><span>▶️</span>動画を見る<small class="muted" style="margin-left:auto">${esc(h)}</small></a>`;
+}
+function yt(id,tall){return `<div class="vbox${tall?' tall':''}"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen title="YouTube"></iframe></div>`}
+const fmtDate=d=>{if(!d)return '';const x=new Date(d);return isNaN(x)?'':`${x.getMonth()+1}/${x.getDate()}`};
+const fmtEvent=d=>{if(!d)return '';const x=new Date(d+'T00:00:00+09:00');return `${x.getFullYear()}年${x.getMonth()+1}月${x.getDate()}日（${'日月火水木金土'[x.getDay()]}）`};
+
+function render(){
+  const rows=posts.filter(p=>!kind||p.kind===kind||(kind==='video'&&p.video_url));
+  document.querySelectorAll('#kinds button').forEach(b=>b.classList.toggle('on',b.dataset.k===kind));
+  if(!rows.length){$('posts').innerHTML=`<div class="empty">${kind?'この種類のお知らせは、まだありません':'お知らせは、まだありません'}<br>また見に来てね 🌱</div>`;return}
+  $('posts').innerHTML=rows.map(p=>{
+    const k=KIND[p.kind]||KIND.news,link=safeUrl(p.link_url);
+    return `<article class="post ${p.pinned?'pin':''}" id="p-${esc(p.id)}">
+      ${p.pinned?'<div class="pin-l">📌 注目</div>':''}
+      ${p.image&&/^data:image\//.test(p.image)?`<img class="pimg" src="${esc(p.image)}" alt="" loading="lazy">`:''}
+      <div class="in">
+        <div class="meta"><span class="kt ${esc(p.kind)}">${k[0]} ${k[1]}</span><span>${fmtDate(p.date)}</span></div>
+        <h2>${esc(p.title)}</h2>
+        ${p.event_date||p.event_place?`<div class="when">${p.event_date?`<span>📅 ${fmtEvent(p.event_date)}</span>`:''}${p.event_place?`<span>📍 ${esc(p.event_place)}</span>`:''}</div>`:''}
+        ${p.body?`<div class="body">${bodyHtml(p.body)}</div>`:''}
+        ${p.video_url?videoHtml(p.video_url):''}
+        <div class="plinks">
+          ${p.shop_id&&p.shop_name?`<a class="btn pink" href="./?shop=${encodeURIComponent(p.shop_id)}">🏪 ${esc(p.shop_name)} を見る</a>`:''}
+          ${link?`<a class="btn ghost" href="${esc(link.href)}" target="_blank" rel="noopener noreferrer">${esc(p.link_label||'くわしく見る')} ›</a>`:''}
+        </div>
+      </div>
+    </article>`}).join('');
+}
+$('kinds').onclick=e=>{const b=e.target.closest('[data-k]');if(!b)return;kind=b.dataset.k;history.replaceState(null,'',kind?`?k=${kind}`:location.pathname);render()};
+
+(async()=>{
+  try{posts=await rpc('mogu_list_posts',{})||[]}catch(e){console.error(e);$('posts').innerHTML='<div class="empty">読み込めませんでした。少し待って開き直してください</div>';return}
+  try{localStorage.setItem('mogu_info_seen',String(Date.now()))}catch{}
+  render();
+  const h=location.hash.slice(1);if(h)setTimeout(()=>document.getElementById(h)?.scrollIntoView({behavior:'smooth'}),200);
+})();
+</script>
+</body>
+</html>
