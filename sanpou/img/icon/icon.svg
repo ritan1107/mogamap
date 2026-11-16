@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#3A2A20"/><stop offset="1" stop-color="#1D1814"/></radialGradient>
+<radialGradient id="soup" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#E0A04A"/><stop offset="1" stop-color="#A9622A"/></radialGradient>
+<linearGradient id="bowl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C93C25"/><stop offset="1" stop-color="#8E2416"/></linearGradient>
+<clipPath id="rim"><ellipse cx="256" cy="268" rx="178" ry="56"/></clipPath>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<!-- steam -->
+<g fill="none" stroke="#D9BF8C" stroke-width="12" stroke-linecap="round" opacity=".9">
+<path d="M196 196c-18-22 18-38 0-62s16-40 4-58"/>
+<path d="M256 186c-18-24 18-40 0-66s16-42 4-62"/>
+<path d="M316 196c-18-22 18-38 0-62s16-40 4-58"/>
+</g>
+<!-- bowl body -->
+<path d="M78 268h356c0 96-76 152-178 152S78 364 78 268z" fill="url(#bowl)"/>
+<path d="M110 300h292" stroke="#D9BF8C" stroke-width="5" opacity=".7"/>
+<g fill="none" stroke="#D9BF8C" stroke-width="5" opacity=".7">
+<path d="M150 318v18h18v-12h-8M210 318v18h18v-12h-8M270 318v18h18v-12h-8M330 318v18h18v-12h-8"/>
+</g>
+<rect x="206" y="412" width="100" height="18" rx="6" fill="#6E1B10"/>
+<!-- rim + soup -->
+<ellipse cx="256" cy="268" rx="184" ry="60" fill="#F5EFE6"/>
+<g clip-path="url(#rim)">
+<ellipse cx="256" cy="272" rx="178" ry="56" fill="url(#soup)"/>
+<g fill="none" stroke="#F3D27A" stroke-width="7" stroke-linecap="round" opacity=".95">
+<path d="M100 290c30-14 50 14 80 0s50 14 80 0 50 14 80 0 50 14 80 0"/>
+<path d="M110 306c30-14 50 14 80 0s50 14 80 0 50 14 80 0 50 14 80 0"/>
+</g>
+<!-- nori -->
+<rect x="300" y="200" width="70" height="86" rx="4" fill="#1F2A22" transform="rotate(14 335 243)"/>
+<!-- chashu -->
+<ellipse cx="200" cy="262" rx="62" ry="30" fill="#E9B7A0"/>
+<ellipse cx="200" cy="262" rx="62" ry="30" fill="none" stroke="#B9684B" stroke-width="6"/>
+<path d="M162 258c20 8 50 8 76 0" stroke="#C98B72" stroke-width="4" fill="none"/>
+<!-- egg -->
+<ellipse cx="300" cy="282" rx="40" ry="24" fill="#FFF7E8"/>
+<ellipse cx="302" cy="284" rx="22" ry="13" fill="#F2A12B"/>
+<!-- negi -->
+<g fill="#5FA83A" stroke="#2F6B1E" stroke-width="2">
+<circle cx="252" cy="244" r="9"/><circle cx="270" cy="236" r="8"/><circle cx="240" cy="230" r="7"/><circle cx="262" cy="254" r="7"/>
+</g>
+</g>
+<ellipse cx="256" cy="268" rx="184" ry="60" fill="none" stroke="#B5321F" stroke-width="8"/>
+</svg>
