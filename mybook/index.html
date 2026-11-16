@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" href="icons/favicon-48.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="まとめ帳">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#9cc8f0">
+<title>まとめ帳｜りーたんのアプリ・ページ</title>
+<style>
+:root{--bg:#fbf6ef;--card:#fff;--ink:#3b3029;--muted:#8a7b6f;--line:#ecdfd2;--teal:#3f8f93;--pink:#e0789a;--gold:#c49a3a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 70px}
+header{background:linear-gradient(135deg,#64c5c6,#78b8e4 55%,#ef9aaa);color:#fff;border-radius:26px;padding:20px 18px;box-shadow:0 14px 28px rgba(94,163,177,.22)}
+header small{font-weight:900;letter-spacing:.12em;opacity:.9}
+header h1{margin:4px 0 6px;font-size:23px}
+header p{margin:0;font-size:14px;font-weight:700;line-height:1.6}
+.save{margin-top:12px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:12px 14px;font-size:13.5px;line-height:1.7}
+.save b{color:var(--teal)}
+.tools{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 8px}
+.search{display:flex;gap:8px}
+.search input{flex:1;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fff;color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font:inherit;font-weight:900;font-size:13px;color:var(--ink);cursor:pointer}
+.chips button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+section{margin-top:18px}
+section h2{display:flex;align-items:center;gap:8px;font-size:17px;margin:0 2px 2px}
+section h2 em{font-style:normal;font-size:12px;color:var(--muted);font-weight:800}
+section .lead{font-size:12.5px;color:var(--muted);font-weight:700;margin:0 2px 6px}
+.card{display:flex;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:12px;margin-top:8px;align-items:flex-start}
+.card.main{border-color:#f2c9d6;background:linear-gradient(160deg,#fff,#fff7fa)}
+.ic{flex:0 0 44px;height:44px;border-radius:14px;background:#f6efe6;display:flex;align-items:center;justify-content:center;font-size:24px}
+.bd{flex:1;min-width:0}
+.bd h3{margin:0;font-size:15.5px;line-height:1.4}
+.bd p{margin:3px 0 0;font-size:13px;color:var(--muted);font-weight:700;line-height:1.55}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.tag{font-size:11px;font-weight:900;border-radius:999px;padding:2px 8px;background:#effaf9;color:var(--teal)}
+.tag.pin{background:#fff3e6;color:#c26a12}.tag.me{background:#f1ecfb;color:#6a4fc2}.tag.pub{background:#e9f5f4;color:var(--teal)}.tag.who{background:#fde8ef;color:var(--pink)}
+.url{margin-top:5px;font-size:11.5px;color:#a79a8e;word-break:break-all}
+.acts{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+.acts a,.acts button{display:block;text-align:center;border:0;border-radius:12px;padding:8px 12px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.acts a{background:var(--teal);color:#fff}
+.acts button{background:#f3ede6;color:var(--ink)}
+.star{background:none!important;font-size:20px!important;padding:2px!important;color:#d9cfc4}
+.star.on{color:#f3b33d}
+.sub{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.sub a{font-size:12px;font-weight:800;color:var(--teal);background:#effaf9;border-radius:999px;padding:4px 10px;text-decoration:none}
+.empty{text-align:center;color:var(--muted);padding:30px;font-weight:700}
+.allcopy{display:block;width:100%;margin-top:22px;border:2px dashed #cbbfb2;background:#fff;border-radius:16px;padding:14px;font:inherit;font-weight:900;color:var(--ink);cursor:pointer}
+.note{margin-top:12px;font-size:12.5px;color:var(--muted);line-height:1.7}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;background:#3b3029;color:#fff;border-radius:999px;padding:10px 18px;font-weight:800;font-size:14px;transition:.25s;pointer-events:none;z-index:9}
+#toast.on{opacity:1;transform:translateX(-50%)}
+@media (max-width:420px){.card{flex-wrap:wrap}.acts{flex-direction:row;width:100%;justify-content:flex-end}.acts a,.acts button{flex:1}.acts .star{flex:0 0 auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icons/icon-192.png" alt="" width="64" height="64" style="float:right;border-radius:18px;box-shadow:0 6px 14px rgba(0,0,0,.12)">
+    <small>RIITAN'S LINK BOOK</small>
+    <h1>📚 アプリ・ページ まとめ帳</h1>
+    <p>りーたんが作ったアプリ・ホームページ・資料が、全部ここにあります。迷ったらここに戻ってきてね。</p>
+  </header>
+  <div class="save">
+    <b>📌 この帳面の保存のしかた</b><br>
+    ・iPhone：Safariでこのページを開いて「共有（□↑）」→「ホーム画面に追加」すると、かわいいアイコンで開けます<br>・Android：Chromeの「︙」→「ホーム画面に追加」<br>
+    ・パソコン：ブラウザの「☆（ブックマーク）」に入れておくと安心<br>
+    ・よく使うものは ☆ を押すと、いちばん上の「⭐ よく使う」に集まります（このスマホだけに保存）
+  </div>
+
+  <div class="tools">
+    <div class="search"><input id="q" type="search" placeholder="🔎 さがす（例：お店、名刺、ラーメン）"></div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div id="list"></div>
+
+  <button class="allcopy" id="allCopy">📋 全部の名前とURLをまとめてコピー（LINEのKeepやメモに貼れます）</button>
+  <div class="note">
+    🔒 は鍵（PIN）が必要なページです。PINはここには書いていません。<br>
+    「誰でも見られる」はURLを知っている人なら見られるページ、「自分だけ」はClaudeの中で作ったページで、共有するまでりーたんしか見られません。<br>
+    このページは検索に出ない設定です。URLは人に教えないでね。<br>最終更新：2026年11月16日
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const G='https://ritan1107.github.io/mogamap/';
+const A=s=>'https://claude.ai/artifact/'+s;
+// k:種類 c:カテゴリ main:主役
+const CATS=[
+ ['mogu','🎯 もぐマップ スタンプラリー','いま動いているメインのアプリ。お客様・お店・主催者の3つで連動しています'],
+ ['area','🗾 もぐマップ 地域版','前に作った地域ごとのもぐマップ'],
+ ['hb','🌉 Hope Bridge Design','りーたんのお店（自分のホームページ・お仕事の道具）'],
+ ['card','📇 電子名刺','自分とお客様の電子名刺'],
+ ['client','🏪 お客様のホームページ・特設ページ','お仕事で作ったページ'],
+ ['lp','📣 LP・集客・説明会','LINE登録や説明会につなげるページと資料'],
+ ['tool','🧰 仕事の道具・資料・その他','運用ボード・手引き書・アプリ試作など'],
+ ['admin','⚙️ うら側（設定・設計図）','データベースやプログラムの置き場。ふだんは開かなくてOK']
+];
+const L=[
+ // もぐマップ
+ {c:'mogu',main:1,i:'🎯',t:'もぐマップ スタンプラリー（お客様アプリ）',d:'お客様が使うアプリ。対面・遠隔スタンプ、スタンプ帳、マイページ、お店・購入、お知らせ',u:G,tags:[['pub','誰でも見られる'],['who','お客様用']],sub:[['スタンプラリー本体',G+'simple/']]},
+ {c:'mogu',main:1,i:'📣',t:'もぐマップ情報局（ミニホームページ）',d:'お知らせ・マルシェ情報・お店からの発信・みんなの声・CM動画',u:G+'simple/info.html',tags:[['pub','誰でも見られる'],['who','お客様用']]},
+ {c:'mogu',main:1,i:'🏪',t:'お店アプリ',d:'スタンプQR・30秒で変わるQR・お客様とのやりとり・遠隔QR・発信・設定',u:G+'simple/shop.html',tags:[['pin','🔒 お店のPIN'],['who','お店用']]},
+ {c:'mogu',main:1,i:'👑',t:'主催者ページ',d:'集計・クリア・期間・参加者・お知らせ・お店の追加と設定・リセット',u:G+'simple/admin.html',tags:[['pin','🔒 主催者PIN'],['who','主催者用']]},
+ {c:'mogu',i:'📖',t:'もぐめぐりBOOK（使い方ガイド）',d:'お客様向け・お店向けの使い方。検索つき、ホーム画面への追加のしかたも',u:G+'simple/book/',tags:[['pub','誰でも見られる']],sub:[['お客様向け',G+'simple/book/guest.html'],['お店向け',G+'simple/book/host.html'],['前の使い方ページ',G+'simple/help.html']]},
+ {c:'mogu',i:'🧭',t:'もぐナビ',d:'地域を選ぶとお店・サービスの数がわかる。地図と一覧でさがせる',u:G+'navi/',tags:[['pub','誰でも見られる']]},
+ {c:'mogu',i:'🗺️',t:'元のもぐマップ（地図版）',d:'主催者だけが入れる昔の地図版。背景やトップ画像の変更など',u:G+'simple/map-login.html',tags:[['pin','🔒 主催者PIN']]},
+ {c:'mogu',i:'📄',t:'もぐマップ 今後の展開予定（主催者さま向け）',d:'1人目の主催者さんに伝える、追加予定のまとめ資料',u:A('XPka9HVJJfKMcwEb74wt9V'),tags:[['me','自分だけ・ドキュメント']]},
+ // 地域版
+ {c:'area',i:'🗾',t:'全国モグマップ',d:'全国版のもぐマップ',u:G+'japan/',tags:[['pub','誰でも見られる']],sub:[['管理画面',G+'japan/admin.html']]},
+ {c:'area',i:'🌸',t:'MOGUマップ 埼玉',d:'埼玉版のもぐマップ',u:G+'saitama/',tags:[['pub','誰でも見られる']],sub:[['管理',G+'saitama/admin.html'],['お店の管理',G+'saitama/manage.html'],['まとめて登録',G+'saitama/bulk-register.html'],['デザイン',G+'saitama/design.html']]},
+ // Hope Bridge
+ {c:'hb',main:1,i:'🌉',t:'Hope Bridge Design ホームページ',d:'りーたんのお仕事のホームページ（公開中）',u:G+'hope-bridge/',tags:[['pub','誰でも見られる']],sub:[['自己紹介',G+'hope-bridge/about.html'],['料金',G+'hope-bridge/price.html'],['つながる',G+'hope-bridge/connect.html'],['プライバシー',G+'hope-bridge/privacy.html']]},
+ {c:'hb',i:'🎨',t:'Hope Bridge Design｜りーたんのアトリエ',d:'アトリエ版のホームページ',u:G+'hope-bridge-atelier/',tags:[['pub','誰でも見られる']],sub:[['サービス',G+'hope-bridge-atelier/service.html'],['ストーリー',G+'hope-bridge-atelier/story.html'],['つながる',G+'hope-bridge-atelier/connect.html']]},
+ {c:'hb',i:'📝',t:'Hope Bridge ヒアリングシート',d:'お仕事を受けるときに、依頼者さんに答えてもらうシート',u:A('VZFKV38DeAQcKVgaJj6Fd8'),tags:[['me','自分だけ']]},
+ {c:'hb',i:'🌉',t:'Hope Bridge Design（11/14 版）',d:'Claudeで作ったホームページの新しい版',u:A('LPUXM2aLibjyBSVHb7Zyst'),tags:[['me','自分だけ']]},
+ {c:'hb',i:'💾',t:'Hope Bridge コード一式',d:'ホームページのプログラムを、ファイルごとにコピーできるページ',u:A('UKAcgvZJVNWx5vo8yGsHBm'),tags:[['me','自分だけ']]},
+ {c:'hb',i:'🌉',t:'Hope Bridge Design（10/31 版）',d:'前の版。くらべたいときに',u:A('8EPfEFbUtJM4aeZAxS7PwN'),tags:[['me','自分だけ']],sub:[['コピー版',A('RGZV5FUxqbcTenZM5aR3Dw')]]},
+ // 名刺
+ {c:'card',main:1,i:'📇',t:'りーたん電子名刺',d:'自分の電子名刺（作品・問い合わせつき）',u:G+'ritan-denshi-meishi/',tags:[['pub','誰でも見られる']],sub:[['作品',G+'ritan-denshi-meishi/portfolio.html'],['問い合わせ',G+'ritan-denshi-meishi/contact.html'],['作品の管理',G+'ritan-denshi-meishi/portfolio-admin.html']]},
+ {c:'card',i:'💳',t:'りーたん Digital Card',d:'電子名刺（カード版）',u:G+'card/',tags:[['pub','誰でも見られる']]},
+ {c:'card',i:'💻',t:'Webクリエイター りーたん｜電子名刺',d:'Webクリエイターとしての電子名刺（LP風）',u:G+'ritan-lp-card/',tags:[['pub','誰でも見られる']]},
+ {c:'card',i:'👤',t:'阿部英明さん｜電子名刺',d:'お客様の電子名刺',u:G+'abe/',tags:[['pub','誰でも見られる'],['who','お客様']]},
+ {c:'card',i:'👤',t:'のざき まどかさん｜Digital Card',d:'お客様の電子名刺',u:G+'madoka/',tags:[['pub','誰でも見られる'],['who','お客様']]},
+ // お客様
+ {c:'client',i:'🍜',t:'東京風 山寶ラーメン ホームページ',d:'宮崎県延岡市のラーメン店（公開中）',u:G+'sanpou/',tags:[['pub','誰でも見られる'],['who','お客様']],sub:[['Claude版',A('6Eb1wr4H9AdPyRRKkDjdVQ')]]},
+ {c:'client',i:'🌲',t:'石川総業｜宮崎・延岡の伐採と林業',d:'石川くんのホームページ',u:A('WtZv8BW2SwGy3qLNGjC9JG'),tags:[['me','自分だけ'],['who','お客様']]},
+ {c:'client',i:'🧤',t:'EMAUX PAFF 北海道セーム美肌パフ',d:'洗顔パフのページ',u:A('N9JHDgMdDLVadscUGy8es3'),tags:[['me','自分だけ'],['who','お客様']],sub:[['リデザイン案（赤ペン付き）',A('8UfKRyWd1x1ro7iBXEgquQ')]]},
+ {c:'client',i:'🎩',t:'プレミアマジック！2',d:'スペンサートリックスさんの公演特設サイト',u:A('V3hCkNAgJMLECY2TxQnU6v'),tags:[['me','自分だけ'],['who','お客様']]},
+ {c:'client',i:'🎃',t:'美ラクル ハロウィンマルシェ 2026',d:'マルシェのスマホ向け案内ページ',u:A('QmEy23M7fMac2bUiC9xayQ'),tags:[['me','自分だけ']],sub:[['デザイン版',A('WbWvTzAnwa77MkFDrp54Qd')]]},
+ // LP
+ {c:'lp',i:'🍽️',t:'飲食店オーナー集客LP',d:'飲食店オーナー向け（LINE登録→説明会）',u:A('V5CuSktzaHFtA9nquRPhmP'),tags:[['me','自分だけ']]},
+ {c:'lp',i:'🍽️',t:'飲食店の伝わり方LP（B版）',d:'「伝わり方」を軸にした比較用の版',u:A('BZqGv6DcptYEcym6qxH6oB'),tags:[['me','自分だけ']]},
+ {c:'lp',i:'🍽️',t:'飲食店 新プラットフォーム説明会LP（B2版）',d:'12月スタートの新プラットフォームの説明会へ',u:A('32ZfhnPmRisSZyssYmqcdJ'),tags:[['me','自分だけ']]},
+ {c:'lp',i:'🧩',t:'LINE誘導LPテンプレート',d:'LINE登録につなげるLPのひな形（デザイン）',u:A('HqJoRQsqfu6PXJuinpouXr'),tags:[['me','自分だけ・デザイン']]},
+ {c:'lp',i:'🤝',t:'地域応援プラットフォームLP',d:'地域応援のLP（デザイン）',u:A('Nm7xLRyAydMmzcJUiio6J8'),tags:[['me','自分だけ・デザイン']]},
+ {c:'lp',i:'💗',t:'応援でつながる仕組み',d:'興味づけLP（#edit で全部編集できる）',u:A('2jHwqzAfTSpjKNwBFPbZuK'),tags:[['me','自分だけ']]},
+ {c:'lp',i:'🎁',t:'ポイント応援経済圏',d:'12/1オープン予定の新プラットフォーム特設サイト',u:A('83LUWWREfv4tcTcis1JoBN'),tags:[['me','自分だけ']]},
+ {c:'lp',i:'🏘️',t:'まちつなぎ説明会',d:'説明会のページ',u:A('TFrayN7wpGanE8MnQteHAg'),tags:[['me','自分だけ']]},
+ {c:'lp',i:'🌉',t:'ご縁の動線マップ',d:'Threads×LP漫画×公式LINEの集客の流れの提案書',u:A('J2oppB8ZX7uaMdq6Ri5Cy6'),tags:[['me','自分だけ']]},
+ {c:'lp',i:'📊',t:'デリバリー3社とてっぱん 比較資料',d:'スライド資料',u:A('7BXXg3fdnkncqHLLwQgXCU'),tags:[['me','自分だけ・スライド']]},
+ // 道具
+ {c:'tool',main:1,i:'✅',t:'うっかりゼロ帳｜お仕事タスク',d:'お仕事のやることリスト',u:A('M8PUv6gA7nNbjjywuAqzVg'),tags:[['me','自分だけ']]},
+ {c:'tool',i:'📈',t:'ゆんける運用ボード',d:'Threads運用チームの毎朝のボード',u:A('SXdZVjGPDoG3kJq2Kj8ABT'),tags:[['me','自分だけ']]},
+ {c:'tool',i:'📘',t:'ゆんける Threads運用チーム 手引き書',d:'運用チームのマニュアル',u:A('QpuRfwFScWbX6PiSvBfwUS'),tags:[['me','自分だけ・ドキュメント']]},
+ {c:'tool',i:'🎬',t:'子連れママ向け飲食店CM 絵コンテ設計',d:'聚鳳さんのホワイトボードアニメの絵コンテ',u:A('4VVXqws2evHqbg41J5LRCa'),tags:[['me','自分だけ・ドキュメント']]},
+ {c:'tool',i:'🎥',t:'8業種CM 実写AI動画プロンプト集',d:'CM動画を作るときのプロンプト集',u:A('5bvvFHUH6SGAEK2rWnCyF4'),tags:[['me','自分だけ・ドキュメント']]},
+ {c:'tool',i:'🏙️',t:'Uいっぽの街',d:'仲間作りコミュニティ「Uいっぽ」のページ',u:A('4qWdi7isrxDMsFtQeZHeUQ'),tags:[['me','自分だけ']]},
+ {c:'tool',i:'🎙️',t:'Pastel VTuber Studio',d:'VTuberアプリの試作（ボタン3つのかんたん操作）',u:A('KrWQUUAGvZomkRSHhNHErQ'),tags:[['me','自分だけ']],sub:[['ソースコード',A('NYxCSaXuaVc8tKDzMdN2gt')]]},
+ // うら側
+ {c:'admin',i:'🗄️',t:'Supabase（データベース）',d:'もぐマップ・名刺・ホームページのデータの置き場。止まったときは「Resume project」',u:'https://supabase.com/dashboard/project/lgidhjxowpueglduphzp',tags:[['pin','🔒 ログイン']]},
+ {c:'admin',i:'🐙',t:'GitHub（もぐマップ・ホームページのプログラム）',d:'ホームページやアプリのプログラムの置き場',u:'https://github.com/ritan1107/mogamap',tags:[['pin','🔒 ログイン']]},
+ {c:'admin',i:'🗂️',t:'Claudeで作ったページの一覧',d:'このまとめ帳にないものも、ここで全部見られます',u:'https://claude.ai/artifacts',tags:[['pin','🔒 ログイン']]}
+];
+
+let cat='',stars=new Set();
+try{stars=new Set(JSON.parse(localStorage.getItem('hub_stars')||'[]'))}catch{}
+if(!stars.size)L.filter(x=>x.main).forEach(x=>stars.add(x.u));
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)}
+async function copy(text,msg){try{await navigator.clipboard.writeText(text);toast(msg||'コピーしました')}catch{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg||'コピーしました')}catch{toast('コピーできませんでした')}ta.remove()}}
+function card(x){
+  return `<div class="card ${x.main?'main':''}">
+    <div class="ic">${x.i}</div>
+    <div class="bd"><h3>${esc(x.t)}</h3><p>${esc(x.d)}</p>
+      <div class="tags">${(x.tags||[]).map(t=>`<span class="tag ${t[0]}">${esc(t[1])}</span>`).join('')}</div>
+      ${x.sub?`<div class="sub">${x.sub.map(s=>`<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])} ›</a>`).join('')}</div>`:''}
+      <div class="url">${esc(x.u)}</div></div>
+    <div class="acts"><a href="${esc(x.u)}" target="_blank" rel="noopener">開く</a><button data-copy="${esc(x.u)}">URLコピー</button><button class="star ${stars.has(x.u)?'on':''}" data-star="${esc(x.u)}" aria-label="よく使うに入れる">${stars.has(x.u)?'★':'☆'}</button></div>
+  </div>`;
+}
+function render(){
+  const q=$('q').value.trim().toLowerCase();
+  const hit=x=>(!cat||x.c===cat||(cat==='star'&&stars.has(x.u)))&&(!q||`${x.t} ${x.d} ${(x.sub||[]).map(s=>s[0]).join(' ')} ${(x.tags||[]).map(t=>t[1]).join(' ')}`.toLowerCase().includes(q));
+  let h='';
+  const fav=L.filter(x=>stars.has(x.u)&&hit(x));
+  if(fav.length&&(!cat||cat==='star'))h+=`<section><h2>⭐ よく使う <em>${fav.length}</em></h2>${fav.map(card).join('')}</section>`;
+  if(cat!=='star')CATS.forEach(([k,n,lead])=>{const r=L.filter(x=>x.c===k&&hit(x));if(r.length)h+=`<section><h2>${n} <em>${r.length}</em></h2><div class="lead">${esc(lead)}</div>${r.map(card).join('')}</section>`});
+  $('list').innerHTML=h||'<div class="empty">見つかりませんでした</div>';
+}
+$('chips').innerHTML=`<button class="on" data-c="">すべて</button><button data-c="star">⭐ よく使う</button>`+CATS.map(([k,n])=>`<button data-c="${k}">${n}</button>`).join('');
+$('chips').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;$('chips').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));render();window.scrollTo({top:$('list').offsetTop-130,behavior:'smooth'})};
+$('q').oninput=render;
+$('list').onclick=e=>{
+  const c=e.target.closest('[data-copy]');if(c){copy(c.dataset.copy,'URLをコピーしました');return}
+  const s=e.target.closest('[data-star]');if(s){const u=s.dataset.star;stars.has(u)?stars.delete(u):stars.add(u);try{localStorage.setItem('hub_stars',JSON.stringify([...stars]))}catch{}render();toast(stars.has(u)?'⭐ よく使うに入れました':'よく使うから外しました')}
+};
+$('allCopy').onclick=()=>{
+  const txt='【りーたんのアプリ・ページ まとめ】\n'+CATS.map(([k,n])=>{const r=L.filter(x=>x.c===k);return `\n${n}\n`+r.map(x=>`・${x.t}\n  ${x.u}`+(x.sub?'\n'+x.sub.map(s=>`   - ${s[0]}：${s[1]}`).join('\n'):'')).join('\n')}).join('\n');
+  copy(txt,'全部コピーしました。メモやLINEのKeepに貼ってね');
+};
+render();
+</script>
+</body>
+</html>
