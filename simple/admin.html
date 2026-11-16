@@ -22,6 +22,10 @@
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .acts .btn{margin:0;font-size:15px;padding:11px}
 .rmode{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff;cursor:pointer}.rmode input{width:auto;margin-top:4px}.rmode small{display:block;color:var(--muted);font-size:12.5px;font-weight:700}.btn.danger{background:#d9534f}.trow{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff}.trow small{color:var(--muted);font-weight:700}.trow .chips{margin-top:6px}.btn:disabled{opacity:.45}
+.ptypes{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;align-items:center;margin-top:8px;font-weight:900}.ptypes .h{font-size:12.5px;color:var(--muted);text-align:center}.ptypes .c{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:20px;color:var(--pink)}.ptypes .c small{font-size:12px;color:var(--muted)}
+.paste-row{display:flex;gap:8px}.paste-row input{flex:1}.paste-row .btn{width:auto;margin:0;white-space:nowrap}
+.prow{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff}.prow .tg{display:inline-block;font-size:11px;font-weight:900;border-radius:999px;padding:1px 8px;margin-left:4px;background:#effaf9;color:var(--teal)}.prow .tg.r{background:#fff3e6;color:#c26a12}.prow .tg.g{background:#f3eee8;color:#8a7a6a}
+.st-line{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px dashed var(--line);padding:6px 0;font-size:14px}.st-line small{color:var(--muted);font-weight:700}.st-line button{flex:0 0 auto}
 .shop{border:1.5px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;background:#fff}
 .shop h4{margin:0 0 4px;font-size:16px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
@@ -43,7 +47,7 @@
 #qrSvg svg{width:100%;height:auto}
 #printArea{display:none}
 @media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important;text-align:center;padding-top:30mm}#printArea svg{width:110mm;height:110mm}#printArea h1{font-size:30pt;margin:0 0 4mm;color:#397f87}#printArea p{font-size:16pt;margin:3mm 0}}
-.otabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 4px;position:sticky;top:0;z-index:5;padding:6px 0;background:rgba(246,252,251,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.otabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0 4px;position:sticky;top:0;z-index:5;padding:6px 0;background:rgba(246,252,251,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .otabs button{position:relative;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 2px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;color:var(--ink)}
 .otabs button span{display:block;font-size:20px;line-height:1.2}
 .otabs button.on{background:var(--teal);border-color:var(--teal);color:#fff}
@@ -107,6 +111,7 @@
       <button class="on" data-o="stats"><span>📊</span>集計</button>
       <button data-o="clear"><span>🎁</span>クリア<i class="newdot hidden" id="cNew2"></i></button>
       <button data-o="period"><span>📅</span>期間</button>
+      <button data-o="people"><span>👥</span>参加者</button>
       <button data-o="shops"><span>🏪</span>お店</button>
     </div>
 
@@ -129,6 +134,19 @@
     </div>
 
     <!-- 📅 期間 -->
+    <div class="opane" id="o-people">
+      <div class="card">
+        <h3>👥 参加者の内訳</h3>
+        <div class="ptypes" id="ptypes"></div>
+        <div class="muted" id="ptypeNote" style="font-size:13px;margin-top:6px"></div>
+      </div>
+      <div class="card">
+        <h3>🔍 参加者をさがす・スタンプの取り消し</h3>
+        <div class="muted">あやしいスタンプは「取り消す」でゴミ箱に入ります。まちがえたら「元に戻す」で戻せます。</div>
+        <div class="paste-row" style="margin-top:8px"><input id="pq" placeholder="名前・参加者ID・UW.ID（空で最新30人）"><button class="btn small" id="pqBtn">さがす</button></div>
+        <div id="plist"></div>
+      </div>
+    </div>
     <div class="opane" id="o-period">
       <div class="card">
         <h3>📅 スタンプラリーの期間</h3>
@@ -257,6 +275,7 @@ function aRender(){
     <div class="chips">
       <button class="chip ${s.is_published?'on':'off'}" data-a="pub" data-id="${id}">${s.is_published?'公開中':'非公開'}</button>
       <button class="chip ${s.stamp_rally_enabled?'on':'off'}" data-a="rally" data-id="${id}">${s.stamp_rally_enabled?'スタンプ参加':'スタンプ不参加'}</button>
+      <button class="chip ${s.has_online_menu?'on':'off'}" data-a="online" data-id="${id}">${s.has_online_menu?'📦 通販 有り':'通販 無し'}</button>
       <button class="chip" data-a="open" data-id="${id}">🏪 お店アプリで開く</button>
       <button class="chip" data-a="edit" data-id="${id}">✏️ 基本情報</button>
       <button class="chip" data-a="pin" data-id="${id}">🔐 店舗PIN発行</button>
@@ -285,6 +304,7 @@ $('aList').onclick=async e=>{
       if(a==='regen'&&aCodes[s.id]&&!confirm('番号を変えると、前の番号とNFCタグは使えなくなります。変えますか？'))return;
       const r=await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_new_code:code});if(failed(r))throw 0;aCodes[s.id]=code;toast('スタンプ番号を保存しました');
     }
+    else if(a==='online'){const v=!s.has_online_menu;await rpc('mogu_admin_set_online_menu',{p_admin_pin:aPin,p_shop_id:s.id,p_on:v});s.has_online_menu=v;toast(v?'通販メニュー「有り」にしました':'通販メニュー「無し」にしました')}
     else if(a==='open'){try{localStorage.setItem('mogu_shop_login_v1',JSON.stringify({shopId:s.id,pin:aPin,name:s.name,organizer:true}))}catch{}window.open('shop.html','_blank');return}
     else if(a==='qr'){openQr(s);return}
     else if(a==='copynfc'){await copyText(nfcUrl(s.id,aCodes[s.id]));toast('NFC用URLをコピーしました');return}
@@ -349,7 +369,7 @@ $('cList').onclick=async e=>{
 $('oTabs').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;
   $('oTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.opane').forEach(p=>p.classList.toggle('on',p.id==='o-'+b.dataset.o));
-  if(b.dataset.o==='stats')sLoad();if(b.dataset.o==='clear')cLoad();if(b.dataset.o==='period')pLoad();};
+  if(b.dataset.o==='stats')sLoad();if(b.dataset.o==='people'){ptLoad();pqLoad()}if(b.dataset.o==='clear')cLoad();if(b.dataset.o==='period')pLoad();};
 new MutationObserver(()=>{$('cNew2').textContent=$('cNew').textContent;$('cNew2').classList.toggle('hidden',$('cNew').classList.contains('hidden'))}).observe($('cNew'),{attributes:true,childList:true,characterData:true,subtree:true});
 
 /* ========== 📊 集計 ========== */
@@ -415,6 +435,37 @@ async function pSave(start,end){
 }
 $('pSave').onclick=()=>{const s=$('pStart').value,e=$('pEnd').value;if(!s&&!e)return $('pStatus').textContent='スタートか終了を入れてください';pSave(s?new Date(s).toISOString():null,e?new Date(e).toISOString():null)};
 $('pClear').onclick=()=>{if(confirm('期間をなくしますか？（いつでもスタンプが押せるようになります）'))pSave(null,null)};
+
+/* ========== 👥 参加者 ========== */
+async function ptLoad(){
+  try{const t=await rpc('mogu_admin_participant_types',{p_admin_pin:aPin});
+    const c=(n,l)=>`<div class="c">${n}<small> 人</small></div>`;
+    $('ptypes').innerHTML=`<span></span><span class="h">🎫 UW.IDあり</span><span class="h">🙋 ゲスト</span>
+      <span>🏪 来店で参加</span>${c(t.onsite_uw)}${c(t.onsite_guest)}<span>📦 遠くから参加</span>${c(t.remote_uw)}${c(t.remote_guest)}`;
+    $('ptypeNote').textContent=`通販スタンプラリーの対象店：${t.online_shops}店（お店の「📦 通販 有り」）`;
+  }catch(e){console.error(e);$('ptypes').textContent='読み込めませんでした'}
+}
+let people=[];
+async function pqLoad(){
+  $('plist').innerHTML='<div class="muted" style="margin-top:8px">さがしています…</div>';
+  try{people=await rpc('mogu_admin_find_participants',{p_admin_pin:aPin,p_q:$('pq').value.trim()})||[]}catch(e){console.error(e);$('plist').innerHTML='<div class="muted">読み込めませんでした</div>';return}
+  const how=m=>({onsite:'対面',onsite_live:'変わるQR',purchase_proof:'通販の申請',remote_request:'遠隔の申請',remote_ticket:'遠隔QR'})[m]||m||'';
+  $('plist').innerHTML=people.length?people.map(p=>`<div class="prow"><b>${esc(p.nickname||'（名前なし）')}</b>
+    <span class="tg ${p.join_style==='remote'?'r':''}">${p.join_style==='remote'?'📦 遠く':'🏪 来店'}</span><span class="tg ${p.uw_id?'':'g'}">${p.uw_id?'🎫 '+esc(p.uw_id):'🙋 ゲスト'}</span>
+    <div class="muted" style="font-size:12.5px">ID ${esc(p.entry_id||'—')}・スタンプ ${p.stamps.length}個・登録 ${jst(p.created_at)}</div>
+    ${p.stamps.map(x=>`<div class="st-line"><span>${esc(x.shop_name)}<br><small>${jst(x.stamped_at)}・${how(x.method)}</small></span><button class="chip off" data-cancel="${esc(p.id)}" data-shop="${esc(x.shop_id)}" data-name="${esc(x.shop_name)}">取り消す</button></div>`).join('')}
+    ${p.trash.map(x=>`<div class="st-line" style="opacity:.75"><span>🗑️ ${esc(x.shop_name)}<br><small>取り消し ${jst(x.removed_at)}${x.reason?'・'+esc(x.reason):''}</small></span><button class="chip on" data-restore="${x.id}">元に戻す</button></div>`).join('')}
+  </div>`).join(''):'<div class="muted" style="margin-top:8px">見つかりませんでした</div>';
+}
+$('pqBtn').onclick=pqLoad;$('pq').onkeydown=e=>{if(e.key==='Enter')pqLoad()};
+$('plist').onclick=async e=>{
+  const c=e.target.closest('[data-cancel]'),r=e.target.closest('[data-restore]');
+  try{
+    if(c){const why=prompt(`「${c.dataset.name}」のスタンプを取り消します（ゴミ箱に入ります）。\n理由のメモ（任意）`,'');if(why===null)return;
+      await rpc('mogu_admin_cancel_stamp',{p_admin_pin:aPin,p_participant_id:c.dataset.cancel,p_shop_id:c.dataset.shop,p_reason:why});toast('取り消しました（ゴミ箱から戻せます）');pqLoad()}
+    else if(r){await rpc('mogu_admin_restore_stamp',{p_admin_pin:aPin,p_trash_id:+r.dataset.restore});toast('元に戻しました');pqLoad()}
+  }catch(err){console.error(err);toast('できませんでした')}
+};
 
 /* ========== 🧹 リセット ========== */
 let rLocked=true;

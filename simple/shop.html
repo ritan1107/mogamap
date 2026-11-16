@@ -39,6 +39,9 @@
 .big-qr svg{width:min(86vw,70vh);height:auto}
 .big-qr h2{font-size:26px;margin:10px 0 0}
 .org-bar{display:flex;align-items:center;gap:10px;margin-top:10px;border:2px solid #e9cf86;background:#fff8e1;border-radius:16px;padding:10px 12px}.org-bar div{flex:1}.org-bar small{display:block;color:var(--muted);font-size:12px}.org-bar .btn{width:auto;margin:0;padding:7px 10px;font-size:13px}
+.live-card{border:2px solid #f6c7d6}.live-card .badge{font-size:12px;vertical-align:middle}.live-timer{width:min(70vw,320px);height:8px;background:#eee;border-radius:9px;overflow:hidden;margin:6px auto}.live-timer i{display:block;height:100%;background:var(--pink);transition:width 1s linear}
+.ol-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ol-pick button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 4px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}.ol-pick button.on{border-color:var(--teal);background:#e9f5f4}
+.online-off{border:2px dashed #f3c48f;background:#fff9f1;border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:14px;font-weight:700}.online-off .btn{width:auto;margin:8px 0 0;display:block}
 .notice-bar{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;border:2px solid #f6d3df;background:#fff5f8;border-radius:16px;padding:11px 13px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
 .notice-bar span{font-size:26px}.notice-bar div{flex:1}.notice-bar b{display:block;color:var(--pink)}.notice-bar small{font-size:12px;color:var(--muted)}.notice-bar i{font-style:normal;font-size:22px;color:var(--pink)}
 .rbox{margin-top:14px;border-top:1.5px dashed var(--line);padding-top:12px}
@@ -96,8 +99,13 @@
 
     <!-- スタンプQR -->
     <div class="pane on" id="p-qr">
+      <div class="card live-card">
+        <h3>🔄 30秒ごとに変わるQR <span class="badge">おすすめ</span></h3>
+        <div class="muted">レジ横などでスマホやタブレットに出しておくQRです。<b>写真を撮って回されても、すぐ使えなくなる</b>のでズル防止になります。</div>
+        <button class="btn pink" id="liveOpen">変わるQRを表示する</button>
+      </div>
       <div class="card hidden" id="qrReady">
-        <h3>📱 お客様に読み取ってもらうQR</h3>
+        <h3>📱 印刷・NFC用のQR（固定）</h3>
         <div class="muted">お客様は「もぐマップ」の「📷 QRコードを読み取る」で読むだけ。スタンプが押されます。</div>
         <div class="qrbox" id="qrSvg"></div>
         <div class="qr-actions">
@@ -130,6 +138,7 @@
     <!-- ID入力 -->
     <div class="pane" id="p-id">
       <div class="card">
+        <div class="online-off hidden" id="olOff">📦 通販メニューが「無し」になっているので、遠隔スタンプは使えません。<button class="btn small" id="olGo">設定で「有り」にする</button></div>
         <h3>📨 遠隔スタンプのURL・QRを送る</h3>
         <div class="muted">通販や遠くのお客様に送ると、開くだけでスタンプが押されます。<b>1つのURLで1人・1回だけ</b>使えます。</div>
         <label class="label" for="rNote">だれに送る？（メモ・任意）</label>
@@ -163,6 +172,12 @@
     </div>
     <!-- 設定 -->
     <div class="pane" id="p-set">
+      <div class="card" id="olCard">
+        <h3>📦 通販メニュー</h3>
+        <div class="muted">「有り」にすると<b>通販スタンプラリー</b>の対象になり、遠くのお客様も通販で買ってスタンプを集められます。遠隔スタンプ（URL・QR・申請）は「有り」のお店だけ使えます。</div>
+        <div class="ol-pick" id="olPick"><button data-ol="1">📦 有り</button><button data-ol="0">🏪 無し（来店のみ）</button></div>
+        <div class="status" id="olStatus"></div>
+      </div>
       <div class="card" id="eCard">
         <h3>✏️ お店の情報</h3>
         <div class="muted">お客様アプリの「お店・購入」に出る内容です。直したら「保存する」を押してください。</div>
@@ -210,6 +225,7 @@
   <a class="foot" href="admin.html">主催者の方はこちら</a>
 </div>
 
+<div class="big-qr" id="liveQr"><div id="liveSvg"></div><h2 id="liveName"></h2><div class="live-timer"><i id="liveBar"></i></div><p class="muted" id="liveMsg">もぐマップの📷で読み取ってください（30秒ごとに変わります）</p><button class="btn ghost" style="width:auto;padding:12px 30px" id="liveClose">とじる</button></div>
 <div class="big-qr" id="bigQr"><div id="bigQrSvg"></div><h2 id="bigQrName"></h2><p class="muted">もぐマップの📷で読み取ってください</p><button class="btn ghost" style="width:auto;padding:12px 30px" id="bigQrClose">とじる</button></div>
 <div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
 <div id="toast"></div>
@@ -251,7 +267,7 @@ function enter(){
   try{if(window.Notification&&Notification.permission==='granted')$('noticeBar').classList.add('hidden')}catch{}
   $('shopName').textContent=login.name||shops.find(s=>s.id===login.shopId)?.name||'';
   $('orgBar').classList.toggle('hidden',!login.organizer);
-  setupQr();loadInbox(true);if(NOTIFY_URL)loadMail();
+  setupQr();loadOnline();loadInbox(true);if(NOTIFY_URL)loadMail();
   timer=setInterval(()=>{if(document.visibilityState==='visible')loadInbox()},30000);
 }
 function goTab(name){const t=document.querySelector(`.tab[data-tab="${name}"]`);if(t)t.click();window.scrollTo({top:0,behavior:'smooth'})}
@@ -290,6 +306,36 @@ $('qrBig').onclick=()=>$('bigQr').classList.add('on');
 $('bigQrClose').onclick=()=>$('bigQr').classList.remove('on');
 $('qrPrint').onclick=()=>window.print();
 $('qrCopy').onclick=async()=>{try{await copyText(stampUrl(login.code));toast('URLをコピーしました')}catch{toast('コピーできませんでした')}};
+
+/* ---------- 30秒ごとに変わるQR ---------- */
+let liveTimer=0,liveLeft=0;
+async function liveRefresh(){
+  try{const r=await rpc('mogu_shop_live_qr',{p_shop_id:login.shopId,p_pin:login.pin});
+    $('liveSvg').innerHTML=qrSvg(`${BASE}?lq=${encodeURIComponent(r.token)}`);$('liveMsg').textContent='もぐマップの📷で読み取ってください（30秒ごとに変わります）';liveLeft=30;
+  }catch(e){console.error(e);$('liveMsg').textContent='QRを作れませんでした。電波を確認してください';liveLeft=5}
+}
+$('liveOpen').onclick=async()=>{
+  $('liveName').textContent=$('shopName').textContent;$('liveQr').classList.add('on');
+  try{await navigator.wakeLock?.request('screen')}catch{}
+  await liveRefresh();clearInterval(liveTimer);
+  liveTimer=setInterval(()=>{liveLeft--;$('liveBar').style.width=Math.max(0,liveLeft/30*100)+'%';if(liveLeft<=0)liveRefresh()},1000);
+};
+$('liveClose').onclick=()=>{clearInterval(liveTimer);$('liveQr').classList.remove('on')};
+
+/* ---------- 通販メニュー 有り／無し ---------- */
+let hasOnline=null;
+function showOnline(){
+  $('olPick').querySelectorAll('button').forEach(b=>b.classList.toggle('on',hasOnline!==null&&(b.dataset.ol==='1')===hasOnline));
+  $('olOff').classList.toggle('hidden',hasOnline!==false);
+}
+async function loadOnline(){try{hasOnline=!!(await rpc('mogu_shop_online_menu',{p_shop_id:login.shopId,p_pin:login.pin}))}catch(e){console.warn(e)}showOnline()}
+$('olPick').onclick=async e=>{
+  const b=e.target.closest('[data-ol]');if(!b)return;const on=b.dataset.ol==='1';$('olStatus').textContent='保存中…';
+  try{await rpc('mogu_shop_set_online_menu',{p_shop_id:login.shopId,p_pin:login.pin,p_on:on});hasOnline=on;showOnline();
+    $('olStatus').textContent=on?'「有り」にしました。お客様アプリに「📦 通販スタンプOK」と出ます':'「無し」にしました（来店のみ）'}
+  catch(e){console.error(e);$('olStatus').textContent='保存できませんでした'}
+};
+$('olGo').onclick=()=>{goTab('set');setTimeout(()=>$('olCard').scrollIntoView({behavior:'smooth'}),100)};
 
 /* ---------- お客様からの連絡 ---------- */
 async function loadInbox(first){
@@ -425,7 +471,7 @@ $('rMake').onclick=async()=>{
     $('rShare').onclick=()=>navigator.share({title:'もぐマップ 遠隔スタンプ',text}).catch(()=>{});
     $('rBox').classList.remove('hidden');st.textContent='できました！LINEなどでお客様に送ってください';$('rNote').value='';
     loadTickets();setTimeout(()=>$('rBox').scrollIntoView({behavior:'smooth',block:'center'}),100);
-  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('PIN')?'PINが変わったようです。ログインし直してください':m.includes('対象')?'このお店は今スタンプラリー対象ではありません':'作れませんでした'}
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('PIN')?'PINが変わったようです。ログインし直してください':m.includes('通販メニュー')?'通販メニューが「無し」なので作れません（⚙️設定で「有り」にできます）':m.includes('対象')?'このお店は今スタンプラリー対象ではありません':'作れませんでした'}
   finally{$('rMake').disabled=false}
 };
 async function loadTickets(){
@@ -448,7 +494,7 @@ $('dGrant').onclick=async()=>{
     const r=await rpc('grant_remote_participant_stamp',{p_shop_id:login.shopId,p_shop_pin:login.pin,p_participant_entry_id:id,p_note:$('dNote').value.trim()||null}),x=r?.[0];
     if(!x?.ok)return st.textContent='スタンプを押せませんでした';
     $('dId').value='';$('dNote').value='';st.textContent=`${x.nickname||'参加者'}さんにスタンプを押しました（${x.stamp_count}/${x.total_shops}）`;
-  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('参加者ID')?'参加者IDが見つかりません':m.includes('PIN')?'PINがちがいます':m.includes('スタンプラリー')?m.replace(/^.*?(スタンプラリー)/,'$1'):'スタンプを押せませんでした'}
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('通販メニュー')?'通販メニューが「無し」なので遠隔スタンプは押せません':m.includes('参加者ID')?'参加者IDが見つかりません':m.includes('PIN')?'PINがちがいます':m.includes('スタンプラリー')?m.replace(/^.*?(スタンプラリー)/,'$1'):'スタンプを押せませんでした'}
 };
 </script>
 </body>
