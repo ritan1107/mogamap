@@ -21,7 +21,7 @@
 .proof{max-width:100%;max-height:260px;border-radius:12px;margin-top:8px;display:block}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .acts .btn{margin:0;font-size:15px;padding:11px}
-.rmode{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff;cursor:pointer}.rmode input{width:auto;margin-top:4px}.rmode small{display:block;color:var(--muted);font-size:12.5px;font-weight:700}.btn.danger{background:#d9534f}.btn:disabled{opacity:.45}
+.rmode{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff;cursor:pointer}.rmode input{width:auto;margin-top:4px}.rmode small{display:block;color:var(--muted);font-size:12.5px;font-weight:700}.btn.danger{background:#d9534f}.trow{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff}.trow small{color:var(--muted);font-weight:700}.trow .chips{margin-top:6px}.btn:disabled{opacity:.45}
 .shop{border:1.5px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;background:#fff}
 .shop h4{margin:0 0 4px;font-size:16px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
@@ -144,7 +144,7 @@
       </div>
       <div class="card" id="rCard">
         <h3>🧹 テストのリセット</h3>
-        <div class="muted">テストで押したスタンプやメッセージを消して、まっさらに戻します。<b>イベント期間中はリセットできません。</b>消したデータの控えは残ります。</div>
+        <div class="muted">テストで押したスタンプやメッセージを消して、まっさらに戻します。<b>お店の情報は消えません。</b><br>消したものはまず<b>🗑️ゴミ箱</b>に入り、「元に戻す」で復活できます。<b>イベント期間中はリセットできません。</b></div>
         <div class="status" id="rNow"></div>
         <label class="label">何を消しますか？</label>
         <label class="rmode"><input type="radio" name="rMode" value="stamps" checked> <span><b>スタンプだけ</b><small>スタンプ・クリア・メッセージ・遠隔QRを消す。参加者（IDとログイン）は残る</small></span></label>
@@ -153,6 +153,11 @@
         <input id="rConfirm" placeholder="リセット">
         <button class="btn danger" id="rBtn">リセットする</button>
         <div class="status" id="rStatus"></div>
+        <div id="trashBox" class="hidden">
+          <h3 style="margin-top:18px">🗑️ ゴミ箱</h3>
+          <div class="muted" style="font-size:13px">「元に戻す」でリセット前の状態に戻せます。「完全に消す」は2段階目で、もう戻せません（ゴミ箱に入れて10分後から）。</div>
+          <div id="trash"></div>
+        </div>
       </div>
     </div>
 
@@ -417,17 +422,35 @@ async function rLoad(){
   try{const r=await rpc('mogu_reset_status',{p_admin_pin:aPin});rLocked=!!r.locked;
     $('rNow').innerHTML=(r.locked?`🔒 <b>イベント期間中なのでリセットできません</b>（${r.ends_at?jst(r.ends_at)+' まで':'終了日なしで開催中'}）<br>`:'')+`いまの記録：参加者 ${r.participants}人・スタンプ ${r.stamps}個・クリア ${r.clears}回・メッセージ ${r.messages}件`+(r.last_reset?`<br>前回のリセット：${jst(r.last_reset)}`:'');
     $('rBtn').disabled=rLocked;
+    const t=await rpc('mogu_list_resets',{p_admin_pin:aPin})||[];
+    $('trashBox').classList.toggle('hidden',!t.length);
+    $('trash').innerHTML=t.map(x=>`<div class="trow"><b>${jst(x.created_at)} のリセット</b>（${x.mode==='all'?'参加者もぜんぶ':'スタンプだけ'}）<br><small>スタンプ ${x.stamps}個・参加者 ${x.participants}人・メッセージ ${x.messages}件</small><div class="chips"><button class="chip on" data-t="restore" data-id="${x.id}">↩️ 元に戻す</button><button class="chip off" data-t="purge" data-id="${x.id}" ${rLocked?'disabled':''}>完全に消す</button></div></div>`).join('');
   }catch(e){console.error(e);$('rNow').textContent='読み込めませんでした';$('rBtn').disabled=true}
 }
 $('rBtn').onclick=async()=>{
   const mode=document.querySelector('input[name=rMode]:checked').value,st=$('rStatus');
   if(rLocked)return st.textContent='イベント期間中はリセットできません';
   if($('rConfirm').value.trim()!=='リセット')return st.textContent='「リセット」と入力してください';
-  if(!confirm(mode==='all'?'参加者もふくめて、ぜんぶ消します。本当によいですか？':'スタンプ・クリア・メッセージを消します。本当によいですか？'))return;
+  if(!confirm(mode==='all'?'参加者もふくめて、ぜんぶゴミ箱に入れます。よいですか？\n（お店の情報は消えません。ゴミ箱から元に戻せます）':'スタンプ・クリア・メッセージをゴミ箱に入れます。よいですか？\n（お店の情報は消えません。ゴミ箱から元に戻せます）'))return;
   st.textContent='リセット中…';
   try{const r=await rpc('mogu_reset_rally',{p_admin_pin:aPin,p_mode:mode,p_confirm:'リセット'});
-    st.textContent=`リセットしました（スタンプ ${r.stamps_deleted}個${mode==='all'?`・参加者 ${r.participants_deleted}人`:''}）`;$('rConfirm').value='';rLoad();
+    st.textContent=`ゴミ箱に入れました（スタンプ ${r.stamps_deleted}個${mode==='all'?`・参加者 ${r.participants_deleted}人`:''}）。戻すときは下の「元に戻す」`;$('rConfirm').value='';rLoad();
   }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('期間中')?'イベント期間中はリセットできません':'リセットできませんでした'}
+};
+
+$('trash').onclick=async e=>{
+  const b=e.target.closest('[data-t]');if(!b||b.disabled)return;const id=Number(b.dataset.id),st=$('rStatus');
+  if(b.dataset.t==='restore'){
+    if(!confirm('リセット前の状態に戻しますか？\n（そのあとに押されたスタンプは残ります）'))return;
+    st.textContent='元に戻しています…';
+    try{const r=await rpc('mogu_restore_reset',{p_admin_pin:aPin,p_backup_id:id});st.textContent=`元に戻しました（スタンプ ${r.stamps_restored}個）`;rLoad()}
+    catch(e){console.error(e);st.textContent='元に戻せませんでした'}
+  }else{
+    const w=prompt('【2段階目】ゴミ箱から完全に消します。もう元に戻せません。\n消す場合は「完全に消す」と入力してください');
+    if(w===null)return;if(w.trim()!=='完全に消す')return st.textContent='「完全に消す」と入力されなかったので、消していません';
+    try{await rpc('mogu_purge_reset',{p_admin_pin:aPin,p_backup_id:id,p_confirm:'完全に消す'});st.textContent='ゴミ箱から完全に消しました';rLoad()}
+    catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('10分')?'ゴミ箱に入れてから10分たつまで、完全には消せません':m.includes('期間中')?'イベント期間中は消せません':'消せませんでした'}
+  }
 };
 
 /* ========== ➕ お店をコピペで追加 ========== */
