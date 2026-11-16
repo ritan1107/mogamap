@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://lgidhjxowpueglduphzp.supabase.co https://script.google.com https://script.googleusercontent.com; media-src 'self' blob: data: https:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" href="icons/favicon-48.png">
@@ -253,6 +255,8 @@ async function aLoad(){
   const pin=$('aPin').value.trim(),st=$('aStatus');if(pin.length<4)return st.textContent='管理者PINを入れてください';
   st.textContent='読み込み中…';
   try{
+    const lg=await rpc('mogu_organizer_login',{p_pin:pin});
+    if(!lg?.ok){st.textContent=lg?.message==='PINがちがいます'?'管理者PINがちがいます':(lg?.message||'管理者PINがちがいます');return}
     const rows=await rpc('list_shops_by_admin_pin',{p_admin_pin:pin});
     let codes=[];try{codes=await rpc('list_shop_stamp_codes_by_admin_pin',{p_admin_pin:pin})}catch(e){console.warn(e)}
     aPin=pin;aShops=Array.isArray(rows)?rows:[];aCodes={};(codes||[]).forEach(x=>aCodes[x.shop_id]=x.stamp_code||'');

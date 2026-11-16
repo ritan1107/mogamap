@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://lgidhjxowpueglduphzp.supabase.co https://script.google.com https://script.googleusercontent.com; media-src 'self' blob: data: https:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" href="icons/favicon-48.png">
@@ -253,9 +255,9 @@ $('lBtn').onclick=async()=>{
   if(!shopId||!pin)return st.textContent='お店とPINを入れてください';
   st.textContent='確認中…';
   try{
-    await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}); // PINが違えばエラー
-    let organizer=false;try{organizer=!!(await rpc('verify_organizer_pin',{p_pin:pin}))}catch{}
-    login={shopId,pin,name:shops.find(s=>s.id===shopId)?.name||'',organizer};
+    const r=await rpc('mogu_shop_login',{p_shop_id:shopId,p_pin:pin});
+    if(!r?.ok){st.textContent=r?.message||'PINがちがいます';return}
+    login={shopId,pin,name:shops.find(s=>s.id===shopId)?.name||'',organizer:!!r.organizer};
     try{localStorage.setItem(LKEY,JSON.stringify(login))}catch{}
     st.textContent='';enter();
   }catch(e){console.error(e);st.textContent=errText(e).includes('PIN')?'PINがちがいます':'ログインできませんでした'}

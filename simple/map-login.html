@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://lgidhjxowpueglduphzp.supabase.co https://script.google.com https://script.googleusercontent.com; media-src 'self' blob: data: https:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>もぐマップ 主催者専用</title>
@@ -27,8 +29,8 @@ $('go').onclick=async()=>{
   const pin=$('pin').value.trim(),st=$('st');if(!pin)return st.textContent='管理者PINを入れてください';
   st.textContent='確認中…';
   try{
-    const ok=await rpc('verify_organizer_pin',{p_pin:pin});
-    if(ok!==true){st.textContent='管理者PINがちがいます';return}
+    const r=await rpc('mogu_organizer_login',{p_pin:pin});
+    if(!r?.ok){st.textContent=r?.message==='PINがちがいます'?'管理者PINがちがいます':(r?.message||'管理者PINがちがいます');return}
     try{sessionStorage.setItem('mogu_map_ok','1')}catch{}
     location.replace('../?map=1');
   }catch(e){console.error(e);st.textContent='確認できませんでした'}
