@@ -21,6 +21,7 @@
 .proof{max-width:100%;max-height:260px;border-radius:12px;margin-top:8px;display:block}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .acts .btn{margin:0;font-size:15px;padding:11px}
+.rmode{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff;cursor:pointer}.rmode input{width:auto;margin-top:4px}.rmode small{display:block;color:var(--muted);font-size:12.5px;font-weight:700}.btn.danger{background:#d9534f}.btn:disabled{opacity:.45}
 .shop{border:1.5px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;background:#fff}
 .shop h4{margin:0 0 4px;font-size:16px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
@@ -141,6 +142,18 @@
         <button class="btn ghost" id="pClear">期間をなくす（いつでも押せる）</button>
         <div class="status" id="pStatus"></div>
       </div>
+      <div class="card" id="rCard">
+        <h3>🧹 テストのリセット</h3>
+        <div class="muted">テストで押したスタンプやメッセージを消して、まっさらに戻します。<b>イベント期間中はリセットできません。</b>消したデータの控えは残ります。</div>
+        <div class="status" id="rNow"></div>
+        <label class="label">何を消しますか？</label>
+        <label class="rmode"><input type="radio" name="rMode" value="stamps" checked> <span><b>スタンプだけ</b><small>スタンプ・クリア・メッセージ・遠隔QRを消す。参加者（IDとログイン）は残る</small></span></label>
+        <label class="rmode"><input type="radio" name="rMode" value="all"> <span><b>参加者もぜんぶ</b><small>上に加えて参加者も消す。お客様はもう一度「はじめての方」から参加</small></span></label>
+        <label class="label" for="rConfirm">確認のため「リセット」と入力</label>
+        <input id="rConfirm" placeholder="リセット">
+        <button class="btn danger" id="rBtn">リセットする</button>
+        <div class="status" id="rStatus"></div>
+      </div>
     </div>
 
     <!-- 🎁 クリア と 🏪 お店 -->
@@ -239,6 +252,7 @@ function aRender(){
     <div class="chips">
       <button class="chip ${s.is_published?'on':'off'}" data-a="pub" data-id="${id}">${s.is_published?'公開中':'非公開'}</button>
       <button class="chip ${s.stamp_rally_enabled?'on':'off'}" data-a="rally" data-id="${id}">${s.stamp_rally_enabled?'スタンプ参加':'スタンプ不参加'}</button>
+      <button class="chip" data-a="open" data-id="${id}">🏪 お店アプリで開く</button>
       <button class="chip" data-a="edit" data-id="${id}">✏️ 基本情報</button>
       <button class="chip" data-a="pin" data-id="${id}">🔐 店舗PIN発行</button>
     </div>
@@ -266,6 +280,7 @@ $('aList').onclick=async e=>{
       if(a==='regen'&&aCodes[s.id]&&!confirm('番号を変えると、前の番号とNFCタグは使えなくなります。変えますか？'))return;
       const r=await rpc('admin_set_shop_stamp_code_by_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_new_code:code});if(failed(r))throw 0;aCodes[s.id]=code;toast('スタンプ番号を保存しました');
     }
+    else if(a==='open'){try{localStorage.setItem('mogu_shop_login_v1',JSON.stringify({shopId:s.id,pin:aPin,name:s.name,organizer:true}))}catch{}window.open('shop.html','_blank');return}
     else if(a==='qr'){openQr(s);return}
     else if(a==='copynfc'){await copyText(nfcUrl(s.id,aCodes[s.id]));toast('NFC用URLをコピーしました');return}
     else if(a==='pin'){
@@ -386,6 +401,7 @@ async function pLoad(){
     $('pStart').value=toLocalInput(r.starts_at);$('pEnd').value=toLocalInput(r.ends_at);
     $('pNow').textContent={none:'いまは期間なし（いつでも押せます）',before:`⏳ 開始前（${jst(r.starts_at)} から）`,open:`✅ 開催中${r.ends_at?`（${jst(r.ends_at)} まで）`:''}`,after:`🏁 終了しました（${jst(r.ends_at)} まで）`}[r.status]||'';
   }catch(e){console.error(e);$('pNow').textContent='期間を読み込めませんでした'}
+  rLoad();
 }
 async function pSave(start,end){
   const st=$('pStatus');st.textContent='保存中…';
@@ -394,6 +410,25 @@ async function pSave(start,end){
 }
 $('pSave').onclick=()=>{const s=$('pStart').value,e=$('pEnd').value;if(!s&&!e)return $('pStatus').textContent='スタートか終了を入れてください';pSave(s?new Date(s).toISOString():null,e?new Date(e).toISOString():null)};
 $('pClear').onclick=()=>{if(confirm('期間をなくしますか？（いつでもスタンプが押せるようになります）'))pSave(null,null)};
+
+/* ========== 🧹 リセット ========== */
+let rLocked=true;
+async function rLoad(){
+  try{const r=await rpc('mogu_reset_status',{p_admin_pin:aPin});rLocked=!!r.locked;
+    $('rNow').innerHTML=(r.locked?`🔒 <b>イベント期間中なのでリセットできません</b>（${r.ends_at?jst(r.ends_at)+' まで':'終了日なしで開催中'}）<br>`:'')+`いまの記録：参加者 ${r.participants}人・スタンプ ${r.stamps}個・クリア ${r.clears}回・メッセージ ${r.messages}件`+(r.last_reset?`<br>前回のリセット：${jst(r.last_reset)}`:'');
+    $('rBtn').disabled=rLocked;
+  }catch(e){console.error(e);$('rNow').textContent='読み込めませんでした';$('rBtn').disabled=true}
+}
+$('rBtn').onclick=async()=>{
+  const mode=document.querySelector('input[name=rMode]:checked').value,st=$('rStatus');
+  if(rLocked)return st.textContent='イベント期間中はリセットできません';
+  if($('rConfirm').value.trim()!=='リセット')return st.textContent='「リセット」と入力してください';
+  if(!confirm(mode==='all'?'参加者もふくめて、ぜんぶ消します。本当によいですか？':'スタンプ・クリア・メッセージを消します。本当によいですか？'))return;
+  st.textContent='リセット中…';
+  try{const r=await rpc('mogu_reset_rally',{p_admin_pin:aPin,p_mode:mode,p_confirm:'リセット'});
+    st.textContent=`リセットしました（スタンプ ${r.stamps_deleted}個${mode==='all'?`・参加者 ${r.participants_deleted}人`:''}）`;$('rConfirm').value='';rLoad();
+  }catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('期間中')?'イベント期間中はリセットできません':'リセットできませんでした'}
+};
 
 /* ========== ➕ お店をコピペで追加 ========== */
 const N_FIELDS=['name','address','phone','category','description','point_purchase_url','community_url','website_url','instagram_url','line_url','facebook_url','x_url','owner_email'];

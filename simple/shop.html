@@ -38,6 +38,7 @@
 .big-qr.on{display:flex}
 .big-qr svg{width:min(86vw,70vh);height:auto}
 .big-qr h2{font-size:26px;margin:10px 0 0}
+.org-bar{display:flex;align-items:center;gap:10px;margin-top:10px;border:2px solid #e9cf86;background:#fff8e1;border-radius:16px;padding:10px 12px}.org-bar div{flex:1}.org-bar small{display:block;color:var(--muted);font-size:12px}.org-bar .btn{width:auto;margin:0;padding:7px 10px;font-size:13px}
 .notice-bar{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;border:2px solid #f6d3df;background:#fff5f8;border-radius:16px;padding:11px 13px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
 .notice-bar span{font-size:26px}.notice-bar div{flex:1}.notice-bar b{display:block;color:var(--pink)}.notice-bar small{font-size:12px;color:var(--muted)}.notice-bar i{font-style:normal;font-size:22px;color:var(--pink)}
 .rbox{margin-top:14px;border-top:1.5px dashed var(--line);padding-top:12px}
@@ -71,7 +72,7 @@
   <section id="login">
     <div class="card">
       <h2>🏪 お店の方のログイン</h2>
-      <div class="muted">一度ログインすると、このスマホに保存されます。</div>
+      <div class="muted">一度ログインすると、このスマホに保存されます。<br><small>主催者の方は、主催者PINでどのお店にも入れます（テスト用）。</small></div>
       <label class="label" for="lShop">お店</label>
       <select id="lShop"><option value="">読み込み中…</option></select>
       <label class="label" for="lPin">店舗ページPIN</label>
@@ -84,6 +85,7 @@
   <!-- ログイン後 -->
   <section id="app" class="hidden">
     <div class="card" style="padding:12px 16px"><div class="muted">ログイン中</div><div class="shopname" id="shopName"></div></div>
+    <div class="org-bar hidden" id="orgBar"><span>👑</span><div><b>主催者としてテスト中</b><small>このお店の画面を主催者PINで開いています</small></div><button class="btn ghost small" id="orgSwitch">お店を変える</button></div>
     <button class="notice-bar" id="noticeBar"><span>🔔</span><div><b>通知をオンにしよう</b><small>お客様からの連絡を見落とさない（メール・アイコンの数字）</small></div><i>›</i></button>
     <div class="tabs" style="margin-top:12px">
       <button class="tab on" data-tab="qr"><span>📱</span>スタンプQR</button>
@@ -236,16 +238,19 @@ $('lBtn').onclick=async()=>{
   st.textContent='確認中…';
   try{
     await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:shopId,p_shop_pin:pin}); // PINが違えばエラー
-    login={shopId,pin,name:shops.find(s=>s.id===shopId)?.name||''};
+    let organizer=false;try{organizer=!!(await rpc('verify_organizer_pin',{p_pin:pin}))}catch{}
+    login={shopId,pin,name:shops.find(s=>s.id===shopId)?.name||'',organizer};
     try{localStorage.setItem(LKEY,JSON.stringify(login))}catch{}
     st.textContent='';enter();
   }catch(e){console.error(e);st.textContent=errText(e).includes('PIN')?'PINがちがいます':'ログインできませんでした'}
 };
+$('orgSwitch').onclick=()=>{try{localStorage.removeItem(LKEY)}catch{}if(login){$('lShop').value='';$('lPin').value=login.pin}login=null;clearInterval(timer);$('app').classList.add('hidden');$('gear').classList.add('hidden');$('orgBar').classList.add('hidden');$('login').classList.remove('hidden');$('lStatus').textContent='テストするお店を選んでください'};
 $('logout').onclick=()=>{if(!confirm('ログアウトしますか？'))return;try{localStorage.removeItem(LKEY)}catch{}location.reload()};
 function enter(){
   $('login').classList.add('hidden');$('app').classList.remove('hidden');$('gear').classList.remove('hidden');
   try{if(window.Notification&&Notification.permission==='granted')$('noticeBar').classList.add('hidden')}catch{}
   $('shopName').textContent=login.name||shops.find(s=>s.id===login.shopId)?.name||'';
+  $('orgBar').classList.toggle('hidden',!login.organizer);
   setupQr();loadInbox(true);if(NOTIFY_URL)loadMail();
   timer=setInterval(()=>{if(document.visibilityState==='visible')loadInbox()},30000);
 }
