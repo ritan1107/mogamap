@@ -6,7 +6,7 @@
 <meta property="og:type" content="restaurant">
 <meta property="og:title" content="東京風 山寶ラーメン｜延岡市昭和町のラーメンとお好み焼き">
 <meta property="og:description" content="東京で修業した醤油ラーメンと、夜だけの鉄板お好み焼き。延岡市昭和町2丁目71-2・駐車場あり。">
-<meta property="og:image" content="https://ritan1107.github.io/mogamap/sanpou/img/hero_ramen.webp">
+<meta property="og:image" content="https://ritan1107.github.io/mogamap/sanpou/img/lu/shoyu.webp">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>東京風 山寶ラーメン</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -454,6 +454,46 @@ footer .copy{font-size:.76rem;opacity:.6;border-top:1px solid var(--line-d);padd
 footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 @media (max-width:520px){.brand img.sign{height:28px}}
 @media (max-width:900px){.top.at-top .brand{opacity:1;pointer-events:auto}.hero-logo{display:none}}
+/* ---------- ラーメンラインナップ ---------- */
+.lineup{background:var(--paper2)}
+.lu-feature{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);background:var(--ink);color:var(--paper);margin-bottom:clamp(44px,6vw,72px);overflow:hidden}
+@media (max-width:860px){.lu-feature{grid-template-columns:minmax(0,1fr)}}
+.lu-feature figure{margin:0;position:relative;min-height:clamp(240px,36vw,460px);overflow:hidden}
+.lu-feature figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+.lu-feature:hover figure img{transform:scale(1.05)}
+.lu-feature .badge{position:absolute;top:18px;left:18px;z-index:2;background:var(--shu);color:#fff;font-size:.76rem;font-weight:700;letter-spacing:.14em;padding:5px 14px}
+.lu-feature .steam{left:28%;top:-8%;width:44%;height:60%}
+.lu-ftx{padding:clamp(28px,5vw,60px);display:grid;gap:16px;align-content:center;justify-items:start}
+.lu-ftx .en-label{color:var(--gold-l)}
+.lu-ftx h3{font-family:var(--f-head);font-size:clamp(1.6rem,3.4vw,2.3rem);letter-spacing:.06em}
+.lu-ftx p{color:rgba(245,239,230,.75)}
+.lu-ftx .yen{font-family:var(--f-head);font-weight:700;font-size:2rem;color:var(--paper);border-top:1px solid var(--line-d);padding-top:12px;width:100%}
+.lu-ftx .yen small{font-size:.9rem;margin-left:2px}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:30px}
+.chips button{font:inherit;font-size:.86rem;letter-spacing:.08em;background:transparent;color:var(--text);border:1px solid var(--line);padding:8px 18px;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+.chips button:hover{border-color:var(--text)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lu-grid,.set-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,2vw,26px)}
+.lu-card{transition:opacity .45s,filter .45s,transform .45s}
+.lu-card.dim{opacity:.22;filter:grayscale(.9)}
+.lu-card figure{margin:0;position:relative;aspect-ratio:3/2;overflow:hidden;background:var(--ink)}
+.lu-card figure::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.25));pointer-events:none}
+.lu-card img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.lu-card:hover img{transform:scale(1.08)}
+.lu-tag{position:absolute;left:10px;top:10px;z-index:2;font-size:.68rem;font-weight:700;letter-spacing:.1em;color:var(--text);background:rgba(251,248,243,.92);padding:2px 9px}
+.lu-tx{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:12px 0 10px;border-bottom:1px solid var(--line)}
+.lu-tx h3{font-family:var(--f-head);font-size:1rem;line-height:1.5;letter-spacing:.04em;word-break:auto-phrase;text-wrap:pretty}
+.lu-yen{font-family:var(--f-head);font-weight:700;color:var(--shu);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sets{background:var(--paper)}
+.sec-p{color:var(--muted);max-width:34em}
+@media (max-width:960px){.lu-grid,.set-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){
+  .lu-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:70%;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(-1*max(20px,env(safe-area-inset-left,0px)));padding:0 max(20px,env(safe-area-inset-left,0px)) 8px;scrollbar-width:none}
+  .lu-grid::-webkit-scrollbar{display:none}
+  .lu-card{scroll-snap-align:start}
+  .lu-tx h3{font-size:.92rem}
+}
+.hero-cap small{font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--shu)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -487,7 +527,7 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
     <div class="nc-wrap"><img src="img/noren_closed.webp" alt="" width="1600" height="600"><div class="gate-word"><span>山</span><span>寶</span><span>拉</span><span>麺</span></div></div>
   </div>
   <div class="gate-body">
-    <div class="gate-dish"><img src="img/m_shoyu.webp" alt="" width="600" height="600"></div>
+    <div class="gate-dish"><img src="img/lu/shoyu.webp" alt="" width="695" height="442"></div>
     <div class="langs-row" role="group" aria-label="Language"><button type="button" data-lang="ja">日本語</button><button type="button" data-lang="en">English</button><button type="button" data-lang="tl">Tagalog</button><button type="button" data-lang="zh">中文</button><button type="button" data-lang="ko">한국어</button></div>
     <h2 id="gTitle" data-i="g_title">いらっしゃい！</h2>
     <p class="lead" data-i="g_lead">東京風ラーメンと、お好み焼きの店。</p>
@@ -545,8 +585,8 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
     </div>
     <div class="hero-visual">
       <div class="steam" aria-hidden="true"><i></i><i></i><i></i></div>
-      <figure class="hero-main"><img src="img/hero_ramen.webp" alt="醤油スープのラーメン。味玉ふたつ、チャーシュー、メンマ、わかめ、ネギ" width="1100" height="1100" fetchpriority="high"></figure>
-      <p class="hero-cap"><span data-i="hero_cap">東京風、自慢の一杯</span><b><span data-i="ramen">ラーメン</span> <span data-yen="650"></span>〜</b></p>
+      <figure class="hero-main"><img src="img/lu/shoyu_sq.webp" alt="山寶しょうゆラーメン。チャーシュー、メンマ、味玉、ネギ、のり" width="434" height="434" fetchpriority="high"></figure>
+      <p class="hero-cap"><small data-i="no1">人気 No.1</small><span data-i="shoyu">山寶しょうゆラーメン</span><b data-yen="650"></b></p>
       <figure class="hero-side"><img src="img/okonomi.webp" alt="お好み焼き" width="900" height="770"><figcaption><span data-i="okonomi">お好み焼き</span><small data-i="night_only">夜の部限定</small></figcaption></figure>
     </div>
   </div>
@@ -561,24 +601,37 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
   </div>
 </section>
 
-<section class="sig">
+<section class="lineup">
   <div class="wrap">
-    <header class="sec-h center"><p class="en-label">Signature</p><h2 data-i="sig_h">まず味わってほしい、三杯。</h2></header>
-    <div class="sig-grid">
-      <article class="sig-item pre">
-        <figure><img src="img/m_shoyu.webp" alt="山寶しょうゆラーメン" width="600" height="600" loading="lazy"><span class="badge" data-i="no1">人気 No.1</span></figure>
-        <div class="sig-tx"><h3 data-i="shoyu">山寶しょうゆラーメン</h3><p data-i="shoyu_p">東京で修業して持ち帰った、すっきり醤油の一杯。お店の看板です。</p><p class="yen" data-yen="650" data-big></p></div>
-      </article>
-      <article class="sig-item pre">
-        <figure><img src="img/m_spicy_menu.webp" alt="山寶ラーメン ピリ辛" width="600" height="600" loading="lazy"></figure>
-        <div class="sig-tx"><h3 data-i="spicy">山寶ラーメン ピリ辛</h3><p data-i="spicy_p">あとを引くほどよい辛さ。味玉ふたつ、わかめともやしもたっぷり。</p><p class="yen" data-yen="750" data-big></p></div>
-      </article>
-      <article class="sig-item pre">
-        <figure><img src="img/m_tonkotsu_menu.webp" alt="とんこつラーメン" width="600" height="600" loading="lazy"></figure>
-        <div class="sig-tx"><h3 data-i="tonkotsu">とんこつラーメン</h3><p data-i="tonkotsu_p">まろやかなとんこつに、厚切りチャーシューとキクラゲ。九州の方にも。</p><p class="yen" data-yen="700" data-big></p></div>
-      </article>
+    <header class="sec-h center"><p class="en-label">Ramen Lineup</p><h2 data-i="lu_h">九つの一杯から、<br>今日の気分で。</h2></header>
+    <article class="lu-feature pre">
+      <figure><img src="img/lu/shoyu.webp" alt="山寶しょうゆラーメン" width="695" height="442" loading="lazy"><span class="badge" data-i="no1">人気 No.1</span><div class="steam" aria-hidden="true"><i></i><i></i><i></i></div></figure>
+      <div class="lu-ftx"><p class="en-label">Signature</p><h3 data-i="shoyu">山寶しょうゆラーメン</h3><p data-i="shoyu_p">東京で修業して持ち帰った、すっきり醤油の一杯。お店の看板です。</p><p class="yen" data-yen="650" data-big></p></div>
+    </article>
+    <div class="chips" role="group" aria-label="Taste"><button type="button" data-taste="all" aria-pressed="true" data-i="c_all">すべて</button><button type="button" data-taste="light" aria-pressed="false" data-i="c_light">あっさり</button><button type="button" data-taste="rich" aria-pressed="false" data-i="c_rich">こってり</button><button type="button" data-taste="spicy" aria-pressed="false" data-i="c_spicy">辛い</button><button type="button" data-taste="veg" aria-pressed="false" data-i="c_veg">野菜たっぷり</button></div>
+    <div class="lu-grid" id="luGrid">
+      <article class="lu-card pre" data-taste="spicy"><figure><img src="img/lu/spicy.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_spicy">辛い</span></figure><div class="lu-tx"><h3 data-i="spicy">山寶ラーメン ピリ辛</h3><p class="lu-yen" data-yen="750"></p></div></article>
+      <article class="lu-card pre" data-taste="spicy"><figure><img src="img/lu/konjac.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_spicy">辛い</span></figure><div class="lu-tx"><h3 data-i="konjac">山寶ラーメン こんにゃくピリ辛</h3><p class="lu-yen" data-yen="800"></p></div></article>
+      <article class="lu-card pre" data-taste="rich"><figure><img src="img/lu/tonkotsu.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_rich">こってり</span></figure><div class="lu-tx"><h3 data-i="tonkotsu">とんこつラーメン</h3><p class="lu-yen" data-yen="700"></p></div></article>
+      <article class="lu-card pre" data-taste="rich"><figure><img src="img/lu/miso.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_rich">こってり</span></figure><div class="lu-tx"><h3 data-i="miso">みそラーメン</h3><p class="lu-yen" data-yen="800"></p></div></article>
+      <article class="lu-card pre" data-taste="rich veg"><figure><img src="img/lu/misoveg.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_veg">野菜たっぷり</span></figure><div class="lu-tx"><h3 data-i="misoveg">みそやさいラーメン</h3><p class="lu-yen" data-yen="800"></p></div></article>
+      <article class="lu-card pre" data-taste="light"><figure><img src="img/lu/shio.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_light">あっさり</span></figure><div class="lu-tx"><h3 data-i="shio">しおラーメン</h3><p class="lu-yen" data-yen="650"></p></div></article>
+      <article class="lu-card pre" data-taste="light"><figure><img src="img/lu/lemon.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_light">あっさり</span></figure><div class="lu-tx"><h3 data-i="lemon">レモンラーメン</h3><p class="lu-yen" data-yen="700"></p></div></article>
+      <article class="lu-card pre" data-taste="veg light"><figure><img src="img/lu/veg.webp" alt="" width="695" height="442" loading="lazy"><span class="lu-tag" data-i="c_veg">野菜たっぷり</span></figure><div class="lu-tx"><h3 data-i="veg">やさいラーメン</h3><p class="lu-yen" data-yen="800"></p></div></article>
     </div>
     <p class="sec-more"><a class="link-arrow" href="#menu" data-i="more_menu">メニューをすべて見る</a></p>
+  </div>
+</section>
+
+<section class="sets">
+  <div class="wrap">
+    <header class="sec-h center"><p class="en-label">Set Menu</p><h2 data-i="set_h">ラーメンに、もう一品。</h2><p class="sec-p" data-i="set_p">セットなら800円から。餃子もチャーハンも、ちょうどいい量で。</p></header>
+    <div class="set-grid">
+      <article class="lu-card set pre"><figure><img src="img/lu/set1.webp" alt="" width="695" height="442" loading="lazy"></figure><div class="lu-tx"><h3 data-i="set1">ラーメン＆半チャーハンセット</h3><p class="lu-yen" data-yen="800"></p></div></article>
+      <article class="lu-card set pre"><figure><img src="img/lu/set2.webp" alt="" width="695" height="442" loading="lazy"></figure><div class="lu-tx"><h3 data-i="set2">ラーメン＆餃子セット（6個）</h3><p class="lu-yen" data-yen="800"></p></div></article>
+      <article class="lu-card set pre"><figure><img src="img/lu/set4.webp" alt="" width="695" height="442" loading="lazy"></figure><div class="lu-tx"><h3 data-i="set4">ラーメン＆チャーシュー丼セット</h3><p class="lu-yen" data-yen="1000"></p></div></article>
+      <article class="lu-card set pre"><figure><img src="img/lu/set3.webp" alt="" width="695" height="442" loading="lazy"></figure><div class="lu-tx"><h3 data-i="set3">とんこつラーメン＆唐揚げセット（5個）</h3><p class="lu-yen" data-yen="1000"></p></div></article>
+    </div>
   </div>
 </section>
 
@@ -738,7 +791,7 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
     <div class="usp-text pre"><h3 data-i="usp_h">ラーメン屋さんで、<br>お好み焼きも食べられる。</h3><p data-i="usp_p">はじまりは延岡駅前のお好み焼き屋さん。だから山寶では、ラーメンと鉄板のお好み焼きを、いっしょに楽しめます。お好み焼きは夜の部（水〜土）限定です。</p></div>
 
     <div class="lemon pre">
-      <div class="ph"><img src="img/m_lemon.webp" alt="レモンラーメン" width="900" height="900" loading="lazy"></div>
+      <div class="ph"><img src="img/lu/lemon.webp" alt="レモンラーメン" width="695" height="442" loading="lazy"></div>
       <div class="tx"><span class="kick" data-i="l_kick">さっぱり派に</span><h3 data-i="lemon">レモンラーメン</h3><p data-i="l_p">澄んだ塩スープに、輪切りのレモン。最後のひと口まで軽やかで、暑い日や〆の一杯にもぴったりです。</p><p class="price" data-yen="700" data-big></p><a class="btn btn-line" href="#menu" data-i="l_btn">全メニューと価格を見る</a></div>
     </div>
   </div>
@@ -808,18 +861,18 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
     <div class="gal">
       <figure class="b"><img src="img/exterior.webp" alt="黄色い看板と赤いのぼりが目印のお店の外観" loading="lazy"><figcaption data-i="gc1">黄色い看板が目印</figcaption></figure>
       <figure class="w"><img src="img/interior.webp" alt="カウンター席とテーブル席がある店内" loading="lazy"><figcaption data-i="gc2">カウンター席・テーブル席</figcaption></figure>
-      <figure><img src="img/m_lemon.webp" alt="レモンラーメン" loading="lazy"><figcaption data-i="lemon">レモンラーメン</figcaption></figure>
+      <figure><img src="img/lu/lemon.webp" alt="レモンラーメン" loading="lazy"><figcaption data-i="lemon">レモンラーメン</figcaption></figure>
       <figure><img src="img/okonomi.webp" alt="鉄板のお好み焼き（イメージ）" loading="lazy"><figcaption><span data-i="okonomi">お好み焼き</span> <span class="img-note" data-i="img_note">※写真はイメージです</span></figcaption></figure>
       <figure class="w"><img src="img/guests.webp" alt="テーブルを囲むお客さんたち" loading="lazy"><figcaption data-i="gc5">みんなでワイワイ</figcaption></figure>
-      <figure><img src="img/m_spicy_menu.webp" alt="山寶ラーメン ピリ辛" loading="lazy"><figcaption data-i="gc6">ピリ辛</figcaption></figure>
-      <figure><img src="img/m_shoyu.webp" alt="山寶しょうゆラーメン" loading="lazy"><figcaption data-i="shoyu_s">しょうゆ</figcaption></figure>
+      <figure><img src="img/lu/spicy.webp" alt="山寶ラーメン ピリ辛" loading="lazy"><figcaption data-i="gc6">ピリ辛</figcaption></figure>
+      <figure><img src="img/lu/shoyu.webp" alt="山寶しょうゆラーメン" loading="lazy"><figcaption data-i="shoyu_s">しょうゆ</figcaption></figure>
     </div>
   </div>
 </section>
   <section class="next">
     <div class="wrap">
       <h2 data-i="next_title">ほかのページも見る</h2>
-      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/m_shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#guide"><img src="img/interior.webp" alt="" loading="lazy"><span data-i="nav_first">はじめての方へ</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#access"><img src="img/exterior.webp" alt="" loading="lazy"><span data-i="nav_access">アクセス</span><b aria-hidden="true">→</b></a></div>
+      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/lu/shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#guide"><img src="img/interior.webp" alt="" loading="lazy"><span data-i="nav_first">はじめての方へ</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#access"><img src="img/exterior.webp" alt="" loading="lazy"><span data-i="nav_access">アクセス</span><b aria-hidden="true">→</b></a></div>
       <p class="back"><a class="btn btn-line" href="#home" data-i="back_home">トップへ戻る</a></p>
     </div>
   </section>
@@ -863,7 +916,7 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
   <section class="next">
     <div class="wrap">
       <h2 data-i="next_title">ほかのページも見る</h2>
-      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/m_shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#story"><img src="img/owner.webp" alt="" loading="lazy"><span data-i="s_story">店主のものがたり</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#access"><img src="img/exterior.webp" alt="" loading="lazy"><span data-i="nav_access">アクセス</span><b aria-hidden="true">→</b></a></div>
+      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/lu/shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#story"><img src="img/owner.webp" alt="" loading="lazy"><span data-i="s_story">店主のものがたり</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#access"><img src="img/exterior.webp" alt="" loading="lazy"><span data-i="nav_access">アクセス</span><b aria-hidden="true">→</b></a></div>
       <p class="back"><a class="btn btn-line" href="#home" data-i="back_home">トップへ戻る</a></p>
     </div>
   </section>
@@ -901,7 +954,7 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
   <section class="next">
     <div class="wrap">
       <h2 data-i="next_title">ほかのページも見る</h2>
-      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/m_shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#story"><img src="img/owner.webp" alt="" loading="lazy"><span data-i="s_story">店主のものがたり</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#guide"><img src="img/interior.webp" alt="" loading="lazy"><span data-i="nav_first">はじめての方へ</span><b aria-hidden="true">→</b></a></div>
+      <div class="mini-cards"><a class="mini-card" href="#menu"><img src="img/lu/shoyu.webp" alt="" loading="lazy"><span data-i="nav_menu">メニュー</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#story"><img src="img/owner.webp" alt="" loading="lazy"><span data-i="s_story">店主のものがたり</span><b aria-hidden="true">→</b></a><a class="mini-card" href="#guide"><img src="img/interior.webp" alt="" loading="lazy"><span data-i="nav_first">はじめての方へ</span><b aria-hidden="true">→</b></a></div>
       <p class="back"><a class="btn btn-line" href="#home" data-i="back_home">トップへ戻る</a></p>
     </div>
   </section>
@@ -926,6 +979,14 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 <script>
 /* 翻訳データ：[English, Tagalog, 中文(简体), 한국어]。日本語はページの元の文章を使う */
 var T={
+set_p:["Sets from ¥800 — gyoza or fried rice in just the right size.","Sets mula ¥800 — gyoza o sinangag sa tamang dami.","套餐800日元起，煎饺、炒饭分量刚刚好。","세트는 800엔부터. 교자도 볶음밥도 딱 알맞은 양으로."],
+set_h:["Make it a set.","Gawing set.","拉面再加一道。","라멘에 한 가지 더."],
+c_veg:["Veggie-packed","Maraming gulay","蔬菜多多","채소 듬뿍"],
+c_spicy:["Spicy","Maanghang","辣味","매운맛"],
+c_rich:["Rich","Malasa","浓郁","진한 맛"],
+c_light:["Light","Magaan","清淡","담백"],
+c_all:["All","Lahat","全部","전체"],
+lu_h:["Nine bowls —<br>pick by today’s mood.","Siyam na bowl —<br>piliin ayon sa mood mo.","九种拉面，<br>按今天的心情选。","아홉 가지 라멘,<br>오늘의 기분대로."],
 night_only:["Dinner only","Hapunan lang","仅限晚间","저녁 한정"],
 hero_cap:["Our Tokyo-style signature","Ang Tokyo-style na pagmamalaki namin","东京风・招牌一碗","도쿄풍 자랑의 한 그릇"],
 line_short:["Official LINE","Official LINE","官方LINE","공식 LINE"],
@@ -1251,6 +1312,15 @@ dk_map:["Map","Mapa","地图","지도"]
   var topBar=document.querySelector('.top'), homeView=document.querySelector('.view[data-view="home"]');
   function onScroll(){ dock.classList.toggle('show',scrollY>480); topBar.classList.toggle('at-top', !homeView.hidden && scrollY<40 && !sheet.classList.contains('open')); }
   addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  // ---------- 気分で選ぶ ----------
+  var chips=$$('.chips button'), luCards=$$('.lu-card[data-taste]'), luGrid=$('#luGrid');
+  chips.forEach(function(c){ c.addEventListener('click',function(){
+    var t=c.getAttribute('data-taste'), first=null;
+    chips.forEach(function(x){ x.setAttribute('aria-pressed', x===c ? 'true':'false'); });
+    luCards.forEach(function(k){ var on = t==='all' || k.getAttribute('data-taste').split(' ').indexOf(t)>=0; k.classList.toggle('dim',!on); if(on && !first) first=k; });
+    if(first && luGrid.scrollWidth>luGrid.clientWidth+4){ luGrid.scrollTo({left:first.offsetLeft-luGrid.offsetLeft-20,behavior:reduce?'auto':'smooth'}); }
+  }); });
 
   // ---------- ページ切り替え（#menu #story #guide #access） ----------
   var views=$$('.view');
