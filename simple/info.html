@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#c49a3a">
 <title>もぐマップ情報局｜お知らせ・マルシェ・お店紹介</title>
 <meta name="description" content="もぐマップのお知らせ、マルシェ・イベント情報、お店紹介、CM動画。">
-<link rel="stylesheet" href="core.css?v=4">
+<link rel="stylesheet" href="core.css?v=5">
 <style>
 .ihero{position:relative;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 12px 26px rgba(120,90,60,.12)}
 .ihero img{display:block;width:100%;height:170px;object-fit:cover;object-position:center 40%}
@@ -41,6 +41,20 @@
 .vlink span{font-size:26px}
 .plinks{display:grid;gap:8px;margin-top:12px}
 .plinks .btn{margin:0}
+.slide{position:relative;display:block;height:200px;border-radius:22px;overflow:hidden;text-decoration:none;color:#fff;background:linear-gradient(135deg,#64c5c6,#ef9aaa)}
+.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slide .sh{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.62))}
+.slide .sh small{display:inline-block;background:rgba(255,255,255,.92);color:var(--ink);border-radius:999px;padding:2px 9px;font-weight:900;font-size:11.5px}
+.slide .sh b{display:block;font-size:18px;line-height:1.35;margin-top:5px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.slide.noimg .sh{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;background:none;padding:20px}
+.slide.noimg .em{position:absolute;right:14px;top:10px;font-size:54px;opacity:.35}
+#slideWrap{margin-top:14px}
+.voice-cta{display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;border:2px dashed #f2b8cb;background:#fff;border-radius:20px;padding:13px 15px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.voice-cta span{font-size:30px}.voice-cta div{flex:1}.voice-cta b{display:block;font-size:16.5px}.voice-cta small{color:var(--muted);font-size:12.5px;font-weight:700}.voice-cta i{font-style:normal;font-size:24px;color:var(--pink)}
+.by{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:13px;font-weight:800;color:var(--muted)}
+.kt.voice{background:#fff1f6;color:var(--pink)}
+.mine{border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;margin-top:6px;font-size:13.5px}
+.mine .s{font-size:11.5px;font-weight:900;border-radius:999px;padding:1px 8px;margin-right:4px}.s.pending{background:#fff3e6;color:#c26a12}.s.published{background:#e9f5f4;color:var(--teal)}
 .empty{text-align:center;color:var(--muted);padding:40px 10px;font-weight:700}
 </style>
 </head>
@@ -51,25 +65,38 @@
     <a class="btn ghost small" href="./" style="width:auto;margin:0">🎯 スタンプへ</a>
   </header>
 
-  <div class="ihero">
+  <a class="fest-banner" id="festBanner" href="./"></a>
+  <div class="ihero fest-glow">
     <img src="img/top.jpg?v=1" alt="もぐマップの街のイラスト" width="1200" height="675">
     <div><h1>📣 お知らせ・マルシェ情報</h1><p>イベントの告知、おすすめのお店、CM動画をお届けします</p></div>
   </div>
+
+  <div id="slideWrap" class="hidden">
+    <div class="slider" id="slider"></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <button class="voice-cta" id="voiceOpen"><span>✍️</span><div><b>体験・おすすめを投稿する</b><small>行ったお店、おいしかったもの、教えてね</small></div><i>›</i></button>
 
   <div class="kinds" id="kinds">
     <button class="on" data-k="">すべて</button>
     <button data-k="news">📢 お知らせ</button>
     <button data-k="event">🎪 マルシェ・イベント</button>
-    <button data-k="shop">🏪 お店紹介</button>
+    <button data-k="shop">🏪 お店から</button>
+    <button data-k="voice">💬 みんなの声</button>
     <button data-k="video">🎬 動画</button>
   </div>
   <div id="posts"><div class="empty">読み込み中…</div></div>
 </div>
+<div class="modal" id="voiceModal"><div class="sheet">
+  <div class="sheet-head"><b>✍️ 体験・おすすめを投稿</b><button class="x" data-close="voiceModal">×</button></div>
+  <div id="voiceBody"></div>
+</div></div>
 <div id="toast"></div>
 
-<script src="core.js?v=4"></script>
+<script src="core.js?v=5"></script>
 <script>
-const KIND={news:['📢','お知らせ'],event:['🎪','マルシェ・イベント'],shop:['🏪','お店紹介'],video:['🎬','動画']};
+const KIND={news:['📢','お知らせ'],event:['🎪','マルシェ・イベント'],shop:['🏪','お店紹介'],video:['🎬','動画'],voice:['💬','みんなの声']};
 let posts=[],kind=new URLSearchParams(location.search).get('k')||'';
 
 function safeUrl(v){try{const u=new URL(String(v||'').trim());return u.protocol==='https:'?u:null}catch{return null}}
@@ -98,7 +125,7 @@ const fmtDate=d=>{if(!d)return '';const x=new Date(d);return isNaN(x)?'':`${x.ge
 const fmtEvent=d=>{if(!d)return '';const x=new Date(d+'T00:00:00+09:00');return `${x.getFullYear()}年${x.getMonth()+1}月${x.getDate()}日（${'日月火水木金土'[x.getDay()]}）`};
 
 function render(){
-  const rows=posts.filter(p=>!kind||p.kind===kind||(kind==='video'&&p.video_url));
+  const rows=posts.filter(p=>!kind||p.kind===kind||(kind==='video'&&p.video_url)||(kind==='shop'&&p.author_type==='shop'));
   document.querySelectorAll('#kinds button').forEach(b=>b.classList.toggle('on',b.dataset.k===kind));
   if(!rows.length){$('posts').innerHTML=`<div class="empty">${kind?'この種類のお知らせは、まだありません':'お知らせは、まだありません'}<br>また見に来てね 🌱</div>`;return}
   $('posts').innerHTML=rows.map(p=>{
@@ -109,6 +136,7 @@ function render(){
       <div class="in">
         <div class="meta"><span class="kt ${esc(p.kind)}">${k[0]} ${k[1]}</span><span>${fmtDate(p.date)}</span></div>
         <h2>${esc(p.title)}</h2>
+        ${p.author_type==='shop'&&p.author_name?`<div class="by">🏪 ${esc(p.author_name)} からのお知らせ</div>`:p.author_type==='guest'?`<div class="by">💬 ${esc(p.author_name||'参加者')} さんの体験${p.shop_name?`（${esc(p.shop_name)}）`:''}</div>`:''}
         ${p.event_date||p.event_place?`<div class="when">${p.event_date?`<span>📅 ${fmtEvent(p.event_date)}</span>`:''}${p.event_place?`<span>📍 ${esc(p.event_place)}</span>`:''}</div>`:''}
         ${p.body?`<div class="body">${bodyHtml(p.body)}</div>`:''}
         ${p.video_url?videoHtml(p.video_url):''}
@@ -119,12 +147,56 @@ function render(){
       </div>
     </article>`}).join('');
 }
+function renderSlides(){
+  const pick=[...posts.filter(p=>p.pinned),...posts.filter(p=>!p.pinned&&(p.image||p.kind==='event')),...posts.filter(p=>!p.pinned&&!(p.image||p.kind==='event'))].slice(0,7);
+  if(pick.length<1)return;
+  $('slider').innerHTML=pick.map(p=>{const k=KIND[p.kind]||KIND.news,img=p.image&&/^data:image\//.test(p.image);
+    return `<a class="slide ${img?'':'noimg'}" href="#p-${esc(p.id)}" data-id="${esc(p.id)}">${img?`<img src="${esc(p.image)}" alt="">`:`<span class="em">${k[0]}</span>`}<div class="sh"><small>${k[0]} ${k[1]}${p.event_date?' ・ '+fmtEvent(p.event_date).replace(/^\d+年/,''):''}</small><b>${esc(p.title)}</b></div></a>`}).join('');
+  $('slideWrap').classList.remove('hidden');
+  autoSlide($('slider'),$('dots'));
+}
+$('slider').onclick=e=>{const a=e.target.closest('[data-id]');if(!a)return;e.preventDefault();kind='';render();setTimeout(()=>document.getElementById('p-'+a.dataset.id)?.scrollIntoView({behavior:'smooth'}),50)};
+
+/* ---- 体験・おすすめの投稿（主催者が確認してから載る） ---- */
+let vImg=null;
+function shrinkImg(file,max=1080){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.8,d=c.toDataURL('image/jpeg',q);while(d.length>500000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng()};im.src=u})}
+async function openVoice(){
+  const p=participant();$('voiceModal').classList.add('on');
+  if(!p){$('voiceBody').innerHTML=`<p>投稿するには、スタンプラリーへの参加（名前を入れるだけ）が必要です。</p><a class="btn pink" href="./">参加する（スタンプラリーへ）</a>`;return}
+  let shops=[];try{shops=await api('/rest/v1/shop_public?select=id,name&is_published=eq.true&order=name')}catch{}
+  vImg=null;
+  $('voiceBody').innerHTML=`<div class="muted" style="font-size:13.5px">主催者が確認してから、みんなに見えるようになります。</div>
+    <label class="label" for="vT">ひとことタイトル</label><input id="vT" maxlength="60" placeholder="例）カニ丼が最高でした！">
+    <label class="label" for="vShop">どのお店？（任意）</label><select id="vShop"><option value="">（選ばない）</option>${(shops||[]).map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')}</select>
+    <label class="label" for="vB">体験・おすすめ</label><textarea id="vB" rows="5" maxlength="1000" placeholder="よかったところ、おすすめポイントなど"></textarea>
+    <label class="label">写真（任意・1枚）</label><img id="vPrev" class="hidden" style="width:100%;max-height:200px;object-fit:cover;border-radius:12px" alt=""><label class="btn ghost small" style="width:auto">📷 写真を選ぶ<input type="file" accept="image/*" id="vImg" hidden></label>
+    <label class="label" for="vN">表示する名前</label><input id="vN" maxlength="30" value="${esc(p.nickname||'')}">
+    <button class="btn pink" id="vSend">投稿する</button><div class="status" id="vSt"></div>
+    <div id="vMine"></div>`;
+  $('vImg').onchange=async()=>{const f=$('vImg').files?.[0];if(!f)return;try{vImg=await shrinkImg(f);$('vPrev').src=vImg;$('vPrev').classList.remove('hidden')}catch{toast('写真を読みこめませんでした')}};
+  $('vSend').onclick=async()=>{const t=$('vT').value.trim(),st=$('vSt');if(!t)return st.textContent='タイトルを入れてください';st.textContent='送信中…';
+    try{await rpc('mogu_guest_submit_post',{...auth(p),p_post:{title:t,body:$('vB').value,shop_id:$('vShop').value,author_name:$('vN').value.trim(),image_data:vImg||''}});
+      st.textContent='ありがとう！主催者が確認したら載ります 🌸';$('vT').value='';$('vB').value='';vImg=null;$('vPrev').classList.add('hidden');loadMine()}
+    catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('多すぎ')?'1日に投稿できる数をこえました。また明日お願いします':/タイトル|本文|写真/.test(m)?m.replace(/^.*?((タイトル|本文|写真)[^"]*).*$/,'$1'):'送れませんでした'}};
+  loadMine();
+}
+async function loadMine(){const p=participant();if(!p||!$('vMine'))return;
+  try{const r=await rpc('mogu_guest_my_posts',auth(p))||[];$('vMine').innerHTML=r.length?'<label class="label">あなたの投稿</label>'+r.map(x=>`<div class="mine"><span class="s ${x.status}">${x.status==='published'?'掲載中':'確認待ち'}</span>${esc(x.title)}</div>`).join(''):''}catch(e){console.warn(e)}}
+$('voiceOpen').onclick=openVoice;
+document.addEventListener('click',e=>{const c=e.target.closest('[data-close]');if(c)$(c.dataset.close).classList.remove('on')});
+$('voiceModal').addEventListener('click',e=>{if(e.target===$('voiceModal'))$('voiceModal').classList.remove('on')});
+
+async function loadFestive(){
+  try{const t=await rpc('mogu_info_ticker',{});const f=festiveInfo(t);if(!f.on)return;
+    $('festBanner').textContent=f.text+(f.kind==='rally'?' スタンプを集めよう ›':'');$('festBanner').href=f.kind==='rally'?'./':'#';startFestive()}catch(e){console.warn(e)}
+}
+
 $('kinds').onclick=e=>{const b=e.target.closest('[data-k]');if(!b)return;kind=b.dataset.k;history.replaceState(null,'',kind?`?k=${kind}`:location.pathname);render()};
 
 (async()=>{
   try{posts=await rpc('mogu_list_posts',{})||[]}catch(e){console.error(e);$('posts').innerHTML='<div class="empty">読み込めませんでした。少し待って開き直してください</div>';return}
   try{localStorage.setItem('mogu_info_seen',String(Date.now()))}catch{}
-  render();
+  render();renderSlides();loadFestive();
   const h=location.hash.slice(1);if(h)setTimeout(()=>document.getElementById(h)?.scrollIntoView({behavior:'smooth'}),200);
 })();
 </script>

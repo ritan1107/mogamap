@@ -37,3 +37,24 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal2);b
 .row{display:flex;gap:8px;align-items:center}
 .row>*{flex:1}
 @media(min-width:600px){.modal{align-items:center}}
+
+/* ===== スライド帯 ===== */
+.slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:2px 0}
+.slider::-webkit-scrollbar{display:none}
+.slider>*{flex:0 0 100%;scroll-snap-align:start}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:8px}
+.dots i{width:7px;height:7px;border-radius:9px;background:#d9cfc4;cursor:pointer;transition:all .3s}
+.dots i.on{width:20px;background:var(--pink)}
+/* ===== お祭りモード（開催中・イベント前） ===== */
+.fest-banner{display:none}
+body.festive .fest-banner{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 0;padding:10px 14px;border-radius:16px;font-weight:900;color:#fff;text-align:center;
+  background:linear-gradient(90deg,#ff7aa2,#ffb347,#ffd84d,#7ed6a5,#6ab8ff,#ff7aa2);background-size:300% 100%;animation:festbg 8s linear infinite;box-shadow:0 8px 18px rgba(255,122,162,.3);text-decoration:none}
+@keyframes festbg{to{background-position:300% 0}}
+body.festive::before{content:"";position:fixed;left:0;right:0;top:0;height:34px;z-index:5;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='34'%3E%3Cpath d='M0 3 Q60 14 120 3' stroke='%23c9a24a' stroke-width='2' fill='none'/%3E%3Cpath d='M8 5 L22 5 L15 26Z' fill='%23ff7aa2'/%3E%3Cpath d='M32 8 L46 8 L39 29Z' fill='%23ffd84d'/%3E%3Cpath d='M56 9 L70 9 L63 30Z' fill='%236ab8ff'/%3E%3Cpath d='M80 8 L94 8 L87 29Z' fill='%237ed6a5'/%3E%3Cpath d='M104 5 L118 5 L111 26Z' fill='%23ffb347'/%3E%3C/svg%3E") repeat-x;opacity:.95}
+body.festive .fest-glow{border:3px solid transparent!important;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#ff7aa2,#ffd84d,#6ab8ff,#7ed6a5) border-box!important}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden;display:none}
+body.festive .confetti{display:block}
+.confetti i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;opacity:.85;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){.confetti{display:none!important}body.festive .fest-banner{animation:none}}

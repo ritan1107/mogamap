@@ -53,3 +53,32 @@ async function loadPublicShops(){
   const rows=await api('/rest/v1/shop_public?select=*&is_published=eq.true&order=name.asc');
   return Array.isArray(rows)?rows:[];
 }
+
+/* ===== 自動でスライド＋指でもスライドできる帯 ===== */
+function autoSlide(track,dots,ms=4500){
+  if(!track||track.dataset.slide)return;track.dataset.slide='1';
+  let i=0,hold=0,timer=0;const n=()=>track.children.length;
+  const go=k=>{if(!n())return;i=(k+n())%n();track.scrollTo({left:track.children[i].offsetLeft-track.offsetLeft,behavior:'smooth'})};
+  const mark=()=>{if(!dots)return;dots.querySelectorAll('i').forEach((d,k)=>d.classList.toggle('on',k===i))};
+  if(dots){dots.innerHTML=Array.from({length:n()},()=>'<i></i>').join('');dots.onclick=e=>{const k=[...dots.children].indexOf(e.target);if(k>=0){hold=Date.now();go(k)}};mark()}
+  let st=0;track.addEventListener('scroll',()=>{clearTimeout(st);st=setTimeout(()=>{const w=track.children[0]?.offsetWidth||1;i=Math.round(track.scrollLeft/(w+parseFloat(getComputedStyle(track).columnGap||0)||w));mark()},80)},{passive:true});
+  ['touchstart','pointerdown','wheel'].forEach(ev=>track.addEventListener(ev,()=>{hold=Date.now()},{passive:true}));
+  timer=setInterval(()=>{if(n()<2||document.hidden||Date.now()-hold<8000)return;go(i+1)},ms);
+  return {go,stop:()=>clearInterval(timer)};
+}
+/* 開催中・もうすぐのイベントを判定 */
+function festiveInfo(t){
+  const p=t?.period||{},now=Date.now(),jd=v=>new Date(v).toLocaleDateString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric'});
+  const ev=(t?.events||[]).find(e=>{const d=new Date(e.event_date+'T23:59:59+09:00').getTime();return d>=now&&d-now<8*864e5});
+  if(p.running)return {on:true,kind:'rally',text:`🎉 スタンプラリー開催中！${p.ends_at?`（${jd(p.ends_at)}まで）`:''}`};
+  if(ev){const today=new Date().toLocaleDateString('ja-JP',{timeZone:'Asia/Tokyo'})===new Date(ev.event_date+'T12:00:00+09:00').toLocaleDateString('ja-JP',{timeZone:'Asia/Tokyo'});
+    return {on:true,kind:'event',text:today?`🎪 今日は「${ev.title}」！`:`🎪 もうすぐ「${ev.title}」（${jd(ev.event_date+'T12:00:00+09:00')}）`}}
+  return {on:false};
+}
+function startFestive(){
+  document.body.classList.add('festive');
+  if(document.querySelector('.confetti'))return;
+  const c=document.createElement('div');c.className='confetti';const cols=['#ff7aa2','#ffd84d','#6ab8ff','#7ed6a5','#ffb347','#c39bff'];
+  c.innerHTML=Array.from({length:18},(_,k)=>`<i style="left:${Math.random()*100}%;background:${cols[k%cols.length]};animation-duration:${7+Math.random()*7}s;animation-delay:${-Math.random()*12}s;transform:rotate(${Math.random()*360}deg)"></i>`).join('');
+  document.body.appendChild(c);
+}

@@ -15,10 +15,10 @@
 <meta name="theme-color" content="#c49a3a">
 <link rel="manifest" href="shop.webmanifest?v=2">
 <title>もぐマップ お店アプリ</title>
-<link rel="stylesheet" href="core.css?v=4">
+<link rel="stylesheet" href="core.css?v=5">
 <style>
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:12px 4px;font-weight:900;cursor:pointer;font-size:15px;position:relative}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:10px 2px;font-weight:900;cursor:pointer;font-size:12.5px;position:relative;white-space:nowrap}
 .tab span{display:block;font-size:24px;line-height:1.2}
 .tab.on{background:var(--teal);color:#fff;border-color:var(--teal)}
 .dot{position:absolute;top:6px;right:8px;min-width:22px;padding:1px 6px;border-radius:99px;background:var(--pink);color:#fff;font-size:12px}
@@ -44,6 +44,9 @@
 .live-card{border:2px solid #f6c7d6}.live-card .badge{font-size:12px;vertical-align:middle}.live-timer{width:min(70vw,320px);height:8px;background:#eee;border-radius:9px;overflow:hidden;margin:6px auto}.live-timer i{display:block;height:100%;background:var(--pink);transition:width 1s linear}
 .ol-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ol-pick button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 4px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}.ol-pick button.on{border-color:var(--teal);background:#e9f5f4}
 .online-off{border:2px dashed #f3c48f;background:#fff9f1;border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:14px;font-weight:700}.online-off .btn{width:auto;margin:8px 0 0;display:block}
+.kpick{display:grid;grid-template-columns:1fr 1fr;gap:6px}.kpick button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 4px;font:inherit;font-weight:900;font-size:13.5px;cursor:pointer;color:var(--ink)}.kpick button.on{border-color:var(--pink);background:#fff3f7}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.two .btn{margin:0}
+.prw{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff}.prw .st{font-size:11.5px;font-weight:900;border-radius:999px;padding:1px 8px;margin-right:4px}.st.published{background:#e9f5f4;color:var(--teal)}.st.draft{background:#f3eee8;color:#8a7a6a}.st.trash{background:#fde8e8;color:#c0392b}.prw .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.prw .chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-weight:800;font-size:13px;cursor:pointer}
 .notice-bar{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;border:2px solid #f6d3df;background:#fff5f8;border-radius:16px;padding:11px 13px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
 .notice-bar span{font-size:26px}.notice-bar div{flex:1}.notice-bar b{display:block;color:var(--pink)}.notice-bar small{font-size:12px;color:var(--muted)}.notice-bar i{font-style:normal;font-size:22px;color:var(--pink)}
 .rbox{margin-top:14px;border-top:1.5px dashed var(--line);padding-top:12px}
@@ -96,6 +99,7 @@
       <button class="tab on" data-tab="qr"><span>📱</span>スタンプQR</button>
       <button class="tab" data-tab="inbox"><span>📮</span>お客様<i class="dot hidden" id="inboxDot"></i></button>
       <button class="tab" data-tab="id"><span>📨</span>遠隔</button>
+      <button class="tab" data-tab="post"><span>📣</span>発信</button>
       <button class="tab" data-tab="set"><span>⚙️</span>設定</button>
     </div>
 
@@ -173,6 +177,26 @@
       </div>
     </div>
     <!-- 設定 -->
+    <div class="pane" id="p-post">
+      <div class="card" id="spCard">
+        <h3 id="spTitle">📣 お店から発信する</h3>
+        <div class="muted">告知・新メニュー・お店の魅力などを書くと、<b>もぐマップ情報局</b>に「🏪 お店から」として載ります。<a href="info.html" target="_blank" rel="noopener">情報局を見る ›</a></div>
+        <label class="label">種類</label>
+        <div class="kpick" id="spKind"><button class="on" data-k="shop">✨ お店の魅力</button><button data-k="news">📢 告知・お知らせ</button><button data-k="event">🎪 イベント</button><button data-k="video">🎬 動画</button></div>
+        <label class="label" for="spT">タイトル</label><input id="spT" maxlength="100" placeholder="例）冬の新メニュー、はじまりました！">
+        <div id="spEvent" class="hidden"><div class="two"><div><label class="label" for="spDate">日にち</label><input id="spDate" type="date"></div><div><label class="label" for="spPlace">場所</label><input id="spPlace" placeholder="例）店内"></div></div></div>
+        <label class="label" for="spB">本文</label><textarea id="spB" rows="5" maxlength="3000" placeholder="伝えたいことを書いてください"></textarea>
+        <label class="label">画像（1枚）</label>
+        <img id="spPrev" class="hidden" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px" alt="">
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn ghost small" style="width:auto;margin:0">🖼️ 画像を選ぶ<input type="file" accept="image/*" id="spImg" hidden></label><button class="btn ghost small hidden" id="spImgDel" style="width:auto;margin:0">はずす</button></div>
+        <label class="label" for="spV">動画のURL（任意）</label><input id="spV" inputmode="url" placeholder="YouTube・Instagram・TikTokのURL">
+        <label class="label" for="spL">ボタンのリンク（任意）</label><input id="spL" inputmode="url" placeholder="https://…（予約・通販など）"><input id="spLL" placeholder="ボタンの文字（例：予約する）" style="margin-top:6px">
+        <div class="two" style="margin-top:12px"><button class="btn ghost" id="spDraft">下書き</button><button class="btn pink" id="spPub">公開する</button></div>
+        <button class="btn ghost small hidden" id="spCancel" style="width:auto">編集をやめる</button>
+        <div class="status" id="spSt"></div>
+      </div>
+      <div class="card"><h3>📝 書いたもの</h3><div id="spList"></div></div>
+    </div>
     <div class="pane" id="p-set">
       <div class="card" id="olCard">
         <h3>📦 通販メニュー</h3>
@@ -231,7 +255,7 @@
 <div class="big-qr" id="bigQr"><div id="bigQrSvg"></div><h2 id="bigQrName"></h2><p class="muted">もぐマップの📷で読み取ってください</p><button class="btn ghost" style="width:auto;padding:12px 30px" id="bigQrClose">とじる</button></div>
 <div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
 <div id="toast"></div>
-<script src="core.js?v=4"></script>
+<script src="core.js?v=5"></script>
 <script src="lib/qrcode.js?v=1"></script>
 <script>
 const LKEY='mogu_shop_login_v1',CKEY='mogu_shop_code_';
@@ -279,6 +303,7 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
   if(t.dataset.tab==='inbox')loadInbox();
   if(t.dataset.tab==='id')loadTickets();
+  if(t.dataset.tab==='post')spLoad();
   if(t.dataset.tab==='set'){loadMail();showBadgeState();loadEdit()}
 });
 
@@ -323,6 +348,40 @@ $('liveOpen').onclick=async()=>{
   liveTimer=setInterval(()=>{liveLeft--;$('liveBar').style.width=Math.max(0,liveLeft/30*100)+'%';if(liveLeft<=0)liveRefresh()},1000);
 };
 $('liveClose').onclick=()=>{clearInterval(liveTimer);$('liveQr').classList.remove('on')};
+
+/* ---------- 📣 お店から発信 ---------- */
+let sp={kind:'shop',id:null,img:null,keep:false},spPosts=[];
+const SPK={shop:'✨ お店の魅力',news:'📢 告知',event:'🎪 イベント',video:'🎬 動画'};
+function spKindSet(k){sp.kind=k;$('spKind').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));$('spEvent').classList.toggle('hidden',k!=='event')}
+$('spKind').onclick=e=>{const b=e.target.closest('[data-k]');if(b)spKindSet(b.dataset.k)};
+function spShow(src){$('spPrev').src=src||'';$('spPrev').classList.toggle('hidden',!src);$('spImgDel').classList.toggle('hidden',!src)}
+function spShrink(file){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const k=Math.min(1,1080/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL('image/jpeg',q);while(d.length>600000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng()};im.src=u})}
+$('spImg').onchange=async()=>{const f=$('spImg').files?.[0];$('spImg').value='';if(!f)return;try{sp.img=await spShrink(f);sp.keep=false;spShow(sp.img)}catch{toast('画像を読みこめませんでした')}};
+$('spImgDel').onclick=()=>{sp.img=null;sp.keep=false;spShow('')};
+function spReset(){sp={kind:'shop',id:null,img:null,keep:false};['spT','spB','spV','spL','spLL','spDate','spPlace'].forEach(i=>$(i).value='');spKindSet('shop');spShow('');$('spTitle').textContent='📣 お店から発信する';$('spCancel').classList.add('hidden')}
+$('spCancel').onclick=()=>{spReset();$('spSt').textContent=''};
+async function spSave(status){
+  const st=$('spSt'),t=$('spT').value.trim();if(!t)return st.textContent='タイトルを入れてください';st.textContent='保存中…';
+  const post={id:sp.id||'',kind:sp.kind,title:t,body:$('spB').value,video_url:$('spV').value.trim(),link_url:$('spL').value.trim(),link_label:$('spLL').value.trim(),
+    event_date:sp.kind==='event'?$('spDate').value:'',event_place:sp.kind==='event'?$('spPlace').value.trim():'',status,image_data:sp.keep?'':(sp.img||''),keep_image:sp.keep};
+  try{await rpc('mogu_shop_save_post',{p_shop_id:login.shopId,p_pin:login.pin,p_post:post});st.textContent=status==='published'?'公開しました！情報局に載っています':'下書きに保存しました';spReset();spLoad()}
+  catch(e){console.error(e);const m=errText(e);st.textContent=m.includes('多すぎ')?'今日の投稿数の上限です。また明日お願いします':/URL|タイトル|本文|画像/.test(m)?m.replace(/^.*?((URL|タイトル|本文|画像)[^"]*).*$/,'$1'):'保存できませんでした'}
+}
+$('spDraft').onclick=()=>spSave('draft');$('spPub').onclick=()=>spSave('published');
+async function spLoad(){
+  try{spPosts=await rpc('mogu_shop_list_posts',{p_shop_id:login.shopId,p_pin:login.pin})||[]}catch(e){console.error(e);$('spList').textContent='読み込めませんでした';return}
+  const SN={published:'公開中',draft:'下書き',trash:'ゴミ箱'};
+  $('spList').innerHTML=spPosts.length?spPosts.map(p=>`<div class="prw"><span class="st ${p.status}">${SN[p.status]||''}</span><b>${esc(p.title)}</b><br><small class="muted">${SPK[p.kind]||''}</small>
+   <div class="chips">${p.status==='trash'?`<button class="chip" data-sa="restore" data-id="${p.id}">↩️ 元に戻す</button><button class="chip" data-sa="purge" data-id="${p.id}">完全に消す</button>`:`<button class="chip" data-sa="edit" data-id="${p.id}">✏️ 編集</button>${p.status==='published'?`<button class="chip" data-sa="unpublish" data-id="${p.id}">非公開にする</button>`:`<button class="chip" data-sa="publish" data-id="${p.id}">公開する</button>`}<button class="chip" data-sa="trash" data-id="${p.id}">🗑️ ゴミ箱へ</button>`}</div></div>`).join(''):'<div class="muted">まだありません。上から書いてみてね</div>';
+}
+$('spList').onclick=async e=>{
+  const b=e.target.closest('[data-sa]');if(!b)return;const a=b.dataset.sa,p=spPosts.find(x=>x.id===b.dataset.id);if(!p)return;
+  if(a==='edit'){spKindSet(['shop','news','event','video'].includes(p.kind)?p.kind:'shop');sp.id=p.id;$('spT').value=p.title||'';$('spB').value=p.body||'';$('spV').value=p.video_url||'';$('spL').value=p.link_url||'';$('spLL').value=p.link_label||'';$('spDate').value=p.event_date||'';$('spPlace').value=p.event_place||'';sp.img=p.image_data||null;sp.keep=!!p.image_data;spShow(p.image_data||'');$('spTitle').textContent='✏️ 発信を編集';$('spCancel').classList.remove('hidden');$('spCard').scrollIntoView({behavior:'smooth'});return}
+  if(a==='purge'){const w=prompt('【2段階目】完全に消します。もう戻せません。\n消す場合は「完全に消す」と入力してください');if(w===null)return;if(w.trim()!=='完全に消す')return toast('入力がちがうので消していません')}
+  if(a==='trash'&&!confirm('ゴミ箱に入れますか？（情報局から見えなくなります。元に戻せます）'))return;
+  try{await rpc('mogu_shop_post_action',{p_shop_id:login.shopId,p_pin:login.pin,p_id:p.id,p_action:a});toast({publish:'公開しました',unpublish:'非公開にしました',trash:'ゴミ箱に入れました',restore:'元に戻しました（下書き）',purge:'完全に消しました'}[a]);spLoad()}
+  catch(err){console.error(err);toast('できませんでした')}
+};
 
 /* ---------- 通販メニュー 有り／無し ---------- */
 let hasOnline=null;

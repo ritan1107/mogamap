@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>もぐマップ スタンプラリー</title>
 <meta name="description" content="もぐマップのスタンプラリー。対面スタンプ・遠隔スタンプ・スタンプ帳・マイページ。">
-<link rel="stylesheet" href="core.css?v=4">
+<link rel="stylesheet" href="core.css?v=5">
 <style>
 .progress-card{display:flex;align-items:center;gap:14px}
 .progress-num{font-size:30px;font-weight:900;color:var(--pink);white-space:nowrap}
@@ -95,6 +95,10 @@
 .welcome-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .welcome-tags span{background:#ffffff38;border:1px solid #ffffff66;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:900}
 .wide-btn{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;border:2px solid #cfe0f5;background:linear-gradient(160deg,#f3f8ff,#fff);border-radius:22px;padding:15px 16px;cursor:pointer;text-align:left;box-shadow:0 8px 20px rgba(120,90,60,.09)}
+.ticker{margin-top:16px;background:#fff;border-radius:22px;padding:12px;box-shadow:0 8px 20px rgba(120,90,60,.09);border:1.5px solid var(--line)}.ticker-head{display:flex;justify-content:space-between;align-items:center;margin:0 2px 8px}.ticker-head a{font-weight:900;font-size:13.5px;color:var(--teal);text-decoration:none}
+.tk{display:flex;align-items:center;gap:12px;min-height:74px;border-radius:16px;padding:12px 14px;text-decoration:none;color:var(--ink);background:#f8f4ee}.tk span{font-size:30px}.tk div{flex:1;min-width:0}.tk small{display:block;font-weight:900;font-size:12px;color:var(--muted)}.tk b{display:block;font-size:15.5px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.tk i{font-style:normal;color:var(--teal);font-size:20px}
+.tk.rally{background:linear-gradient(120deg,#ffe3ec,#fff3d6)}.tk.event{background:linear-gradient(120deg,#e8f6ff,#effaf2)}
+body.festive .ticker{border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#ff7aa2,#ffd84d,#6ab8ff,#7ed6a5) border-box}
 .info-btn{text-decoration:none;color:inherit;border-color:#f6d3df;background:linear-gradient(160deg,#fff1f6,#fff)}.new-dot{font-style:normal;font-size:11px;background:var(--pink);color:#fff;border-radius:999px;padding:2px 7px;vertical-align:middle}
 .wide-btn span{font-size:36px}.wide-btn div{flex:1}.wide-btn b{display:block;font-size:19px}.wide-btn small{color:var(--muted);font-size:13px}.wide-btn i{font-style:normal;font-size:26px;color:var(--teal)}
 .shop-filter{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}
@@ -136,7 +140,7 @@
 
   <!-- ホーム：4つのボタンだけ -->
   <section class="view on" id="v-home">
-    <div class="top-card" id="welcome" data-fixed="1">
+    <div class="top-card fest-glow" id="welcome" data-fixed="1">
       <img src="img/top.jpg?v=1" alt="もぐマップ：お店をめぐって、たべて、つながる街のイラスト" width="1200" height="675" fetchpriority="high">
       <div class="top-text">
         <h1>めぐる、たべる、つながる</h1>
@@ -144,6 +148,7 @@
         <div class="top-tags"><span>🗺️ めぐる</span><span>🍴 たべる</span><span>📷 スタンプ</span><span>🎁 もらえる</span></div>
       </div>
     </div>
+    <a class="fest-banner" id="festBanner" href="info.html"></a>
     <div class="period-bar hidden" id="periodBar"></div>
     <button class="mode-chip hidden" id="modeChip"></button>
     <div class="card progress-card">
@@ -160,6 +165,11 @@
     </div>
     <a class="wide-btn info-btn" href="info.html"><span>📣</span><div><b>お知らせ・マルシェ情報 <em class="new-dot hidden" id="infoNew">NEW</em></b><small>イベント告知・お店紹介・CM動画</small></div><i>›</i></a>
     <button class="wide-btn" data-go="shops"><span>🛍️</span><div><b>お店・購入</b><small>お店の情報を見る・通販で買う・コミュニティ</small></div><i>›</i></button>
+    <div class="ticker hidden" id="ticker">
+      <div class="ticker-head"><b>📣 いまのお知らせ</b><a href="info.html">もっと見る ›</a></div>
+      <div class="slider" id="tickSlider"></div>
+      <div class="dots" id="tickDots"></div>
+    </div>
     <a class="admin-link" href="shop.html">お店の方はこちら</a>
   </section>
 
@@ -332,7 +342,7 @@
 </div>
 
 <div id="toast"></div>
-<script src="core.js?v=4"></script>
+<script src="core.js?v=5"></script>
 <script>
 let shops=[],settings={},progress=null,stampIds=new Set(),notices=[],subs=[],allSubs=[],dmMsgs=[],clears=[];
 const PER_CLEAR=3; // スタンプいくつで1クリアか
@@ -777,8 +787,19 @@ function useQrText(text){
   return false;
 }
 async function checkInfoNew(){
-  try{const t=await rpc('mogu_posts_latest',{});const seen=+(localStorage.getItem('mogu_info_seen')||0);
-    $('infoNew').classList.toggle('hidden',!(t&&new Date(t).getTime()>seen))}catch(e){console.warn(e)}
+  try{
+    const t=await rpc('mogu_info_ticker',{})||{},seen=+(localStorage.getItem('mogu_info_seen')||0);
+    $('infoNew').classList.toggle('hidden',!(t.latest&&new Date(t.latest).getTime()>seen));
+    const f=festiveInfo(t),jd=v=>new Date(v).toLocaleDateString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric'});
+    const K={news:'📢',shop:'🏪',video:'🎬',voice:'💬'},cards=[];
+    const p=t.period||{};
+    if(p.running)cards.push(`<a class="tk rally" href="info.html"><span>🎉</span><div><small>いま開催中</small><b>スタンプラリー開催中！${p.ends_at?jd(p.ends_at)+'まで':''}　お店をめぐってスタンプを集めよう</b></div><i>›</i></a>`);
+    else if(p.starts_at&&new Date(p.starts_at)>new Date())cards.push(`<a class="tk rally" href="info.html"><span>⏳</span><div><small>もうすぐ</small><b>スタンプラリーは ${jd(p.starts_at)} からスタート！</b></div><i>›</i></a>`);
+    (t.events||[]).slice(0,3).forEach(e=>cards.push(`<a class="tk event" href="info.html#p-${esc(e.id)}"><span>🎪</span><div><small>${jd(e.event_date+'T12:00:00+09:00')}${e.event_place?' ・ '+esc(e.event_place):''}</small><b>${esc(e.title)}</b></div><i>›</i></a>`));
+    (t.posts||[]).slice(0,4).forEach(x=>cards.push(`<a class="tk" href="info.html#p-${esc(x.id)}"><span>${K[x.kind]||'📢'}</span><div><small>${x.kind==='voice'?'みんなの声':x.kind==='shop'?'お店から':'お知らせ'}</small><b>${esc(x.title)}</b></div><i>›</i></a>`));
+    if(cards.length){$('tickSlider').innerHTML=cards.join('');$('ticker').classList.remove('hidden');autoSlide($('tickSlider'),$('tickDots'),4000)}
+    if(f.on){$('festBanner').textContent=f.text+' くわしくはこちら ›';startFestive()}
+  }catch(e){console.warn(e)}
 }
 async function claimLive(token){
   const p=participant();
@@ -862,13 +883,12 @@ async function loadPeriod(){
 }
 (async()=>{
   const nfc=readNfcParams();
-  loadPeriod();
+  loadPeriod();checkInfoNew();
   await loadSettings();await loadShops();await syncStyle();fillShopSelects();await loadProgress();
   if(nfc&&nfc.rt){redeemTicket(nfc.rt);return}
   if(nfc&&nfc.lq){claimLive(nfc.lq);return}
   const qs=new URLSearchParams(location.search).get('shop');
   if(qs&&shops.some(s=>s.id===qs)){history.replaceState(null,'',location.pathname);go('shops');openShop(qs)}
-  checkInfoNew();
   if(nfc){
     go('stamp');$('stampShop').value=nfc.shop;
     if(nfc.code)claim(nfc.shop,nfc.code);

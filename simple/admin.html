@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="もぐマップ主催">
 <meta name="theme-color" content="#c49a3a">
 <title>もぐマップ 主催者ページ</title>
-<link rel="stylesheet" href="core.css?v=4">
+<link rel="stylesheet" href="core.css?v=5">
 <style>
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .tab{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:13px;font-weight:900;cursor:pointer;font-size:16px}
@@ -28,6 +28,8 @@
 .paste-row{display:flex;gap:8px}.paste-row input{flex:1}.paste-row .btn{width:auto;margin:0;white-space:nowrap}
 .prow{border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:#fff}.prow .tg{display:inline-block;font-size:11px;font-weight:900;border-radius:999px;padding:1px 8px;margin-left:4px;background:#effaf9;color:var(--teal)}.prow .tg.r{background:#fff3e6;color:#c26a12}.prow .tg.g{background:#f3eee8;color:#8a7a6a}
 .st-line{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px dashed var(--line);padding:6px 0;font-size:14px}.st-line small{color:var(--muted);font-weight:700}.st-line button{flex:0 0 auto}
+.otabs button.has-pend::after{content:"";position:absolute;top:5px;right:6px;width:9px;height:9px;border-radius:9px;background:#e74c3c}
+.pend{background:#fff3e6;color:#c26a12;border-radius:12px;padding:8px 12px;font-weight:900;margin-bottom:6px}.pv{margin-top:6px;background:#faf6f1;border-radius:10px;padding:8px;font-size:13.5px;white-space:pre-wrap}.pv img{display:block;max-width:100%;max-height:160px;border-radius:8px;margin-bottom:6px}
 .kpick{display:grid;grid-template-columns:1fr 1fr;gap:6px}.kpick button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 4px;font:inherit;font-weight:900;font-size:13.5px;cursor:pointer;color:var(--ink)}.kpick button.on{border-color:var(--pink);background:#fff3f7}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.two .btn{margin:0}
 .imgpick{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.imgpick img{width:100%;max-height:220px;object-fit:cover;border-radius:12px}
@@ -163,7 +165,7 @@
         <button class="btn ghost small hidden" id="pfCancel" style="width:auto">編集をやめる</button>
         <div class="status" id="pfStatus"></div>
       </div>
-      <div class="card"><h3>📝 書いたもの</h3><div id="pfList"></div></div>
+      <div class="card"><h3>📝 投稿の一覧</h3><div class="pend hidden" id="pfPend"></div><div class="muted" style="font-size:13px">主催者・お店・お客さんの投稿がここに並びます。お客さんの投稿は「✅ 載せる」を押すまで見えません。</div><div id="pfList"></div></div>
     </div>
     <div class="opane" id="o-people">
       <div class="card">
@@ -271,7 +273,7 @@
 <div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
 <div id="report"></div>
 <div id="toast"></div>
-<script src="core.js?v=4"></script>
+<script src="core.js?v=5"></script>
 <script src="lib/qrcode.js?v=1"></script>
 <script>
 const failed=r=>r===false||(Array.isArray(r)&&r[0]&&(r[0].ok===false||r[0].success===false));
@@ -290,7 +292,7 @@ async function aLoad(){
     let codes=[];try{codes=await rpc('list_shop_stamp_codes_by_admin_pin',{p_admin_pin:pin})}catch(e){console.warn(e)}
     aPin=pin;aShops=Array.isArray(rows)?rows:[];aCodes={};(codes||[]).forEach(x=>aCodes[x.shop_id]=x.stamp_code||'');
     st.textContent=`${aShops.length}店舗`;$('aTools').classList.remove('hidden');aRender();cLoad();
-    $('oTabs').classList.remove('hidden');$('mapLink').classList.remove('hidden');try{sessionStorage.setItem('mogu_map_ok','1')}catch{}$('o-clear').appendChild($('cCard'));sLoad();pLoad();
+    $('oTabs').classList.remove('hidden');$('mapLink').classList.remove('hidden');try{sessionStorage.setItem('mogu_map_ok','1')}catch{}$('o-clear').appendChild($('cCard'));sLoad();pLoad();pfLoad();
   }catch(e){console.error(e);st.textContent=errText(e).includes('Invalid PIN')?'管理者PINがちがいます':'読み込めませんでした';$('aTools').classList.add('hidden');$('aList').innerHTML=''}
 }
 $('aOpen').onclick=aLoad;
@@ -495,17 +497,20 @@ async function pfSave(status){
 $('pfDraft').onclick=()=>pfSave('draft');$('pfPub').onclick=()=>pfSave('published');
 async function pfLoad(){
   try{pfPosts=await rpc('mogu_admin_list_posts',{p_admin_pin:aPin})||[]}catch(e){console.error(e);$('pfList').textContent='読み込めませんでした';return}
-  const SN={published:'公開中',draft:'下書き',trash:'ゴミ箱'};
-  $('pfList').innerHTML=pfPosts.length?pfPosts.map(p=>`<div class="prw"><span class="st ${p.status}">${SN[p.status]}</span>${p.pinned?'📌 ':''}<b>${esc(p.title)}</b><br><small class="muted">${PFK[p.kind]||''}・${jst(p.updated_at)}</small>
+  const SN={published:'公開中',draft:'下書き',trash:'ゴミ箱',pending:'確認待ち'};
+  const pend=pfPosts.filter(p=>p.status==='pending').length;document.querySelector('[data-o="posts"]')?.classList.toggle('has-pend',!!pend);$('pfPend').textContent=pend?`💬 お客さんの投稿が ${pend}件 確認待ちです`:'';$('pfPend').classList.toggle('hidden',!pend);
+  const who=p=>p.author_type==='shop'?`🏪 ${esc(p.author_shop_name||'お店')}`:p.author_type==='guest'?`💬 ${esc(p.author_name||'お客さん')}さん`:'👑 主催者';
+  $('pfList').innerHTML=pfPosts.length?pfPosts.map(p=>`<div class="prw"><span class="st ${p.status}">${SN[p.status]}</span>${p.pinned?'📌 ':''}<b>${esc(p.title)}</b><br><small class="muted">${who(p)}・${PFK[p.kind]||'💬 みんなの声'}・${jst(p.updated_at)}</small>${p.status==='pending'?`<div class="pv">${p.image_data?`<img src="${esc(p.image_data)}" alt="">`:''}${esc(p.body||'')}</div>`:''}
     <div class="chips">${p.status==='trash'?`<button class="chip on" data-pa="restore" data-id="${p.id}">↩️ 元に戻す</button><button class="chip off" data-pa="purge" data-id="${p.id}">完全に消す</button>`:
-    `<button class="chip" data-pa="edit" data-id="${p.id}">✏️ 編集</button>${p.status==='published'?`<button class="chip" data-pa="unpublish" data-id="${p.id}">非公開にする</button>`:`<button class="chip on" data-pa="publish" data-id="${p.id}">公開する</button>`}<button class="chip off" data-pa="trash" data-id="${p.id}">🗑️ ゴミ箱へ</button>`}</div></div>`).join(''):'<div class="muted">まだありません。上から書いてみてね</div>';
+    p.status==='pending'?`<button class="chip on" data-pa="approve" data-id="${p.id}">✅ 載せる</button><button class="chip off" data-pa="reject" data-id="${p.id}">見送る</button>`:
+    `${p.author_type==='organizer'?`<button class="chip" data-pa="edit" data-id="${p.id}">✏️ 編集</button>`:''}<button class="chip ${p.pinned?'on':''}" data-pa="pin" data-id="${p.id}">📌 ${p.pinned?'注目中':'注目にする'}</button>${p.status==='published'?`<button class="chip" data-pa="unpublish" data-id="${p.id}">非公開にする</button>`:`<button class="chip on" data-pa="publish" data-id="${p.id}">公開する</button>`}<button class="chip off" data-pa="trash" data-id="${p.id}">🗑️ ゴミ箱へ</button>`}</div></div>`).join(''):'<div class="muted">まだありません。上から書いてみてね</div>';
 }
 $('pfList').onclick=async e=>{
   const b=e.target.closest('[data-pa]');if(!b)return;const a=b.dataset.pa,p=pfPosts.find(x=>x.id===b.dataset.id);if(!p)return;
   if(a==='edit'){pfShops();pfKindSet(p.kind);pf.id=p.id;$('pfT').value=p.title||'';$('pfB').value=p.body||'';$('pfV').value=p.video_url||'';$('pfL').value=p.link_url||'';$('pfLL').value=p.link_label||'';$('pfDate').value=p.event_date||'';$('pfPlace').value=p.event_place||'';$('pfShop').value=p.shop_id||'';$('pfPin').checked=!!p.pinned;pf.img=p.image_data||null;pf.keepImg=!!p.image_data;pfImgShow(p.image_data||'');$('pfTitle').textContent='✏️ お知らせを編集';$('pfCancel').classList.remove('hidden');$('pfCard').scrollIntoView({behavior:'smooth'});return}
   if(a==='purge'){const w=prompt('【2段階目】完全に消します。もう元に戻せません。\n消す場合は「完全に消す」と入力してください');if(w===null)return;if(w.trim()!=='完全に消す')return toast('入力がちがうので消していません')}
   if(a==='trash'&&!confirm('ゴミ箱に入れますか？（情報局から見えなくなります。元に戻せます）'))return;
-  try{await rpc('mogu_admin_post_action',{p_admin_pin:aPin,p_id:p.id,p_action:a});toast({publish:'公開しました',unpublish:'非公開にしました',trash:'ゴミ箱に入れました',restore:'元に戻しました（下書き）',purge:'完全に消しました'}[a]);pfLoad()}
+  try{await rpc('mogu_admin_post_action',{p_admin_pin:aPin,p_id:p.id,p_action:a});toast({approve:'載せました',reject:'見送りました（ゴミ箱）',pin:'注目を切りかえました',publish:'公開しました',unpublish:'非公開にしました',trash:'ゴミ箱に入れました',restore:'元に戻しました（下書き）',purge:'完全に消しました'}[a]);pfLoad()}
   catch(err){console.error(err);toast('できませんでした')}
 };
 
