@@ -273,7 +273,7 @@
 <div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
 <div id="report"></div>
 <div id="toast"></div>
-<script src="core.js?v=5"></script>
+<script src="core.js?v=6"></script>
 <script src="lib/qrcode.js?v=1"></script>
 <script>
 const failed=r=>r===false||(Array.isArray(r)&&r[0]&&(r[0].ok===false||r[0].success===false));
@@ -479,7 +479,7 @@ $('pfKind').onclick=e=>{const b=e.target.closest('[data-k]');if(b)pfKindSet(b.da
 function pfShops(){const cur=$('pfShop').value;$('pfShop').innerHTML='<option value="">（お店を選ぶ）</option>'+aShops.filter(s=>s.is_published).map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');$('pfShop').value=cur}
 function pfImgShow(src){$('pfImgPrev').src=src||'';$('pfImgPrev').classList.toggle('hidden',!src);$('pfImgDel').classList.toggle('hidden',!src)}
 // 画像は横1080pxまでに小さくして保存
-function shrink(file){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{let w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,1080/Math.max(w,h));const c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL('image/jpeg',q);while(d.length>600000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng(new Error('img'))};im.src=u})}
+function shrink(file){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{let w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,900/Math.max(w,h));const c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL('image/jpeg',q);while(d.length>260000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng(new Error('img'))};im.src=u})}
 $('pfImg').onchange=async()=>{const f=$('pfImg').files?.[0];$('pfImg').value='';if(!f)return;try{pf.img=await shrink(f);pf.keepImg=false;pfImgShow(pf.img)}catch{toast('画像を読みこめませんでした')}};
 $('pfImgDel').onclick=()=>{pf.img=null;pf.keepImg=false;pfImgShow('')};
 function pfReset(){pf={kind:'news',id:null,img:null,keepImg:false};['pfT','pfB','pfV','pfL','pfLL','pfDate','pfPlace'].forEach(i=>$(i).value='');$('pfShop').value='';$('pfPin').checked=false;pfKindSet('news');pfImgShow('');$('pfTitle').textContent='📣 お知らせを書く';$('pfCancel').classList.add('hidden')}

@@ -34,23 +34,30 @@ async function notifyCall(body){
 function notifyShop(shopId,kind){if(NOTIFY_URL&&shopId)notifyCall({action:'notify',shopId,kind:kind||'message'}).catch(e=>console.warn('通知できませんでした',e))}
 // 元のもぐマップと同じ背景（主催者が「アプリデザイン管理」で登録した背景画像）
 function safeBgImage(v){v=String(v||'');return /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(v)||/^https:\/\/[^"'()\s]+$/.test(v)?v:''}
+// 背景画像：今の背景はアプリと同じ場所（img/bg.jpg）に置いてあるので、毎回データベースから読まない（通信量の節約）
+// 主催者が背景を変えたときだけ、新しい画像を1回だけ読んで、このスマホに保存する
+const BG_STATIC_V=1789084575,BG_STATIC_URL=new URL('img/bg.jpg?v=1789084575',document.currentScript?.src||location.href).href;
 async function applyAppBackground(){
   try{
-    const rows=await rpc('get_public_app_visual_settings',{}),r=Array.isArray(rows)?rows[0]:rows,img=safeBgImage(r?.body_image_data);
-    // トップ画像（元のもぐマップのホーム上部と同じ）
-    const hero=safeBgImage(r?.hero_image_data),w=document.getElementById('welcome');
-    if(hero&&w&&!w.dataset.fixed){w.style.backgroundImage=`linear-gradient(135deg,rgba(52,177,183,.58),rgba(114,184,228,.54),rgba(239,154,170,.58)),url("${hero}")`;w.style.backgroundSize=`cover,${Number(r.hero_size)||100}% auto`;w.style.backgroundPosition=`center,${Number(r.hero_x??50)}% ${Number(r.hero_y??50)}%`;w.style.backgroundRepeat='no-repeat,no-repeat'}
+    const m=await rpc('mogu_visual_meta',{});if(!m||!m.has_body)return;
+    let img='';
+    if(Number(m.v)===BG_STATIC_V)img=BG_STATIC_URL;
+    else{
+      try{const c=JSON.parse(localStorage.getItem('mogu_bg_cache')||'null');if(c&&c.v===m.v)img=c.img}catch{}
+      if(!img){img=safeBgImage(await rpc('mogu_visual_body',{}));if(img){try{localStorage.setItem('mogu_bg_cache',JSON.stringify({v:m.v,img}))}catch{}}}
+    }
     if(!img)return;
-    // 画面に固定した背景レイヤー（スクロールしても画面いっぱい・iPhoneでもOK）
     let bg=document.getElementById('appBg');
     if(!bg){bg=document.createElement('div');bg.id='appBg';bg.setAttribute('aria-hidden','true');document.body.prepend(bg)}
-    const size=Number(r.body_size)||100;
-    bg.style.cssText=`position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(180deg,rgba(248,253,255,.82),rgba(238,249,246,.88)),url("${img}");background-size:cover,${size>100?size+'% auto':'cover'};background-position:center top,${Number(r.body_x??50)}% ${Number(r.body_y??0)}%;background-repeat:no-repeat,no-repeat`;
+    const size=Number(m.body_size)||100;
+    bg.style.cssText=`position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(180deg,rgba(248,253,255,.82),rgba(238,249,246,.88)),url("${img}");background-size:cover,${size>100?size+'% auto':'cover'};background-position:center top,${Number(m.body_x??50)}% ${Number(m.body_y??0)}%;background-repeat:no-repeat,no-repeat`;
   }catch(e){console.warn('背景を読み込めませんでした',e)}
 }
 document.addEventListener('DOMContentLoaded',applyAppBackground);
 async function loadPublicShops(){
-  const rows=await api('/rest/v1/shop_public?select=*&is_published=eq.true&order=name.asc');
+    // 写真（image_url）はこのアプリでは使わないので読まない（通信量の節約）
+  const cols='id,source_id,name,address,category,description,latitude,longitude,phone,community_url,point_purchase_url,stamp_rally_enabled,stamp_rally_note,spot_job_enabled,spot_job_title,spot_job_description,spot_job_hourly_wage,spot_job_schedule,spot_job_payment_method,spot_job_contact,is_published,updated_at,website_url,instagram_url,facebook_url,x_url,line_url,subcategory,main_category,rally_number,volunteer_enabled,volunteer_title,volunteer_description,volunteer_schedule,volunteer_contact,uw_url,youtube_url,map_location_status,google_listing_url,google_listing_verified,has_online_menu';
+  const rows=await api(`/rest/v1/shop_public?select=${cols}&is_published=eq.true&order=name.asc`);
   return Array.isArray(rows)?rows:[];
 }
 

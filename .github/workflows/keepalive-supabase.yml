@@ -1,0 +1,48 @@
+name: Keep Supabase awake
+
+# Supabaseの無料プランは、1週間アクセスがないと止まってしまうため、
+# 2日おきに軽いアクセスをして止まらないようにする（もぐマップ・名刺・ホームページ共通のデータベース）。
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 */2 * *"
+
+permissions:
+  contents: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          for i in 1 2 3; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+              "https://lgidhjxowpueglduphzp.supabase.co/rest/v1/rpc/mogu_posts_latest" \
+              -H "apikey: sb_publishable_beqwleruXXNe93qNA6UNzg_K9fSd5ft" \
+              -H "Authorization: Bearer sb_publishable_beqwleruXXNe93qNA6UNzg_K9fSd5ft" \
+              -H "Content-Type: application/json" -d '{}')
+            echo "HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 20
+          done
+          echo "::warning::Supabaseにつながりませんでした（止まっているかもしれません）"
+          exit 1
+
+  # GitHubは60日間リポジトリに動きがないと、この自動実行を止めてしまうため、月に1回だけ小さな記録を残す
+  heartbeat:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Monthly heartbeat
+        run: |
+          f=.github/keepalive.txt
+          last=$(cat $f 2>/dev/null || echo "")
+          now=$(date -u +%Y-%m)
+          if [ "$last" != "$now" ]; then
+            echo "$now" > $f
+            git config user.name "mogamap-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add $f && git commit -m "keepalive $now" && git push || echo "skip"
+          fi

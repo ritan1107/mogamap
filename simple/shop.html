@@ -255,7 +255,7 @@
 <div class="big-qr" id="bigQr"><div id="bigQrSvg"></div><h2 id="bigQrName"></h2><p class="muted">もぐマップの📷で読み取ってください</p><button class="btn ghost" style="width:auto;padding:12px 30px" id="bigQrClose">とじる</button></div>
 <div id="printArea"><h1>もぐマップ スタンプラリー</h1><p id="printName"></p><div id="printSvg"></div><p>もぐマップの「📷 QRコードを読み取る」で読み取ってください</p></div>
 <div id="toast"></div>
-<script src="core.js?v=5"></script>
+<script src="core.js?v=6"></script>
 <script src="lib/qrcode.js?v=1"></script>
 <script>
 const LKEY='mogu_shop_login_v1',CKEY='mogu_shop_code_';
@@ -355,7 +355,7 @@ const SPK={shop:'✨ お店の魅力',news:'📢 告知',event:'🎪 イベン�
 function spKindSet(k){sp.kind=k;$('spKind').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));$('spEvent').classList.toggle('hidden',k!=='event')}
 $('spKind').onclick=e=>{const b=e.target.closest('[data-k]');if(b)spKindSet(b.dataset.k)};
 function spShow(src){$('spPrev').src=src||'';$('spPrev').classList.toggle('hidden',!src);$('spImgDel').classList.toggle('hidden',!src)}
-function spShrink(file){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const k=Math.min(1,1080/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL('image/jpeg',q);while(d.length>600000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng()};im.src=u})}
+function spShrink(file){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.82,d=c.toDataURL('image/jpeg',q);while(d.length>260000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng()};im.src=u})}
 $('spImg').onchange=async()=>{const f=$('spImg').files?.[0];$('spImg').value='';if(!f)return;try{sp.img=await spShrink(f);sp.keep=false;spShow(sp.img)}catch{toast('画像を読みこめませんでした')}};
 $('spImgDel').onclick=()=>{sp.img=null;sp.keep=false;spShow('')};
 function spReset(){sp={kind:'shop',id:null,img:null,keep:false};['spT','spB','spV','spL','spLL','spDate','spPlace'].forEach(i=>$(i).value='');spKindSet('shop');spShow('');$('spTitle').textContent='📣 お店から発信する';$('spCancel').classList.add('hidden')}

@@ -94,7 +94,7 @@
 </div></div>
 <div id="toast"></div>
 
-<script src="core.js?v=5"></script>
+<script src="core.js?v=6"></script>
 <script>
 const KIND={news:['📢','お知らせ'],event:['🎪','マルシェ・イベント'],shop:['🏪','お店紹介'],video:['🎬','動画'],voice:['💬','みんなの声']};
 let posts=[],kind=new URLSearchParams(location.search).get('k')||'';
@@ -132,7 +132,7 @@ function render(){
     const k=KIND[p.kind]||KIND.news,link=safeUrl(p.link_url);
     return `<article class="post ${p.pinned?'pin':''}" id="p-${esc(p.id)}">
       ${p.pinned?'<div class="pin-l">📌 注目</div>':''}
-      ${p.image&&/^data:image\//.test(p.image)?`<img class="pimg" src="${esc(p.image)}" alt="" loading="lazy">`:''}
+      ${p.has_image?`<img class="pimg lazy" data-pid="${esc(p.id)}" data-v="${esc(p.v)}" alt="">`:''}
       <div class="in">
         <div class="meta"><span class="kt ${esc(p.kind)}">${k[0]} ${k[1]}</span><span>${fmtDate(p.date)}</span></div>
         <h2>${esc(p.title)}</h2>
@@ -146,20 +146,34 @@ function render(){
         </div>
       </div>
     </article>`}).join('');
+  lazyScan();
 }
+/* 画像は見える位置に来たときだけ読む＋このスマホに保存（通信量の節約） */
+const imgMem={};
+function postImage(id,v){const key=`mogu_pimg_${id}_${v}`;return imgMem[key]||(imgMem[key]=fetchPostImage(id,v,key))}
+async function fetchPostImage(id,v,key){
+  try{const c=localStorage.getItem(key);if(c)return c}catch{}
+  const d=await rpc('mogu_post_image',{p_id:id});if(!d||!/^data:image\//.test(d))return '';
+  try{Object.keys(localStorage).filter(k=>k.startsWith(`mogu_pimg_${id}_`)).forEach(k=>localStorage.removeItem(k));localStorage.setItem(key,d)}
+  catch{try{Object.keys(localStorage).filter(k=>k.startsWith('mogu_pimg_')).slice(0,5).forEach(k=>localStorage.removeItem(k))}catch{}}
+  return d;
+}
+const lazyIO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;lazyIO.unobserve(e.target);loadImg(e.target)}),{rootMargin:'300px 300px'}):null;
+async function loadImg(el){try{const d=await postImage(el.dataset.pid,el.dataset.v);if(d)el.src=d;else el.remove()}catch(e){console.warn(e)}}
+function lazyScan(){document.querySelectorAll('img.lazy:not([data-w])').forEach(el=>{el.dataset.w='1';lazyIO?lazyIO.observe(el):loadImg(el)})}
 function renderSlides(){
-  const pick=[...posts.filter(p=>p.pinned),...posts.filter(p=>!p.pinned&&(p.image||p.kind==='event')),...posts.filter(p=>!p.pinned&&!(p.image||p.kind==='event'))].slice(0,7);
+  const pick=[...posts.filter(p=>p.pinned),...posts.filter(p=>!p.pinned&&(p.has_image||p.kind==='event')),...posts.filter(p=>!p.pinned&&!(p.has_image||p.kind==='event'))].slice(0,7);
   if(pick.length<1)return;
-  $('slider').innerHTML=pick.map(p=>{const k=KIND[p.kind]||KIND.news,img=p.image&&/^data:image\//.test(p.image);
-    return `<a class="slide ${img?'':'noimg'}" href="#p-${esc(p.id)}" data-id="${esc(p.id)}">${img?`<img src="${esc(p.image)}" alt="">`:`<span class="em">${k[0]}</span>`}<div class="sh"><small>${k[0]} ${k[1]}${p.event_date?' ・ '+fmtEvent(p.event_date).replace(/^\d+年/,''):''}</small><b>${esc(p.title)}</b></div></a>`}).join('');
+  $('slider').innerHTML=pick.map(p=>{const k=KIND[p.kind]||KIND.news,img=!!p.has_image;
+    return `<a class="slide ${img?'':'noimg'}" href="#p-${esc(p.id)}" data-id="${esc(p.id)}">${img?`<img class="lazy" data-pid="${esc(p.id)}" data-v="${esc(p.v)}" alt="">`:`<span class="em">${k[0]}</span>`}<div class="sh"><small>${k[0]} ${k[1]}${p.event_date?' ・ '+fmtEvent(p.event_date).replace(/^\d+年/,''):''}</small><b>${esc(p.title)}</b></div></a>`}).join('');
   $('slideWrap').classList.remove('hidden');
-  autoSlide($('slider'),$('dots'));
+  autoSlide($('slider'),$('dots'));lazyScan();
 }
 $('slider').onclick=e=>{const a=e.target.closest('[data-id]');if(!a)return;e.preventDefault();kind='';render();setTimeout(()=>document.getElementById('p-'+a.dataset.id)?.scrollIntoView({behavior:'smooth'}),50)};
 
 /* ---- 体験・おすすめの投稿（主催者が確認してから載る） ---- */
 let vImg=null;
-function shrinkImg(file,max=1080){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.8,d=c.toDataURL('image/jpeg',q);while(d.length>500000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng()};im.src=u})}
+function shrinkImg(file,max=900){return new Promise((ok,ng)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let q=.8,d=c.toDataURL('image/jpeg',q);while(d.length>220000&&q>.4){q-=.12;d=c.toDataURL('image/jpeg',q)}ok(d)};im.onerror=()=>{URL.revokeObjectURL(u);ng()};im.src=u})}
 async function openVoice(){
   const p=participant();$('voiceModal').classList.add('on');
   if(!p){$('voiceBody').innerHTML=`<p>投稿するには、スタンプラリーへの参加（名前を入れるだけ）が必要です。</p><a class="btn pink" href="./">参加する（スタンプラリーへ）</a>`;return}
