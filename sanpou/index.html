@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta property="og:type" content="restaurant">
+<meta property="og:site_name" content="東京風 山寶ラーメン">
 <meta property="og:title" content="東京風 山寶ラーメン｜延岡市昭和町のラーメンとお好み焼き">
 <meta property="og:description" content="東京で修業した醤油ラーメンと、夜だけの鉄板お好み焼き。延岡市昭和町2丁目71-2・駐車場あり。">
-<meta property="og:image" content="https://ritan1107.github.io/mogamap/sanpou/img/lu/shoyu.webp">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>東京風 山寶ラーメン</title>
 <link rel="icon" type="image/svg+xml" href="img/icon/icon.svg">
@@ -15,6 +15,9 @@
 <link rel="manifest" href="img/icon/manifest.json">
 <meta name="apple-mobile-web-app-title" content="山寶ラーメン">
 <meta name="theme-color" content="#1D1814">
+<meta property="og:image" content="https://ritan1107.github.io/mogamap/sanpou/img/og.jpg">
+<meta property="og:url" content="https://ritan1107.github.io/mogamap/sanpou/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="宮崎県延岡市昭和町の東京風 山寶（さんぽう）ラーメン。東京で修業した醤油ラーメンと、延岡駅前から続くお好み焼きが一緒に食べられるお店。駐車場あり・入口スロープ・個室あり。日本語・English・Tagalog対応。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -500,6 +503,25 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
   .lu-tx h3{font-size:.92rem}
 }
 .hero-cap small{font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--shu)}
+
+/* ---- Share ---- */
+.share{background:var(--paper2) var(--noise);padding-block:clamp(64px,9vw,112px);border-top:1px solid var(--line)}
+.share-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px 72px;align-items:center}
+.share h2{font-family:var(--f-head);font-size:clamp(1.5rem,3.4vw,2.2rem);line-height:1.6;letter-spacing:.04em;margin-top:14px}
+.share-p{color:var(--muted);line-height:2;margin-top:14px}
+.share-native{margin-top:26px}
+.share-list{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
+.share-list a,.share-list button{display:inline-flex;align-items:center;gap:9px;font:inherit;font-size:.9rem;font-weight:700;letter-spacing:.06em;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 20px 11px 14px;text-decoration:none;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.share-list a:hover,.share-list button:hover{transform:translateY(-2px);box-shadow:0 8px 20px -10px rgba(29,24,20,.35);border-color:var(--gold-l)}
+.share-list svg{width:22px;height:22px;flex:none}
+.sh-line svg{color:#06C755}.sh-fb svg{color:#1877F2}.sh-x svg{color:#000}.sh-copy svg{color:var(--shu)}
+.sh-copy.done{border-color:var(--shu);color:var(--shu)}
+.share-url{margin-top:16px;font-family:var(--f-en);font-size:.95rem;letter-spacing:.04em;color:var(--muted);word-break:break-all}
+.share-qr{margin:0;background:#fff;padding:18px 18px 14px;border:1px solid var(--line);box-shadow:0 24px 50px -30px rgba(29,24,20,.45);text-align:center;position:relative}
+.share-qr::before{content:"";position:absolute;inset:6px;border:1px solid var(--gold-l);pointer-events:none}
+.share-qr img{width:200px;height:200px;display:block}
+.share-qr figcaption{font-size:.78rem;color:var(--muted);margin-top:8px;letter-spacing:.06em}
+@media (max-width:760px){.share-in{grid-template-columns:minmax(0,1fr)}.share-list{display:grid;grid-template-columns:1fr 1fr}.share-list a,.share-list button{width:100%;justify-content:center}.share-qr{justify-self:center}.share-native{width:100%}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -509,6 +531,10 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
     <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-2.5-3.36V3h2.5zM14 3c.6 2.6 2.4 4.1 5 4.3v2.6c-2-.1-3.7-.8-5-2" fill="currentColor"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5l3 3.2-1.8 2.4a12 12 0 0 0 5.1 5.1l2.4-1.8 3.2 3-1.7 3.1c-.4.7-1.2 1-2 .8C9.5 18 6 14.5 4.7 9.2c-.2-.8.1-1.6.8-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 11v9h14v-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M4 4l16 16M20 4 4 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-fb" viewBox="0 0 24 24"><path d="M13.5 21v-7.5H16l.4-3h-2.9V8.7c0-.9.3-1.5 1.5-1.5h1.5V4.6c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.2H8.2v3h2.4V21z" fill="currentColor"/></symbol>
     <symbol id="i-line" viewBox="0 0 24 24"><path d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s6-3.5 8.2-6.1c1.2-1.4 1.8-2.8 1.8-4.7C22 6.6 17.5 3 12 3z" fill="currentColor"/><path d="M6.5 9v4h2.3M10.2 9v4M12.2 13V9l2.8 4V9M19 9h-2.6v4H19M16.4 11H19" fill="none" stroke="#06C755" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.6" fill="currentColor"/></symbol>
     <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3 11h18a9 9 0 0 1-18 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 7c0-2 1.5-2 1.5-4M12 7c0-2 1.5-2 1.5-4M16 7c0-2 1.5-2 1.5-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
@@ -689,6 +715,29 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
     </div>
   </div>
 </section>
+
+<section class="share" id="share" aria-labelledby="sh_h">
+  <div class="wrap share-in">
+    <div class="share-tx pre">
+      <p class="en-label">Share</p>
+      <h2 id="sh_h" data-i="sh_h">おいしかったら、<br>だれかに教えてください。</h2>
+      <p class="share-p" data-i="sh_p">ご家族やお友だちに、このお店をそのまま送れます。<br>お店の前では、QRコードを見せるだけでも。</p>
+      <button class="btn btn-shu btn-lg share-native" type="button" hidden><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_btn">このお店を送る</span></button>
+      <ul class="share-list">
+        <li><a class="sh-line" data-sh="line" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span>LINE</span></a></li>
+        <li><a class="sh-x" data-sh="x" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-x"/></svg><span>X</span></a></li>
+        <li><a class="sh-fb" data-sh="fb" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-fb"/></svg><span>Facebook</span></a></li>
+        <li><button class="sh-copy" type="button"><svg aria-hidden="true"><use href="#i-copy"/></svg><span class="sh-copy-l" data-i="sh_copy">URLをコピー</span></button></li>
+      </ul>
+      <p class="share-url">ritan1107.github.io/mogamap/sanpou/</p>
+    </div>
+    <figure class="share-qr pre">
+      <img src="img/share_qr.png" alt="このページのQRコード" width="492" height="492" loading="lazy">
+      <figcaption data-i="sh_qr">スマホのカメラで読み取れます</figcaption>
+    </figure>
+  </div>
+</section>
+
 </div>
 <div class="view" data-view="menu" hidden>
   <header class="page-head">
@@ -971,7 +1020,7 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
   <div class="wrap">
     <div class="fb"><img class="sign" src="img/logo_main.webp" alt="" width="1400" height="257" loading="lazy"><span><b data-i="title">東京風 山寶ラーメン</b><br><span data-i="ft_sub">さんぽう｜宮崎県延岡市昭和町</span></span></div>
     <p class="f-sns"><a href="https://www.instagram.com/sanpouramen/" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg>Instagram</a><a href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span data-i="line_short">公式LINE</span></a></p>
-    <nav aria-label="Footer"><a href="#menu" data-i="nav_menu">メニュー</a><a href="#menu" data-i="fm_h">全メニュー</a><a href="#story" data-i="nav_story">ものがたり</a><a href="#guide" data-i="nav_first">はじめての方へ</a><a href="#faq" data-i="s_faq">よくある質問</a><a href="#access" data-i="nav_access">アクセス</a></nav>
+    <nav aria-label="Footer"><a href="#menu" data-i="nav_menu">メニュー</a><a href="#menu" data-i="fm_h">全メニュー</a><a href="#story" data-i="nav_story">ものがたり</a><a href="#guide" data-i="nav_first">はじめての方へ</a><a href="#faq" data-i="s_faq">よくある質問</a><a href="#access" data-i="nav_access">アクセス</a><a href="#share" class="dk-share" data-i="sh_foot">このお店を教える</a></nav>
     <p class="copy">© <span data-i="title">東京風 山寶ラーメン</span></p>
   </div>
 </footer>
@@ -979,12 +1028,22 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 <nav class="dock" id="dock" aria-label="Quick links">
   <a href="#menu"><svg aria-hidden="true"><use href="#i-bowl"/></svg><span data-i="nav_menu">メニュー</span></a>
   <a href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span>LINE</span></a>
+  <a class="dk-share" href="#share"><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_dock">教える</span></a>
   <a class="main" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="dk_map">地図で行く</span></a>
 </nav>
 
 <script>
 /* 翻訳データ：[English, Tagalog, 中文(简体), 한국어]。日本語はページの元の文章を使う */
 var T={
+sh_h:["Enjoyed it? Tell someone.","Nasarapan ka? Ibahagi sa iba.","吃得开心，就告诉朋友吧。","맛있으셨다면, 누군가에게 알려 주세요."],
+sh_p:["Send this restaurant to family or friends in one tap.<br>In the shop, just show them the QR code.","Ipadala ang restawran na ito sa pamilya o kaibigan.<br>Sa tindahan, ipakita lang ang QR code.","可以把这家店直接发给家人和朋友。<br>在店里给对方看二维码也可以。","가족이나 친구에게 이 가게를 바로 보낼 수 있어요.<br>가게 앞에서는 QR 코드를 보여 주기만 해도 돼요."],
+sh_btn:["Send this restaurant","Ipadala ang restawran","发送这家店","이 가게 보내기"],
+sh_copy:["Copy URL","Kopyahin ang URL","复制网址","URL 복사"],
+sh_copied:["Copied!","Nakopya!","已复制！","복사했어요!"],
+sh_qr:["Scan with your phone camera","I-scan gamit ang camera ng phone","用手机相机扫描","휴대폰 카메라로 읽을 수 있어요"],
+sh_dock:["Share","Ibahagi","分享","공유"],
+sh_foot:["Share this restaurant","Ibahagi ang restawran","分享这家店","이 가게 공유하기"],
+share_txt:["Tokyo-style ramen & okonomiyaki in Nobeoka, Miyazaki — Sanpou Ramen 🍜","Tokyo-style ramen at okonomiyaki sa Nobeoka, Miyazaki — Sanpou Ramen 🍜","宫崎县延冈市的东京风拉面与大阪烧——山宝拉面 🍜","미야자키현 노베오카의 도쿄풍 라멘과 오코노미야키 — 산포 라멘 🍜"],
 set_p:["Sets from ¥800 — gyoza or fried rice in just the right size.","Sets mula ¥800 — gyoza o sinangag sa tamang dami.","套餐800日元起，煎饺、炒饭分量刚刚好。","세트는 800엔부터. 교자도 볶음밥도 딱 알맞은 양으로."],
 set_h:["Make it a set.","Gawing set.","拉面再加一道。","라멘에 한 가지 더."],
 c_veg:["Veggie-packed","Maraming gulay","蔬菜多多","채소 듬뿍"],
@@ -1327,6 +1386,29 @@ dk_map:["Map","Mapa","地图","지도"]
     luCards.forEach(function(k){ var on = t==='all' || k.getAttribute('data-taste').split(' ').indexOf(t)>=0; k.classList.toggle('dim',!on); if(on && !first) first=k; });
     if(first && luGrid.scrollWidth>luGrid.clientWidth+4){ luGrid.scrollTo({left:first.offsetLeft-luGrid.offsetLeft-20,behavior:reduce?'auto':'smooth'}); }
   }); });
+
+  // ---------- お店を教える（共有） ----------
+  var SHARE_URL='https://ritan1107.github.io/mogamap/sanpou/';
+  var SHARE_JA='延岡・昭和町の「東京風 山寶ラーメン」🍜 東京仕込みの醤油ラーメンと、夜だけのお好み焼き。';
+  function shareText(){ var L=LANGS[cur]; return (!L || L.i<0) ? SHARE_JA : T.share_txt[L.i]; }
+  function shareLinks(){
+    var t=shareText(), u=SHARE_URL, e=encodeURIComponent;
+    var map={ line:'https://line.me/R/share?text='+e(t+'\n'+u), x:'https://twitter.com/intent/tweet?text='+e(t)+'&url='+e(u), fb:'https://www.facebook.com/sharer/sharer.php?u='+e(u) };
+    $$('[data-sh]').forEach(function(a){ a.href=map[a.getAttribute('data-sh')]; });
+  }
+  function nativeShare(){ return navigator.share({title:document.title, text:shareText(), url:SHARE_URL}).catch(function(){}); }
+  var canShare = !!navigator.share;
+  var nBtn=$('.share-native'); if(canShare && nBtn){ nBtn.hidden=false; nBtn.addEventListener('click',nativeShare); }
+  $$('.dk-share').forEach(function(a){ a.addEventListener('click',function(ev){ if(canShare){ ev.preventDefault(); nativeShare(); } }); });
+  var cBtn=$('.sh-copy');
+  if(cBtn) cBtn.addEventListener('click',function(){
+    function ok(){ var lb=cBtn.querySelector('.sh-copy-l'); var L=LANGS[cur]; lb.innerHTML=(!L||L.i<0)?'コピーしました':T.sh_copied[L.i]; cBtn.classList.add('done');
+      setTimeout(function(){ lb.innerHTML=(!L||L.i<0)?lb._ja:T.sh_copy[L.i]; cBtn.classList.remove('done'); },2000); }
+    function legacy(){ var ta=document.createElement('textarea'); ta.value=SHARE_URL; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); ok(); }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(SHARE_URL).then(ok,legacy); } else legacy();
+  });
+  shareLinks();
+  $$('[data-lang]').forEach(function(b){ b.addEventListener('click',shareLinks); });
 
   // ---------- ページ切り替え（#menu #story #guide #access） ----------
   var views=$$('.view');
