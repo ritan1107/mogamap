@@ -108,6 +108,12 @@
 .tk{display:flex;align-items:center;gap:12px;min-height:74px;border-radius:16px;padding:12px 14px;text-decoration:none;color:var(--ink);background:#f8f4ee}.tk span{font-size:30px}.tk div{flex:1;min-width:0}.tk small{display:block;font-weight:900;font-size:12px;color:var(--muted)}.tk b{display:block;font-size:15.5px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.tk i{font-style:normal;color:var(--teal);font-size:20px}
 .tk.rally{background:linear-gradient(120deg,#ffe3ec,#fff3d6)}.tk.event{background:linear-gradient(120deg,#e8f6ff,#effaf2)}
 body.festive .ticker{border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#ff7aa2,#ffd84d,#6ab8ff,#7ed6a5) border-box}
+.shop-main{border:0;background:linear-gradient(135deg,#3f8f93,#4fa6a0);color:#fff;box-shadow:0 10px 22px rgba(63,143,147,.28)}.shop-main small{color:rgba(255,255,255,.9)!important}.shop-main i{color:#fff!important}
+.sub2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sub-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:104px;border-radius:22px;padding:12px 8px;text-decoration:none;color:var(--ink);font:inherit;cursor:pointer;text-align:center;box-shadow:0 8px 18px rgba(120,90,60,.08)}
+.sub-tile span{font-size:30px;line-height:1.2}.sub-tile b{font-size:16.5px;display:flex;align-items:center;gap:4px}.sub-tile small{font-size:12px;color:var(--muted);font-weight:700}
+.info-tile{border:2px solid #f6d3df;background:linear-gradient(160deg,#fff1f6,#fff)}
+.share-tile{border:2px solid #cfe6e4;background:linear-gradient(160deg,#eef8f7,#fff)}
 .share-btn{border-color:#cfe6e4;background:linear-gradient(160deg,#eef8f7,#fff);font:inherit;color:inherit;width:100%;text-align:left;cursor:pointer}
 .info-btn{text-decoration:none;color:inherit;border-color:#f6d3df;background:linear-gradient(160deg,#fff1f6,#fff)}.new-dot{font-style:normal;font-size:11px;background:var(--pink);color:#fff;border-radius:999px;padding:2px 7px;vertical-align:middle}
 .wide-btn span{font-size:36px}.wide-btn div{flex:1}.wide-btn b{display:block;font-size:19px}.wide-btn small{color:var(--muted);font-size:13px}.wide-btn i{font-style:normal;font-size:26px;color:var(--teal)}
@@ -173,9 +179,12 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
       <button class="big b3" data-go="book"><span>📖</span><b>スタンプ帳</b><small>集めたスタンプ</small></button>
       <button class="big b4" data-go="mypage"><span>👤</span><b>マイページ</b><small>自分の情報</small></button>
     </div>
-    <button class="wide-btn share-btn" data-share-open><span>📤</span><div><b>友だちに教える</b><small>LINE・SNS・QRでシェア</small></div><i>›</i></button>
-    <a class="wide-btn info-btn" href="info.html"><span>📣</span><div><b>お知らせ・マルシェ情報 <em class="new-dot hidden" id="infoNew">NEW</em></b><small>イベント告知・お店紹介・CM動画</small></div><i>›</i></a>
-    <button class="wide-btn" data-go="shops"><span>🛍️</span><div><b>お店・購入</b><small>お店の情報を見る・通販で買う・コミュニティ</small></div><i>›</i></button>
+    <!-- 動線：①スタンプ（上の4つ）→ ②行くお店・買うお店をさがす → ③イベントを見る／友だちを誘う -->
+    <button class="wide-btn shop-main" data-go="shops"><span>🛍️</span><div><b>お店・購入</b><small>行くお店・通販で買うお店をさがす</small></div><i>›</i></button>
+    <div class="sub2">
+      <a class="sub-tile info-tile" href="info.html"><span>📣</span><b>お知らせ<em class="new-dot hidden" id="infoNew">NEW</em></b><small>マルシェ・イベント</small></a>
+      <button class="sub-tile share-tile" data-share-open><span>📤</span><b>友だちに教える</b><small>LINE・SNS・QR</small></button>
+    </div>
     <div class="ticker hidden" id="ticker">
       <div class="ticker-head"><b>📣 いまのお知らせ</b><a href="info.html">もっと見る ›</a></div>
       <div class="slider" id="tickSlider"></div>
