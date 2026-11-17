@@ -504,23 +504,24 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 }
 .hero-cap small{font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--shu)}
 
-/* ---- 共有（ダイアログ） ---- */
-#shareDlg{border:0;padding:32px 28px 26px;width:min(420px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;background:var(--paper2);color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.6);text-align:center}
-#shareDlg::backdrop{background:rgba(29,24,20,.72);backdrop-filter:blur(2px)}
-#shareDlg .en-label{justify-content:center}
-#shareDlg h2{font-family:var(--f-head);font-size:1.3rem;line-height:1.6;letter-spacing:.04em;margin:10px 0 0}
-.sh-close{position:absolute;top:8px;right:10px;width:40px;height:40px;font-size:1.6rem;line-height:1;background:none;border:0;color:var(--muted);cursor:pointer}
-.share-native{width:100%;margin-top:20px}
-.share-list{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.share-list a,.share-list button{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-size:.88rem;font-weight:700;letter-spacing:.05em;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 8px;white-space:nowrap;text-decoration:none;cursor:pointer;transition:border-color .2s,transform .2s}
-.share-list a:hover,.share-list button:hover{border-color:var(--gold-l);transform:translateY(-1px)}
-.share-list svg{width:20px;height:20px;flex:none}
-@media (max-width:400px){#shareDlg{padding:30px 18px 22px}.share-list a,.share-list button{font-size:.82rem;letter-spacing:.02em;gap:6px}}
+/* ---- Share ---- */
+.share{background:var(--paper2) var(--noise);padding-block:clamp(64px,9vw,112px);border-top:1px solid var(--line)}
+.share-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px 72px;align-items:center}
+.share h2{font-family:var(--f-head);font-size:clamp(1.5rem,3.4vw,2.2rem);line-height:1.6;letter-spacing:.04em;margin-top:14px}
+.share-p{color:var(--muted);line-height:2;margin-top:14px}
+.share-native{margin-top:26px}
+.share-list{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
+.share-list a,.share-list button{display:inline-flex;align-items:center;gap:9px;font:inherit;font-size:.9rem;font-weight:700;letter-spacing:.06em;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 20px 11px 14px;text-decoration:none;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.share-list a:hover,.share-list button:hover{transform:translateY(-2px);box-shadow:0 8px 20px -10px rgba(29,24,20,.35);border-color:var(--gold-l)}
+.share-list svg{width:22px;height:22px;flex:none}
 .sh-line svg{color:#06C755}.sh-fb svg{color:#1877F2}.sh-x svg{color:#000}.sh-copy svg{color:var(--shu)}
 .sh-copy.done{border-color:var(--shu);color:var(--shu)}
-.share-qr{margin:20px auto 0;width:max-content;background:#fff;padding:12px 12px 8px;border:1px solid var(--line)}
-.share-qr img{width:168px;height:168px;display:block}
-.share-qr figcaption{font-size:.74rem;color:var(--muted);margin-top:4px}
+.share-url{margin-top:16px;font-family:var(--f-en);font-size:.95rem;letter-spacing:.04em;color:var(--muted);word-break:break-all}
+.share-qr{margin:0;background:#fff;padding:18px 18px 14px;border:1px solid var(--line);box-shadow:0 24px 50px -30px rgba(29,24,20,.45);text-align:center;position:relative}
+.share-qr::before{content:"";position:absolute;inset:6px;border:1px solid var(--gold-l);pointer-events:none}
+.share-qr img{width:200px;height:200px;display:block}
+.share-qr figcaption{font-size:.78rem;color:var(--muted);margin-top:8px;letter-spacing:.06em}
+@media (max-width:760px){.share-in{grid-template-columns:minmax(0,1fr)}.share-list{display:grid;grid-template-columns:1fr 1fr}.share-list a,.share-list button{width:100%;justify-content:center}.share-qr{justify-self:center}.share-native{width:100%}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -709,11 +710,34 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
         <dt data-i="dt_park">駐車場</dt><dd data-i="dd_park">あり（5〜8台）</dd>
         <dt>SNS</dt><dd class="sns-links"><a href="https://www.instagram.com/sanpouramen/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-ig"/></svg>@sanpouramen</a><a href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span data-i="line_short">公式LINE</span></a></dd>
       </dl>
-      <div class="cta-row"><a class="btn btn-shu" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="gmap">Googleマップで開く</span></a><a class="btn btn-line" href="tel:08059170310"><svg aria-hidden="true"><use href="#i-phone"/></svg><span data-i="call">電話する</span></a><a class="btn btn-lineapp" href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span data-i="line_add">LINEで友だち追加</span></a><button class="btn btn-line js-share" type="button"><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_foot">このお店を教える</span></button></div>
+      <div class="cta-row"><a class="btn btn-shu" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="gmap">Googleマップで開く</span></a><a class="btn btn-line" href="tel:08059170310"><svg aria-hidden="true"><use href="#i-phone"/></svg><span data-i="call">電話する</span></a><a class="btn btn-lineapp" href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span data-i="line_add">LINEで友だち追加</span></a></div>
       <p class="visit-more"><a class="link-arrow" href="#guide" data-i="nav_first">はじめての方へ</a></p>
     </div>
   </div>
 </section>
+
+<section class="share" id="share" aria-labelledby="sh_h">
+  <div class="wrap share-in">
+    <div class="share-tx pre">
+      <p class="en-label">Share</p>
+      <h2 id="sh_h" data-i="sh_h">おいしかったら、<br>だれかに教えてください。</h2>
+      <p class="share-p" data-i="sh_p">ご家族やお友だちに、このお店をそのまま送れます。<br>お店の前では、QRコードを見せるだけでも。</p>
+      <button class="btn btn-shu btn-lg share-native" type="button" hidden><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_btn">このお店を送る</span></button>
+      <ul class="share-list">
+        <li><a class="sh-line" data-sh="line" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span>LINE</span></a></li>
+        <li><a class="sh-x" data-sh="x" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-x"/></svg><span>X</span></a></li>
+        <li><a class="sh-fb" data-sh="fb" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-fb"/></svg><span>Facebook</span></a></li>
+        <li><button class="sh-copy" type="button"><svg aria-hidden="true"><use href="#i-copy"/></svg><span class="sh-copy-l" data-i="sh_copy">URLをコピー</span></button></li>
+      </ul>
+      <p class="share-url">ritan1107.github.io/mogamap/sanpou/</p>
+    </div>
+    <figure class="share-qr pre">
+      <img src="img/share_qr.png" alt="このページのQRコード" width="492" height="492" loading="lazy">
+      <figcaption data-i="sh_qr">スマホのカメラで読み取れます</figcaption>
+    </figure>
+  </div>
+</section>
+
 </div>
 <div class="view" data-view="menu" hidden>
   <header class="page-head">
@@ -977,7 +1001,7 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
           <dt data-i="dt_fac">設備</dt><dd data-i="dd_fac">入口スロープ・個室あり</dd>
           <dt data-i="dt_lang">言語</dt><dd data-i="dd_lang">日本語・English・Tagalog</dd>
         </dl>
-        <div class="cta-row"><a class="btn btn-red" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="gmap">Googleマップで開く</span></a><a class="btn btn-line" href="tel:08059170310"><svg aria-hidden="true"><use href="#i-phone"/></svg><span data-i="call">電話する</span></a><a class="btn btn-lineapp" href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span data-i="line_add">LINEで友だち追加</span></a><button class="btn btn-line js-share" type="button"><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_foot">このお店を教える</span></button></div>
+        <div class="cta-row"><a class="btn btn-red" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="gmap">Googleマップで開く</span></a><a class="btn btn-line" href="tel:08059170310"><svg aria-hidden="true"><use href="#i-phone"/></svg><span data-i="call">電話する</span></a><a class="btn btn-lineapp" href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span data-i="line_add">LINEで友だち追加</span></a></div>
       </div>
     </div>
   </div>
@@ -996,37 +1020,24 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
   <div class="wrap">
     <div class="fb"><img class="sign" src="img/logo_main.webp" alt="" width="1400" height="245" loading="lazy"><span><b data-i="title">東京風 山寶ラーメン</b><br><span data-i="ft_sub">さんぽう｜宮崎県延岡市昭和町</span></span></div>
     <p class="f-sns"><a href="https://www.instagram.com/sanpouramen/" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg>Instagram</a><a href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span data-i="line_short">公式LINE</span></a></p>
-    <nav aria-label="Footer"><a href="#menu" data-i="nav_menu">メニュー</a><a href="#menu" data-i="fm_h">全メニュー</a><a href="#story" data-i="nav_story">ものがたり</a><a href="#guide" data-i="nav_first">はじめての方へ</a><a href="#faq" data-i="s_faq">よくある質問</a><a href="#access" data-i="nav_access">アクセス</a><a href="#" class="js-share" role="button" data-i="sh_foot">このお店を教える</a></nav>
+    <nav aria-label="Footer"><a href="#menu" data-i="nav_menu">メニュー</a><a href="#menu" data-i="fm_h">全メニュー</a><a href="#story" data-i="nav_story">ものがたり</a><a href="#guide" data-i="nav_first">はじめての方へ</a><a href="#faq" data-i="s_faq">よくある質問</a><a href="#access" data-i="nav_access">アクセス</a><a href="#share" class="dk-share" data-i="sh_foot">このお店を教える</a></nav>
     <p class="copy">© <span data-i="title">東京風 山寶ラーメン</span></p>
   </div>
 </footer>
 
-
-<dialog id="shareDlg" aria-labelledby="shTitle">
-  <button class="sh-close" type="button" aria-label="Close">×</button>
-  <p class="en-label">Share</p>
-  <h2 id="shTitle" data-i="sh_h">このお店を、<br>だれかに教える。</h2>
-  <button class="btn btn-shu share-native" type="button" hidden><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_btn">アプリを選んで送る</span></button>
-  <ul class="share-list">
-    <li><a class="sh-line" data-sh="line" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span>LINE</span></a></li>
-    <li><a class="sh-x" data-sh="x" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-x"/></svg><span>X</span></a></li>
-    <li><a class="sh-fb" data-sh="fb" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-fb"/></svg><span>Facebook</span></a></li>
-    <li><button class="sh-copy" type="button"><svg aria-hidden="true"><use href="#i-copy"/></svg><span class="sh-copy-l" data-i="sh_copy">URLをコピー</span></button></li>
-  </ul>
-  <figure class="share-qr"><img src="img/share_qr.png" alt="このページのQRコード" width="492" height="492" loading="lazy"><figcaption data-i="sh_qr">スマホのカメラで読み取れます</figcaption></figure>
-</dialog>
 <nav class="dock" id="dock" aria-label="Quick links">
   <a href="#menu"><svg aria-hidden="true"><use href="#i-bowl"/></svg><span data-i="nav_menu">メニュー</span></a>
   <a href="https://lin.ee/NPz9HUly" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span>LINE</span></a>
-  <a class="js-share" href="#" role="button"><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_dock">教える</span></a>
+  <a class="dk-share" href="#share"><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_dock">教える</span></a>
   <a class="main" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%AE%E5%B4%8E%E7%9C%8C%E5%BB%B6%E5%B2%A1%E5%B8%82%E6%98%AD%E5%92%8C%E7%94%BA2%E4%B8%81%E7%9B%AE71-2%20%E5%B1%B1%E5%AF%B6%E3%83%A9%E3%83%BC%E3%83%A1%E3%83%B3" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-pin"/></svg><span data-i="dk_map">地図で行く</span></a>
 </nav>
 
 <script>
 /* 翻訳データ：[English, Tagalog, 中文(简体), 한국어]。日本語はページの元の文章を使う */
 var T={
-sh_h:["Tell someone about us.","Ibahagi ang restawran na ito.","把这家店告诉别人。","이 가게를 누군가에게 알려 주세요."],
-sh_btn:["Send with an app","Ipadala gamit ang app","选择应用发送","앱을 골라 보내기"],
+sh_h:["Enjoyed it? Tell someone.","Nasarapan ka? Ibahagi sa iba.","吃得开心，就告诉朋友吧。","맛있으셨다면, 누군가에게 알려 주세요."],
+sh_p:["Send this restaurant to family or friends in one tap.<br>In the shop, just show them the QR code.","Ipadala ang restawran na ito sa pamilya o kaibigan.<br>Sa tindahan, ipakita lang ang QR code.","可以把这家店直接发给家人和朋友。<br>在店里给对方看二维码也可以。","가족이나 친구에게 이 가게를 바로 보낼 수 있어요.<br>가게 앞에서는 QR 코드를 보여 주기만 해도 돼요."],
+sh_btn:["Send this restaurant","Ipadala ang restawran","发送这家店","이 가게 보내기"],
 sh_copy:["Copy URL","Kopyahin ang URL","复制网址","URL 복사"],
 sh_copied:["Copied!","Nakopya!","已复制！","복사했어요!"],
 sh_qr:["Scan with your phone camera","I-scan gamit ang camera ng phone","用手机相机扫描","휴대폰 카메라로 읽을 수 있어요"],
@@ -1379,28 +1390,25 @@ dk_map:["Map","Mapa","地图","지도"]
   // ---------- お店を教える（共有） ----------
   var SHARE_URL='https://ritan1107.github.io/mogamap/sanpou/';
   var SHARE_JA='延岡・昭和町の「東京風 山寶ラーメン」🍜 東京仕込みの醤油ラーメンと、夜だけのお好み焼き。';
-  var dlg=$('#shareDlg');
   function shareText(){ var L=LANGS[cur]; return (!L || L.i<0) ? SHARE_JA : T.share_txt[L.i]; }
   function shareLinks(){
     var t=shareText(), u=SHARE_URL, e=encodeURIComponent;
     var map={ line:'https://line.me/R/share?text='+e(t+'\n'+u), x:'https://twitter.com/intent/tweet?text='+e(t)+'&url='+e(u), fb:'https://www.facebook.com/sharer/sharer.php?u='+e(u) };
     $$('[data-sh]').forEach(function(a){ a.href=map[a.getAttribute('data-sh')]; });
   }
-  function openShare(){ shareLinks(); if(dlg.showModal){ dlg.showModal(); } else { dlg.setAttribute('open',''); } }
-  function closeShare(){ if(dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
-  $$('.js-share').forEach(function(a){ a.addEventListener('click',function(ev){ ev.preventDefault(); openShare(); }); });
-  $('.sh-close').addEventListener('click',closeShare);
-  dlg.addEventListener('click',function(ev){ if(ev.target===dlg) closeShare(); });
-  var nBtn=$('.share-native');
-  if(navigator.share){ nBtn.hidden=false; nBtn.addEventListener('click',function(){ navigator.share({title:document.title,text:shareText(),url:SHARE_URL}).catch(function(){}); }); }
+  function nativeShare(){ return navigator.share({title:document.title, text:shareText(), url:SHARE_URL}).catch(function(){}); }
+  var canShare = !!navigator.share;
+  var nBtn=$('.share-native'); if(canShare && nBtn){ nBtn.hidden=false; nBtn.addEventListener('click',nativeShare); }
+  $$('.dk-share').forEach(function(a){ a.addEventListener('click',function(ev){ if(canShare){ ev.preventDefault(); nativeShare(); } }); });
   var cBtn=$('.sh-copy');
-  cBtn.addEventListener('click',function(){
-    var lb=cBtn.querySelector('.sh-copy-l');
-    function ok(){ var L=LANGS[cur]; lb.innerHTML=(!L||L.i<0)?'コピーしました':T.sh_copied[L.i]; cBtn.classList.add('done');
-      setTimeout(function(){ var L2=LANGS[cur]; lb.innerHTML=(!L2||L2.i<0)?lb._ja:T.sh_copy[L2.i]; cBtn.classList.remove('done'); },2000); }
+  if(cBtn) cBtn.addEventListener('click',function(){
+    function ok(){ var lb=cBtn.querySelector('.sh-copy-l'); var L=LANGS[cur]; lb.innerHTML=(!L||L.i<0)?'コピーしました':T.sh_copied[L.i]; cBtn.classList.add('done');
+      setTimeout(function(){ lb.innerHTML=(!L||L.i<0)?lb._ja:T.sh_copy[L.i]; cBtn.classList.remove('done'); },2000); }
     function legacy(){ var ta=document.createElement('textarea'); ta.value=SHARE_URL; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); ok(); }
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(SHARE_URL).then(ok,legacy); } else legacy();
   });
+  shareLinks();
+  $$('[data-lang]').forEach(function(b){ b.addEventListener('click',shareLinks); });
 
   // ---------- ページ切り替え（#menu #story #guide #access） ----------
   var views=$$('.view');
