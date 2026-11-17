@@ -522,6 +522,38 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 .share-qr img{width:200px;height:200px;display:block}
 .share-qr figcaption{font-size:.78rem;color:var(--muted);margin-top:8px;letter-spacing:.06em}
 @media (max-width:760px){.share-in{grid-template-columns:minmax(0,1fr)}.share-list{display:grid;grid-template-columns:1fr 1fr}.share-list a,.share-list button{width:100%;justify-content:center}.share-qr{justify-self:center}.share-native{width:100%}}
+
+/* ---------- ヒーロー：写真を大きく敷く（共有画像と同じトーン） ---------- */
+.hero{padding-bottom:0}
+.hero-grid{grid-template-columns:minmax(0,1fr);min-height:min(78vh,700px);align-items:center;position:relative;z-index:2;padding-bottom:clamp(48px,7vw,80px)}
+.hero-copy{max-width:520px}
+.hero-photo{position:absolute;top:0;right:0;bottom:0;width:60%;z-index:1}
+.hero-photo>img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.55) 18%,#000 46%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.55) 18%,#000 46%)}
+.hero-photo::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(29,24,20,.75) 0%,rgba(29,24,20,0) 30%),linear-gradient(180deg,rgba(29,24,20,.55) 0%,rgba(29,24,20,0) 22%)}
+.hero-photo .steam{left:42%;top:4%;width:36%;height:40%;z-index:2}
+.hero-cap{position:absolute;right:clamp(16px,3vw,40px);top:calc(var(--hdr) + 22px);bottom:auto;z-index:3;background:rgba(251,248,243,.94);padding:12px 20px}
+.hero-side{position:absolute;left:5%;right:auto;top:50%;bottom:auto;z-index:3;width:clamp(150px,17vw,220px);margin:0;display:block}
+.hero-side img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;border:4px solid var(--ink);box-shadow:0 0 0 2px var(--gold),0 22px 50px rgba(0,0,0,.55)}
+.hero-side figcaption{position:absolute;left:78%;bottom:8%;display:flex;align-items:baseline;gap:10px;white-space:nowrap;background:var(--paper2);color:var(--ink);padding:8px 16px;border-top:2px solid var(--shu);box-shadow:0 12px 26px rgba(0,0,0,.4);font-family:var(--f-head);font-weight:700;font-size:.92rem;letter-spacing:.08em}
+.hero-side figcaption small{font-family:var(--f-head);font-size:.92rem;letter-spacing:.08em;color:var(--ink)}
+.hero-proof{position:relative;z-index:2;background:var(--ink)}
+@media (max-width:900px){
+  .hero{padding-top:0}
+  .hero-photo{position:relative;width:100%;height:min(100vw,520px);bottom:auto}
+  .hero-photo>img{-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent 100%);mask-image:linear-gradient(180deg,#000 60%,transparent 100%)}
+  .hero-photo::before{background:linear-gradient(180deg,rgba(29,24,20,.7) 0%,rgba(29,24,20,0) 26%)}
+  .hero-photo>img{object-position:58% 50%}
+  .hero-cap{top:auto;bottom:18px;left:20px;right:auto;background:none;box-shadow:none;border:0;padding:0;color:var(--paper);text-shadow:0 2px 12px rgba(0,0,0,.6)}
+  .hero-cap span{color:var(--paper);font-size:1rem}
+  .hero-cap small{color:var(--gold-l)}
+  .hero-cap b{color:var(--paper);font-size:1.05rem}
+  .hero-side{left:auto;right:18px;top:auto;bottom:-24px;width:31vw;max-width:150px}
+  .hero-side figcaption{left:auto;right:4%;bottom:auto;top:calc(100% + 8px);padding:0;background:none;box-shadow:none;border:0;color:var(--paper);font-size:.8rem;display:grid;justify-items:end;gap:0;line-height:1.5}
+  .hero-side figcaption small{font-family:var(--f-body);font-size:.66rem;letter-spacing:.14em;color:var(--gold-l)}
+  .hero-grid{min-height:0;padding-top:84px}
+}
+
+.top a,.top button{white-space:nowrap}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -599,6 +631,12 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 <main id="top">
 <div class="view" data-view="home">
 <section class="hero" aria-labelledby="h1">
+  <div class="hero-photo">
+    <img src="img/hero_shoyu.webp" alt="山寶しょうゆラーメン。チャーシュー、メンマ、味玉、ネギ、のり" width="1390" height="884" fetchpriority="high">
+    <div class="steam" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="hero-cap"><small data-i="no1">人気 No.1</small><span data-i="shoyu">山寶しょうゆラーメン</span><b data-yen="650"></b></p>
+    <figure class="hero-side"><img src="img/okonomi.webp" alt="お好み焼き" width="900" height="770"><figcaption><small data-i="night_only">夜の部限定</small><span data-i="okonomi">お好み焼き</span></figcaption></figure>
+  </div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <img class="hero-logo" src="img/logo_main.webp" alt="東京風 山寶ラーメン" width="1400" height="245" fetchpriority="high">
@@ -614,12 +652,6 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
         <li data-i="hm_d"><b>夜</b> 18:00〜20:00 L.O.（水〜土）</li>
         <li data-i="park">駐車場 5〜8台</li>
       </ul>
-    </div>
-    <div class="hero-visual">
-      <div class="steam" aria-hidden="true"><i></i><i></i><i></i></div>
-      <figure class="hero-main"><img src="img/lu/shoyu_sq.webp" alt="山寶しょうゆラーメン。チャーシュー、メンマ、味玉、ネギ、のり" width="434" height="434" fetchpriority="high"></figure>
-      <p class="hero-cap"><small data-i="no1">人気 No.1</small><span data-i="shoyu">山寶しょうゆラーメン</span><b data-yen="650"></b></p>
-      <figure class="hero-side"><img src="img/okonomi.webp" alt="お好み焼き" width="900" height="770"><figcaption><span data-i="okonomi">お好み焼き</span><small data-i="night_only">夜の部限定</small></figcaption></figure>
     </div>
   </div>
   <div class="hero-proof"><div class="wrap"><span data-i="proof">宮崎のインフルエンサー「りょーやん」さん・「のべしる」さんに紹介されました</span><a href="#media" data-i="proof_a">動画にひみつのお得情報あり →</a></div></div>
