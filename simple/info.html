@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://lgidhjxowpueglduphzp.supabase.co; media-src 'self' blob: data: https:; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://www.instagram.com https://www.tiktok.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="もぐマップ">
+<meta property="og:title" content="もぐマップ スタンプラリー｜食べて、めぐって、スタンプを集めよう">
+<meta property="og:description" content="お店をめぐってスタンプを3つ集めると景品がもらえる！近くの人はお店で、遠くの人は通販でも参加OK。参加は無料、名前を入れるだけ。">
+<meta property="og:url" content="https://ritan1107.github.io/mogamap/">
+<meta property="og:image" content="https://ritan1107.github.io/mogamap/simple/img/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="icon" type="image/png" href="icons/favicon-48.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -76,6 +85,7 @@
     <div class="dots" id="dots"></div>
   </div>
 
+  <button class="voice-cta" data-share-open style="border-color:#bfe0dd"><span>📤</span><div><b>このスタンプラリーを友だちに教える</b><small>LINE・SNS・QRでかんたんシェア</small></div><i>›</i></button>
   <button class="voice-cta" id="voiceOpen"><span>✍️</span><div><b>体験・おすすめを投稿する</b><small>行ったお店、おいしかったもの、教えてね</small></div><i>›</i></button>
 
   <div class="kinds" id="kinds">
@@ -95,6 +105,7 @@
 <div id="toast"></div>
 
 <script src="core.js?v=6"></script>
+<script src="share.js?v=1"></script>
 <script>
 const KIND={news:['📢','お知らせ'],event:['🎪','マルシェ・イベント'],shop:['🏪','お店紹介'],video:['🎬','動画'],voice:['💬','みんなの声']};
 let posts=[],kind=new URLSearchParams(location.search).get('k')||'';

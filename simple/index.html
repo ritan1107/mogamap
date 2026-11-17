@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://lgidhjxowpueglduphzp.supabase.co https://script.google.com https://script.googleusercontent.com; media-src 'self' blob: data: https:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="もぐマップ">
+<meta property="og:title" content="もぐマップ スタンプラリー｜食べて、めぐって、スタンプを集めよう">
+<meta property="og:description" content="お店をめぐってスタンプを3つ集めると景品がもらえる！近くの人はお店で、遠くの人は通販でも参加OK。参加は無料、名前を入れるだけ。">
+<meta property="og:url" content="https://ritan1107.github.io/mogamap/">
+<meta property="og:image" content="https://ritan1107.github.io/mogamap/simple/img/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="icon" type="image/png" href="icons/favicon-48.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -99,6 +108,7 @@
 .tk{display:flex;align-items:center;gap:12px;min-height:74px;border-radius:16px;padding:12px 14px;text-decoration:none;color:var(--ink);background:#f8f4ee}.tk span{font-size:30px}.tk div{flex:1;min-width:0}.tk small{display:block;font-weight:900;font-size:12px;color:var(--muted)}.tk b{display:block;font-size:15.5px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.tk i{font-style:normal;color:var(--teal);font-size:20px}
 .tk.rally{background:linear-gradient(120deg,#ffe3ec,#fff3d6)}.tk.event{background:linear-gradient(120deg,#e8f6ff,#effaf2)}
 body.festive .ticker{border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#ff7aa2,#ffd84d,#6ab8ff,#7ed6a5) border-box}
+.share-btn{border-color:#cfe6e4;background:linear-gradient(160deg,#eef8f7,#fff);font:inherit;color:inherit;width:100%;text-align:left;cursor:pointer}
 .info-btn{text-decoration:none;color:inherit;border-color:#f6d3df;background:linear-gradient(160deg,#fff1f6,#fff)}.new-dot{font-style:normal;font-size:11px;background:var(--pink);color:#fff;border-radius:999px;padding:2px 7px;vertical-align:middle}
 .wide-btn span{font-size:36px}.wide-btn div{flex:1}.wide-btn b{display:block;font-size:19px}.wide-btn small{color:var(--muted);font-size:13px}.wide-btn i{font-style:normal;font-size:26px;color:var(--teal)}
 .shop-filter{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}
@@ -163,6 +173,7 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
       <button class="big b3" data-go="book"><span>📖</span><b>スタンプ帳</b><small>集めたスタンプ</small></button>
       <button class="big b4" data-go="mypage"><span>👤</span><b>マイページ</b><small>自分の情報</small></button>
     </div>
+    <button class="wide-btn share-btn" data-share-open><span>📤</span><div><b>友だちに教える</b><small>LINE・SNS・QRでシェア</small></div><i>›</i></button>
     <a class="wide-btn info-btn" href="info.html"><span>📣</span><div><b>お知らせ・マルシェ情報 <em class="new-dot hidden" id="infoNew">NEW</em></b><small>イベント告知・お店紹介・CM動画</small></div><i>›</i></a>
     <button class="wide-btn" data-go="shops"><span>🛍️</span><div><b>お店・購入</b><small>お店の情報を見る・通販で買う・コミュニティ</small></div><i>›</i></button>
     <div class="ticker hidden" id="ticker">
@@ -343,6 +354,7 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
 
 <div id="toast"></div>
 <script src="core.js?v=6"></script>
+<script src="share.js?v=1"></script>
 <script>
 let shops=[],settings={},progress=null,stampIds=new Set(),notices=[],subs=[],allSubs=[],dmMsgs=[],clears=[];
 const PER_CLEAR=3; // スタンプいくつで1クリアか
