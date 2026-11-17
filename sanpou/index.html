@@ -504,24 +504,22 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 }
 .hero-cap small{font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--shu)}
 
-/* ---- Share ---- */
-.share{background:var(--paper2) var(--noise);padding-block:clamp(64px,9vw,112px);border-top:1px solid var(--line)}
-.share-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px 72px;align-items:center}
-.share h2{font-family:var(--f-head);font-size:clamp(1.5rem,3.4vw,2.2rem);line-height:1.6;letter-spacing:.04em;margin-top:14px}
-.share-p{color:var(--muted);line-height:2;margin-top:14px}
-.share-native{margin-top:26px}
-.share-list{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
-.share-list a,.share-list button{display:inline-flex;align-items:center;gap:9px;font:inherit;font-size:.9rem;font-weight:700;letter-spacing:.06em;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 20px 11px 14px;text-decoration:none;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
-.share-list a:hover,.share-list button:hover{transform:translateY(-2px);box-shadow:0 8px 20px -10px rgba(29,24,20,.35);border-color:var(--gold-l)}
-.share-list svg{width:22px;height:22px;flex:none}
-.sh-line svg{color:#06C755}.sh-fb svg{color:#1877F2}.sh-x svg{color:#000}.sh-copy svg{color:var(--shu)}
-.sh-copy.done{border-color:var(--shu);color:var(--shu)}
-.share-url{margin-top:16px;font-family:var(--f-en);font-size:.95rem;letter-spacing:.04em;color:var(--muted);word-break:break-all}
-.share-qr{margin:0;background:#fff;padding:18px 18px 14px;border:1px solid var(--line);box-shadow:0 24px 50px -30px rgba(29,24,20,.45);text-align:center;position:relative}
-.share-qr::before{content:"";position:absolute;inset:6px;border:1px solid var(--gold-l);pointer-events:none}
-.share-qr img{width:200px;height:200px;display:block}
-.share-qr figcaption{font-size:.78rem;color:var(--muted);margin-top:8px;letter-spacing:.06em}
-@media (max-width:760px){.share-in{grid-template-columns:minmax(0,1fr)}.share-list{display:grid;grid-template-columns:1fr 1fr}.share-list a,.share-list button{width:100%;justify-content:center}.share-qr{justify-self:center}.share-native{width:100%}}
+/* ---- Share（さりげなく） ---- */
+.share{background:var(--paper2);border-top:1px solid var(--line);padding-block:22px}
+.share-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;position:relative}
+.share-l{font-family:var(--f-head);font-size:.92rem;letter-spacing:.12em;color:var(--muted)}
+.share-list{list-style:none;margin:0;padding:0;display:flex;gap:8px}
+.share-list a,.share-list button{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:transparent;border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:color .2s,border-color .2s,background .2s}
+.share-list svg{width:17px;height:17px}
+.share-list a:hover,.share-list button:hover,.share-list button[aria-expanded="true"]{color:var(--ink);border-color:var(--gold-l);background:#fff}
+.sh-line:hover{color:#06C755!important}.sh-fb:hover{color:#1877F2!important}
+.sh-copy.done{color:var(--shu);border-color:var(--shu)}
+.sh-toast{position:absolute;left:50%;top:-30px;transform:translateX(-50%);font-size:.74rem;letter-spacing:.08em;color:var(--shu);opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.sh-toast.on{opacity:1}
+.share-qr{flex-basis:100%;margin:8px auto 0;display:grid;justify-items:center;gap:4px}
+.share-qr[hidden]{display:none}
+.share-qr img{width:150px;height:150px;border:1px solid var(--line);background:#fff;padding:6px}
+.share-qr figcaption{font-size:.72rem;color:var(--muted);letter-spacing:.06em}
 
 /* ---------- ヒーロー：写真を大きく敷く（共有画像と同じトーン） ---------- */
 .hero{padding-bottom:0}
@@ -563,6 +561,7 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
     <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-2.5-3.36V3h2.5zM14 3c.6 2.6 2.4 4.1 5 4.3v2.6c-2-.1-3.7-.8-5-2" fill="currentColor"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5l3 3.2-1.8 2.4a12 12 0 0 0 5.1 5.1l2.4-1.8 3.2 3-1.7 3.1c-.4.7-1.2 1-2 .8C9.5 18 6 14.5 4.7 9.2c-.2-.8.1-1.6.8-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M14 14h2v2h-2zM18 14h2v2h-2zM16 16h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z" fill="currentColor"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 11v9h14v-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M4 4l16 16M20 4 4 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
@@ -748,25 +747,19 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
   </div>
 </section>
 
-<section class="share" id="share" aria-labelledby="sh_h">
+<section class="share" id="share" aria-label="Share">
   <div class="wrap share-in">
-    <div class="share-tx pre">
-      <p class="en-label">Share</p>
-      <h2 id="sh_h" data-i="sh_h">おいしかったら、<br>だれかに教えてください。</h2>
-      <p class="share-p" data-i="sh_p">ご家族やお友だちに、このお店をそのまま送れます。<br>お店の前では、QRコードを見せるだけでも。</p>
-      <button class="btn btn-shu btn-lg share-native" type="button" hidden><svg aria-hidden="true"><use href="#i-share"/></svg><span data-i="sh_btn">このお店を送る</span></button>
-      <ul class="share-list">
-        <li><a class="sh-line" data-sh="line" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-line"/></svg><span>LINE</span></a></li>
-        <li><a class="sh-x" data-sh="x" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-x"/></svg><span>X</span></a></li>
-        <li><a class="sh-fb" data-sh="fb" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-fb"/></svg><span>Facebook</span></a></li>
-        <li><button class="sh-copy" type="button"><svg aria-hidden="true"><use href="#i-copy"/></svg><span class="sh-copy-l" data-i="sh_copy">URLをコピー</span></button></li>
-      </ul>
-      <p class="share-url">ritan1107.github.io/mogamap/sanpou/</p>
-    </div>
-    <figure class="share-qr pre">
-      <img src="img/share_qr.png" alt="このページのQRコード" width="492" height="492" loading="lazy">
-      <figcaption data-i="sh_qr">スマホのカメラで読み取れます</figcaption>
-    </figure>
+    <p class="share-l" data-i="sh_h2">このお店を、だれかに。</p>
+    <ul class="share-list">
+      <li class="sh-nat" hidden><button class="share-native" type="button" aria-label="Share"><svg aria-hidden="true"><use href="#i-share"/></svg></button></li>
+      <li><a class="sh-line" data-sh="line" href="#" target="_blank" rel="noopener" aria-label="LINE"><svg aria-hidden="true"><use href="#i-line"/></svg></a></li>
+      <li><a class="sh-x" data-sh="x" href="#" target="_blank" rel="noopener" aria-label="X"><svg aria-hidden="true"><use href="#i-x"/></svg></a></li>
+      <li><a class="sh-fb" data-sh="fb" href="#" target="_blank" rel="noopener" aria-label="Facebook"><svg aria-hidden="true"><use href="#i-fb"/></svg></a></li>
+      <li><button class="sh-copy" type="button" aria-label="Copy URL"><svg aria-hidden="true"><use href="#i-copy"/></svg></button></li>
+      <li><button class="sh-qr" type="button" aria-label="QR" aria-expanded="false"><svg aria-hidden="true"><use href="#i-qr"/></svg></button></li>
+    </ul>
+    <span class="sh-toast" role="status" aria-live="polite"></span>
+    <figure class="share-qr" hidden><img src="img/share_qr.png" alt="このページのQRコード" width="492" height="492" loading="lazy"><figcaption data-i="sh_qr">スマホのカメラで読み取れます</figcaption></figure>
   </div>
 </section>
 
@@ -1067,11 +1060,12 @@ footer .fb img.sign{width:min(260px,70vw);border-radius:0}
 <script>
 /* 翻訳データ：[English, Tagalog, 中文(简体), 한국어]。日本語はページの元の文章を使う */
 var T={
+sh_h2:["Tell a friend about us.","Ibahagi sa kaibigan.","把这家店告诉朋友。","친구에게도 알려 주세요."],
 sh_h:["Enjoyed it? Tell someone.","Nasarapan ka? Ibahagi sa iba.","吃得开心，就告诉朋友吧。","맛있으셨다면, 누군가에게 알려 주세요."],
 sh_p:["Send this restaurant to family or friends in one tap.<br>In the shop, just show them the QR code.","Ipadala ang restawran na ito sa pamilya o kaibigan.<br>Sa tindahan, ipakita lang ang QR code.","可以把这家店直接发给家人和朋友。<br>在店里给对方看二维码也可以。","가족이나 친구에게 이 가게를 바로 보낼 수 있어요.<br>가게 앞에서는 QR 코드를 보여 주기만 해도 돼요."],
 sh_btn:["Send this restaurant","Ipadala ang restawran","发送这家店","이 가게 보내기"],
 sh_copy:["Copy URL","Kopyahin ang URL","复制网址","URL 복사"],
-sh_copied:["Copied!","Nakopya!","已复制！","복사했어요!"],
+sh_copied:["URL copied","Nakopya ang URL","已复制网址","URL을 복사했어요"],
 sh_qr:["Scan with your phone camera","I-scan gamit ang camera ng phone","用手机相机扫描","휴대폰 카메라로 읽을 수 있어요"],
 sh_dock:["Share","Ibahagi","分享","공유"],
 sh_foot:["Share this restaurant","Ibahagi ang restawran","分享这家店","이 가게 공유하기"],
@@ -1430,15 +1424,18 @@ dk_map:["Map","Mapa","地图","지도"]
   }
   function nativeShare(){ return navigator.share({title:document.title, text:shareText(), url:SHARE_URL}).catch(function(){}); }
   var canShare = !!navigator.share;
-  var nBtn=$('.share-native'); if(canShare && nBtn){ nBtn.hidden=false; nBtn.addEventListener('click',nativeShare); }
+  var nBtn=$('.share-native'); if(canShare && nBtn){ nBtn.parentNode.hidden=false; nBtn.addEventListener('click',nativeShare); }
   $$('.dk-share').forEach(function(a){ a.addEventListener('click',function(ev){ if(canShare){ ev.preventDefault(); nativeShare(); } }); });
+  var toast=$('.sh-toast'), tTimer;
+  function say(ja,key){ var L=LANGS[cur]; toast.textContent=(!L||L.i<0)?ja:T[key][L.i]; toast.classList.add('on'); clearTimeout(tTimer); tTimer=setTimeout(function(){ toast.classList.remove('on'); },1800); }
   var cBtn=$('.sh-copy');
   if(cBtn) cBtn.addEventListener('click',function(){
-    function ok(){ var lb=cBtn.querySelector('.sh-copy-l'); var L=LANGS[cur]; lb.innerHTML=(!L||L.i<0)?'コピーしました':T.sh_copied[L.i]; cBtn.classList.add('done');
-      setTimeout(function(){ lb.innerHTML=(!L||L.i<0)?lb._ja:T.sh_copy[L.i]; cBtn.classList.remove('done'); },2000); }
+    function ok(){ say('URLをコピーしました','sh_copied'); cBtn.classList.add('done'); setTimeout(function(){ cBtn.classList.remove('done'); },1800); }
     function legacy(){ var ta=document.createElement('textarea'); ta.value=SHARE_URL; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); ok(); }
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(SHARE_URL).then(ok,legacy); } else legacy();
   });
+  var qBtn=$('.sh-qr'), qBox=$('.share-qr');
+  if(qBtn) qBtn.addEventListener('click',function(){ var o=qBox.hidden; qBox.hidden=!o; qBtn.setAttribute('aria-expanded',o?'true':'false'); });
   shareLinks();
   $$('[data-lang]').forEach(function(b){ b.addEventListener('click',shareLinks); });
 
