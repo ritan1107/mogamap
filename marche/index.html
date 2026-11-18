@@ -386,6 +386,12 @@ body.watching #chatrow{opacity:.45}
 #zoomctl{position:fixed;right:10px;bottom:150px;z-index:90;display:flex;flex-direction:column;gap:6px}#zoomctl button{width:42px;height:42px;border-radius:14px;border:2px solid #f3dcc2;background:rgba(255,255,255,.94);font:inherit;font-size:20px;font-weight:800;color:#4a3b35;box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:0}#zoomctl .zall{height:50px;font-size:17px}#zoomctl small{font-size:9px;margin-top:2px}
 .pill.ppl{background:#eef8ec;border-color:#a8d89c;color:#3f7a35;margin-right:4px}.plist{display:flex;flex-direction:column;gap:6px;margin:10px 0}.prow{display:flex;align-items:center;gap:8px;border:2px solid #f3dcc2;border-radius:12px;padding:8px 10px;cursor:pointer}.prow.me{border-color:#ff8fab;cursor:default}.prow small{margin-left:auto;font-size:11px;color:#8a776c}
 .bbf.concept em{font-style:normal;font-size:9px;letter-spacing:-.2px;font-weight:800;color:#8a776c;margin-top:3px;white-space:nowrap}.bbf.concept b{font-size:12px;letter-spacing:-.3px}
+#msnchip{position:fixed;left:10px;bottom:150px;z-index:90;width:46px;height:50px;border-radius:14px;border:2px solid #ffd36e;background:rgba(255,255,255,.95);font:inherit;font-size:19px;font-weight:800;color:#7a5a00;box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:0}#msnchip small{font-size:10px;margin-top:3px}#msnchip.done{border-color:#ff8fab;color:#d0567a}
+.mlist{display:flex;flex-direction:column;gap:8px;margin:10px 0}.mrow{display:flex;align-items:center;gap:10px;border:2px solid #f3dcc2;border-radius:12px;padding:8px 10px}.mrow>span{font-size:22px}.mrow b{display:block;font-size:13px}.mrow small{font-size:11px;color:#8a776c}.mrow .btn{margin-left:auto;white-space:nowrap}.mrow.ok{background:#f2fbef;border-color:#a8d89c}
+.shophead{position:relative}.shacts{position:absolute;right:52px;top:14px;display:flex;gap:6px}.shacts button{width:36px;height:36px;border-radius:50%;border:2px solid #f3dcc2;background:#fff;font-size:17px;cursor:pointer;color:#e0607e;line-height:1}.shacts .favb.on{background:#ffe3ea;border-color:#ff8fab}
+.nudge{background:#fff7e0;border:2px dashed #ffd36e;border-radius:12px;padding:8px 10px;font-size:12.5px;margin-bottom:8px}.nudge b{color:#d0567a}
+.favlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.favlist button{border:2px solid var(--c);background:#fff;border-radius:99px;padding:4px 10px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.bubble.linkb{pointer-events:auto;cursor:pointer;border-color:#ff8fab;text-decoration:underline dotted}
 </style>
 </head>
 <body>
@@ -1747,8 +1753,57 @@ ACT.people=()=>{const others=ents.filter(e=>e.other&&(MP.list||[]).includes(e.ot
   <div class="plist">${me&&(MP.inside||!LIVE)?`<div class="prow me"><span>${RL_[S.role]||'🙋'}</span><b>${esc(S.name||'ゲスト')}（あなた）</b></div>`:''}${others.map(e=>`<div class="prow" data-act="otheru" data-id="${e.other}"><span>${RL_[e.meta&&e.meta.r]||'🙋'}</span><b>${esc(e.name)}</b><small>${e.meta&&e.meta.s?'🪑 座っています':''}</small></div>`).join('')}</div>
   ${LIVE?'':'<div class="muted">体験版では、ほかの人とはつながりません。</div>'}<div class="muted" style="margin-top:6px">住人（ボット）は人数に入りません。名前をタップすると話しかけられます。</div>`)};
 setInterval(pplUI,5000);
+/* ==========================================================
+   お客さんが楽しく、お店が繁盛するしかけ（通信は増やさない：すべてこの端末の中だけ）
+   ========================================================== */
+const today=()=>new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+/* --- 今日のおさんぽミッション --- */
+const MISSIONS=[
+ {k:'shops',t:'お店を3つのぞく',e:'🏪',n:3,go:'search',gl:'お店をさがす'},
+ {k:'talk',t:'住人か、街の人と話す',e:'💬',n:1,go:'chatlog',gl:'お話しへ'},
+ {k:'sit',t:'もぐもぐ公園でひと休み',e:'🪑',n:1,go:'gopark',gl:'公園へ'},
+ {k:'fav',t:'気になるお店に ❤ をつける',e:'❤',n:1,go:'search',gl:'お店をさがす'}];
+function msn(){if(!S.msn||S.msn.d!==today())S.msn={d:today(),shops:[],talk:0,sit:0,fav:0,done:false};return S.msn}
+function msnVal(m,k){return k==='shops'?m.shops.length:m[k]}
+function msnDone(){const m=msn();return MISSIONS.filter(x=>msnVal(m,x.k)>=x.n).length}
+function msnHit(k,v){const m=msn();const before=msnDone();if(k==='shops'){if(!m.shops.includes(v))m.shops.push(v)}else m[k]=(m[k]||0)+1;
+  const after=msnDone();if(after>before){const x=MISSIONS.find(q=>q.k===k);if(msnVal(m,k)>=x.n)toast(`🎯 ミッション達成：${x.t}（${after}/${MISSIONS.length}）`,3200)}
+  if(after===MISSIONS.length&&!m.done){m.done=true;S.walkDays=(S.walkDays||0)+1;setTimeout(()=>{confetti();toast(`🎉 今日のおさんぽ、ぜんぶ達成！（通算${S.walkDays}日）`,5000)},600)}save();msnUI()}
+function msnUI(){let b=$('#msnchip');if(!b){b=document.createElement('button');b.id='msnchip';b.dataset.act='mission';document.body.appendChild(b)}const n=msnDone();b.innerHTML=n>=MISSIONS.length?'🎉<small>達成</small>':`🎯<small>${n}/${MISSIONS.length}</small>`;b.classList.toggle('done',n>=MISSIONS.length)}
+ACT.mission=()=>{const m=msn();openModal(`<h2>🎯 今日のおさんぽミッション</h2><div class="muted">毎日かわります。ぜんぶできたら、お祝い🎉${S.walkDays?`（通算 ${S.walkDays}日達成）`:''}</div>
+  <div class="mlist">${MISSIONS.map(x=>{const v=Math.min(msnVal(m,x.k),x.n),ok=v>=x.n;return`<div class="mrow ${ok?'ok':''}"><span>${ok?'✅':x.e}</span><div><b>${x.t}</b><small>${v}/${x.n}</small></div>${ok?'':`<button class="btn small sub" data-act="${x.go}">${x.gl}</button>`}</div>`}).join('')}</div>`)};
+
+/* --- ❤ 気になるお店・シェア・スタンプの声かけ（お店ページ） --- */
+const favs=()=>S.favs=S.favs||[];
+const isFav=id=>favs().includes(id);
+function shopLink(id){let u=SITE.replace(/[?#].*$/,'')+'?shop='+encodeURIComponent(id);try{if(S.role==='comm'||S.role==='shop'){const r=new URL(inviteLink()).searchParams.get('ref');if(r)u+='&ref='+r}}catch(e){}return u}
+ACT.fav=(d,b)=>{const f=favs(),i=f.indexOf(d.shop);if(i>=0){f.splice(i,1);toast('気になるから外しました')}else{f.unshift(d.shop);if(msn().fav)toast('❤ 気になるお店に入れました',2200);msnHit('fav')}save();if(b){b.classList.toggle('on',isFav(d.shop));b.textContent=isFav(d.shop)?'❤':'♡'}};
+ACT.shareshop=async d=>{const sh=shopById(d.shop);if(!sh)return;const url=shopLink(sh.id),text=`${sh.emoji} ${sh.name}｜もぐマップ マルシェ（行けないけど、行った気分になれるネットのマルシェ）`;
+  try{if(navigator.share){await navigator.share({title:sh.name,text,url});return}await navigator.clipboard.writeText(text+'\n'+url);toast('お店のリンクをコピーしました。LINEやSNSに貼ってね')}catch(e){}};
+{const f=openRealShop;openRealShop=function(sh,tab){f(sh,tab);if(!sh)return;msnHit('shops',sh.id);
+  const head=$('#modal .shophead');if(head&&!head.querySelector('.shacts'))head.insertAdjacentHTML('beforeend',`<div class="shacts"><button class="favb ${isFav(sh.id)?'on':''}" data-act="fav" data-shop="${sh.id}" aria-label="気になる">${isFav(sh.id)?'❤':'♡'}</button><button class="shareb" data-act="shareshop" data-shop="${sh.id}" aria-label="シェア">📤</button></div>`);
+  if(!isGuest()&&sh.rally!==false&&sh.real&&stampStatus(sh.id)!=='approved'){const n=myStamped().size,rest=PER_CLEAR-(n%PER_CLEAR),bp=$('#modal .spanel[data-p=buy]');if(bp&&!bp.querySelector('.nudge'))bp.insertAdjacentHTML('afterbegin',`<div class="nudge">📮 ここで買ってスタンプをもらうと、${rest===1?'<b>あと1個で'+(Math.floor(n/PER_CLEAR)+1)+'クリア！</b>':'クリアまで あと'+rest+'個'}</div>`)}}}
+{const f=openMyPage;openMyPage=function(){f();const a=$('#modal .mybtns');if(!a)return;const fs=favs().map(id=>shopById(id)).filter(Boolean);
+  a.insertAdjacentHTML('beforebegin',`<div class="sec"><b>❤ 気になるお店</b>${fs.length?`<div class="favlist">${fs.map(s=>`<button data-act="goshop" data-shop="${s.id}" style="--c:${s.color}">${esc(s.emoji)} ${esc(s.short||s.name)}</button>`).join('')}</div>`:'<div class="muted">お店ページの ♡ を押すと、ここに集まります。</div>'}</div>
+  <div class="sec"><b>🎯 今日のおさんぽ</b> <span class="muted">${msnDone()}/${MISSIONS.length}${S.walkDays?`・通算 ${S.walkDays}日達成`:''}</span> <button class="btn small sub" data-act="mission">ミッションを見る</button></div>`)}}
+/* --- ミッションのカウント（住人と話す・チャット・座る） --- */
+{const f=talkTo;talkTo=function(n){f(n);msnHit('talk')}}
+{const f=sendChat;sendChat=function(){const had=($('#chatin').value||'').trim();f();if(had&&!(LIVE&&!MP.inside))msnHit('talk')}}
+{const f=sitDown;sitDown=function(e,s){f(e,s);if(e===me)msnHit('sit')}}
+/* --- 住人がおすすめのお店をクチコミ（ふきだしをタップでお店へ） --- */
+function sayShop(e,text,id){say(e,text);const b=e.el.querySelector('.bubble');if(b){b.dataset.act='goshop';b.dataset.shop=id;b.classList.add('linkb')}}
+setInterval(()=>{if(document.hidden)return;const vis=ents.filter(e=>e.npc&&!e.off&&!e.seat);if(!vis.length)return;const e=pick(vis),sh=spotShop(Math.floor(Math.random()*3));if(!sh)return;
+  const t=pick([`${sh.emoji} ${sh.short||sh.name}、よかったよ〜！`,`${sh.emoji} ${sh.short||sh.name}って知ってる？`,`いま ${sh.emoji} ${sh.short||sh.name} が気になる〜`,`${sh.emoji} ${sh.short||sh.name}、応援してるんだ`]);sayShop(e,t+' 👉',sh.id)},16000);
+/* --- はじめての人へ（1回だけ） --- */
+function firstTour(){if(S.toured||!me)return;if($('#modal.show'))return setTimeout(firstTour,1500);S.toured=true;save();
+  openModal(`<h2>👋 ようこそ、もぐマップ マルシェへ</h2><div class="muted">行けないけど、行った気分になれるネットのマルシェです。</div>
+  <div class="mlist"><div class="mrow"><span>🏪</span><div><b>お店をのぞく</b><small>看板やテントをタップ。気になったら ♡</small></div></div><div class="mrow"><span>📮</span><div><b>買ってスタンプ</b><small>もぐマップのスタンプラリーと同じスタンプ帳</small></div></div><div class="mrow"><span>💬</span><div><b>おしゃべり</b><small>雑談は もぐもぐ公園で。人をタップすると話せます</small></div></div><div class="mrow"><span>🎯</span><div><b>今日のおさんぽミッション</b><small>左下の 🎯 から。毎日かわります</small></div></div></div>
+  <div class="acts"><button class="btn" data-act="close">街を歩く</button></div>`)}
+/* --- お店のリンクから来た人は、そのお店をひらく --- */
+const DEEP_SHOP=new URLSearchParams(location.search).get('shop');
+function openDeep(t){if(!DEEP_SHOP)return;if(!me||$('#modal.show')){if((t||0)<40)setTimeout(()=>openDeep((t||0)+1),700);return}const sh=shopById(DEEP_SHOP);if(sh){toast(`${sh.emoji} ${sh.name} へようこそ！`,3000);goShop(sh.id)}}
 /* ---------- 起動 ---------- */
-function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1));setTimeout(()=>mpTrack(true),300)}
+function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1));setTimeout(()=>mpTrack(true),300);setTimeout(()=>{msnUI();if(DEEP_SHOP)openDeep();else firstTour()},2500)}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
 function npcs(){return ents.filter(e=>e.npc&&!e.off)}
 const DOG=`<svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="43" rx="18" ry="3" fill="rgba(0,0,0,.13)"/><g><path d="M12,24 Q4,14 8,10" stroke="#e8c79a" stroke-width="5" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-12 12 24;14 12 24;-12 12 24" dur=".5s" repeatCount="indefinite"/></path></g><ellipse cx="27" cy="29" rx="16" ry="10" fill="#fff4e3"/><rect x="15" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><rect x="33" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><circle cx="43" cy="20" r="11" fill="#fff4e3"/><ellipse cx="35" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(20 35 17)"/><ellipse cx="51" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(-20 51 17)"/><circle cx="40" cy="20" r="1.8" fill="#3a2a2a"/><circle cx="47" cy="20" r="1.8" fill="#3a2a2a"/><ellipse cx="44" cy="25" rx="2.2" ry="1.6" fill="#3a2a2a"/><ellipse cx="38" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><ellipse cx="50" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><rect x="33" y="28" width="16" height="3" rx="1.5" fill="#ff5c8a"/><circle cx="41" cy="32" r="2" fill="#ffd36e"/></svg>`;
