@@ -1518,7 +1518,7 @@ function openInfo(){openModal(`<h2>🍚 あそびかた</h2>
 <div class="muted">街に入れるのは${CAP}人まで。満員のときは、外から見るか入室を待てます。</div>
 ${LIVE?'':`<div class="tip" style="margin-top:8px">ここは体験版です。みんなと会えるのは <a href="${SITE}" target="_blank" rel="noopener">公開ページ</a> です。</div>`}
 <div class="acts">${LIVE?'':'<button class="btn sub small" data-act="reset">お店・スタンプをリセット</button>'}<button class="btn" data-act="close">街にもどる</button></div>`)}
-function liveUI(){const t=$('#tagv');if(LIVE){document.title='もぐマップ マルシェ';if(t)t.remove()}else if(t)t.innerHTML=`<a href="${SITE}" target="_blank" rel="noopener" style="color:inherit">体験版・本番はこちら↗</a>`;applyWatch()}
+function liveUI(){const t=$('#tagv');if(LIVE){if(t)t.remove()}else if(t)t.innerHTML=`<a href="${SITE}" target="_blank" rel="noopener" style="color:inherit">体験版・本番はこちら↗</a>`;applyWatch()}
 
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
