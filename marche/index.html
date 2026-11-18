@@ -381,6 +381,8 @@ body.watching #chatrow{opacity:.45}
 .hostcard{border:3px solid #8a6ad8;border-radius:16px;padding:12px;margin:10px 0;text-align:center;display:flex;flex-direction:column;gap:2px;background:#faf7ff}.hostcard small{font-size:11px;font-weight:800;color:#8a6ad8}.hostcard b{font-size:17px}.hostcard span{font-size:11px;color:#8a776c}
 .devnote{margin-top:12px;font-size:11px;color:#8a776c;border-top:1px dashed #e8d3bd;padding-top:8px}.devnote a{color:#d0567a;font-weight:800}
 .ptcard{border:2px solid #e3d6c4;border-radius:12px;padding:16px;margin-top:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff}.ptcard p{font-weight:800;font-size:14px;line-height:1.6;margin:0 0 6px}.ptcard img{image-rendering:pixelated;width:220px;height:220px}.ptcard b{margin-top:8px;font-size:13px}.ptmail{border:0;background:none;color:#d0267a;font:inherit;font-size:15px;font-weight:700;text-decoration:underline;cursor:pointer}.ptcard small{font-size:11px}
+.seat{position:absolute;cursor:pointer}.seat svg{display:block;overflow:visible}
+.av.sitting svg .lg{transform:scaleY(.42)!important;animation:none!important}.av.sitting svg{transform:translateY(9px)}.av.left.sitting svg{transform:scaleX(-1) translateY(9px)}.av.sitting .nm{margin-top:-8px}
 </style>
 </head>
 <body>
@@ -716,8 +718,8 @@ function buildBg(){
   /* 公園：池・ベンチ・花・木 */
   {const[cx,cy]=P(23,23);deco+=`<ellipse cx="${cx}" cy="${cy}" rx="120" ry="52" fill="#9fdcff" stroke="#7cc3e8" stroke-width="5"/><ellipse cx="${cx-30}" cy="${cy-8}" rx="40" ry="12" fill="#c6ecff"/><text x="${cx+40}" y="${cy+12}" font-size="20">🦆</text>`;}
   [[20.6,21],[21,24.6],[24.6,20.8],[25.2,25.2],[20.5,25.4]].forEach(([i,j])=>deco+=tree(i,j,1));
-  deco+=bench(20.8,23)+bench(23,20.8)+pot(20.4,20.4,'#ff9eb5')+pot(25.6,22,'#ffd36e')+pot(22,25.6,'#c7b5ff');
-  {const[x,y]=P(20.2,20.2);deco+=`<g transform="translate(${x},${y-30})"><rect x="-4" y="0" width="8" height="34" fill="#a9805e"/><rect x="-46" y="-26" width="92" height="28" rx="8" fill="#fff" stroke="#7cc56f" stroke-width="3"/><text x="0" y="-7" text-anchor="middle" font-size="13" font-weight="800" fill="#4a7a3a" font-family="M PLUS Rounded 1c,sans-serif">🐾 もぐもぐ公園</text></g>`}
+  deco+=pot(20.4,20.4,'#ff9eb5')+pot(25.6,22,'#ffd36e')+pot(22,25.6,'#c7b5ff');
+  {const[x,y]=P(20.2,20.2);deco+=`<g transform="translate(${x},${y-30})"><rect x="-4" y="0" width="8" height="34" fill="#a9805e"/><rect x="-74" y="-40" width="148" height="42" rx="9" fill="#fff" stroke="#7cc56f" stroke-width="3"/><text x="0" y="-22" text-anchor="middle" font-size="13" font-weight="800" fill="#4a7a3a" font-family="M PLUS Rounded 1c,sans-serif">🐾 もぐもぐ公園</text><text x="0" y="-6" text-anchor="middle" font-size="11" font-weight="800" fill="#d0567a" font-family="M PLUS Rounded 1c,sans-serif">💬 雑談したい人はここへ</text></g>`}
   /* 広場のガーランド */
   let bunt='';const cols=['#ff9eb5','#ffd36e','#9fdcff','#a8e6b8','#c7b5ff'];let ci=0;
   [[P(10,10),P(10,16)],[P(10,10),P(16,10)]].forEach(([A,B])=>{const ax=A[0],ay=A[1]-70,bx=B[0],by=B[1]-70,mx=(ax+bx)/2,my=(ay+by)/2+28;bunt+=`<path d="M${ax},${ay} Q${mx},${my} ${bx},${by}" stroke="#b08a6a" stroke-width="1.5" fill="none"/>`;
@@ -789,7 +791,7 @@ const ents=[];let me=null;
 function makeEnt(av,name,x,y,isMe){const el=document.createElement('div');el.className='av'+(isMe?' me':'');el.innerHTML=(typeof av==='string'?av:avatarSVG(av))+`<div class="nm">${esc(name)}</div>`;world.appendChild(el);
   const e={el,av,name,x,y,tx:x,ty:y,cb:null,me:!!isMe};place(e);ents.push(e);return e}
 function place(e){e.el.style.left=e.x+'px';e.el.style.top=e.y+'px';e.el.style.zIndex=Math.round(e.y)+1}
-function walkTo(e,x,y,cb){if(e===me&&LIVE&&!MP.inside){if(cb)cb();return}[x,y]=clampW(x,y);e.tx=x;e.ty=y;e.cb=cb||null;if(e===me)setTimeout(()=>mpTrack(),0);
+function walkTo(e,x,y,cb){if(e===me&&LIVE&&!MP.inside){if(cb)cb();return}if(e.seat||e.el.classList.contains('sitting'))standUp(e);[x,y]=clampW(x,y);e.tx=x;e.ty=y;e.cb=cb||null;if(e===me)setTimeout(()=>mpTrack(),0);
   if(x<e.x-2)e.el.classList.add('left');else if(x>e.x+2)e.el.classList.remove('left');
   if(Math.hypot(x-e.x,y-e.y)<1){e.cb=null;cb&&cb();return}e.el.classList.add('walking')}
 let last=performance.now();
@@ -1340,20 +1342,20 @@ async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=win
   MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));MP.ch.on('broadcast',{event:'inv'},({payload})=>onInvite(payload));MP.ch.on('broadcast',{event:'mode'},()=>loadEvent());
   MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){mpTrack(true);setTimeout(()=>{MP.ready=true;mpSync()},1500)}else if((st==='CHANNEL_ERROR'||st==='TIMED_OUT')&&!MP.decided)mpFail()})}catch(e){console.warn(e);mpFail()}}
 function mpFail(){MP.decided=true;MP.inside=true;if(typeof applyWatch==='function')applyWatch()}
-function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,p:myPid(),n:String(S.name||'ゲスト').slice(0,10)};return{p:myPid(),o:isOrganizer()?1:0,n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
+function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,p:myPid(),n:String(S.name||'ゲスト').slice(0,10)};return{p:myPid(),o:isOrganizer()?1:0,s:me&&me.seat?1:0,n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
 function mpTrack(force){if(!MP.ch||(!me&&MP.inside))return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
 function otherLabel(m){const nm=esc(m.n||'ゲスト');return m.r==='shop'?`<b class="rb s">🏪お店</b>${nm}`:m.r==='comm'?`<b class="rb c">🤝</b>${nm}`:`<b class="rb g">ゲスト</b>${nm}`}
 function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
   const waiters=[],mine=myPid(),seenP=new Set();for(const k in st){if(k===MP.id)continue;const m=(st[k]||[])[0];if(!m)continue;if(m.p&&(m.p===mine||seenP.has(m.p)))continue;if(m.p)seenP.add(m.p);if(m.w){waiters.push(m.q||0);continue}seen.add(k);let e=ents.find(x=>x.other===k);
     if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
-    e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y)}
+    e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y,()=>e.el.classList.toggle('sitting',!!(e.meta&&e.meta.s)));else e.el.classList.toggle('sitting',!!m.s)}
   for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
   setBots(seen.size);capCheck(seen.size,waiters);if(typeof hubRefresh==='function')hubRefresh('hq')}
 let botTarget=null,BOTO=null;
 function botOrder(){if(BOTO)return;BOTO=NPCS.map(n=>n.name);for(let k=BOTO.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1));[BOTO[k],BOTO[r]]=[BOTO[r],BOTO[k]]}}
 setInterval(()=>{if(document.hidden||!BOTO)return;BOTO.push(BOTO.shift());setBots(botTarget?botTarget.n:0)},4*60*1000);
 function setBots(nOthers){const want=nOthers===0?6:nOthers<=2?(botTarget&&botTarget.n===nOthers?botTarget.v:3+Math.floor(Math.random()*3)):0;botTarget={n:nOthers,v:want};
-  botOrder();ents.filter(e=>e.npc).sort((a,b)=>BOTO.indexOf(a.npc.name)-BOTO.indexOf(b.npc.name)).forEach((e,i)=>{const off=i>=want;if(off!==!!e.off){e.off=off;e.el.style.display=off?'none':''}})}
+  botOrder();ents.filter(e=>e.npc).sort((a,b)=>BOTO.indexOf(a.npc.name)-BOTO.indexOf(b.npc.name)).forEach((e,i)=>{const off=i>=want;if(off!==!!e.off){e.off=off;e.el.style.display=off?'none':'';if(off)standUp(e)}})}
 function mpChat(p){if(!p||MP.hide.has(p.id))return;const e=ents.find(x=>x.other===p.id);if(!e)return;const t=String(p.t||'').slice(0,40);say(e,t);logChat(e.name,t)}
 function mpSend(t){if(MP.ch)MP.ch.send({type:'broadcast',event:'chat',payload:{id:MP.id,t}})}
 
@@ -1447,7 +1449,7 @@ function createRoom(ids){if(!MP.ch||!ids.length)return;const names=ids.map(i=>{c
 function talkBadge(){const n=Object.values(RM.rooms).reduce((a,r)=>a+r.unread,0);let b=$('#bTalk');if(!b){const btn=document.querySelector('nav [data-act=chatlog]');if(!btn)return;btn.style.position='relative';btn.insertAdjacentHTML('beforeend','<span class="badge" id="bTalk" hidden></span>');b=$('#bTalk')}b.hidden=!n;b.textContent=n}
 function openTalk(){RM.cur=null;const others=ents.filter(e=>e.other);
   openModal(`<h2>💬 お話し</h2>${LIVE?'':'<div class="tip">ないしょのお話しは公開版で使えます。</div>'}
-  <div class="trow" data-act="publog"><span>🌐</span><div><b>みんなのチャット</b><div class="muted">街のみんなに見える会話</div></div></div>
+  <div class="trow" data-act="gopark"><span>🌳</span><div><b>もぐもぐ公園でおしゃべり</b><div class="muted">雑談したい人が集まる場所。ベンチに座って話そう</div></div></div><div class="trow" data-act="publog"><span>🌐</span><div><b>みんなのチャット</b><div class="muted">街のみんなに見える会話</div></div></div>
   ${Object.values(RM.rooms).map(r=>`<div class="trow" data-act="openroom" data-id="${r.id}"><span>${r.members.length>2?'👥':'💬'}</span><div><b>${esc(r.name)}</b><div class="muted">${r.msgs.length?esc(String((r.msgs[r.msgs.length-1]||{}).t||'').slice(0,24)):'まだ会話はありません'}</div></div>${r.unread?`<i class="ub">${r.unread}</i>`:''}</div>`).join('')}
   <div class="sec"><b>👥 ふたり・グループで話す</b><div class="muted">いま街にいる人を選んでね（周りからは見えません・会話は保存されません）</div>
   ${others.length?`<div class="plist">${others.map(e=>`<label><input type="checkbox" value="${e.other}"> ${esc(e.name)}</label>`).join('')}</div><div class="acts"><button class="btn" data-act="mkroom">はじめる</button></div>`:'<div class="muted" style="margin-top:6px">いまは街にほかの人がいません</div>'}</div>`)}
@@ -1630,7 +1632,7 @@ const BB_MSG=[
  {t:'行けないけど、行った気分。',s:'ここはネットのマルシェ',c:'#ff8fab',e:'🌉'},
  {t:'通販で買って、お店を応援',s:'遠くからでもお買い物',c:'#5aa0c8',e:'📦'},
  {t:'応援ポイントでエールを',s:'行けなくても応援できる',c:'#e0a43a',e:'📣'},
- {t:'仲間といま、おしゃべり',s:'コミュニティとリアルタイム',c:'#6fb862',e:'💬'},
+ {t:'仲間といま、おしゃべり',s:'雑談は もぐもぐ公園で',c:'#6fb862',e:'💬'},
  {t:'スタンプでお店とつながる',s:'もぐマップと同じスタンプ帳',c:'#c77dbe',e:'🎫'}];
 const SPOT={i:0,order:null,t:null};
 function spotOrder(){const list=allShops().filter(s=>s.real||s.id==='ritan');if(!SPOT.order||SPOT.order.length!==list.length){const a=list.map(s=>s.id);for(let k=a.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1));[a[k],a[r]]=[a[r],a[k]]}SPOT.order=a}return SPOT.order}
@@ -1700,6 +1702,24 @@ ACT.ritanpt=()=>openModal(`<h2>🎁 ポイントを受け取る</h2><div class="
   <div class="acts"><button class="btn sub" data-act="openshop" data-shop="ritan">← お店にもどる</button></div>`);
 ACT.ritanmail=async()=>{try{await navigator.clipboard.writeText(RITAN_PT.mail);toast('メールアドレスをコピーしました')}catch(e){toast('長押しでコピーしてね')}};
 
+/* ---------- もぐもぐ公園＝おしゃべり公園（座れる場所） ---------- */
+const SEATS=[];
+function seatEl(i,j,w,h,svg,k){const[x,y]=P(i,j);const el=document.createElement('div');el.className='seat';el.dataset.act='sit';el.dataset.k=k;el.style.cssText=`left:${x-w/2}px;top:${y-h}px;width:${w}px;height:${h}px;z-index:${Math.round(y-6)}`;el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${svg}</svg>`;world.appendChild(el)}
+function svgStump(){return`<ellipse cx="15" cy="20" rx="12" ry="4" fill="rgba(0,0,0,.12)"/><rect x="5" y="8" width="20" height="11" fill="#a9805e" stroke="#7a5a3e" stroke-width="1.5"/><ellipse cx="15" cy="19" rx="10" ry="3.2" fill="#a9805e" stroke="#7a5a3e" stroke-width="1.5"/><ellipse cx="15" cy="8" rx="10" ry="3.6" fill="#e2c49a" stroke="#7a5a3e" stroke-width="1.5"/><ellipse cx="15" cy="8" rx="5" ry="1.6" fill="none" stroke="#c9a77f"/>`}
+function svgTable(){return`<ellipse cx="22" cy="30" rx="16" ry="4" fill="rgba(0,0,0,.12)"/><rect x="19" y="14" width="6" height="15" fill="#a8703f"/><ellipse cx="22" cy="13" rx="18" ry="6" fill="#d9a06b" stroke="#a8703f" stroke-width="1.5"/><text x="15" y="14" font-size="8">🍵</text><text x="23" y="14" font-size="8">🍪</text>`}
+function buildSeats(){
+  const bench=(i,j)=>{const k=SEATS.length;seatEl(i,j,70,46,svgBench(),'g'+k);[[i-.2,j+.25],[i+.25,j-.2]].forEach(([a,b])=>{const p=P(a,b);SEATS.push({g:'g'+k,x:p[0],y:p[1]-6,by:null})})};
+  const stump=(i,j)=>{const k=SEATS.length;seatEl(i,j,30,24,svgStump(),'g'+k);const p=P(i,j);SEATS.push({g:'g'+k,x:p[0],y:p[1]-8,by:null})};
+  bench(20.8,23);bench(23,20.8);bench(25.4,23.8);bench(23.8,25.4);
+  {const[x,y]=P(21.45,21.45);const el=document.createElement('div');el.className='seat';el.style.cssText=`left:${x-22}px;top:${y-32}px;width:44px;height:32px;z-index:${Math.round(y)};pointer-events:none`;el.innerHTML=`<svg viewBox="0 0 44 32" width="44" height="32">${svgTable()}</svg>`;world.appendChild(el)}
+  stump(20.9,21.6);stump(21.6,20.9);stump(22.05,21.95)}
+function freeSeat(g,near){const list=SEATS.filter(s=>!s.by&&(!g||s.g===g));if(!list.length)return null;if(!near)return pick(list);return list.sort((a,b)=>Math.hypot(a.x-near.x,a.y-near.y)-Math.hypot(b.x-near.x,b.y-near.y))[0]}
+function standUp(e){if(!e)return;SEATS.forEach(s=>{if(s.by===e)s.by=null});e.seat=null;e.el.classList.remove('sitting')}
+function sitDown(e,s){s.by=e;e.seat=s;e.el.classList.add('sitting');e.el.style.zIndex=Math.round(s.y+8)}
+ACT.sit=d=>{if(!me)return;if(LIVE&&!MP.inside)return toast('満員のあいだは見るだけです');const s=freeSeat(d.k,me);if(!s)return toast('いまは座れる場所がいっぱいです');
+  walkTo(me,s.x,s.y,()=>{if(s.by&&s.by!==me){const t=freeSeat(null,me);if(!t)return;return ACT.sit({k:t.g})}sitDown(me,s);mpTrack(true);toast('座りました💬 チャットで話しかけてみよう',3000)})};
+ACT.gopark=()=>{closeModal();if(!me)return;const s=freeSeat(null,{x:P(22,22)[0],y:P(22,22)[1]});if(s)ACT.sit({k:s.g});else{const p=P(21.6,22.4);walkTo(me,p[0],p[1])}toast('🌳 もぐもぐ公園へ。雑談したい人が集まる場所です',3500)};
+
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
@@ -1712,12 +1732,13 @@ function startNPCs(){NPCS.forEach(n=>{const p=randWalk();const e=makeEnt(n.av,n.
     if(e.keeper){const near=me&&Math.hypot(e.x-me.x,e.y-me.y)<380;if(Math.random()<(near?.11:.035)&&!e.el.classList.contains('talking')){const sh=e.shopId&&shopById(e.shopId);say(e,e.info?pick(['わからないことは聞いてね！','お知らせはこちらです〜','スタンプラリーの案内してます！']):pick(sh&&sh.calls||KEEPER_TALK))}return}
     if(e.pet){if(Math.random()<.3&&!e.el.classList.contains('walking')){const p=randWalk(true);walkTo(e,p[0],p[1])}if(Math.random()<.03)say(e,e.pet==='dog'?pick(['ワン！','ワンワン🐾','くぅ〜ん']):pick(['にゃ〜','にゃん🐾','ごろごろ…']));return}
     if(e.other||e.off||e.busy>now)return;
+    if(!e.seat&&Math.random()<.025&&!e.el.classList.contains('walking')){const st=freeSeat();if(st){walkTo(e,st.x,st.y,()=>{if(st.by&&st.by!==e)return;sitDown(e,st);e.busy=Date.now()+20000+Math.random()*25000});st.by=e;return}}
     if(Math.random()<.2&&!e.el.classList.contains('walking')){const p=randWalk();walkTo(e,p[0],p[1])}
     if(Math.random()<.006){const t=pick(e.npc.lines&&Math.random()<.6?e.npc.lines:NPC_TALK);say(e,t);logChat(e.name,t)}});
     if(Math.random()<.04){const list=npcs();const a=pick(list);const b=list.filter(x=>x!==a&&!x.el.classList.contains('walking')).sort((x,y)=>Math.hypot(x.x-a.x,x.y-a.y)-Math.hypot(y.x-a.x,y.y-a.y))[0];
       if(a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<260){const pr=pick(NPC_PAIRS);a.busy=b.busy=now+6000;a.tx=a.x;a.ty=a.y;a.el.classList.remove('walking');say(a,pr[0]);logChat(a.name,pr[0]);setTimeout(()=>{say(b,pr[1]);logChat(b.name,pr[1])},1600)}}
   },1200)}
-load();buildBg();buildPlaza();renderBooths();fit();startNPCs();setBots(0);startPets();updateBadges();
+load();buildBg();buildSeats();buildPlaza();renderBooths();fit();startNPCs();setBots(0);startPets();updateBadges();
 window.addEventListener('resize',()=>{fit();follow(1)});
 requestAnimationFrame(tick);
 function boot(){if(!S.role&&autoFromMogu()){if(!me)startMe();setTimeout(()=>{if(LIVE)checkMail(true)},1500);setTimeout(()=>toast(`もぐマップの登録で入りました（${ROLE[S.role][1]}）。キャラは👤マイページで変えられます`,5000),700);return}if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
