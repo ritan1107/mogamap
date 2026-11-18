@@ -384,6 +384,7 @@ body.watching #chatrow{opacity:.45}
 .seat{position:absolute;cursor:pointer}.seat svg{display:block;overflow:visible}
 .av.sitting svg .lg{transform:scaleY(.42)!important;animation:none!important}.av.sitting svg{transform:translateY(9px)}.av.left.sitting svg{transform:scaleX(-1) translateY(9px)}.av.sitting .nm{margin-top:-8px}
 #zoomctl{position:fixed;right:10px;bottom:150px;z-index:90;display:flex;flex-direction:column;gap:6px}#zoomctl button{width:42px;height:42px;border-radius:14px;border:2px solid #f3dcc2;background:rgba(255,255,255,.94);font:inherit;font-size:20px;font-weight:800;color:#4a3b35;box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:0}#zoomctl .zall{height:50px;font-size:17px}#zoomctl small{font-size:9px;margin-top:2px}
+.pill.ppl{background:#eef8ec;border-color:#a8d89c;color:#3f7a35;margin-right:4px}.plist{display:flex;flex-direction:column;gap:6px;margin:10px 0}.prow{display:flex;align-items:center;gap:8px;border:2px solid #f3dcc2;border-radius:12px;padding:8px 10px;cursor:pointer}.prow.me{border-color:#ff8fab;cursor:default}.prow small{margin-left:auto;font-size:11px;color:#8a776c}
 </style>
 </head>
 <body>
@@ -392,6 +393,7 @@ body.watching #chatrow{opacity:.45}
   <div class="logo">もぐマップ マルシェ</div>
   <span class="tag" id="tagv">体験版</span>
   <div class="spacer"></div>
+  <button class="pill ppl" data-act="people" id="ppl" title="いま街にいる人">👥 1人</button>
   <button class="pill" data-act="book" id="pill">📮 0/3</button>
   <button class="iconbtn" data-act="info" aria-label="あそびかた">？</button>
 </header>
@@ -1349,10 +1351,13 @@ setInterval(()=>{if(document.hidden||$('#modal').classList.contains('show'))retu
 /* ---------- みんなで同じ街に（いる人が多いときは住人botを減らす） ---------- */
 const MP={ch:null,id:(()=>{let v='';try{v=sessionStorage.getItem('marche_mpid')||''}catch(e){}if(!v){v='u'+Math.random().toString(36).slice(2,10);try{sessionStorage.setItem('marche_mpid',v)}catch(e){}}return v})(),last:0,t:null,hide:new Set(lsGet('marche_hidechat')||[])};
 function loadSB(){return new Promise((res,rej)=>{if(window.supabase&&window.supabase.createClient)return res();const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
-async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=window.supabase.createClient(API,AKEY);MP.client=c;
+async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=MP.client||window.supabase.createClient(API,AKEY);MP.client=c;
   MP.ch=c.channel('marche-town',{config:{presence:{key:MP.id},broadcast:{self:false}}});
   MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));MP.ch.on('broadcast',{event:'inv'},({payload})=>onInvite(payload));MP.ch.on('broadcast',{event:'mode'},()=>loadEvent());
-  MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){mpTrack(true);setTimeout(()=>{MP.ready=true;mpSync()},1500)}else if((st==='CHANNEL_ERROR'||st==='TIMED_OUT')&&!MP.decided)mpFail()})}catch(e){console.warn(e);mpFail()}}
+  MP.ch.subscribe(st=>{MP.st=st;if(st==='SUBSCRIBED'){mpTrack(true);if(!MP.ready)setTimeout(()=>{MP.ready=true;mpSync()},1500);else mpSync()}else if((st==='CHANNEL_ERROR'||st==='TIMED_OUT')&&!MP.decided)mpFail()})}catch(e){console.warn(e);mpFail()}}
+function mpAlive(){if(!LIVE||!MP.ch||document.hidden)return;const ok=MP.ch.state==='joined'||MP.st==='SUBSCRIBED'&&MP.ch.state!=='closed'&&MP.ch.state!=='errored';if(ok){return}const old=MP.ch;MP.ch=null;try{MP.client.removeChannel(old)}catch(e){}mpConnect()}
+function mpWake(){if(!LIVE||!MP.ch)return;if(MP.ch.state!=='joined')mpAlive();else mpTrack(true)}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(mpWake,600)});window.addEventListener('pageshow',()=>setTimeout(mpWake,600));window.addEventListener('online',()=>setTimeout(mpWake,1000));setInterval(mpAlive,30000);
 function mpFail(){MP.decided=true;MP.inside=true;if(typeof applyWatch==='function')applyWatch()}
 function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,p:myPid(),n:String(S.name||'ゲスト').slice(0,10)};return{p:myPid(),o:isOrganizer()?1:0,s:me&&me.seat?1:0,n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
 function mpTrack(force){if(!MP.ch||(!me&&MP.inside))return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
@@ -1362,7 +1367,7 @@ function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
     if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
     e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y,()=>e.el.classList.toggle('sitting',!!(e.meta&&e.meta.s)));else e.el.classList.toggle('sitting',!!m.s)}
   for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
-  setBots(seen.size);capCheck(seen.size,waiters);if(typeof hubRefresh==='function')hubRefresh('hq')}
+  MP.list=[...seen];MP.nWatch=waiters.length;pplUI();setBots(seen.size);capCheck(seen.size,waiters);if(typeof hubRefresh==='function')hubRefresh('hq')}
 let botTarget=null,BOTO=null;
 function botOrder(){if(BOTO)return;BOTO=NPCS.map(n=>n.name);for(let k=BOTO.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1));[BOTO[k],BOTO[r]]=[BOTO[r],BOTO[k]]}}
 setInterval(()=>{if(document.hidden||!BOTO)return;BOTO.push(BOTO.shift());setBots(botTarget?botTarget.n:0)},4*60*1000);
@@ -1736,8 +1741,16 @@ ACT.gopark=()=>{closeModal();if(!me)return;const s=freeSeat(null,{x:P(22,22)[0],
 ACT.zin=()=>zoomTo(ZM*1.3);
 ACT.zout=()=>zoomTo(ZM/1.3);
 ACT.zall=()=>{if(ZM>zMin()+.01){ZPREV=ZM;zoomTo(zMin())}else{ZM=Math.max(1,ZPREV);fit();follow(1)}};
+/* いま街にいる人数 */
+function pplCount(){return LIVE?((MP.list||[]).length+(MP.inside&&me?1:0)):1}
+function pplUI(){const b=$('#ppl');if(b)b.textContent=`👥 ${pplCount()}人`}
+ACT.people=()=>{const others=ents.filter(e=>e.other&&(MP.list||[]).includes(e.other));const RL_={comm:'🤝',shop:'🏪',guest:'🙋'};
+  openModal(`<h2>👥 いま街にいる人（${pplCount()}人）</h2><div class="muted">街に入れるのは${CAP}人まで${MP.nWatch?`・外から見ている／待っている人 ${MP.nWatch}人`:''}</div>
+  <div class="plist">${me&&(MP.inside||!LIVE)?`<div class="prow me"><span>${RL_[S.role]||'🙋'}</span><b>${esc(S.name||'ゲスト')}（あなた）</b></div>`:''}${others.map(e=>`<div class="prow" data-act="otheru" data-id="${e.other}"><span>${RL_[e.meta&&e.meta.r]||'🙋'}</span><b>${esc(e.name)}</b><small>${e.meta&&e.meta.s?'🪑 座っています':''}</small></div>`).join('')}</div>
+  ${LIVE?'':'<div class="muted">体験版では、ほかの人とはつながりません。</div>'}<div class="muted" style="margin-top:6px">住人（ボット）は人数に入りません。名前をタップすると話しかけられます。</div>`)};
+setInterval(pplUI,5000);
 /* ---------- 起動 ---------- */
-function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
+function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1));setTimeout(()=>mpTrack(true),300)}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
 function npcs(){return ents.filter(e=>e.npc&&!e.off)}
 const DOG=`<svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="43" rx="18" ry="3" fill="rgba(0,0,0,.13)"/><g><path d="M12,24 Q4,14 8,10" stroke="#e8c79a" stroke-width="5" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-12 12 24;14 12 24;-12 12 24" dur=".5s" repeatCount="indefinite"/></path></g><ellipse cx="27" cy="29" rx="16" ry="10" fill="#fff4e3"/><rect x="15" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><rect x="33" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><circle cx="43" cy="20" r="11" fill="#fff4e3"/><ellipse cx="35" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(20 35 17)"/><ellipse cx="51" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(-20 51 17)"/><circle cx="40" cy="20" r="1.8" fill="#3a2a2a"/><circle cx="47" cy="20" r="1.8" fill="#3a2a2a"/><ellipse cx="44" cy="25" rx="2.2" ry="1.6" fill="#3a2a2a"/><ellipse cx="38" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><ellipse cx="50" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><rect x="33" y="28" width="16" height="3" rx="1.5" fill="#ff5c8a"/><circle cx="41" cy="32" r="2" fill="#ffd36e"/></svg>`;
