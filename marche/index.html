@@ -459,7 +459,7 @@ function randAvatar(rnd){rnd=rnd||Math.random;const p=k=>{const a=OPT[k];return 
   const pk=a=>a[Math.floor(rnd()*a.length)];if(rnd()<.6)o.eyes=pk(['big','dot','kira','smile']);if(rnd()<.6)o.mouth=pk(['open','smile','cat']);if(rnd()<.5)o.cheek='blush';if(rnd()<.6)o.brows='soft';
   return o}
 
-function avatarSVG(a,view){a=normalize(a)||AV_DEFAULT;const s=a.skin,h=a.hairColor,c=a.outfitColor,sk=a.shoes;
+function avatarSVG(a,view){a=normalize(a)||AV_DEFAULT;const s=a.skin,h=a.hairColor,c=a.xc||a.outfitColor,sk=a.shoes;
   const st=`stroke="${OL}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"`;
   const P_=(d,f,extra)=>`<path d="${d}" fill="${f}" ${st} ${extra||''}/>`;
   const C_=(x,y,r,f)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${st}/>`;
@@ -569,7 +569,7 @@ function avatarSVG(a,view){a=normalize(a)||AV_DEFAULT;const s=a.skin,h=a.hairCol
   const delay=(hashN(JSON.stringify(a))%40)/10;
   const face=`<g class="ey"${blink?` style="animation-delay:-${delay}s"`:' data-noblink="1"'}>${eyes}</g>${brows}${cheek}${mp||''}${beard}`;
   const vb=view==='head'?'3 -12 54 62':'-4 -16 68 104';
-  return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" style="overflow:${view==='head'?'hidden':'visible'}">${view==='head'?'':'<ellipse cx="30" cy="84" rx="15" ry="3.4" fill="rgba(0,0,0,.14)"/>'}${tail}${hb}${earB}${leg(23,'lg1')}${leg(31,'lg2')}${top}${arm(12,14,'ar1')}${arm(40.5,-14,'ar2',item)}${humanEars}${head}${face}${hf}${earF}${hat}${gl}</svg>`;
+  return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" style="overflow:${view==='head'?'hidden':'visible'}">${view==='head'?'':'<ellipse cx="30" cy="84" rx="15" ry="3.4" fill="rgba(0,0,0,.14)"/>'}${a.tall&&view!=='head'?'<g transform="translate(30 84) scale(.94 1.13) translate(-30 -84)">':'<g>'}${a.back||''}${tail}${hb}${earB}${leg(23,'lg1')}${leg(31,'lg2')}${top}${arm(12,14,'ar1')}${arm(40.5,-14,'ar2',item)}${humanEars}${head}${face}${hf}${earF}${hat}${gl}${a.prop||''}</g></svg>`;
 }
 
 /* ---------- 街・お店 ---------- */
@@ -631,10 +631,31 @@ const INFOS=[
  {id:'info-rally',lot:11,emoji:'🎫',color:'#e0708a',name:'スタンプラリー案内所',label:'あそびかた',staff:'案内係のもぐ'}
 ];
 /* 街の住人（自動でおしゃべりするキャラ） */
-const NPC_DEF=[['さくら','スイーツ','だよ〜'],['ゆうと','コーヒー','っす'],['みき','占い','だよ'],['はるな','雑貨','なの'],['けんた','ラーメン','だぜ'],['あおい','お花','です♪'],
- ['りく','日本酒','っす'],['ひなた','カフェめぐり','だよ'],['そら','絵本','だよ〜'],['まい','パン','です'],['こうき','写真','だね'],['ゆい','ヨガ','です♪'],
- ['しょう','キャンプ','だぜ'],['なな','ネイル','だよ'],['たくみ','音楽','っす'],['えみ','手づくり','です'],['ごろう','おでん','じゃ'],['ちか','温泉','だよ〜'],['はると','サッカー','だよ'],['みお','ハンドメイド','です♪'],['だいち','ジンギスカン','だべ'],['りこ','カフェラテ','だよ〜'],['けいこ','お茶','ですよ'],['ゆずき','ダンス','だよ']];
-const NPCS=NPC_DEF.slice(0,6).map(([name,like,end],k)=>({name,like,end,av:randAvatar(seeded(hashN(name+k)*7+3))}));const NPC_TALK=['こんにちは〜！','スタンプあと1個でクリア！','どのお店から回る？','情報局のお知らせ見た？','マルシェたのしいね','お店の人に話しかけてみよう','13日のスーパーマルシェ楽しみ！','すすきののお店も行きたいな','札幌さむくなってきたね〜','ぴあのぴあの行ってみたい！','スタンプ帳見せて〜','おなかすいた〜'];
+
+const SO='stroke="#5a3a2a" stroke-width="1.3" stroke-linejoin="round"';
+const STAR=(x,y,r,f)=>{let d='';for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,rr=k%2?r*.45:r;d+=(k?'L':'M')+(x+rr*Math.cos(a)).toFixed(1)+','+(y+rr*Math.sin(a)).toFixed(1)}return`<path d="${d}Z" fill="${f}" ${SO}/>`};
+/* 街の住人6人（オリジナルの住人キャラ） */
+const NPCS=[
+ {name:'阿部ムキ男くん',job:'パーソナルトレーナー',like:'筋トレ',end:'っす',lines:['今日も元気にいきましょう💪','水分補給わすれずに〜！','姿勢よく歩くと気持ちいいっすよ'],
+  av:{skin:'#efbf98',face:'square',eyes:'smile',eyeColor:'#5a3a2a',brows:'thick',mouth:'grin',cheek:'blush',hairStyle:'buzz',hairColor:'#5a3a2a',outfit:'catee',xc:'#3a3333',shoes:'#f3e3c3',
+   prop:`<circle cx="30" cy="54.5" r="5.6" fill="#3a3333"/><path d="M17,62 L43,62 L45,73 L32,73 L30,67 L28,73 L15,73 Z" fill="#3f9a8a" ${SO}/><path d="M19,48 Q30,55 41,48 L42,52 Q30,59 18,52 Z" fill="#fff" ${SO}/><rect x="18.5" y="50" width="4.5" height="12" rx="2" fill="#fff" ${SO}/><rect x="37" y="50" width="4.5" height="12" rx="2" fill="#fff" ${SO}/><rect x="3" y="57" width="8" height="14" rx="3" fill="#7fd0e6" ${SO}/><rect x="4.5" y="53.5" width="5" height="4.5" rx="1.2" fill="#3f9a8a" ${SO}/>`}},
+ {name:'やさしあゆみ',job:'アクセサリー屋さん',like:'手づくりアクセ',end:'です♪',lines:['新作のピアス、見てね✨','お花モチーフが好きなんです','ゆっくり見ていってくださいね'],
+  av:{skin:'#ffe3cf',face:'round',eyes:'kira',eyeColor:'#b0702a',brows:'soft',mouth:'smile',cheek:'blush',hairStyle:'bob',hairColor:'#8a5a3b',outfit:'apron',outfitColor:'#f28b7d',shoes:'#8a5a3b',hat:'flower',
+   prop:`<rect x="15" y="60" width="30" height="6" rx="2.5" fill="#d9a06b" ${SO}/><circle cx="21" cy="58.5" r="2.4" fill="#ff8fab" ${SO}/><circle cx="27" cy="58.5" r="2.4" fill="#9fdcff" ${SO}/><circle cx="33" cy="58.5" r="2.4" fill="#ffd36e" ${SO}/><circle cx="39" cy="58.5" r="2.4" fill="#a8e6b8" ${SO}/><circle cx="9" cy="41" r="1.8" fill="#ffd36e" ${SO}/><circle cx="51" cy="41" r="1.8" fill="#ff8fab" ${SO}/>`}},
+ {name:'やどのり',job:'民泊屋さん',like:'旅の話',end:'ですよ',lines:['お泊まりのご相談どうぞ🏠','札幌観光ならおまかせ','いい宿、ありますよ〜'],
+  av:{skin:'#ffe3cf',face:'oval',eyes:'smile',eyeColor:'#5a3a2a',brows:'soft',mouth:'smile',cheek:'blush',hairStyle:'updo',hairColor:'#5a3a2a',outfit:'jacket',xc:'#e8d6b8',shoes:'#8a5a3b',
+   prop:`<path d="M24,49 L30,60 L36,49" fill="#7e9a5c" ${SO}/><circle cx="50" cy="60" r="3.2" fill="none" stroke="#d4a52c" stroke-width="2.2"/><path d="M50,63 L50,72 M50,68.5 L53.5,68.5 M50,71 L53,71" stroke="#d4a52c" stroke-width="2.2" stroke-linecap="round"/><path d="M4,65 L10,59 L16,65 L16,72 L4,72 Z" fill="#f28b7d" ${SO}/><rect x="8.5" y="67" width="3.5" height="5" fill="#fff6e4"/>`}},
+ {name:'神やん',job:'No.1の応援キャラ',like:'応援',end:'やで',lines:['あんたが一番や☝️','その調子、その調子〜！','応援してるで〜！'],
+  av:{skin:'#f9d3b4',face:'round',eyes:'wink',eyeColor:'#5a3a2a',brows:'arch',mouth:'grin',cheek:'blush',hairStyle:'fluffy',hairColor:'#8a5a3b',outfit:'jacket',xc:'#e8553f',shoes:'#3a3333',
+   prop:`<path d="M20,4 L22,-5 L27,1 L30,-7 L33,1 L38,-5 L40,4 Z" fill="#ffd36e" ${SO}/>${STAR(24,56,4.5,"#ffd36e")}<path d="M44,50 L52,34" stroke="#5a3a2a" stroke-width="6.5" stroke-linecap="round"/><path d="M44,50 L52,34" stroke="#e8553f" stroke-width="4" stroke-linecap="round"/><circle cx="52.5" cy="32" r="3.2" fill="#f9d3b4" ${SO}/><path d="M52.8,29.5 L53.6,23.5" stroke="#5a3a2a" stroke-width="3.6" stroke-linecap="round"/><path d="M52.8,29.5 L53.6,23.5" stroke="#f9d3b4" stroke-width="2" stroke-linecap="round"/>`}},
+ {name:'ウィル',job:'お医者さん',like:'健康',end:'ですね',lines:['よく寝て、よく食べましょう🩺','体調はいかがですか？','無理しすぎないでくださいね'],
+  av:{skin:'#ffe3cf',face:'oval',eyes:'smile',eyeColor:'#2a2420',brows:'flat',mouth:'smile',cheek:'none',hairStyle:'side',hairColor:'#5a3a2a',outfit:'coat',xc:'#ffffff',shoes:'#3a3333',
+   prop:`<path d="M25,49 L30,58 L35,49" fill="#bfe3f5" ${SO}/><path d="M22,49 Q20,62 30,64 Q40,62 38,49" stroke="#4a4a5a" stroke-width="1.8" fill="none"/><circle cx="30" cy="64.5" r="2.6" fill="#a9b4c2" ${SO}/><rect x="2.5" y="56" width="12" height="15" rx="1.8" fill="#c98e5b" ${SO}/><rect x="4.5" y="58.5" width="8" height="11" fill="#fff"/><path d="M8.5,66 Q5,63 6.4,61.6 Q7.8,60.4 8.5,62 Q9.2,60.4 10.6,61.6 Q12,63 8.5,66 Z" fill="#ff8fab"/>`}},
+ {name:'魔法使いスペ',job:'マジシャン',like:'マジック',end:'でございます',lines:['ひとつ、不思議をお見せしましょう✨','星はお好きですかな？','タネも仕掛けも…ございます'],
+  av:{skin:'#ffe3cf',face:'oval',eyes:'smile',eyeColor:'#2a2420',brows:'arch',mouth:'smile',cheek:'none',beard:'mustache',hairStyle:'side',hairColor:'#5a3a2a',outfit:'coat',xc:'#5b3f8c',shoes:'#3a3333',tall:true,
+   back:`<path d="M14,48 Q8,66 6,82 L54,82 Q52,66 46,48 Z" fill="#4a3278" stroke="#d4a52c" stroke-width="2"/>`,
+   prop:`<rect x="17" y="-6" width="26" height="15" rx="2.5" fill="#5b3f8c" ${SO}/><rect x="17" y="4" width="26" height="3.5" fill="#d4a52c"/><rect x="9" y="8" width="42" height="5" rx="2.5" fill="#5b3f8c" ${SO}/>${STAR(36,0,3.4,"#ffd36e")}<path d="M48,64 L59,46" stroke="#3a3333" stroke-width="2.6" stroke-linecap="round"/><path d="M57.6,48.2 L59,46" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>${STAR(60,44,4.6,"#ffd36e")}<circle cx="54" cy="40" r="1.2" fill="#ffd36e"/><circle cx="63" cy="51" r="1" fill="#ffd36e"/><circle cx="12" cy="64" r="3" fill="#fff" ${SO}/><circle cx="48" cy="64" r="3" fill="#fff" ${SO}/>`}}
+];const NPC_TALK=['こんにちは〜！','スタンプあと1個でクリア！','どのお店から回る？','情報局のお知らせ見た？','マルシェたのしいね','お店の人に話しかけてみよう','13日のスーパーマルシェ楽しみ！','すすきののお店も行きたいな','札幌さむくなってきたね〜','ぴあのぴあの行ってみたい！','スタンプ帳見せて〜','おなかすいた〜'];
 const NPC_PAIRS=[['どこ行く？','カフェ行こうよ！'],['スタンプいくつ？','いま2個！あと1個でクリア'],['寒くない？','手袋してきた〜'],['情報局見た？','見た！13日楽しみ'],['おすすめある？','占いが当たるらしいよ'],['今日はどこから来たの？','西区からだよ〜']];
 const KEEPER_TALK=['いらっしゃいませ〜','スタンプ押しますよ〜','ぜひ見ていってね！','お待ちしてます♪'];
 
@@ -1151,7 +1172,7 @@ let partner=null;
 function shopsBy(re){const r=DEFAULT_SHOPS.filter(s=>re.test(s.name+s.tag+s.desc));return r.length?pick(r):pick(DEFAULT_SHOPS)}
 function botReply(n,v){const E=n.end;
   if(/こんにち|こんばん|おはよ|はじめ|やっほ|よろしく|ハロー/.test(v))return pick([`こんにちは〜！${n.name}${E}`,`やっほー！今日はどこ回るの？`,`はじめまして！${n.name}${E}、よろしくね`]);
-  if(/名前|だれ|誰/.test(v))return `${n.name}${E}！${n.like}が好きなんだ〜`;
+  if(/名前|だれ|誰|仕事/.test(v))return `${n.job?n.job+'の':''}${n.name}${E}！${n.like}が好きなんだ〜`;
   if(/好き|趣味/.test(v))return `${n.like}が大好き${E}！あなたは何が好き？`;
   if(/スタンプ|ラリー|クリア/.test(v))return pick(['スタンプは3つで1クリアだよ！','お店で買ったら「スタンプ申請」してみて！','真ん中の案内所で、もらい方が聞けるよ〜']);
   if(/いつ|イベント|プレゼン|スーパーマルシェ|13日|11日/.test(v))return '11日はプレゼン大会、13日はスーパーマルシェがあるみたい！';
@@ -1172,7 +1193,7 @@ function sendChat(){if(LIVE&&!MP.inside){toast('満員のあいだは見るだ�
   if(!t){const near=npcs().map(e=>[e,Math.hypot(e.x-me.x,e.y-me.y)]).filter(x=>x[1]<300).sort((a,b)=>a[1]-b[1]);if(near.length)t=near[0][0]}
   if(t){t.busy=Date.now()+5000;t.tx=t.x;t.ty=t.y;t.el.classList.remove('walking');t.el.classList.toggle('left',me.x<t.x);setTimeout(()=>{const r=botReply(t.npc,v);say(t,r);logChat(t.name,r)},900+Math.random()*900)}}
 function talkTo(name){const t=npcs().find(e=>e.name===name);if(!t||!me)return;partner=t;t.busy=Date.now()+9000;t.tx=t.x;t.ty=t.y;t.el.classList.remove('walking');
-  walkTo(me,t.x+(me.x<t.x?-40:40),t.y+4,()=>{me.el.classList.toggle('left',t.x<me.x);t.el.classList.toggle('left',me.x<t.x);const r=pick([`こんにちは！${t.name}${t.npc.end}`,`あ、こんにちは〜！${t.npc.like}好き？`,'やっほー！どこのお店に行くの？']);say(t,r);logChat(t.name,r);
+  walkTo(me,t.x+(me.x<t.x?-40:40),t.y+4,()=>{me.el.classList.toggle('left',t.x<me.x);t.el.classList.toggle('left',me.x<t.x);const r=pick([`こんにちは！${t.npc.job||''}の${t.name}${t.npc.end}`,`こんにちは！${t.npc.job||''}の${t.name}${t.npc.end}`,`あ、こんにちは〜！${t.npc.like}好き？`,'やっほー！どこのお店に行くの？']);say(t,r);logChat(t.name,r);
     $('#chatin').placeholder=`${t.name}に話しかける…`;toast(`${t.name}とおしゃべりできます 💬`,2200)})}
 /* 音声入力 */
 let rec=null;
@@ -1681,7 +1702,7 @@ function startNPCs(){NPCS.forEach(n=>{const p=randWalk();const e=makeEnt(n.av,n.
     if(e.pet){if(Math.random()<.3&&!e.el.classList.contains('walking')){const p=randWalk(true);walkTo(e,p[0],p[1])}if(Math.random()<.03)say(e,e.pet==='dog'?pick(['ワン！','ワンワン🐾','くぅ〜ん']):pick(['にゃ〜','にゃん🐾','ごろごろ…']));return}
     if(e.other||e.off||e.busy>now)return;
     if(Math.random()<.2&&!e.el.classList.contains('walking')){const p=randWalk();walkTo(e,p[0],p[1])}
-    if(Math.random()<.006){const t=pick(NPC_TALK);say(e,t);logChat(e.name,t)}});
+    if(Math.random()<.006){const t=pick(e.npc.lines&&Math.random()<.6?e.npc.lines:NPC_TALK);say(e,t);logChat(e.name,t)}});
     if(Math.random()<.04){const list=npcs();const a=pick(list);const b=list.filter(x=>x!==a&&!x.el.classList.contains('walking')).sort((x,y)=>Math.hypot(x.x-a.x,x.y-a.y)-Math.hypot(y.x-a.x,y.y-a.y))[0];
       if(a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<260){const pr=pick(NPC_PAIRS);a.busy=b.busy=now+6000;a.tx=a.x;a.ty=a.y;a.el.classList.remove('walking');say(a,pr[0]);logChat(a.name,pr[0]);setTimeout(()=>{say(b,pr[1]);logChat(b.name,pr[1])},1600)}}
   },1200)}
