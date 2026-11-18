@@ -364,6 +364,7 @@ body.watching #chatrow{opacity:.45}
 .mylist{margin:10px 0;border:2px solid #f3dcc2;border-radius:14px;overflow:hidden}
 .mylist div{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;font-size:13px}.mylist div+div{border-top:1px solid #f3dcc2}.mylist span{color:#8a776c}
 .mybtns{display:flex;flex-direction:column;gap:8px;margin-top:10px}.mybtns .btn{width:100%;text-align:center;text-decoration:none;box-sizing:border-box}
+.newdot{display:inline-block;background:#ff4d6d;color:#fff;font-style:normal;font-size:10px;font-weight:800;border-radius:99px;padding:1px 6px;vertical-align:1px}
 </style>
 </head>
 <body>
@@ -834,7 +835,7 @@ async function enterGo(btn){const r=entryRole,err=t=>{$('#en_err').textContent=t
       try{const q=await rpc('mogu_set_login_pin',{p_participant_id:np.id,p_participant_token:np.token,p_pin:pin});if(q&&q[0]&&q[0].entry_id){np.entryId=q[0].entry_id;lsSet(PKEY,np)}S.showId=true}catch(e){console.warn(e)}}}
     S.role='comm';S.uw=uw;S.name=nm;S.shopId=''}
   if(r==='guest'){S.role='guest';S.name=nm||S.name||'ゲスト';S.uw='';S.shopId=''}
-  save();renderBooths();setMeLabel();if(LIVE)await profReload();
+  save();renderBooths();setMeLabel();if(LIVE){await profReload();checkMail(true)}
   if(!S.avatar)openAvatar(true);else{if(!me)startMe();if(S.showId){S.showId=false;save();openIdCard()}else closeModal();toast(`${ROLE[S.role][0]} ${ROLE[S.role][1]}として入りました`)}
   }catch(e){err(String(e.message||e).includes('UW')?'UW.IDを確認してください':'うまくいきませんでした。もう一度お試しください')}finally{btn.disabled=false}}
 
@@ -877,7 +878,7 @@ async function submitLive(sh,btn){const item=($('#bt_item').value||'').trim(),no
 function shopLogin(){const l=lsGet(LKEY);return l&&l.shopId===S.shopId&&l.pin?l:null}
 async function renderShopInbox(){const box=$('#liveInbox');if(!box)return;const l=shopLogin();if(!l){box.innerHTML='<div class="muted">お店のPINで入り直すと、ここで申請を確認できます。</div><button class="btn sub small" data-act="relogin">入り直す</button>';return}
   box.innerHTML='<div class="muted">読み込み中…</div>';
-  try{const rows=(await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin})||[]).map(x=>Object.assign({},x,{id:x.submission_id||x.id,status:x.submission_status||x.status||'pending'}));
+  try{const rows=(await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin})||[]).map(x=>Object.assign({},x,{id:x.submission_id||x.id,status:x.submission_status||x.status||'pending'}));MAIL.subs=rows;setTimeout(()=>{const u=shopUnreadIds();document.querySelectorAll('#liveInbox [data-act=shopthread]').forEach(b=>{if(u.has(b.dataset.id)&&!b.querySelector('.newdot'))b.insertAdjacentHTML('afterbegin','<i class="newdot">新着</i> ')});mailBadge()},0);
     const dms=rows.filter(r=>String(r.purchase_message||'').startsWith(DM_MARK));const app=rows.filter(r=>!String(r.purchase_message||'').startsWith(DM_MARK));const pend=app.filter(r=>r.status==='pending'),done=app.filter(r=>r.status!=='pending').slice(0,10);
     box.innerHTML=`<h3>📮 スタンプ申請（${pend.length}件）</h3>${pend.map(r=>`<div class="req"><b>${esc(r.nickname||'参加者')}</b> さん <span class="muted">${hm(r.created_at)}${r.participant_entry_id?' ・ID '+esc(r.participant_entry_id):''}${r.uw_id?' ・UW '+esc(r.uw_id):''}</span>
       <div class="note" style="white-space:pre-line">${esc(r.purchase_message||'')}</div>${r.purchase_url?`<div class="muted">🔗 ${esc(r.purchase_url)}</div>`:''}${r.proof_data?`<img class="proof" src="${esc(r.proof_data)}" alt="写真">`:''}
@@ -1309,7 +1310,7 @@ function mpSend(t){if(MP.ch)MP.ch.send({type:'broadcast',event:'chat',payload:{i
 
 /* ---------- お店と1対1のメッセージ（もぐマップのメッセージと同じ） ---------- */
 const TK_RE=/[?&]rt=([A-Za-z0-9_-]{6,})/;
-async function loadMsgsP(){const p=part();if(!LIVE||!p)return[];try{return(await rpc('list_rally_messages_for_participant',pAuth(p)))||[]}catch(e){return[]}}
+async function loadMsgsP(){const p=part();if(!LIVE||!p)return[];try{const r=(await rpc('list_rally_messages_for_participant',pAuth(p)))||[];MAIL.p=r;return r}catch(e){return[]}}
 function bubbleHTML(mine,text,time,extra){const tk=String(text||'').match(TK_RE);
   return `<div class="cm ${mine?'me':''}"><div class="cb">${esc(String(text||'').replace(DM_MARK,'')).replace(/\n/g,'<br>')}${extra||''}${tk&&!mine?`<button class="btn small ok" data-act="redeem" data-t="${esc(tk[1])}">🎫 スタンプを受け取る</button>`:''}</div><div class="ct">${hm(time)}</div></div>`}
 async function openChatShop(id,silent){const sh=shopById(id);if(!sh)return;
@@ -1507,6 +1508,37 @@ ${LIVE?'':`<div class="tip" style="margin-top:8px">ここは体験版です。�
 <div class="acts">${LIVE?'':'<button class="btn sub small" data-act="reset">お店・スタンプをリセット</button>'}<button class="btn" data-act="close">街にもどる</button></div>`)}
 function liveUI(){const t=$('#tagv');if(LIVE){if(t)t.remove()}else if(t)t.innerHTML=`<a href="${SITE}" target="_blank" rel="noopener" style="color:inherit">体験版・本番はこちら↗</a>`;applyWatch()}
 
+/* ---------- メッセージの新着しるし（マイページ） ---------- */
+const MAIL={p:[],s:[],subs:null,lastP:-1,lastS:-1};
+const tms=t=>new Date(t).getTime()||0;
+function seenMap(k){S[k]=S[k]||{};return S[k]}
+function custThreads(){const by={};(RL.all||[]).forEach(r=>{(by[r.shop_id]=by[r.shop_id]||{shop:r.shop_id,name:r.shop_name,subs:new Set(),last:0,snip:'',unread:0}).subs.add(r.submission_id);const b=by[r.shop_id];if(tms(r.created_at)>b.last){b.last=tms(r.created_at);b.snip=String(r.purchase_message||'').replace(DM_MARK,'').replace('🏪マルシェから／','📮 ')}});
+  const seen=seenMap('seenMail');MAIL.p.forEach(m=>{const b=Object.values(by).find(x=>x.subs.has(m.submission_id));if(!b)return;const t=tms(m.created_at);if(t>b.last){b.last=t;b.snip=(m.sender_type==='shop'?'🏪 ':'')+m.message_body}if(m.sender_type==='shop'&&t>(seen[b.shop]||0))b.unread++});
+  return Object.values(by).sort((a,b)=>b.last-a.last)}
+function custUnread(){return custThreads().reduce((a,b)=>a+b.unread,0)}
+function shopUnreadIds(){if(S.role!=='shop'||!MAIL.subs)return new Set();const seen=seenMap('seenThread'),out=new Set();
+  MAIL.subs.forEach(r=>{const id=r.submission_id||r.id;let cust=tms(r.created_at),shop=0;MAIL.s.filter(m=>m.submission_id===id).forEach(m=>{const t=tms(m.created_at);if(m.sender_type==='shop')shop=Math.max(shop,t);else cust=Math.max(cust,t)});
+    if((r.submission_status||r.status)==='pending'&&!String(r.purchase_message||'').startsWith(DM_MARK))out.add(id);else if(cust>shop&&cust>(seen[id]||0))out.add(id)});return out}
+function mailBadge(){if(!LIVE)return;const c=custUnread(),s=shopUnreadIds().size,n=c+s,bo=$('#bOwner');if(bo){bo.hidden=!n;bo.textContent=n}
+  if(MAIL.lastP>=0&&c>MAIL.lastP)toast('📩 お店からメッセージが届きました（👤マイページ）',4500);if(MAIL.lastS>=0&&s>MAIL.lastS)toast('📩 お客様からメッセージ・申請が届きました（👤マイページ）',4500);MAIL.lastP=c;MAIL.lastS=s;
+  const box=$('#myMail');if(box)box.innerHTML=mailListHTML()}
+async function checkMail(full){if(!LIVE)return;
+  if(part()&&(RL.all||[]).length)await loadMsgsP();
+  const l=S.role==='shop'?shopLogin():null;if(l){try{MAIL.s=(await rpc('list_rally_messages_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin}))||[]}catch(e){}
+    if(full||!MAIL.subs){try{MAIL.subs=(await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin}))||[]}catch(e){}}}
+  mailBadge()}
+function markShopSeen(id){seenMap('seenMail')[id]=Date.now();save();mailBadge()}
+function markThreadSeen(id){seenMap('seenThread')[id]=Date.now();save();mailBadge()}
+function mailListHTML(){if(!LIVE)return'<div class="muted">お店とのメッセージは公開ページで使えます。</div>';
+  let h='';if(S.role==='shop'){const n=shopUnreadIds().size;h+=`<button class="trow" data-act="owner" style="width:100%"><span>🔑</span><div><b>お客様からのメッセージ・スタンプ申請</b><div class="muted">出店者画面で見る・お返事する</div></div>${n?`<i class="ub">${n}</i>`:''}</button>`}
+  const th=custThreads();h+=th.map(t=>{const sh=shopById(t.shop);return`<div class="trow" data-act="chatshop" data-shop="${esc(t.shop)}"><span>${esc(sh?sh.emoji:'🏪')}</span><div style="min-width:0"><b>${esc(sh?sh.name:t.name||'お店')}</b><div class="muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(String(t.snip).slice(0,30))}</div></div>${t.unread?`<i class="ub">${t.unread}</i>`:''}</div>`}).join('');
+  return h||'<div class="muted">まだありません。お店のページの「💬 お店と話す」から送れます。</div>'}
+{const f=updateBadges;updateBadges=function(){f();mailBadge()}}
+{const f=openChatShop;openChatShop=async function(id,silent){await f(id,silent);if($('#chatbox')&&$('#chatbox').dataset.shop===id)markShopSeen(id)}}
+{const f=openShopThread;openShopThread=async function(id){markThreadSeen(id);await f(id);checkMail(false)}}
+{const f=openMyPage;openMyPage=function(){f();const a=$('#modal .mybtns');if(a)a.insertAdjacentHTML('beforebegin',`<div class="sec"><b>📩 お店とのメッセージ</b><div id="myMail" style="margin-top:6px">${mailListHTML()}</div></div>`);checkMail(false)}}
+ACT.mypage=()=>openMyPage();
+
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
@@ -1527,11 +1559,11 @@ function startNPCs(){NPCS.forEach(n=>{const p=randWalk();const e=makeEnt(n.av,n.
 load();buildBg();renderBooths();fit();startNPCs();startPets();updateBadges();
 window.addEventListener('resize',()=>{fit();follow(1)});
 requestAnimationFrame(tick);
-function boot(){if(!S.role&&autoFromMogu()){if(!me)startMe();setTimeout(()=>toast(`もぐマップの登録で入りました（${ROLE[S.role][1]}）。キャラは👤マイページで変えられます`,5000),700);return}if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
+function boot(){if(!S.role&&autoFromMogu()){if(!me)startMe();setTimeout(()=>{if(LIVE)checkMail(true)},1500);setTimeout(()=>toast(`もぐマップの登録で入りました（${ROLE[S.role][1]}）。キャラは👤マイページで変えられます`,5000),700);return}if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
 readRef();cloudInit();
 if(S.avatar)boot();else{let done=false;restoreAvatar(b=>{if(done)return;done=true;S.avatar=normalize(b.avatar);if(!S.name)S.name=b.name||'';if(!S.role&&b.role){S.role=b.role;S.uw=b.uw||'';S.shopId=b.shopId||''}save();boot();toast('前に作ったキャラで入りました')});setTimeout(()=>{if(!done){done=true;boot()}},400)}
-loadLive().then(async()=>{liveUI();if(!LIVE){renderTicker();return}mpConnect();loadPosts();profLoad();await loadRally(true);await loadSubs();loadTicker();const seen=()=>!document.hidden;setInterval(()=>{if(seen())loadRally()},2*60*1000);setInterval(()=>{if(seen()&&RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(()=>{if(seen())loadTicker()},10*60*1000);
-  let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){hid=Date.now();return}if(hid&&Date.now()-hid>60*1000){loadRally();loadSubs()}})});setInterval(()=>{if(LIVE&&!document.hidden)loadLive()},10*60*1000);
+loadLive().then(async()=>{liveUI();if(!LIVE){renderTicker();return}mpConnect();loadPosts();profLoad();await loadRally(true);await loadSubs();checkMail(true);loadTicker();const seen=()=>!document.hidden;setInterval(()=>{if(seen()){loadRally();checkMail(false)}},2*60*1000);setInterval(()=>{if(seen()&&RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(()=>{if(seen())loadTicker()},10*60*1000);
+  let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){hid=Date.now();return}if(hid&&Date.now()-hid>60*1000){loadRally();loadSubs().then(()=>checkMail(true))}})});setInterval(()=>{if(LIVE&&!document.hidden)loadLive()},10*60*1000);
 })();
 </script>
 </body>
