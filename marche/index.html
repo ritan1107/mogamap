@@ -366,19 +366,20 @@ body.watching #chatrow{opacity:.45}
 .mybtns{display:flex;flex-direction:column;gap:8px;margin-top:10px}.mybtns .btn{width:100%;text-align:center;text-decoration:none;box-sizing:border-box}
 .newdot{display:inline-block;background:#ff4d6d;color:#fff;font-style:normal;font-size:10px;font-weight:800;border-radius:99px;padding:1px 6px;vertical-align:1px}
 .pdeco{position:absolute;pointer-events:none}.pdeco svg{display:block;overflow:visible}
-.bboard{position:absolute;cursor:pointer;transition:transform .25s}
-.bboard.flip{transform:scaleY(.05)}
+.bboard{position:absolute;cursor:pointer}
 .bboard.stand .bbp{height:54px}.bboard.stand .bbf{bottom:40px}
 .bbp{position:absolute;bottom:0;left:22%;width:5px;height:18px;background:#7a6a5c;border-radius:2px}.bbp.r{left:auto;right:22%}
 .bbf{position:absolute;left:0;right:0;top:0;bottom:14px;background:#fffdf8;border:4px solid var(--c);border-radius:10px;box-shadow:0 4px 0 rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2px 6px;line-height:1.25;overflow:hidden}
-.bbf b{font-size:12px;color:#4a3b35;white-space:nowrap}.bbf span{font-size:10px;font-weight:800;color:var(--c);white-space:nowrap}
+.bbf b{font-size:12px;color:#4a3b35;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}.bbf span{font-size:10px;font-weight:800;color:var(--c);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .bbf.spot{background:linear-gradient(#fff,#fff6ea);border-width:5px}.bbf.spot i{font-style:normal;font-size:9.5px;font-weight:800;color:#fff;background:#ff8fab;border-radius:99px;padding:1px 8px;margin-bottom:2px}
-.bbf.spot b{font-size:15px}.bbf.spot span{color:#8a776c;font-size:10px}
+.bbf.spot b{font-size:14px}.bbf.spot span{color:#8a776c;font-size:10px}
 .spotrow{margin:8px 0 6px}.spotcards{display:flex;gap:8px;overflow-x:auto}
 .spc{flex:1;min-width:96px;border:2px solid var(--c);border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;background:#fffdf8;text-align:center}
 .spc span{font-size:24px}.spc b{font-size:12px}.spc small{font-size:10px;color:#8a776c;line-height:1.3}
 .glist{display:flex;flex-direction:column;gap:6px;margin:8px 0}.glist>div{display:flex;gap:10px;align-items:center;border:2px solid var(--c);border-radius:12px;padding:8px 10px}.glist span{font-size:22px}.glist b{display:block;font-size:13px}.glist small{font-size:11px;color:#8a776c}
 .booth.hub .sign{border-color:var(--c);box-shadow:0 3px 0 var(--c)}
+.hostcard{border:3px solid #8a6ad8;border-radius:16px;padding:12px;margin:10px 0;text-align:center;display:flex;flex-direction:column;gap:2px;background:#faf7ff}.hostcard small{font-size:11px;font-weight:800;color:#8a6ad8}.hostcard b{font-size:17px}.hostcard span{font-size:11px;color:#8a776c}
+.devnote{margin-top:12px;font-size:11px;color:#8a776c;border-top:1px dashed #e8d3bd;padding-top:8px}.devnote a{color:#d0567a;font-weight:800}
 </style>
 </head>
 <body>
@@ -1604,16 +1605,15 @@ function spotLine(sh){const c=(sh.calls||[]).find(x=>!/^\d|日/.test(x))||(sh.ca
 function bboardHTML(m){return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf" style="--c:${m.c}"><b>${m.e} ${esc(m.t)}</b><span>${esc(m.s)}</span></div>`}
 function spotHTML(){const sh=spotShop();if(!sh)return'';return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf spot" style="--c:${sh.color}"><i>📣 いま応援したいお店</i><b>${esc(sh.emoji)} ${esc(sh.short||sh.name)}</b><span>${esc(spotLine(sh))}</span></div>`}
 function buildBillboards(){world.querySelectorAll('.bboard').forEach(e=>e.remove());
-  const decos=LOTS.map((L,i)=>i).filter(i=>LOTS[i].deco);const tall=decos.slice().sort((a,b)=>LOTS[b].h-LOTS[a].h)[0];let mi=0;
-  decos.forEach(i=>{const L=LOTS[i],rc=P(L.i+1,L.j+1),spot=i===tall;const w=spot?176:150,h=spot?96:70;
+  const decos=LOTS.map((L,i)=>i).filter(i=>LOTS[i].deco&&LOTS[i].deco==='オフィス').sort((a,b)=>LOTS[b].h-LOTS[a].h);let mi=0;
+  decos.forEach((i,n)=>{const L=LOTS[i],rc=P(L.i+1,L.j+1),spot=n===0;const w=spot?150:200,h=spot?82:66;
     const el=document.createElement('div');el.className='bboard'+(spot?' spotb':'');el.style.cssText=`left:${rc[0]-w/2}px;top:${rc[1]-L.h-h-6}px;width:${w}px;height:${h+14}px;z-index:${Math.round(P(L.i,L.j)[1]+(L.f==='IJ'?T2:0))+1}`;
     if(spot){el.dataset.act='spotgo';el.innerHTML=spotHTML()}else{const m=BB_MSG[mi++%BB_MSG.length];el.dataset.act='info';el.innerHTML=bboardHTML(m)}world.appendChild(el)});
   /* 広場のそばに立て看板（2つ）：街の紹介と、応援したいお店 */
   const stand=(i,j,w,h,cls,act,html)=>{const[x,y]=P(i,j);const el=document.createElement('div');el.className='bboard stand '+cls;el.dataset.act=act;el.style.cssText=`left:${x-w/2}px;top:${y-h-40}px;width:${w}px;height:${h+40}px;z-index:${Math.round(y)}`;el.innerHTML=html;world.appendChild(el);return el};
 }
-let wI=0;function welcomeHTML(){const m=BB_MSG[wI%BB_MSG.length];return bboardHTML(m)}
-setInterval(()=>{if(document.hidden)return;wI++;world.querySelectorAll('.bboard.welcome').forEach(el=>{el.classList.add('flip');setTimeout(()=>{el.innerHTML=welcomeHTML();el.classList.remove('flip')},250)})},6000);
-function spotNext(){SPOT.i++;if(typeof hubRefresh==='function')hubRefresh('spot');world.querySelectorAll('.bboard.spotb').forEach(el=>{el.classList.add('flip');setTimeout(()=>{el.innerHTML=spotHTML();el.classList.remove('flip')},250)})}
+let wI=0;
+function spotNext(){SPOT.i++;if(typeof hubRefresh==='function')hubRefresh('spot');world.querySelectorAll('.bboard.spotb').forEach(el=>{el.innerHTML=spotHTML()})}
 setInterval(()=>{if(!document.hidden)spotNext()},8000);
 ACT.spotgo=()=>{const sh=spotShop();if(!sh)return;if(me)goShop(sh.id);else openShop(sh.id)};
 {const f=renderBooths;renderBooths=function(){f();buildBillboards()}}
@@ -1629,7 +1629,8 @@ const HUB=[
  {id:'spot',i:13.0,j:16.0,c:'#ff8fab',sign:'📣 応援したいお店',kind:''},
  {id:'hq',i:16.0,j:13.0,c:'#8a6ad8',sign:'🎪 マルシェ本部',kind:'主催者'}];
 const hubById=id=>HUB.find(h=>h.id===id);
-function hubKind(h){if(h.id==='spot'){const s=spotShop();return s?`${s.emoji} ${s.short||s.name}`:'お店紹介'}if(h.id==='hq')return orgInTown()?'🟢 主催者がいます':'主催者';return h.kind}
+const EVENT_HOST={shopId:'c196b801-ea11-4891-ad7f-5e99a62a7cec',name:'ぴあのぴあの'}; // 今回のイベント主催者
+function hubKind(h){if(h.id==='spot'){const s=spotShop();return s?`${s.emoji} ${s.short||s.name}`:'お店紹介'}if(h.id==='hq')return orgInTown()?'🟢 主催者がいます':'主催 '+EVENT_HOST.name;return h.kind}
 function buildHub(){world.querySelectorAll('.booth.hub').forEach(e=>e.remove());
   HUB.forEach(h=>{const[x,y]=P(h.i,h.j);const el=document.createElement('div');el.className='booth small hub';el.dataset.act='hub';el.dataset.h=h.id;
     el.style.cssText=`left:${x-80}px;top:${y-168}px;z-index:${Math.round(y)};--c:${h.c}`;
@@ -1645,9 +1646,11 @@ function openHub(id){if(id==='news')return openInfoHub('info-news');
     return openModal(`<h2>📣 応援したいお店</h2><div class="muted">人気順ではなく、全部のお店を順番に紹介しています。気になったら、のぞいて応援してね。</div>
     <div class="spotcards" style="flex-wrap:wrap;margin-top:10px">${picks.map(s=>`<div class="spc" data-act="goshop" data-shop="${s.id}" style="--c:${s.color};min-width:44%"><span>${esc(s.emoji)}</span><b>${esc(s.short||s.name)}</b><small>${esc(spotLine(s))}</small></div>`).join('')}</div>
     <div class="acts"><button class="btn sub" data-act="spotmore">🔄 ほかのお店</button><button class="btn" data-act="search">🔍 全部のお店</button></div>`)}
-  if(id==='hq'){const o=orgInTown();openModal(`<h2>🎪 マルシェ本部</h2><div class="muted">主催者がいるお店です。わからないこと・出店の相談は、こちらへどうぞ。</div>
-    ${o?`<div class="refbox">🟢 いま主催者の <b>${esc(o.name)}</b> さんが街にいます</div><button class="btn block" data-act="talkto" data-id="${o.other}">💬 主催者と話す</button>`:''}
-    <div class="mybtns"><a class="btn" href="${LINE_URL}" target="_blank" rel="noopener">💬 主催者に相談する（LINE）↗</a><button class="btn sub" data-act="openshop" data-shop="ritan">🏪 主催者のお店をみる</button><button class="btn sub" data-act="hubrally">🎫 スタンプラリーのこと</button></div>
+  if(id==='hq'){const o=orgInTown(),host=shopById(EVENT_HOST.shopId);openModal(`<h2>🎪 マルシェ本部</h2>
+    <div class="hostcard"><small>今回のマルシェ主催</small><b>${esc(host?host.emoji:'🎪')} ${esc(host?host.name:EVENT_HOST.name)}</b><span>わからないこと・出店の相談は、主催者へどうぞ</span></div>
+    ${o?`<div class="refbox">🟢 いま主催者の <b>${esc(o.name)}</b> さんが街にいます</div><button class="btn block" data-act="talkto" data-id="${o.other}">💬 いま話しかける</button>`:''}
+    <div class="mybtns"><button class="btn" data-act="chatshop" data-shop="${EVENT_HOST.shopId}">💬 主催者にメッセージ</button><button class="btn sub" data-act="openshop" data-shop="${EVENT_HOST.shopId}">🏪 主催者のお店をみる</button><button class="btn sub" data-act="hubrally">🎫 スタンプラリーのこと</button></div>
+    <div class="devnote">🛠 このアプリの不具合・気になる点・ご希望は <b>りーたん</b> へ <a href="${LINE_URL}" target="_blank" rel="noopener">メッセージする ↗</a></div>
     <div class="muted" style="margin-top:8px">いまは「${EVENT?'🎪 マルシェの日':'🏙 いつもの街'}」です。</div>${LIVE&&isOrganizer()?eventCtlHTML():''}`)}}
 ACT.hub=d=>goHub(d.h);
 ACT.hubrally=()=>openInfoHub('info-rally');
