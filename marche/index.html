@@ -315,6 +315,21 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
 .av.otheru .nm{background:#fff;border:2px solid #b5b5b5}.av.otheru.role-comm .nm{border-color:#6f8fd6}.av.otheru.role-shop .nm{border-color:#3fb984}
 .shout{position:absolute;transform:translate(-50%,-100%);background:#fff;border:2.5px solid var(--c);border-radius:14px;padding:4px 10px;font-size:12px;font-weight:800;max-width:220px;text-align:center;line-height:1.35;cursor:pointer;box-shadow:0 3px 0 var(--c);animation:pop .25s}
 .shout::after{content:'';position:absolute;top:100%;left:50%;margin-left:-6px;border:6px solid transparent;border-top-color:var(--c)}
+.search{display:block;width:100%;margin-top:10px;border:2px solid #f3dcc2;border-radius:14px;padding:11px 14px;font:inherit;font-size:16px;outline:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0}
+.srow{display:flex;gap:10px;align-items:center;border:2px solid #f3e6d6;border-radius:14px;padding:8px 10px;margin-bottom:6px;cursor:pointer}
+.srow .em{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.srow .body{flex:1;min-width:0}.srow b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.payrule{display:grid;gap:6px;margin-top:4px;background:#f7f4ff;border-radius:14px;padding:10px 12px;font-size:12px}
+.payrule div{display:flex;gap:8px;flex-wrap:wrap}.payrule b{min-width:110px}
+.waycard.guest{border-color:#c9d6ff;background:#f4f7ff}
+.chatbox{max-height:46vh;overflow-y:auto;background:#fffaf3;border-radius:16px;padding:10px;margin-top:8px;display:flex;flex-direction:column;gap:8px}
+.cm{display:flex;flex-direction:column;align-items:flex-start;max-width:85%}.cm.me{align-self:flex-end;align-items:flex-end}
+.cb{background:#fff;border:2px solid #f3e6d6;border-radius:14px 14px 14px 4px;padding:7px 11px;font-size:14px;line-height:1.55;word-break:break-word;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.cm.me .cb{background:#ffe9ef;border-color:#ffc6d5;border-radius:14px 14px 4px 14px}
+.ct{font-size:10px;color:#b49a8a;margin-top:2px}
+.chatin{display:flex;gap:6px;margin-top:8px}.chatin input{flex:1;min-width:0;border:2px solid #f3dcc2;border-radius:99px;padding:9px 14px;font:inherit;font-size:16px;outline:none}
+.shopfoot .btn{font-size:13px}
 #toasts{position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:92%;max-width:420px}
 .toast{background:#4a3b35;color:#fff;padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;animation:tin .25s;box-shadow:0 4px 14px rgba(0,0,0,.18);text-align:center}
 @keyframes tin{from{transform:translateY(-10px);opacity:0}}
@@ -328,6 +343,7 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
   <div class="logo">もぐマップ マルシェ</div>
   <span class="tag">体験版</span>
   <div class="spacer"></div>
+  <button class="iconbtn" data-act="search" aria-label="お店をさがす">🔍</button>
   <button class="pill" data-act="book" id="pill">📮 0/3</button>
   <button class="iconbtn" data-act="info" aria-label="あそびかた">？</button>
 </header>
@@ -811,7 +827,7 @@ async function loadRally(quiet){const p=part();if(!LIVE||!p)return;
   }catch(e){console.warn(e)}
   updateBadges();renderBooths()}
 async function loadSubs(){const p=part();if(!LIVE||!p)return RL.subs;
-  try{const rows=await rpc('list_purchase_submissions_for_participant',pAuth(p));RL.subs=(rows||[]).filter(r=>!String(r.purchase_message||'').startsWith(DM_MARK)).map(r=>Object.assign({},r,{status:r.submission_status||'pending',proof_data:null}))}catch(e){console.warn(e)}
+  try{const rows=await rpc('list_purchase_submissions_for_participant',pAuth(p));const all=(rows||[]).map(r=>Object.assign({},r,{status:r.submission_status||'pending',proof_data:null}));RL.all=all;RL.subs=all.filter(r=>!String(r.purchase_message||'').startsWith(DM_MARK))}catch(e){console.warn(e)}
   return RL.subs}
 function liveStatus(id){if(RL.stampIds.has(id))return'approved';const s=RL.subs.filter(r=>r.shop_id===id);if(s.some(r=>r.status==='pending'))return'pending';if(s.some(r=>r.status==='rejected'))return'rejected';return'none'}
 function readPhoto(file){if(!file)return Promise.resolve({data:null,mime:null});if(!String(file.type).startsWith('image/'))return Promise.reject(new Error('画像ファイルを選んでください'));
@@ -830,11 +846,12 @@ async function submitLive(sh,btn){const item=($('#bt_item').value||'').trim(),no
 function shopLogin(){const l=lsGet(LKEY);return l&&l.shopId===S.shopId&&l.pin?l:null}
 async function renderShopInbox(){const box=$('#liveInbox');if(!box)return;const l=shopLogin();if(!l){box.innerHTML='<div class="muted">お店のPINで入り直すと、ここで申請を確認できます。</div><button class="btn sub small" data-act="relogin">入り直す</button>';return}
   box.innerHTML='<div class="muted">読み込み中…</div>';
-  try{const rows=(await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin})||[]).map(x=>Object.assign({},x,{id:x.submission_id||x.id,status:x.submission_status||x.status||'pending'})).filter(r=>!String(r.purchase_message||'').startsWith(DM_MARK));
-    const pend=rows.filter(r=>r.status==='pending'),done=rows.filter(r=>r.status!=='pending').slice(0,10);
+  try{const rows=(await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin})||[]).map(x=>Object.assign({},x,{id:x.submission_id||x.id,status:x.submission_status||x.status||'pending'}));
+    const dms=rows.filter(r=>String(r.purchase_message||'').startsWith(DM_MARK));const app=rows.filter(r=>!String(r.purchase_message||'').startsWith(DM_MARK));const pend=app.filter(r=>r.status==='pending'),done=app.filter(r=>r.status!=='pending').slice(0,10);
     box.innerHTML=`<h3>📮 スタンプ申請（${pend.length}件）</h3>${pend.map(r=>`<div class="req"><b>${esc(r.nickname||'参加者')}</b> さん <span class="muted">${hm(r.created_at)}${r.participant_entry_id?' ・ID '+esc(r.participant_entry_id):''}${r.uw_id?' ・UW '+esc(r.uw_id):''}</span>
       <div class="note" style="white-space:pre-line">${esc(r.purchase_message||'')}</div>${r.purchase_url?`<div class="muted">🔗 ${esc(r.purchase_url)}</div>`:''}${r.proof_data?`<img class="proof" src="${esc(r.proof_data)}" alt="写真">`:''}
-      <div class="ra"><button class="btn ok" data-act="lvapprove" data-id="${r.id}">確認OK！スタンプを押す</button><button class="btn sub small" data-act="lvreject" data-id="${r.id}">確認できない</button></div></div>`).join('')||'<div class="muted">いまは申請はありません</div>'}
+      <div class="ra"><button class="btn ok" data-act="lvapprove" data-id="${r.id}">確認OK！スタンプを押す</button><button class="btn sub small" data-act="lvreject" data-id="${r.id}">確認できない</button><button class="btn sub small" data-act="shopthread" data-id="${r.id}">💬 やりとり</button></div></div>`).join('')||'<div class="muted">いまは申請はありません</div>'}
+      <h3>💬 メッセージ（${dms.length}件）</h3>${dms.slice(0,15).map(r=>`<div class="req done" style="opacity:1;cursor:pointer" data-act="shopthread" data-id="${r.id}"><b>${esc(r.nickname||'お客様')}</b> さん <span class="muted">${hm(r.created_at)}</span><div class="muted">${esc(String(r.purchase_message||'').replace(DM_MARK,'').slice(0,40))}</div></div>`).join('')||'<div class="muted">メッセージはまだありません</div>'}
       ${done.length?`<h3>対応済み</h3>${done.map(r=>`<div class="req done">${r.status==='approved'?'✅':'⚠️'} ${esc(r.nickname||'')} さん <span class="chip ${r.status==='approved'?'approved':'rejected'}">${r.status==='approved'?'スタンプ済み':'見送り'}</span> <span class="muted">${hm(r.responded_at||r.created_at)}</span></div>`).join('')}`:''}
       <div class="muted" style="margin-top:6px">ここで押したスタンプは、もぐマップのスタンプラリーにもそのまま反映されます。</div>`}
   catch(e){box.innerHTML=`<div class="err">${String(e.message||'').includes('PIN')?'PINが変わったようです。入り直してください':'読み込めませんでした'}</div>`}}
@@ -914,9 +931,8 @@ function payHTML(sh){const p=payOf(sh),demo=!p.paypay&&!p.upay;const role=S.role
    <div class="paycard up ${p.upay?'':'off'}"><div class="ph">🤝 Uぺい<small>コミュニティ通貨</small></div>
      ${p.upay?`<button class="btn block up" data-act="upay" data-shop="${sh.id}">Uぺいで支払う（QR・金額入力）</button><div class="muted">コミュニティページで値段を見て、その金額をUぺいで支払えます。</div>`:`<div class="muted">${demo?'お店がUぺいのQRを登録すると、ここでQRを読み取って金額を入れて支払えます。':'このお店はUぺい未登録です'}</div>`}</div>
   </div>${demo?'<div class="muted" style="margin-top:6px">※ 体験版では見本として「出店する」で作ったお店にだけ設定できます。</div>':''}</div>`}
-function supportHTML(sh){const comm=sh.uw||(payOf(sh).community);const p=payOf(sh);
-  return `<div class="sec"><b>📣 コミュニティで応援する</b><div class="muted" style="margin-bottom:6px">コミュニティの「応援ポイント」で、遠くからでもこのお店を応援できます。</div>
-  <div class="links">${comm?A(comm,'🤝 コミュニティページを見る','main'):''}<a href="#" data-act="support" data-shop="${sh.id}">📣 IDを入れて応援する</a></div>${p.uwid?`<div class="muted" style="margin-top:6px">このお店のUW.ID：<b>${esc(p.uwid)}</b></div>`:''}</div>`}
+function supportHTML(sh){const comm=sh.uw||(payOf(sh).community);
+  return `<div class="sec"><b>📣 応援ポイントで応援</b><p class="muted" style="margin:0 0 8px">UWページ（コミュニティ）から、応援ポイントを送って応援できます。</p>${comm?`<a class="btn block" href="${esc(comm)}" target="_blank" rel="noopener">📣 UWページで応援する ↗</a>`:'<div class="muted">このお店はUWページがまだ登録されていません</div>'}</div>`}
 function openUpay(id,amount){const sh=shopById(id),p=payOf(sh);
   openModal(`<h2>🤝 Uぺいで支払う</h2><div class="muted">${esc(sh.emoji)} ${esc(sh.name)}</div>
   <label class="fl">お支払い金額（コミュニティページの値段を入れてね）<div class="amt"><input id="up_amt" inputmode="numeric" maxlength="7" value="${esc(amount||'')}" placeholder="0"><span>円</span></div></label>
@@ -936,7 +952,7 @@ function openSupport(id){const sh=shopById(id),p=payOf(sh),comm=sh.uw||p.communi
   <div class="acts"><button class="btn sub" data-act="openshop" data-shop="${sh.id}">もどる</button>${comm?`<a class="btn" data-act="sendsupport" data-shop="${sh.id}" href="${esc(comm)}" target="_blank" rel="noopener">📣 応援する</a>`:`<button class="btn" data-act="sendsupport" data-shop="${sh.id}">📣 応援する</button>`}</div>`)}
 
 /* ---------- お店のページ（タブで整理：買う／スタンプ／紹介／応援） ---------- */
-const shopTab={};
+const shopTab={};const JOIN_URL='';
 function stampPanel(sh){const st=stampStatus(sh.id);const real=sh.real;
   const mine=S.purchases.filter(p=>p.buyer==='me'&&p.shopId===sh.id);const applicable=!real&&st==='bought'?mine.find(p=>p.stamp==='none'||p.stamp==='rejected'):null;
   let box;
@@ -953,7 +969,9 @@ function buyPanel(sh){const p=payOf(sh);const steps=[];
   if(p.paypay||p.upay)steps.push(payHTML(sh).replace('<div class="sec"><b>💳 お支払い</b>','<div class="waycard"><div class="wh">💳 スマホで支払う</div>').replace(/<\/div>$/,'</div>'));
   if(sh.note||sh.address)steps.push(`<div class="waycard"><div class="wh">🏪 お店・イベントで買う</div>${sh.note?`<p>${esc(sh.note)}</p>`:''}${sh.address?`<div class="muted">📍 ${esc(sh.address)}</div>`:''}</div>`);
   if(!steps.length)steps.push(`<div class="waycard"><div class="wh">🏪 お店で買う</div><p>このお店は、まだネットで買えるページが登録されていません。お店やイベントでお買い物してね。</p></div>`);
-  return `<div class="flow"><span>① 買う</span>›<span>② スタンプ申請</span>›<span>③ スタンプゲット</span></div>${steps.join('')}`}
+  const member=S.role==='guest'||!S.role?`<div class="waycard guest"><div class="wh">🙋 ゲストの方へ</div><p>お買い物には会員登録（無料会員でもOK）が必要です。</p>${JOIN_URL?`<a class="btn block" href="${esc(JOIN_URL)}" target="_blank" rel="noopener">会員・無料会員になる ↗</a>`:''}</div>`:'';
+  const rule=`<div class="payrule"><div><b>🌐 遠くから</b><span>PayPay・クレジットカード</span></div><div><b>🏪 お店・イベントで</b><span>現金・ポイント・PayPay・クレジットカード</span></div></div>`;
+  return `<div class="flow"><span>① 買う</span>›<span>② スクショを送って申請</span>›<span>③ スタンプゲット</span></div>${member}${steps.join('')}${rule}`}
 function infoPanel(sh){const links=[A(sh.web,'🌐 ホームページ'),A(sh.ig,'📷 Instagram'),A(sh.line,'💬 LINE'),A(sh.fb,'📘 Facebook'),A(sh.x,'✖ X')].join('');
   return `<p class="desc">${esc(sh.desc||'')}</p>${sh.address?`<div class="muted">📍 ${esc(sh.address)}</div>`:''}${sh.phone?`<div class="muted">📞 ${esc(sh.phone)}</div>`:''}
   ${links?`<div class="sec"><b>🔗 SNS・ホームページ</b><div class="links">${links}</div></div>`:''}
@@ -972,7 +990,7 @@ function openRealShop(sh,tab){if(sh.id==='ritan')return openMyShop(sh);const st=
   ${sh.rally!==false?`<div class="spanel" data-p="stamp" ${tab==='stamp'?'':'hidden'}>${stampPanel(sh)}</div>`:''}
   <div class="spanel" data-p="info" ${tab==='info'?'':'hidden'}>${infoPanel(sh)}</div>
   <div class="spanel" data-p="cheer" ${tab==='cheer'?'':'hidden'}>${supportHTML(sh).replace('<div class="sec">','<div>')}</div>
-  <div class="shopfoot"><button class="btn sub" data-act="stab" data-t="buy">🛒 買う</button>${sh.rally!==false?foot:''}</div>`);
+  <div class="shopfoot"><button class="btn sub" data-act="stab" data-t="buy">🛒 買う</button><button class="btn sub" data-act="chatshop" data-shop="${sh.id}">💬 お店と話す</button>${sh.rally!==false?foot:''}</div>`);
   $('#modal .sheet').dataset.shop=sh.id}
 function openBought(id){const sh=shopById(id);
   openModal(`<h2>📮 スタンプを申請</h2><div class="muted">${esc(sh.emoji)} ${esc(sh.name)}</div>
@@ -1028,7 +1046,7 @@ function openOwner(){if(LIVE&&S.role==='shop'&&shopById(S.shopId)){const sh=shop
   const ps=S.purchases.filter(p=>p.shopId===sh.id);const pend=ps.filter(p=>p.stamp==='pending').sort((a,b)=>(a.applied||a.time)-(b.applied||b.time));const done=ps.filter(p=>p.stamp==='approved'||p.stamp==='rejected').sort((a,b)=>(b.decided||0)-(a.decided||0));
   const cnt=id=>S.purchases.filter(p=>p.shopId===id&&p.stamp==='pending').length;
   openModal(`<h2>🔑 出店者画面</h2>${isShop?`<div class="muted">${esc(sh.emoji)} ${esc(sh.name)} のお店の人として入っています</div><a class="mogubtn" style="background:#3fb984;box-shadow:0 4px 0 #2a8a60" href="${MOGU}shop.html" target="_blank" rel="noopener">✏️ お店の情報を編集する ↗</a><div class="muted" style="text-align:center;margin:4px 0 6px">もぐマップのお店アプリと同じ編集ページ。直すとマルシェにも反映されます。</div>`:`<div class="muted">🧪 体験モード：今はどのお店の画面も見られます。「お店の人」として入ると、自分のお店だけが表示されます。</div><button class="btn sub small" style="margin-top:6px" data-act="relogin">🏪 お店の人として入る</button>`}
-  <div class="tabs">${shops.map(s=>{const c=cnt(s.id);return `<button class="tabb ${s.id===sh.id?'on':''}" data-act="ownertab" data-shop="${s.id}">${esc(s.emoji)} ${esc(s.name)}${c?`<i>${c}</i>`:''}</button>`}).join('')}</div>
+  <label class="fl">お店をえらぶ<select id="ownSel">${shops.map(s=>{const c=cnt(s.id);return `<option value="${s.id}" ${s.id===sh.id?'selected':''}>${esc(s.emoji)} ${esc(s.name)}${c?`（申請${c}件）`:''}</option>`}).join('')}</select></label>
   <div class="tip">✅ 確認のしかた：お客さんの「買ったもの」や注文番号を、レシートや販売管理画面（U-WORDなど）と照らし合わせてから、スタンプを押してください。</div>
   <h3>スタンプ申請（${pend.length}件）</h3>
   ${pend.length?pend.map(p=>`<div class="req" id="req_${p.id}"><b>${esc(buyerName(p))}</b> さん <span class="muted">${hm(p.applied||p.time)}</span><div style="margin-top:3px">${esc(p.itemEmoji)} ${esc(p.itemName)} ${priceTxt(p.price)}</div>${p.orderNo?`<div class="ono">注文番号・メモ：<b>${esc(p.orderNo)}</b></div>`:''}${p.note?`<div class="note">💬 ${esc(p.note)}</div>`:''}<div class="ra"><button class="btn ok" data-act="approve" data-p="${p.id}">確認OK！スタンプを押す</button><button class="btn sub small" data-act="reject" data-p="${p.id}">確認できない</button></div></div>`).join(''):'<div class="muted">いまは申請はありません。お客さんとしてお買い物して申請すると、ここに届きます。</div>'}
@@ -1132,7 +1150,7 @@ $('#chatin').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){
 
 /* ---------- あそびかた ---------- */
 function openInfo(){openModal(`<h2>🍚 もぐマップ マルシェの遊びかた</h2>
-<ol class="steps"><li>地面をタップすると、アバターが歩きます。</li><li><b>お店のビルやテント・看板</b>か、黄色い「★ お店の人」マークのキャラをタップすると、そのお店の<b>加盟店ページ</b>が開きます。もぐマップの加盟店ページにもそこから飛べます。</li><li>購入ページで買い物したり、お店で買ったら「スタンプを申請」します。</li><li>お店の人が<b>出店者画面</b>（またはもぐマップのお店アプリ）で確認して、スタンプを押します。<b>もぐマップのスタンプラリーと同じスタンプ帳</b>なので、マルシェでもらったスタンプも、お店でもらったスタンプも、両方に入ります。</li><li>スタンプ${GOAL}個で1クリア！そのあとも${GOAL}個ごとにクリアが続きます。</li><li>大きなもぐマークのビル<b>「情報局」</b>と<b>「案内所」</b>で、お知らせやガイドが見られます。</li><li>歩いている<b>街の住人</b>をタップすると話しかけられます。下の入力欄に打つか、🎤ボタンで声で話すと返事をしてくれます。（住人は自動でおしゃべりするキャラです）</li></ol>
+<ol class="steps"><li>地面をタップすると、アバターが歩きます。</li><li><b>お店のビルやテント・看板</b>をタップするか、上の🔍でさがすと、そのお店のページが開きます。「💬 お店と話す」でお店の人とメッセージもできます。</li><li>購入ページで買い物したり、お店で買ったら「スタンプを申請」します。</li><li>お店の人が<b>出店者画面</b>（またはもぐマップのお店アプリ）で確認して、スタンプを押します。<b>もぐマップのスタンプラリーと同じスタンプ帳</b>なので、マルシェでもらったスタンプも、お店でもらったスタンプも、両方に入ります。</li><li>スタンプ${GOAL}個で1クリア！そのあとも${GOAL}個ごとにクリアが続きます。</li><li>大きなもぐマークのビル<b>「情報局」</b>と<b>「案内所」</b>で、お知らせやガイドが見られます。</li><li>歩いている<b>街の住人</b>をタップすると話しかけられます。下の入力欄に打つか、🎤ボタンで声で話すと返事をしてくれます。（住人は自動でおしゃべりするキャラです）</li></ol>
 <div class="future"><b>本番版で追加できること</b><br>・もぐマップのお店データ・スタンプ帳とリアルタイムで連動<br>・みんなが同じ街にいて、リアルタイムで動く・話せる<br>・お店ごとの暗証番号ログイン、お店の人のキャラを自分で着せかえ<br>・開催日だけ開く「マルシェの日」、イベント告知</div>
 <div class="muted" style="margin-top:10px">※ お店の情報は、もぐマップに公開中のスタンプラリー参加店（11/18時点）です。体験版のスタンプや購入履歴は、このブラウザの中だけに保存されます。</div>
 <div class="acts"><button class="btn sub small" data-act="reset">お店・スタンプをリセット（キャラは残ります）</button><button class="btn" data-act="close">街にもどる</button></div>`)}
@@ -1149,12 +1167,11 @@ const ACT={
   saveav:d=>{const nm=($('#avname').value||'').trim()||(S.role==='shop'?'お店の人':'ゲスト');S.avatar=Object.assign({},draft);S.name=nm;save();
     if(me){me.av=S.avatar;me.name=nm;me.el.innerHTML=avatarSVG(S.avatar)+`<div class="nm"></div>`;setMeLabel()}else startMe();mpTrack(true);
     renderBooths();closeModal();
-    if(d.first){setTimeout(()=>say(me,'こんにちは！'),300);toast('お店の看板か「★お店の人」をタップすると、加盟店ページが開くよ！',4500)}else toast('着せかえしました ✨')},
+    if(d.first){setTimeout(()=>say(me,'こんにちは！'),300);toast('お店の看板をタップするとお店に行けます。🔍でお店をさがせます',4500)}else toast('着せかえしました ✨')},
   goshop:d=>{if(me)goShop(d.shop)},
   infohub:d=>{if(me)goInfo(d.id)},
   bought:d=>openBought(d.shop),
   upay:d=>openUpay(d.shop),
-  support:d=>openSupport(d.shop),
   paid:d=>{const sh=shopById(d.shop);let amt='';const el=$('#up_amt');if(el){amt=String(el.value).replace(/[^\d]/g,'');if(!amt){$('#up_err').textContent='金額を入れてください';return}}
     if(sh.real){openBought(sh.id);setTimeout(()=>{const i=$('#bt_item'),n=$('#bt_no');if(i)i.value=`${d.m}で支払い${amt?' '+Number(amt).toLocaleString()+'円':''}`;if(n)n.placeholder=`${d.m}の支払い番号など`},30)}
     else{const p=recordPurchase(sh,{name:`${d.m}で支払い`,emoji:sh.emoji,price:Number(amt)||0},null);openApply(p.id)}},
@@ -1214,6 +1231,14 @@ const ACT={
   plogin:(d,b)=>loginParticipant(b),
   stab:(d,b)=>{const sheet=b.closest('.sheet'),id=sheet&&sheet.dataset.shop;if(!id)return;shopTab[id]=d.t;sheet.querySelectorAll('.stabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===d.t));sheet.querySelectorAll('.spanel').forEach(x=>x.hidden=x.dataset.p!==d.t);const t=sheet.querySelector('.stabs');if(t)sheet.scrollTo({top:t.offsetTop-10,behavior:'smooth'})},
   otheru:d=>{const id=d.id;if(MP.hide.has(id)){MP.hide.delete(id);toast('このひとの吹き出しを表示します')}else{MP.hide.add(id);toast('このひとの吹き出しを非表示にしました（もう一度タップで戻ります）')}lsSet('marche_hidechat',[...MP.hide])},
+  search:()=>openSearch(),
+  sfilter:d=>{searchF=d.k;document.querySelectorAll('.chips .tabb').forEach(b=>b.classList.toggle('on',b.dataset.k===d.k));renderSearch()},
+  chatshop:d=>openChatShop(d.shop),
+  sendmsg:(d,b)=>sendMsg(d.shop,b),
+  redeem:(d,b)=>redeemTicket(d.t,b),
+  shopthread:d=>openShopThread(d.id),
+  shopreply:(d,b)=>shopReply(d.id,($('#smsg').value||'').trim(),b),
+  sendqr:(d,b)=>sendQR(d.id,d.n,b),
   role:d=>entryForm(d.r),
   entergo:(d,b)=>enterGo(b),
   relogin:()=>openEntry(false),
@@ -1256,6 +1281,57 @@ function setBots(nOthers){const want=nOthers===0?NPCS.length:nOthers<=2?(botTarg
   ents.filter(e=>e.npc).forEach((e,i)=>{const off=i>=want;if(off!==!!e.off){e.off=off;e.el.style.display=off?'none':''}})}
 function mpChat(p){if(!p||MP.hide.has(p.id))return;const e=ents.find(x=>x.other===p.id);if(!e)return;const t=String(p.t||'').slice(0,40);say(e,t);logChat(e.name,t)}
 function mpSend(t){if(MP.ch)MP.ch.send({type:'broadcast',event:'chat',payload:{id:MP.id,t}})}
+
+/* ---------- お店と1対1のメッセージ（もぐマップのメッセージと同じ） ---------- */
+const TK_RE=/[?&]rt=([A-Za-z0-9_-]{6,})/;
+async function loadMsgsP(){const p=part();if(!LIVE||!p)return[];try{return(await rpc('list_rally_messages_for_participant',pAuth(p)))||[]}catch(e){return[]}}
+function bubbleHTML(mine,text,time,extra){const tk=String(text||'').match(TK_RE);
+  return `<div class="cm ${mine?'me':''}"><div class="cb">${esc(String(text||'').replace(DM_MARK,'')).replace(/\n/g,'<br>')}${extra||''}${tk&&!mine?`<button class="btn small ok" data-act="redeem" data-t="${esc(tk[1])}">🎫 スタンプを受け取る</button>`:''}</div><div class="ct">${hm(time)}</div></div>`}
+async function openChatShop(id,silent){const sh=shopById(id);if(!sh)return;
+  if(!LIVE||!isReal(id)){openModal(`<h2>💬 ${esc(sh.name)}</h2><p>お店とのメッセージは、公開版（もぐマップと同じ場所）で使えます。</p>`);return}
+  const p=part();const threads=(RL.all||[]).filter(r=>r.shop_id===id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));const ids=new Set(threads.map(t=>t.submission_id));
+  const msgs=(await loadMsgsP()).filter(m=>ids.has(m.submission_id));
+  const items=[];threads.forEach(t=>{const dm=String(t.purchase_message||'').startsWith(DM_MARK);items.push({t:t.created_at,h:bubbleHTML(true,dm?t.purchase_message:'📮 スタンプ申請\n'+String(t.purchase_message||'').replace('🏪マルシェから／',''),t.created_at,dm?'':`<span class="chip ${t.status==='approved'?'approved':t.status==='pending'?'pending':'rejected'}">${t.status==='approved'?'スタンプ済み':t.status==='pending'?'確認待ち':'見送り'}</span>`)})});
+  msgs.forEach(m=>items.push({t:m.created_at,h:bubbleHTML(m.sender_type!=='shop',m.message_body,m.created_at)}));items.sort((a,b)=>new Date(a.t)-new Date(b.t));
+  const html=`<h2>💬 ${esc(sh.emoji)} ${esc(sh.name)}</h2><div class="muted">お店の人とあなただけのメッセージです。</div>
+    <div class="chatbox" id="chatbox" data-shop="${id}">${items.map(x=>x.h).join('')||'<div class="muted" style="text-align:center;padding:20px 0">質問や、買ったもののスクショを送ってみよう</div>'}</div>
+    <div class="chatin"><button class="btn sub" data-act="bought" data-shop="${id}" title="購入のスクショを送ってスタンプ申請">📷</button><input id="cmsg" maxlength="300" placeholder="メッセージを入力…"><button class="btn" data-act="sendmsg" data-shop="${id}">送る</button></div>
+    <div class="muted" style="margin-top:4px">📷 = 購入ページのスクショを送ってスタンプ申請。お店が確認するとスタンプが押されます。</div>`;
+  if(silent&&$('#chatbox')){const cb=$('#chatbox');const atBottom=cb.scrollTop+cb.clientHeight>=cb.scrollHeight-20;const v=$('#cmsg').value;$('#modal .sheet').innerHTML=`<button class="x" data-act="close" aria-label="閉じる">✕</button>`+html;$('#cmsg').value=v;if(atBottom)$('#chatbox').scrollTop=1e6}
+  else{openModal(html);$('#chatbox').scrollTop=1e6}
+  clearTimeout(RL.chatT);RL.chatT=setTimeout(async()=>{if($('#chatbox')&&$('#chatbox').dataset.shop===id){await loadSubs();openChatShop(id,true)}},15000)}
+async function sendMsg(id,btn){const t=($('#cmsg').value||'').trim();if(!t)return;btn.disabled=true;
+  try{const p=await ensureParticipant();const dm=(RL.all||[]).filter(r=>r.shop_id===id&&String(r.purchase_message||'').startsWith(DM_MARK)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
+    if(dm)await rpc('send_rally_message_from_participant',Object.assign(pAuth(p),{p_submission_id:dm.submission_id,p_message:t}));
+    else{const r=await rpc('submit_purchase_proof',Object.assign(pAuth(p),{p_shop_id:id,p_uw_id:p.uwId||null,p_purchase_message:DM_MARK+t,p_purchase_url:null,p_proof_data:null,p_proof_mime:null}));const x=r&&r[0];if(x&&x.ok===false)throw new Error(x.message)}
+    $('#cmsg').value='';await loadSubs();openChatShop(id,true)}catch(e){toast('送れませんでした')}finally{btn.disabled=false}}
+async function redeemTicket(tk,btn){btn.disabled=true;try{const p=await ensureParticipant();const x=((await rpc('mogu_redeem_remote_ticket',Object.assign(pAuth(p),{p_ticket:tk})))||[])[0];
+  if(!x||!x.ok){toast((x&&x.message)||'このスタンプQRは使えません（1回だけ使えます）');return}await loadRally();toast(x.already?`${x.shop_name||''} のスタンプはもう押してあります`:`🎉 ${x.shop_name||''} のスタンプが押されました！`,4500);confetti()}catch(e){toast('受け取れませんでした')}finally{btn.disabled=false}}
+/* お店側：お客様とのやりとり */
+async function openShopThread(subId){const l=shopLogin();if(!l)return;
+  const [rows,msgs]=await Promise.all([rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin}),rpc('list_rally_messages_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin}).catch(()=>[])]);
+  const r=(rows||[]).find(x=>(x.submission_id||x.id)===subId);if(!r)return toast('見つかりませんでした');const st=r.submission_status||r.status||'pending',dm=String(r.purchase_message||'').startsWith(DM_MARK);
+  const items=[{t:r.created_at,h:bubbleHTML(false,(dm?'':'📮 スタンプ申請\n')+String(r.purchase_message||'').replace('🏪マルシェから／',''),r.created_at,r.proof_data?`<img class="proof" src="${esc(r.proof_data)}" alt="スクショ">`:'')}];
+  (msgs||[]).filter(m=>m.submission_id===subId).forEach(m=>items.push({t:m.created_at,h:bubbleHTML(m.sender_type==='shop',m.message_body,m.created_at)}));items.sort((a,b)=>new Date(a.t)-new Date(b.t));
+  openModal(`<h2>💬 ${esc(r.nickname||'お客様')} さん</h2><div class="muted">${r.participant_entry_id?'参加者ID '+esc(r.participant_entry_id):''}${r.uw_id?' ・UW.ID '+esc(r.uw_id):''}</div>
+    <div class="chatbox" id="chatbox">${items.map(x=>x.h).join('')}</div>
+    ${!dm&&st==='pending'?`<div class="ra" style="margin:8px 0"><button class="btn ok" data-act="lvapprove" data-id="${subId}">確認OK！スタンプを押す</button><button class="btn sub small" data-act="lvreject" data-id="${subId}">確認できない</button></div>`:''}
+    <div class="chatin"><input id="smsg" maxlength="300" placeholder="お返事を入力…"><button class="btn" data-act="shopreply" data-id="${subId}">送る</button></div>
+    <div class="acts" style="margin-top:8px"><button class="btn sub small" data-act="sendqr" data-id="${subId}" data-n="${esc(r.nickname||'')}">🎫 スタンプQRを送る（1回だけ使える）</button><button class="btn sub small" data-act="owner">← 一覧へ</button></div>`);$('#chatbox').scrollTop=1e6}
+async function shopReply(subId,text,btn){const l=shopLogin();if(!l||!text)return;btn&&(btn.disabled=true);try{await rpc('send_rally_message_from_shop',{p_shop_id:l.shopId,p_shop_pin:l.pin,p_submission_id:subId,p_message:text});openShopThread(subId)}catch(e){toast('送れませんでした')}finally{btn&&(btn.disabled=false)}}
+async function sendQR(subId,name,btn){const l=shopLogin();if(!l)return;btn.disabled=true;
+  try{const x=((await rpc('mogu_create_remote_ticket',{p_shop_id:l.shopId,p_shop_pin:l.pin,p_note:'マルシェ：'+(name||''),p_hours:168}))||[])[0];if(!x||!x.token)throw new Error();
+    await shopReply(subId,`🎫 スタンプQRをお送りします（1回だけ使えます・7日間有効）\n${MOGU}?rt=${x.token}`,null);toast('スタンプQRを送りました')}catch(e){toast('送れませんでした');btn.disabled=false}}
+
+/* ---------- お店をさがす ---------- */
+let searchF='すべて';
+const SF={'すべて':()=>true,'カフェ・スイーツ':s=>/カフェ|珈琲|コーヒー|スイーツ|ソフト|パン/.test(s.tag+s.name+s.desc),'ごはん':s=>/ランチ|食|定食|発酵|麹|肉|海鮮/.test(s.tag+s.name+s.desc),'バー・夜':s=>/バー|BAR|酒|スナック|シャンパン/.test(s.tag+s.name),'占い・癒し':s=>/占い|整体|ヒーリング|リセッター|癒|悩み/.test(s.tag+s.name+s.desc),'通販OK':s=>s.online||!!s.buy,'スタンプまだ':s=>s.rally!==false&&!myStamped().has(s.id)};
+function openSearch(){openModal(`<h2>🔍 お店をさがす</h2><input id="sq" class="search" placeholder="お店の名前・ジャンルで検索" autocomplete="off"><div class="chips">${Object.keys(SF).map(k=>`<button class="tabb ${k===searchF?'on':''}" data-act="sfilter" data-k="${k}">${k}</button>`).join('')}</div><div id="slist"></div>`);renderSearch()}
+function renderSearch(){const el=$('#slist');if(!el)return;const q=($('#sq').value||'').trim().toLowerCase(),got=myStamped();
+  const list=allShops().filter(s=>LOTS[s.lot]&&SF[searchF](s)&&(!q||(s.name+s.tag+(s.desc||'')).toLowerCase().includes(q)));
+  el.innerHTML=list.map(s=>`<div class="srow" data-act="openshop" data-shop="${s.id}"><div class="em" style="background:${mix(s.color,'#ffffff',.75)}">${esc(s.emoji)}</div><div class="body"><b>${esc(s.name)}</b><div class="muted">${esc(s.tag||'')}${s.online?' ・📦通販OK':''}${got.has(s.id)?' ・🎉スタンプ済':''}</div></div><button class="btn sub small" data-act="goshop" data-shop="${s.id}">🚶 行く</button></div>`).join('')||'<div class="muted" style="padding:16px 0;text-align:center">見つかりませんでした</div>'}
+document.addEventListener('input',e=>{if(e.target.id==='sq')renderSearch()});
+document.addEventListener('change',e=>{if(e.target.id==='ownSel'){ownerShop=e.target.value;openOwner()}});
 
 /* ---------- 起動 ---------- */
 function startMe(){const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
