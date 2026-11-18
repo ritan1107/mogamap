@@ -999,7 +999,7 @@ function buyPanel(sh){if(isGuest())return guestBuyPanel(sh);const p=payOf(sh);co
   if(sh.note||sh.address)steps.push(`<div class="waycard"><div class="wh">🏪 お店・イベントで買う</div>${sh.note?`<p>${esc(sh.note)}</p>`:''}${sh.address?`<div class="muted">📍 ${esc(sh.address)}</div>`:''}</div>`);
   if(!steps.length)steps.push(`<div class="waycard"><div class="wh">🏪 お店で買う</div><p>このお店は、まだネットで買えるページが登録されていません。お店やイベントでお買い物してね。</p></div>`);
   const member=S.role==='guest'||!S.role?`<div class="waycard guest"><div class="wh">🙋 ゲストの方へ</div><p>お買い物には会員登録（無料会員でもOK）が必要です。</p>${JOIN_URL?`<a class="btn block" href="${esc(JOIN_URL)}" target="_blank" rel="noopener">会員・無料会員になる ↗</a>`:''}</div>`:'';
-  const rule=`<div class="payrule"><div><b>🌐 遠くから</b><span>PayPay・クレジットカード</span></div><div><b>🏪 お店・イベントで</b><span>現金・ポイント・PayPay・クレジットカード</span></div></div>`;
+  const rule=`<div class="payrule"><div><b>💳 お支払い方法について</b><span>お支払い方法はお店によって異なります。各お店のコミュニティページでご確認ください。</span></div></div>`;
   return `<div class="flow"><span>① 買う</span>›<span>② スクショを送って申請</span>›<span>③ スタンプゲット</span></div>${member}${steps.join('')}${rule}`}
 function infoPanel(sh){const links=[A(sh.web,'🌐 ホームページ'),A(sh.ig,'📷 Instagram'),A(sh.line,'💬 LINE'),A(sh.fb,'📘 Facebook'),A(sh.x,'✖ X')].join('');
   return `<p class="desc">${esc(sh.desc||'')}</p>${sh.address?`<div class="muted">📍 ${esc(sh.address)}</div>`:''}${sh.phone?`<div class="muted">📞 ${esc(sh.phone)}</div>`:''}
@@ -1511,7 +1511,7 @@ ACT.savecode=()=>openModal(`<h2>🔑 キャラの保存コード</h2><div class=
 /* --- あそびかた（いまの仕組みに合わせて） --- */
 function openInfo(){openModal(`<h2>🍚 あそびかた</h2>
 <ol class="steps"><li><b>歩く</b>：地面をタップ。お店の看板をタップすると、お店のページが開きます。</li>
-<li><b>買う</b>：お店の「🛒 買う」から。お買い物はコミュニティの人だけです（ゲストさんは見学とおしゃべり）。遠くからはPayPay・クレジット、お店では現金・ポイントも使えます。</li>
+<li><b>買う</b>：お店の「🛒 買う」から。お買い物はコミュニティの人だけです（ゲストさんは見学とおしゃべり）。お支払い方法はお店によって異なるので、各お店のコミュニティページでご確認ください。</li>
 <li><b>スタンプ</b>：買ったら「📮 スタンプ申請」で購入画面のスクショを送ります。お店が確認するとスタンプが押されます。もぐマップのスタンプ帳と同じです。</li>
 <li><b>話す</b>：下の入力欄でみんなと。人をタップすると、ふたりやグループで話せます（周りには見えず、保存もされません）。</li>
 <li><b>キャラ</b>：👤マイページで着せかえ。登録した人は自動で保存され、別の端末でも参加者IDとあいことばで入れます。</li></ol>
