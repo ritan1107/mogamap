@@ -287,6 +287,11 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
 .codebox{margin-top:12px;border:2px dashed #f3dcc2;border-radius:14px;padding:10px;background:#fffaf3}
 .codebox .code{font-family:ui-monospace,Menlo,monospace;font-weight:800;font-size:14px;margin:6px 0;word-break:break-all;user-select:all;-webkit-user-select:all;background:#fff;border-radius:8px;padding:6px 8px}
 .codein{margin-top:10px;font-size:13px;font-weight:800;color:#7a6258}.codein summary{cursor:pointer}
+#ticker{flex:none;height:26px;overflow:hidden;background:#fff7e0;border-bottom:1px solid #f3dcc2;font-size:12px;font-weight:800;color:#7a5a12;white-space:nowrap;position:relative}
+#ticker .tk-track{display:inline-block;padding-left:100%;animation:tk var(--dur,40s) linear infinite;line-height:26px}
+#ticker span{margin-right:48px}
+@keyframes tk{to{transform:translateX(-100%)}}
+.proof{display:block;max-width:100%;max-height:220px;border-radius:10px;margin-top:6px;border:2px solid #f3e6d6}
 #toasts{position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:92%;max-width:420px}
 .toast{background:#4a3b35;color:#fff;padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;animation:tin .25s;box-shadow:0 4px 14px rgba(0,0,0,.18);text-align:center}
 @keyframes tin{from{transform:translateY(-10px);opacity:0}}
@@ -304,7 +309,7 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
   <button class="pill" data-act="book" id="pill">📮 0/3</button>
   <button class="iconbtn" data-act="info" aria-label="あそびかた">？</button>
 </header>
-<div id="viewport"><div id="wrap"><div id="world"><div id="bg"></div></div></div></div>
+<div id="ticker"></div><div id="viewport"><div id="wrap"><div id="world"><div id="bg"></div></div></div></div>
 <div id="chatrow">
   <input id="chatin" maxlength="40" placeholder="チャットを入力…" autocomplete="off">
   <button class="btn sub mic" data-act="mic" aria-label="音声入力">🎤</button>
@@ -561,12 +566,12 @@ const allShops=()=>DEFAULT_SHOPS.concat(S.myShops);
 const shopById=id=>allShops().find(s=>s.id===id);
 const infoById=id=>INFOS.find(s=>s.id===id);
 const keeperOf=sh=>(sh.owner==='me'||(S.role==='shop'&&S.shopId===sh.id&&S.avatar))?(S.avatar||sh.keeper):sh.keeper;
-const myStamped=()=>new Set(S.purchases.filter(p=>p.buyer==='me'&&p.stamp==='approved').map(p=>p.shopId));
+const myStamped=()=>{const s=new Set(S.purchases.filter(p=>p.buyer==='me'&&p.stamp==='approved'&&!(LIVE&&isReal(p.shopId))).map(p=>p.shopId));if(LIVE)RL.stampIds.forEach(i=>s.add(i));return s};
 const buyerName=p=>p.buyer==='me'?(S.name||'あなた'):p.buyer;
 const usedLot=i=>!!LOTS[i].deco||allShops().some(s=>s.lot===i)||INFOS.some(s=>s.lot===i);
 const freeLots=()=>LOTS.map((l,i)=>i).filter(i=>!usedLot(i)).sort((a,b)=>(LOTS[a].k==='tent'?0:1)-(LOTS[b].k==='tent'?0:1));
 const priceTxt=n=>Number(n)>0?yen(n):'';
-function stampStatus(id){const ps=S.purchases.filter(p=>p.buyer==='me'&&p.shopId===id);
+function stampStatus(id){if(LIVE&&isReal(id)){const v=liveStatus(id);return v==='rejected'?'bought':v}const ps=S.purchases.filter(p=>p.buyer==='me'&&p.shopId===id);
   if(ps.some(p=>p.stamp==='approved'))return'approved';if(ps.some(p=>p.stamp==='pending'))return'pending';if(ps.some(p=>p.stamp==='none'||p.stamp==='rejected'))return'bought';return'none'}
 const ST_LABEL={none:'まだ（お買い物でもらえます）',bought:'申請できます！',pending:'お店の確認待ち…',approved:'ゲット済み！',rejected:'確認できませんでした'};
 
@@ -741,6 +746,7 @@ let entryRole=null;
 function openEntry(first){entryRole=null;
   openModal(`<h2>🍚 もぐマップ マルシェへようこそ</h2><div class="muted">どなたとして入りますか？</div>
   <div class="roles">${Object.entries(ROLE).map(([k,v])=>`<button class="role ${k}" data-act="role" data-r="${k}"><span>${v[0]}</span><b>${v[1]}</b><small>${k==='shop'?'出店しているお店・加盟店の方（PINで入ります）':k==='comm'?'UW.ID をお持ちの方（Uぺい・応援ポイントも使えます）':'登録なしでOK。PayPayでお買い物・スタンプ集めもできます'}</small></button>`).join('')}</div>
+  ${LIVE?(part()?`<div class="tip" style="margin-top:10px">📮 もぐマップのスタンプラリーとつながっています（参加者ID ${esc(part().entryId||'')}）</div>`:`<details class="codein"><summary>📮 もぐマップのスタンプラリーに参加済みの方</summary><div class="muted" style="margin-top:4px">マイページの参加者ID（5桁）とあいことば（4桁）で、同じスタンプ帳につながります。</div><div class="amt" style="margin-top:6px"><input id="lg_id" inputmode="numeric" maxlength="5" placeholder="参加者ID" style="font-size:16px!important;text-align:left"><input id="lg_pin" type="password" inputmode="numeric" maxlength="4" placeholder="あいことば" style="font-size:16px!important;text-align:left"><button class="btn small" data-act="plogin">つなぐ</button></div><div class="err" id="lg_err"></div></details>`):''}
   <details class="codein"><summary>🔑 キャラの保存コードを持っている方</summary><div class="amt" style="margin-top:6px"><input id="en_code" placeholder="MOGU-…" style="font-size:15px!important;font-weight:700;text-align:left"><button class="btn small" data-act="usecode">使う</button></div><div class="err" id="code_err"></div></details>
   <div id="entryForm"></div>${first?'':'<div class="acts"><button class="btn sub" data-act="close">やめる</button></div>'}`,first)}
 function entryForm(r){entryRole=r;document.querySelectorAll('.role').forEach(b=>b.classList.toggle('on',b.dataset.r===r));const f=$('#entryForm');const p=lsGet(PKEY);
@@ -763,6 +769,75 @@ async function enterGo(btn){const r=entryRole,err=t=>{$('#en_err').textContent=t
   save();renderBooths();setMeLabel();
   if(!S.avatar)openAvatar(true);else{if(!me)startMe();closeModal();toast(`${ROLE[S.role][0]} ${ROLE[S.role][1]}として入りました`)}
   }catch(e){err(String(e.message||e).includes('UW')?'UW.IDを確認してください':'うまくいきませんでした。もう一度お試しください')}finally{btn.disabled=false}}
+
+/* ---------- スタンプラリー連動（もぐマップと同じ参加者・同じスタンプ帳） ---------- */
+const RL={stampIds:new Set(),progress:null,subs:[],clears:[],ticker:null,posts:null,loaded:false};
+const PER_CLEAR=3,DM_MARK='【DM・質問】';
+const part=()=>{const p=lsGet(PKEY);return p&&p.id&&p.token?p:null};
+const pAuth=p=>({p_participant_id:p.id,p_participant_token:p.token});
+const isReal=id=>{const s=shopById(id);return!!(s&&s.real&&s.id!=='ritan')};
+async function ensureParticipant(){let p=part();if(p)return p;
+  const rows=await rpc('start_rally_with_uwid',{p_nickname:String(S.name||'ゲスト').slice(0,20),p_uw_id:S.role==='comm'&&S.uw?S.uw:null}),x=rows&&rows[0];
+  if(!x)throw new Error('参加登録できませんでした');
+  p={id:x.id||x.participant_id,token:x.participant_token,nickname:x.nickname||S.name,entryId:x.participant_entry_id||'',uwId:x.uw_id||null,style:'onsite'};lsSet(PKEY,p);return p}
+async function loadRally(quiet){const p=part();if(!LIVE||!p)return;
+  try{const [pr,ids]=await Promise.all([rpc('get_rally_progress',pAuth(p)),rpc('get_participant_stamp_ids',pAuth(p))]);
+    const before=new Set(RL.stampIds),next=new Set((ids||[]).map(x=>x.shop_id));RL.progress=(pr&&pr[0])||null;
+    if(RL.loaded&&!quiet){const fresh=[...next].filter(i=>!before.has(i));fresh.forEach(i=>{S.newStamps.push(i);const sh=shopById(i);toast(`📮 ${sh?sh.name:'お店'} のスタンプが押されました！`,4500)});if(fresh.length)save()}
+    RL.stampIds=next;RL.loaded=true;
+    if(!p.entryId){try{const er=await rpc('get_participant_entry_id',pAuth(p));if(er&&er[0]&&er[0].participant_entry_id){p.entryId=er[0].participant_entry_id;lsSet(PKEY,p)}}catch(e){}}
+    try{const rows=await rpc('mogu_record_clears',Object.assign(pAuth(p),{p_per_clear:PER_CLEAR}));const was=RL.clears.length;RL.clears=rows||[];if(was&&RL.clears.length>was)setTimeout(confetti,300)}catch(e){RL.clears=Array.from({length:Math.floor(RL.stampIds.size/PER_CLEAR)},(_,i)=>({clear_no:i+1}))}
+  }catch(e){console.warn(e)}
+  updateBadges();renderBooths()}
+async function loadSubs(){const p=part();if(!LIVE||!p)return RL.subs;
+  try{const rows=await rpc('list_purchase_submissions_for_participant',pAuth(p));RL.subs=(rows||[]).filter(r=>!String(r.purchase_message||'').startsWith(DM_MARK)).map(r=>Object.assign({},r,{status:r.submission_status||'pending',proof_data:null}))}catch(e){console.warn(e)}
+  return RL.subs}
+function liveStatus(id){if(RL.stampIds.has(id))return'approved';const s=RL.subs.filter(r=>r.shop_id===id);if(s.some(r=>r.status==='pending'))return'pending';if(s.some(r=>r.status==='rejected'))return'rejected';return'none'}
+function readPhoto(file){if(!file)return Promise.resolve({data:null,mime:null});if(!String(file.type).startsWith('image/'))return Promise.reject(new Error('画像ファイルを選んでください'));
+  return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=()=>rej(new Error('写真を読み込めませんでした'));fr.onload=()=>{const img=new Image();img.onerror=()=>rej(new Error('写真を読み込めませんでした'));
+    img.onload=()=>{const k=Math.min(1,900/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res({data:c.toDataURL('image/jpeg',.72),mime:'image/jpeg'})};img.src=fr.result};fr.readAsDataURL(file)})}
+async function submitLive(sh,btn){const item=($('#bt_item').value||'').trim(),no=($('#bt_no').value||'').trim(),msg=($('#bt_msg').value||'').trim(),file=($('#bt_photo')||{}).files&&$('#bt_photo').files[0];
+  const st=$('#bt_err');if(!item&&!no&&!file)return st.textContent='買ったもの・注文番号・写真のどれかを入れてください';btn.disabled=true;st.textContent='送信中…';
+  try{const p=await ensureParticipant();const ph=await readPhoto(file);
+    const text=['🏪マルシェから',item&&'買ったもの：'+item,no&&'注文番号・メモ：'+no,msg&&'ひとこと：'+msg].filter(Boolean).join('／');
+    const r=await rpc('submit_purchase_proof',Object.assign(pAuth(p),{p_shop_id:sh.id,p_uw_id:p.uwId||(S.role==='comm'?S.uw:null)||null,p_purchase_message:text,p_purchase_url:null,p_proof_data:ph.data,p_proof_mime:ph.mime}));
+    const x=r&&r[0];if(x&&x.ok===false)throw new Error(x.message||'送れませんでした');
+    await loadSubs();await loadRally(true);openShop(sh.id);const k=ents.find(e=>e.shopId===sh.id);if(k)say(k,'ありがとうございます！確認しますね');
+    toast('📮 お店に送りました！もぐマップのスタンプラリーにも届いています',4500)}
+  catch(e){const m=String(e.message||e);st.textContent=m.includes('スタンプラリー')?m.replace(/^.*?(スタンプラリー)/,'$1'):m.includes('already')||m.includes('すでに')?'このお店にはすでに申請済みです':'送れませんでした。少し待ってもう一度お試しください';btn.disabled=false}}
+/* ---- お店の人：本物の申請を確認してスタンプを押す ---- */
+function shopLogin(){const l=lsGet(LKEY);return l&&l.shopId===S.shopId&&l.pin?l:null}
+async function renderShopInbox(){const box=$('#liveInbox');if(!box)return;const l=shopLogin();if(!l){box.innerHTML='<div class="muted">お店のPINで入り直すと、ここで申請を確認できます。</div><button class="btn sub small" data-act="relogin">入り直す</button>';return}
+  box.innerHTML='<div class="muted">読み込み中…</div>';
+  try{const rows=(await rpc('list_purchase_submissions_for_shop_pin',{p_shop_id:l.shopId,p_shop_pin:l.pin})||[]).map(x=>Object.assign({},x,{id:x.submission_id||x.id,status:x.submission_status||x.status||'pending'})).filter(r=>!String(r.purchase_message||'').startsWith(DM_MARK));
+    const pend=rows.filter(r=>r.status==='pending'),done=rows.filter(r=>r.status!=='pending').slice(0,10);
+    box.innerHTML=`<h3>📮 スタンプ申請（${pend.length}件）</h3>${pend.map(r=>`<div class="req"><b>${esc(r.nickname||'参加者')}</b> さん <span class="muted">${hm(r.created_at)}${r.participant_entry_id?' ・ID '+esc(r.participant_entry_id):''}${r.uw_id?' ・UW '+esc(r.uw_id):''}</span>
+      <div class="note" style="white-space:pre-line">${esc(r.purchase_message||'')}</div>${r.purchase_url?`<div class="muted">🔗 ${esc(r.purchase_url)}</div>`:''}${r.proof_data?`<img class="proof" src="${esc(r.proof_data)}" alt="写真">`:''}
+      <div class="ra"><button class="btn ok" data-act="lvapprove" data-id="${r.id}">確認OK！スタンプを押す</button><button class="btn sub small" data-act="lvreject" data-id="${r.id}">確認できない</button></div></div>`).join('')||'<div class="muted">いまは申請はありません</div>'}
+      ${done.length?`<h3>対応済み</h3>${done.map(r=>`<div class="req done">${r.status==='approved'?'✅':'⚠️'} ${esc(r.nickname||'')} さん <span class="chip ${r.status==='approved'?'approved':'rejected'}">${r.status==='approved'?'スタンプ済み':'見送り'}</span> <span class="muted">${hm(r.responded_at||r.created_at)}</span></div>`).join('')}`:''}
+      <div class="muted" style="margin-top:6px">ここで押したスタンプは、もぐマップのスタンプラリーにもそのまま反映されます。</div>`}
+  catch(e){box.innerHTML=`<div class="err">${String(e.message||'').includes('PIN')?'PINが変わったようです。入り直してください':'読み込めませんでした'}</div>`}}
+async function resolveLive(id,action,btn){const l=shopLogin();if(!l)return;btn.disabled=true;const msg=action==='approve'?'マルシェで確認しました！ありがとうございます':'確認できませんでした';
+  try{const r=await rpc('resolve_purchase_submission',{p_shop_id:l.shopId,p_shop_pin:l.pin,p_submission_id:id,p_action:action,p_response_message:msg});const x=r&&r[0];if(x&&x.ok===false)throw new Error(x.message);
+    toast(action==='approve'?'スタンプを押しました！もぐマップにも反映されます':'見送りにしました');renderShopInbox()}catch(e){toast('処理できませんでした');btn.disabled=false}}
+/* ---- 参加した気分：お知らせの帯・みんなの声 ---- */
+async function loadTicker(){if(!LIVE)return;try{RL.ticker=await rpc('mogu_info_ticker',{})}catch(e){}renderTicker()}
+function tickerItems(){const out=[],t=RL.ticker||{},p=t.period||{},jd=v=>new Date(v).toLocaleDateString('ja-JP',{timeZone:'Asia/Tokyo',month:'numeric',day:'numeric'});
+  if(p.running)out.push(`🎉 スタンプラリー開催中！${p.ends_at?jd(p.ends_at)+'まで':''}`);else if(p.starts_at&&new Date(p.starts_at)>new Date())out.push(`⏳ スタンプラリーは ${jd(p.starts_at)} からスタート！`);
+  (t.events||[]).slice(0,3).forEach(e=>out.push(`🎪 ${e.event_date?jd(e.event_date+'T12:00:00+09:00')+' ':''}${e.title||''}${e.event_place?'（'+e.event_place+'）':''}`));
+  (t.posts||[]).slice(0,4).forEach(x=>out.push(`${{news:'📢',shop:'🏪',video:'🎬',voice:'💬'}[x.kind]||'📢'} ${x.title||''}`));
+  const n=myStamped().size,rest=PER_CLEAR-(n%PER_CLEAR);out.push(`📮 あと${rest}個で${Math.floor(n/PER_CLEAR)+1}クリア！遠くからでも通販でスタンプを集められます`);
+  const on=DEFAULT_SHOPS.filter(s=>s.online&&s.rally!==false);if(on.length)out.push(`📦 通販でスタンプOK：${on.map(s=>s.short||s.name).join('・')}`);
+  return out}
+function renderTicker(){const el=$('#ticker');if(!el)return;const items=tickerItems();el.innerHTML=`<div class="tk-track">${items.concat(items).map(x=>`<span>${esc(x)}</span>`).join('')}</div>`;el.style.setProperty('--dur',Math.max(20,items.length*7)+'s')}
+async function loadPosts(){if(!LIVE)return[];if(RL.posts)return RL.posts;try{const r=await rpc('mogu_list_posts',{});RL.posts=Array.isArray(r)?r:[]}catch(e){RL.posts=[]}return RL.posts}
+/* ---- もぐマップ参加者IDでログイン ---- */
+async function loginParticipant(btn){const id=($('#lg_id').value||'').trim(),pin=($('#lg_pin').value||'').trim(),st=$('#lg_err');
+  if(!/^\d{5}$/.test(id)||!/^\d{4}$/.test(pin))return st.textContent='参加者ID（5桁）と4桁のあいことばを入れてください';btn.disabled=true;
+  try{const x=(await rpc('mogu_login',{p_entry_id:id,p_pin:pin}))[0];if(!x||!x.ok){st.textContent=(x&&x.message)||'ログインできませんでした';return}
+    lsSet(PKEY,{id:x.participant_id,token:x.participant_token,nickname:x.nickname||'',entryId:x.entry_id||id});if(!S.name&&x.nickname)S.name=x.nickname;save();
+    st.textContent='';toast(`おかえりなさい、${x.nickname||''}さん。もぐマップのスタンプ帳とつながりました`);await loadRally(true);await loadSubs();openEntry(!S.role)}
+  catch(e){st.textContent='ログインできませんでした'}finally{btn.disabled=false}}
 
 /* ---------- アバター編集 ---------- */
 let draft=null,edTab=0,edWalk=true;
@@ -856,7 +931,8 @@ function openRealShop(sh){if(sh.id==='ritan')return openMyShop(sh);const st=stam
   ${supportHTML(sh)}
   ${buy?`<div class="sec"><b>🛍️ 買う・つながる</b><div class="links">${buy}</div>${sh.buy?'<div class="muted" style="margin-top:6px">購入ページで買ったら、このマルシェに戻って「スタンプを申請」してね。</div>':''}</div>`:''}
   ${links?`<div class="sec"><b>🔗 もっと見る</b><div class="links">${links}</div></div>`:''}
-  ${mine.length?`<div class="sec"><b>🧾 このお店での購入</b>${mine.map(p=>`<div class="muted">・${esc(p.itemName)}（${hm(p.time)}）<span class="chip ${p.stamp==='none'?'bought':p.stamp}">${{none:'未申請',pending:'確認待ち',approved:'スタンプ済み',rejected:'確認できず'}[p.stamp]}</span></div>`).join('')}</div>`:''}
+  ${LIVE&&RL.subs.some(r=>r.shop_id===sh.id)?`<div class="sec"><b>🧾 このお店への申請</b>${RL.subs.filter(r=>r.shop_id===sh.id).map(r=>`<div class="muted">・${hm(r.created_at)} <span class="chip ${r.status==='approved'?'approved':r.status==='pending'?'pending':'rejected'}">${r.status==='approved'?'スタンプ済み':r.status==='pending'?'確認待ち':'見送り'}</span>${r.response_message?' お店から：'+esc(r.response_message):''}</div>`).join('')}</div>`:''}
+  ${!LIVE&&mine.length?`<div class="sec"><b>🧾 このお店での購入</b>${mine.map(p=>`<div class="muted">・${esc(p.itemName)}（${hm(p.time)}）<span class="chip ${p.stamp==='none'?'bought':p.stamp}">${{none:'未申請',pending:'確認待ち',approved:'スタンプ済み',rejected:'確認できず'}[p.stamp]}</span></div>`).join('')}</div>`:''}
   <a class="mogubtn" href="${shopPage(sh.id)}" target="_blank" rel="noopener"><img src="${LOGO}" alt="">もぐマップの加盟店ページを開く ↗</a>`)}
 function openBought(id){const sh=shopById(id);
   openModal(`<h2>📮 スタンプを申請</h2><div class="muted">${esc(sh.emoji)} ${esc(sh.name)}</div>
@@ -864,9 +940,12 @@ function openBought(id){const sh=shopById(id);
   <label class="fl">買ったもの<input id="bt_item" maxlength="30" placeholder="例：ソフトクリーム"></label>
   <label class="fl">注文番号・レシートのメモ（なくてもOK）<input id="bt_no" maxlength="40" placeholder="例：U-WORDの注文番号"></label>
   <label class="fl">お店へのひとこと（なくてもOK）<input id="bt_msg" maxlength="40" placeholder="例：また行きます！"></label>
+  ${LIVE&&isReal(sh.id)?`<label class="fl">購入画面やレシートの写真（なくてもOK）<input id="bt_photo" type="file" accept="image/*"></label><div class="tip" style="margin-top:10px">📮 この申請は、もぐマップのスタンプラリーにもそのまま届きます。${part()?'':'はじめての方は、送ると同時にスタンプラリーに参加登録されます。'}</div>`:''}
+  <div class="err" id="bt_err"></div>
   <div class="acts"><button class="btn sub" data-act="openshop" data-shop="${sh.id}">もどる</button><button class="btn" data-act="sendbought" data-shop="${sh.id}">申請する</button></div>`)}
 function openInfoHub(id){
-  if(id==='info-news')openModal(`<h2>📰 もぐマップ情報局</h2><p style="font-size:14px;line-height:1.8">お知らせ・マルシェ情報・お店紹介をまとめたページです。イベントや「このお店のこれがおすすめ♡」も、ここでチェックできます。</p>
+  if(id==='info-news'){loadPosts().then(ps=>{const el=$('#posts');if(!el)return;el.innerHTML=ps.length?ps.slice(0,8).map(x=>`<div class="req done" style="opacity:1">${{news:'📢',shop:'🏪',video:'🎬',voice:'💬'}[x.kind]||'📢'} <b>${esc(x.title||'')}</b>${x.body?`<div class="muted" style="white-space:pre-line">${esc(String(x.body).slice(0,120))}</div>`:''}</div>`).join(''):'<div class="muted">まだお知らせはありません</div>'})}
+  if(id==='info-news')openModal(`<h2>📰 もぐマップ情報局</h2>${LIVE?'<div class="sec" style="border:none;padding-top:0"><b>📢 お知らせ・みんなの声</b><div id="posts"><div class="muted">読み込み中…</div></div></div>':''}<p style="font-size:14px;line-height:1.8">お知らせ・マルシェ情報・お店紹介をまとめたページです。イベントや「このお店のこれがおすすめ♡」も、ここでチェックできます。</p>
   <a class="mogubtn" href="${MOGU}info.html" target="_blank" rel="noopener"><img src="${LOGO}" alt="">情報局のページを開く ↗</a>
   <div class="sec"><b>🏪 マルシェのお店</b><div class="links">${DEFAULT_SHOPS.map(s=>`<a href="#" data-act="goshop" data-shop="${s.id}">${esc(s.emoji)} ${esc(s.name)}</a>`).join('')}</div><div class="muted" style="margin-top:6px">タップすると、そのお店まで歩いていきます。</div></div>`);
   else openModal(`<h2>🎫 スタンプラリー案内所</h2><p style="font-size:14px;line-height:1.8"><b>北海道スタンプラリー</b>開催中！お店でお買い物してスタンプを集めよう。<b>スタンプ3つで1クリア</b>、そのあとも3つごとに2クリア・3クリア…と続きます。</p>
@@ -912,7 +991,8 @@ function openApply(pid){const p=S.purchases.find(x=>x.id===pid);if(!p)return;con
 
 /* ---------- 出店者画面 ---------- */
 let ownerShop='c196b801-ea11-4891-ad7f-5e99a62a7cec';
-function openOwner(){const isShop=S.role==='shop'&&shopById(S.shopId);if(isShop)ownerShop=S.shopId;const shops=allShops().filter(s=>s.rally!==false&&(!isShop||s.id===S.shopId));if(!shopById(ownerShop))ownerShop=shops[0].id;const sh=shopById(ownerShop);
+function openOwner(){if(LIVE&&S.role==='shop'&&shopById(S.shopId)){const sh=shopById(S.shopId);openModal(`<h2>🔑 出店者画面</h2><div class="muted">${esc(sh.emoji)} ${esc(sh.name)} のお店の人として入っています</div><a class="mogubtn" style="background:#3fb984;box-shadow:0 4px 0 #2a8a60" href="${MOGU}shop.html" target="_blank" rel="noopener">✏️ お店の情報を編集する ↗</a><div id="liveInbox"></div><div class="acts"><button class="btn sub small" data-act="owner">🔄 更新</button></div>`);renderShopInbox();return}
+  const isShop=S.role==='shop'&&shopById(S.shopId);if(isShop)ownerShop=S.shopId;const shops=allShops().filter(s=>s.rally!==false&&(!isShop||s.id===S.shopId));if(!shopById(ownerShop))ownerShop=shops[0].id;const sh=shopById(ownerShop);
   const ps=S.purchases.filter(p=>p.shopId===sh.id);const pend=ps.filter(p=>p.stamp==='pending').sort((a,b)=>(a.applied||a.time)-(b.applied||b.time));const done=ps.filter(p=>p.stamp==='approved'||p.stamp==='rejected').sort((a,b)=>(b.decided||0)-(a.decided||0));
   const cnt=id=>S.purchases.filter(p=>p.shopId===id&&p.stamp==='pending').length;
   openModal(`<h2>🔑 出店者画面</h2>${isShop?`<div class="muted">${esc(sh.emoji)} ${esc(sh.name)} のお店の人として入っています</div><a class="mogubtn" style="background:#3fb984;box-shadow:0 4px 0 #2a8a60" href="${MOGU}shop.html" target="_blank" rel="noopener">✏️ お店の情報を編集する ↗</a><div class="muted" style="text-align:center;margin:4px 0 6px">もぐマップのお店アプリと同じ編集ページ。直すとマルシェにも反映されます。</div>`:`<div class="muted">🧪 体験モード：今はどのお店の画面も見られます。「お店の人」として入ると、自分のお店だけが表示されます。</div><button class="btn sub small" style="margin-top:6px" data-act="relogin">🏪 お店の人として入る</button>`}
@@ -927,19 +1007,22 @@ function openOwner(){const isShop=S.role==='shop'&&shopById(S.shopId);if(isShop)
 /* ---------- スタンプ帳・履歴 ---------- */
 function stampHTML(sh,date,press){return `<div class="stamp ${press?'press':''}"><div class="e">${esc(sh.emoji)}</div><div class="sn">${esc(sh.name)}</div><div class="sd">${date}</div></div>`}
 function openBook(){const shops=allShops().filter(s=>s.rally!==false);const got=myStamped();const n=got.size;const fresh=new Set(S.newStamps);
-  const clears=Math.floor(n/GOAL),rest=n%GOAL,newClear=clears>(S.clears||0);
-  openModal(`<h2>📮 スタンプ帳</h2><div class="muted">北海道スタンプラリー（マルシェ版）｜お店でお買い物 → スタンプ申請 → お店が確認するとスタンプが押されます。${GOAL}個で1クリア、そのあとも${GOAL}個ごとにクリア！</div>
+  const clears=LIVE&&part()&&RL.clears.length?RL.clears.length:Math.floor(n/GOAL),rest=n%GOAL,newClear=clears>(S.clears||0);const pp=part();
+  const todo=shops.filter(s=>!got.has(s.id)&&(s.online||s.buy)).slice(0,4);
+  openModal(`<h2>📮 スタンプ帳</h2>${LIVE?`<div class="tip" style="margin:6px 0">${pp?`🔗 もぐマップのスタンプラリーとつながっています（参加者ID ${esc(pp.entryId||'')}・${esc(pp.nickname||'')}さん）。マルシェでもらったスタンプも、もぐマップでもらったスタンプも、同じスタンプ帳に入ります。`:'🔗 はじめて申請したときに、もぐマップのスタンプラリーに参加登録されます。参加済みの方は、入り口の「参加者IDでログイン」からつなげられます。'}</div>`:''}<div class="muted">北海道スタンプラリー（マルシェ版）｜お店でお買い物 → スタンプ申請 → お店が確認するとスタンプが押されます。${GOAL}個で1クリア、そのあとも${GOAL}個ごとにクリア！</div>
   <div class="prog"><div style="width:${rest/GOAL*100}%"></div></div><div class="progt">スタンプ ${n}個 ／ ${clears}クリア　・　次のクリアまで あと${GOAL-rest}個</div>
-  ${clears>=1?`<div class="coupon">🎉 ${clears}クリアおめでとう！<b>主催者に通知が届き、景品のお知らせがあります</b><span>（体験版の表示です。景品の内容は主催者が決められます）</span></div>`:''}
+  ${clears>=1?`<div class="coupon">🎉 ${clears}クリアおめでとう！<b>主催者に通知が届き、景品のお知らせがあります</b><span>${LIVE?'景品のお知らせは、もぐマップのマイページにも届きます':'（体験版の表示です。景品の内容は主催者が決められます）'}</span></div>`:''}
+  ${todo.length?`<div class="sec"><b>🛒 遠くからでもスタンプが集められるお店</b><div class="links">${todo.map(s=>`<a href="#" data-act="goshop" data-shop="${s.id}">${esc(s.emoji)} ${esc(s.short||s.name)}${s.online?' 📦':''}</a>`).join('')}</div><div class="muted" style="margin-top:4px">あと${GOAL-rest}個で次のクリア！通販や購入ページで買って応援しよう</div></div>`:''}
   <div class="book">${shops.map(s=>{const st=stampStatus(s.id);let inner;
-    if(got.has(s.id)){const p=S.purchases.find(x=>x.buyer==='me'&&x.shopId===s.id&&x.stamp==='approved');const d=new Date(p.decided||p.time);inner=stampHTML(s,(d.getMonth()+1)+'/'+d.getDate(),fresh.has(s.id))}
+    if(got.has(s.id)){const p=S.purchases.find(x=>x.buyer==='me'&&x.shopId===s.id&&x.stamp==='approved');const d=p?new Date(p.decided||p.time):null;inner=stampHTML(s,d?(d.getMonth()+1)+'/'+d.getDate():'済',fresh.has(s.id))}
     else if(st==='pending')inner='確認待ち…';else if(st==='bought')inner='申請<br>できます';else inner=`<span class="ghost">${esc(s.emoji)}</span>`;
     return `<div class="cell"><div class="slot">${inner}</div><div class="cn">${esc(s.name)}</div></div>`}).join('')}</div>`);
   if(newClear){S.clears=clears;setTimeout(confetti,400)}
   S.newStamps=[];save();updateBadges()}
-function openHistory(){const ps=S.purchases.filter(p=>p.buyer==='me').sort((a,b)=>b.time-a.time);const got=myStamped();
-  openModal(`<h2>🧾 購入履歴</h2><div class="muted">買ったものと、スタンプ申請の状況です。</div><div style="margin-top:12px">
-  ${ps.length?ps.map(p=>{const sh=shopById(p.shopId);let right='';
+async function openHistory(){if(LIVE&&part()){openModal('<h2>🧾 購入履歴</h2><div class="muted">読み込み中…</div>');await loadSubs()}
+  const liveRows=LIVE?RL.subs:[];const ps=S.purchases.filter(p=>p.buyer==='me'&&!(LIVE&&isReal(p.shopId))).sort((a,b)=>b.time-a.time);const got=myStamped();
+  openModal(`<h2>🧾 購入履歴</h2><div class="muted">買ったものと、スタンプ申請の状況です。</div><div style="margin-top:12px">${liveRows.map(r=>{const sh=shopById(r.shop_id);return`<div class="hist"><div class="em">${esc(sh?sh.emoji:'🏪')}</div><div class="body"><b>${esc(r.shop_name||(sh&&sh.name)||'お店')}</b><div class="muted" style="white-space:pre-line">${esc(String(r.purchase_message||'').replace('🏪マルシェから／',''))}<br>${hm(r.created_at)}${r.response_message?'<br>お店から：'+esc(r.response_message):''}</div></div><div class="acts2"><span class="chip ${r.status==='approved'?'approved':r.status==='pending'?'pending':'rejected'}">${r.status==='approved'?'スタンプ済み':r.status==='pending'?'確認待ち':'見送り'}</span></div></div>`}).join('')}
+  ${ps.length||liveRows.length?ps.map(p=>{const sh=shopById(p.shopId);let right='';
     if(p.stamp==='approved')right='<span class="chip approved">スタンプ済み</span>';
     else if(p.stamp==='pending')right='<span class="chip pending">確認待ち</span>';
     else if(got.has(p.shopId))right='<span class="chip none">スタンプはゲット済み</span>';
@@ -1017,7 +1100,7 @@ $('#chatin').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){
 
 /* ---------- あそびかた ---------- */
 function openInfo(){openModal(`<h2>🍚 もぐマップ マルシェの遊びかた</h2>
-<ol class="steps"><li>地面をタップすると、アバターが歩きます。</li><li><b>お店のビルやテント・看板</b>か、黄色い「★ お店の人」マークのキャラをタップすると、そのお店の<b>加盟店ページ</b>が開きます。もぐマップの加盟店ページにもそこから飛べます。</li><li>購入ページで買い物したり、お店で買ったら「スタンプを申請」します。</li><li>お店の人が<b>出店者画面</b>で確認して、スタンプを押します。（体験版では1台で、お客さん役とお店役を切り替えて試せます）</li><li>スタンプ${GOAL}個で1クリア！そのあとも${GOAL}個ごとにクリアが続きます。</li><li>大きなもぐマークのビル<b>「情報局」</b>と<b>「案内所」</b>で、お知らせやガイドが見られます。</li><li>歩いている<b>街の住人</b>をタップすると話しかけられます。下の入力欄に打つか、🎤ボタンで声で話すと返事をしてくれます。（住人は自動でおしゃべりするキャラです）</li></ol>
+<ol class="steps"><li>地面をタップすると、アバターが歩きます。</li><li><b>お店のビルやテント・看板</b>か、黄色い「★ お店の人」マークのキャラをタップすると、そのお店の<b>加盟店ページ</b>が開きます。もぐマップの加盟店ページにもそこから飛べます。</li><li>購入ページで買い物したり、お店で買ったら「スタンプを申請」します。</li><li>お店の人が<b>出店者画面</b>（またはもぐマップのお店アプリ）で確認して、スタンプを押します。<b>もぐマップのスタンプラリーと同じスタンプ帳</b>なので、マルシェでもらったスタンプも、お店でもらったスタンプも、両方に入ります。</li><li>スタンプ${GOAL}個で1クリア！そのあとも${GOAL}個ごとにクリアが続きます。</li><li>大きなもぐマークのビル<b>「情報局」</b>と<b>「案内所」</b>で、お知らせやガイドが見られます。</li><li>歩いている<b>街の住人</b>をタップすると話しかけられます。下の入力欄に打つか、🎤ボタンで声で話すと返事をしてくれます。（住人は自動でおしゃべりするキャラです）</li></ol>
 <div class="future"><b>本番版で追加できること</b><br>・もぐマップのお店データ・スタンプ帳とリアルタイムで連動<br>・みんなが同じ街にいて、リアルタイムで動く・話せる<br>・お店ごとの暗証番号ログイン、お店の人のキャラを自分で着せかえ<br>・開催日だけ開く「マルシェの日」、イベント告知</div>
 <div class="muted" style="margin-top:10px">※ お店の情報は、もぐマップに公開中のスタンプラリー参加店（11/18時点）です。体験版のスタンプや購入履歴は、このブラウザの中だけに保存されます。</div>
 <div class="acts"><button class="btn sub small" data-act="reset">お店・スタンプをリセット（キャラは残ります）</button><button class="btn" data-act="close">街にもどる</button></div>`)}
@@ -1046,7 +1129,7 @@ const ACT={
   sendsupport:(d,b,e)=>{const uw=($('#sp_uw').value||'').trim(),pt=String($('#sp_pt').value||'').replace(/[^\d]/g,'');if(!uw||!pt){e.preventDefault();$('#sp_err').textContent=!uw?'UW.IDを入れてください':'応援ポイントを入れてください';return}
     (S.supports=S.supports||[]).push({id:'s'+Date.now(),shopId:d.shop,uw,pt:+pt,msg:($('#sp_msg').value||'').trim(),by:S.name||'ゲスト',time:Date.now()});if(!S.uw&&S.role!=='shop')S.uw=uw;save();const sh=shopById(d.shop);
     openShop(d.shop);toast(`📣 ${sh.name} に ${pt}pt の応援を送りました！`);const k=ents.find(x=>x.shopId===d.shop);if(k)say(k,'応援ありがとうございます！');if(me)say(me,'がんばって〜！📣')},
-  sendbought:d=>{const sh=shopById(d.shop);const item=($('#bt_item').value||'').trim()||'お買い物';
+  sendbought:(d,b)=>{const sh=shopById(d.shop);if(LIVE&&isReal(sh.id))return submitLive(sh,b);const item=($('#bt_item').value||'').trim()||'お買い物';
     const p={id:'p'+Date.now(),orderNo:($('#bt_no').value||'').trim(),shopId:sh.id,itemName:item,itemEmoji:sh.emoji,price:0,buyer:'me',time:Date.now(),stamp:'pending',note:($('#bt_msg').value||'').trim(),applied:Date.now()};
     S.purchases.push(p);save();updateBadges();openShop(sh.id);const k=ents.find(e=>e.shopId===sh.id);if(k)say(k,'ありがとうございます！確認しますね');
     toast('申請しました！お店の確認を待ってね');setTimeout(()=>toast('体験版では下の「出店者画面」で、お店として確認できます 🔑',4500),900)},
@@ -1094,6 +1177,9 @@ const ACT={
   chatlog:()=>openModal(`<h2>💬 チャット履歴</h2><div class="chatlog">${chatLog.length?chatLog.slice().reverse().map(c=>`<div><b>${esc(c.n)}</b>${esc(c.t)}</div>`).join(''):'<div class="muted" style="background:none">まだ会話はありません。下の入力欄から話しかけてみよう！</div>'}</div>`),
   copycode:async(d,b)=>{const c=avatarCode();try{await navigator.clipboard.writeText(c);toast('コピーしました。メモなどに貼って保存してね')}catch(e){toast('長押しでコードを選んでコピーしてね')}},
   usecode:()=>{const r=parseCode($('#en_code').value);if(!r){$('#code_err').textContent='コードを確認してください';return}S.avatar=r.avatar;if(r.name)S.name=r.name;save();if(me){me.av=S.avatar;me.el.innerHTML=avatarSVG(S.avatar)+'<div class="nm"></div>';setMeLabel()}toast('キャラを復元しました！次に、どなたとして入るか選んでね')},
+  lvapprove:(d,b)=>resolveLive(d.id,'approve',b),
+  lvreject:(d,b)=>resolveLive(d.id,'reject',b),
+  plogin:(d,b)=>loginParticipant(b),
   role:d=>entryForm(d.r),
   entergo:(d,b)=>enterGo(b),
   relogin:()=>openEntry(false),
@@ -1123,7 +1209,7 @@ window.addEventListener('resize',()=>{fit();follow(1)});
 requestAnimationFrame(tick);
 function boot(){if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
 if(S.avatar)boot();else{let done=false;restoreAvatar(b=>{if(done)return;done=true;S.avatar=normalize(b.avatar);if(!S.name)S.name=b.name||'';if(!S.role&&b.role){S.role=b.role;S.uw=b.uw||'';S.shopId=b.shopId||''}save();boot();toast('前に作ったキャラで入りました')});setTimeout(()=>{if(!done){done=true;boot()}},400)}
-loadLive();setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
+loadLive().then(async()=>{if(!LIVE){renderTicker();return}await loadRally(true);await loadSubs();loadTicker();setInterval(()=>loadRally(),60*1000);setInterval(()=>{if(RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(loadTicker,10*60*1000)});setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
 })();
 </script>
 </body>
