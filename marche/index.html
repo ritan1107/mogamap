@@ -380,6 +380,7 @@ body.watching #chatrow{opacity:.45}
 .booth.hub .sign{border-color:var(--c);box-shadow:0 3px 0 var(--c)}
 .hostcard{border:3px solid #8a6ad8;border-radius:16px;padding:12px;margin:10px 0;text-align:center;display:flex;flex-direction:column;gap:2px;background:#faf7ff}.hostcard small{font-size:11px;font-weight:800;color:#8a6ad8}.hostcard b{font-size:17px}.hostcard span{font-size:11px;color:#8a776c}
 .devnote{margin-top:12px;font-size:11px;color:#8a776c;border-top:1px dashed #e8d3bd;padding-top:8px}.devnote a{color:#d0567a;font-weight:800}
+.ptcard{border:2px solid #e3d6c4;border-radius:12px;padding:16px;margin-top:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff}.ptcard p{font-weight:800;font-size:14px;line-height:1.6;margin:0 0 6px}.ptcard img{image-rendering:pixelated;width:220px;height:220px}.ptcard b{margin-top:8px;font-size:13px}.ptmail{border:0;background:none;color:#d0267a;font:inherit;font-size:15px;font-weight:700;text-decoration:underline;cursor:pointer}.ptcard small{font-size:11px}
 </style>
 </head>
 <body>
@@ -960,7 +961,8 @@ function sceneHTML(sh){const k=keeperOf(sh);const c1=NPCS[hashN(sh.id)%NPCS.leng
 `}
 function openMyShop(sh){
   openModal(`<div class="shophead" style="--c:${sh.color}"><div class="big">${esc(sh.emoji)}</div><div><h2>${esc(sh.name)}</h2><div class="tags"><span class="tg">${esc(sh.tag)}</span><span class="tg">🌉 Hope Bridge Design</span></div></div></div>${sceneHTML(sh)}
-  <a class="mogubtn" style="background:#f08f78;box-shadow:0 4px 0 #c86a55" href="${sh.hp}" target="_blank" rel="noopener">🏠 りーたんのホームページを見る ↗</a>
+  <button class="mogubtn" style="background:#e8a33c;box-shadow:0 4px 0 #b97d22;border:0;width:100%;font:inherit;font-weight:800;cursor:pointer" data-act="ritanpt">🎁 ご依頼・応援ポイントを贈る</button>
+  <a class="mogubtn" style="background:#f08f78;box-shadow:0 4px 0 #c86a55;margin-top:10px" href="${sh.hp}" target="_blank" rel="noopener">🏠 りーたんのホームページを見る ↗</a>
   <div class="sec" style="border:none;padding-top:8px"><p>${esc(sh.desc)}</p></div>
   <div class="sec"><b>🎨 できること</b><div class="links" style="flex-direction:column;align-items:flex-start">${sh.services.map(x=>`<span class="tg" style="font-size:13px;background:#fff6f2;border:2px solid #fde0d6;padding:5px 12px">${esc(x)}</span>`).join('')}</div></div>
   <div class="sec"><b>💡 料金のめやす</b>${sh.perks.map(x=>`<p style="margin:2px 0">・${esc(x)}</p>`).join('')}<div class="muted" style="margin-top:4px">くわしい料金・ご相談はホームページかLINEから</div></div>
@@ -1657,6 +1659,14 @@ ACT.hubrally=()=>openInfoHub('info-rally');
 ACT.spotmore=()=>{SPOT.i+=4;openHub('spot')};
 goInfo=function(id){goHub(id==='info-news'?'news':'guide')};
 {const f=renderBooths;renderBooths=function(){f();buildHub()}}
+
+/* ---------- りーたん：ご依頼・応援は「贈りポイント」で受付 ---------- */
+const RITAN_PT={qr:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUgAAAFIAQAAAAAab1qeAAABp0lEQVR42u1by4rDMAwcrQ3+LAX2w0o+rGB/VsFmevAj8R6WPexJlQnBxXMaRa+xKsQf1xcc6cj/QYL12iuZA1mh87kdOZ/WkEqS7B+AvkQiSmKeX8I8cj7NIZuIyNE3EVrHZjtylgwjAzNQEnNgDsPlnaVPQI7M/uo+7ixZRcbu5gDQAKB8c733I+fTbj1ffz5ez5v193DTDxpKnG7esB05nxb9fbm2VuBW1CnJ2rs559MoMvAe80dtL3IE5iaHs2QM2V07MDeRxDNd1u++f3r/bjTOD3l2hvQl1Q6v7z89zhuzO2+C/FRlRzEfhoDjdrdsd+4y3U2vU7e7PWQb0lwReczwrtzqeWfJZP9e4mjVS6zlgNY4tZqh4JVE59NgXVexqvqtlVv9nffvJvP7WnXL7Jdo4/ndYn5f68C4jHvUcfl+rLfzae4+Trt7t3E3VxLRoM/YVfqSCHh+h+V5G8wZm8Qzosgcv3GWYHze5hR5cJ+08Thvde7iMnEEUAQIq4mraECLmp1Py/M2+oy6ebv3758xb7MGqu/6rc/bWEOK/1vHkb+uN+LTM6szxud2AAAAAElFTkSuQmCC',mail:'Kirakirau36@iCloud.com'};
+ACT.ritanpt=()=>openModal(`<h2>🎁 ポイントを受け取る</h2><div class="muted">りーたんへのご依頼・応援ポイントは、贈りポイントで受け付けています。</div>
+  <div class="ptcard"><p>贈り主の「ポイントを贈る」から<br>QRコードをスキャンしてください。</p><img src="${RITAN_PT.qr}" alt="ポイント受け取りQRコード" width="220" height="220">
+  <b>メールアドレス</b><button class="ptmail" data-act="ritanmail">${esc(RITAN_PT.mail)}</button><small>※タップでコピー</small></div>
+  <div class="acts"><button class="btn sub" data-act="openshop" data-shop="ritan">← お店にもどる</button></div>`);
+ACT.ritanmail=async()=>{try{await navigator.clipboard.writeText(RITAN_PT.mail);toast('メールアドレスをコピーしました')}catch(e){toast('長押しでコピーしてね')}};
 
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
