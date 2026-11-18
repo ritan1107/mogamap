@@ -366,6 +366,17 @@ body.watching #chatrow{opacity:.45}
 .mybtns{display:flex;flex-direction:column;gap:8px;margin-top:10px}.mybtns .btn{width:100%;text-align:center;text-decoration:none;box-sizing:border-box}
 .newdot{display:inline-block;background:#ff4d6d;color:#fff;font-style:normal;font-size:10px;font-weight:800;border-radius:99px;padding:1px 6px;vertical-align:1px}
 .pdeco{position:absolute;pointer-events:none}.pdeco svg{display:block;overflow:visible}
+.bboard{position:absolute;cursor:pointer;transition:transform .25s}
+.bboard.flip{transform:scaleY(.05)}
+.bboard.stand .bbp{height:54px}.bboard.stand .bbf{bottom:40px}
+.bbp{position:absolute;bottom:0;left:22%;width:5px;height:18px;background:#7a6a5c;border-radius:2px}.bbp.r{left:auto;right:22%}
+.bbf{position:absolute;left:0;right:0;top:0;bottom:14px;background:#fffdf8;border:4px solid var(--c);border-radius:10px;box-shadow:0 4px 0 rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2px 6px;line-height:1.25;overflow:hidden}
+.bbf b{font-size:12px;color:#4a3b35;white-space:nowrap}.bbf span{font-size:10px;font-weight:800;color:var(--c);white-space:nowrap}
+.bbf.spot{background:linear-gradient(#fff,#fff6ea);border-width:5px}.bbf.spot i{font-style:normal;font-size:9.5px;font-weight:800;color:#fff;background:#ff8fab;border-radius:99px;padding:1px 8px;margin-bottom:2px}
+.bbf.spot b{font-size:15px}.bbf.spot span{color:#8a776c;font-size:10px}
+.spotrow{margin:8px 0 6px}.spotcards{display:flex;gap:8px;overflow-x:auto}
+.spc{flex:1;min-width:96px;border:2px solid var(--c);border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;background:#fffdf8;text-align:center}
+.spc span{font-size:24px}.spc b{font-size:12px}.spc small{font-size:10px;color:#8a776c;line-height:1.3}
 </style>
 </head>
 <body>
@@ -1143,7 +1154,7 @@ function botReply(n,v){const E=n.end;
   if(/お酒|飲み|夜|バー|日本酒|スナック|ワイン/.test(v)){const s=shopsBy(/バー|BAR|スナック|シャンパン/);return `夜なら ${s.emoji} ${s.name} かな〜`}
   if(/占い|癒し|整体|ヒーリング|悩み|開運|疲れ/.test(v)){const s=shopsBy(/占い|整体|ヒーリング|リセッター|悩み/);return `${s.emoji} ${s.name} がいいらしい${E}！`}
   if(/ランチ|ご飯|ごはん|お腹|おなか|食べ|発酵|麹/.test(v)){const s=shopsBy(/ランチ|発酵|麹|甘さけ/);return `${s.emoji} ${s.name}、体にやさしそう${E}〜`}
-  if(/おすすめ|オススメ|どこ|お店/.test(v)){const s=pick(DEFAULT_SHOPS);return `${s.emoji} ${s.name}（${s.tag}）がおすすめ${E}！看板をタップしてみて`}
+  if(/おすすめ|オススメ|どこ|お店/.test(v)){const s=spotShop()||pick(DEFAULT_SHOPS);return `いま応援したいのは ${s.emoji} ${s.name}${E}！のぞいてみて`}
   if(/ありがと/.test(v))return 'どういたしまして〜！';
   if(/かわいい|可愛い|すてき|素敵|かっこい/.test(v))return 'えへへ、ありがとう！あなたもすてき！';
   if(/寒|雪|天気|暑/.test(v))return '札幌はもう寒いね〜。あったかくしてね！';
@@ -1582,6 +1593,37 @@ function relocate(){const shops=allShops();const bld=LOTS.map((L,i)=>i).filter(i
   const used=new Set(shops.filter(s=>LOTS[s.lot0]&&LOTS[s.lot0].k==='bld').map(s=>s.lot0));INFOS.forEach(x=>used.add(x.lot));
   const free=bld.filter(i=>!used.has(i));shops.forEach(s=>{const L=LOTS[s.lot0];if(L&&L.k==='tent')s.lot=free.length?free.shift():s.lot0;else s.lot=s.lot0})}
 {const f=renderBooths;renderBooths=function(){relocate();f();if(!EVENT)world.querySelectorAll('.lot').forEach(e=>e.remove())}}
+
+/* ---------- ビルの屋上看板：この街がどんな場所か ＋ 応援したいお店を順番に宣伝 ---------- */
+const BB_MSG=[
+ {t:'行けないけど、行った気分。',s:'ここはネットのマルシェ',c:'#ff8fab',e:'🌉'},
+ {t:'通販で買って、お店を応援',s:'遠くからでもお買い物',c:'#5aa0c8',e:'📦'},
+ {t:'応援ポイントでエールを',s:'行けなくても応援できる',c:'#e0a43a',e:'📣'},
+ {t:'仲間といま、おしゃべり',s:'コミュニティとリアルタイム',c:'#6fb862',e:'💬'},
+ {t:'スタンプでお店とつながる',s:'もぐマップと同じスタンプ帳',c:'#c77dbe',e:'🎫'}];
+const SPOT={i:0,order:null,t:null};
+function spotOrder(){const list=allShops().filter(s=>s.real||s.id==='ritan');if(!SPOT.order||SPOT.order.length!==list.length){const a=list.map(s=>s.id);for(let k=a.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1));[a[k],a[r]]=[a[r],a[k]]}SPOT.order=a}return SPOT.order}
+function spotShop(off){const o=spotOrder();if(!o.length)return null;return shopById(o[(SPOT.i+(off||0))%o.length])}
+function spotLine(sh){const c=(sh.calls||[]).find(x=>!/^\d|日/.test(x))||(sh.calls||[])[0]||sh.desc||'';return String(c).slice(0,22)}
+function bboardHTML(m){return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf" style="--c:${m.c}"><b>${m.e} ${esc(m.t)}</b><span>${esc(m.s)}</span></div>`}
+function spotHTML(){const sh=spotShop();if(!sh)return'';return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf spot" style="--c:${sh.color}"><i>📣 いま応援したいお店</i><b>${esc(sh.emoji)} ${esc(sh.short||sh.name)}</b><span>${esc(spotLine(sh))}</span></div>`}
+function buildBillboards(){world.querySelectorAll('.bboard').forEach(e=>e.remove());
+  const decos=LOTS.map((L,i)=>i).filter(i=>LOTS[i].deco);const tall=decos.slice().sort((a,b)=>LOTS[b].h-LOTS[a].h)[0];let mi=0;
+  decos.forEach(i=>{const L=LOTS[i],rc=P(L.i+1,L.j+1),spot=i===tall;const w=spot?176:150,h=spot?96:70;
+    const el=document.createElement('div');el.className='bboard'+(spot?' spotb':'');el.style.cssText=`left:${rc[0]-w/2}px;top:${rc[1]-L.h-h-6}px;width:${w}px;height:${h+14}px;z-index:${Math.round(P(L.i,L.j)[1]+(L.f==='IJ'?T2:0))+1}`;
+    if(spot){el.dataset.act='spotgo';el.innerHTML=spotHTML()}else{const m=BB_MSG[mi++%BB_MSG.length];el.dataset.act='info';el.innerHTML=bboardHTML(m)}world.appendChild(el)});
+  /* 広場のそばに立て看板（2つ）：街の紹介と、応援したいお店 */
+  const stand=(i,j,w,h,cls,act,html)=>{const[x,y]=P(i,j);const el=document.createElement('div');el.className='bboard stand '+cls;el.dataset.act=act;el.style.cssText=`left:${x-w/2}px;top:${y-h-40}px;width:${w}px;height:${h+40}px;z-index:${Math.round(y)}`;el.innerHTML=html;world.appendChild(el);return el};
+  stand(9.45,12.6,176,84,'welcome','info',welcomeHTML());stand(12.6,9.45,176,96,'spotb','spotgo',spotHTML())}
+let wI=0;function welcomeHTML(){const m=BB_MSG[wI%BB_MSG.length];return bboardHTML(m)}
+setInterval(()=>{if(document.hidden)return;wI++;world.querySelectorAll('.bboard.welcome').forEach(el=>{el.classList.add('flip');setTimeout(()=>{el.innerHTML=welcomeHTML();el.classList.remove('flip')},250)})},6000);
+function spotNext(){SPOT.i++;world.querySelectorAll('.bboard.spotb').forEach(el=>{el.classList.add('flip');setTimeout(()=>{el.innerHTML=spotHTML();el.classList.remove('flip')},250)})}
+setInterval(()=>{if(!document.hidden)spotNext()},8000);
+ACT.spotgo=()=>{const sh=spotShop();if(!sh)return;if(me)goShop(sh.id);else openShop(sh.id)};
+{const f=renderBooths;renderBooths=function(){f();buildBillboards()}}
+/* お店さがしの上にも「いま応援したいお店」（人気順ではなく、全部のお店を順番に紹介） */
+{const f=openSearch;openSearch=function(){f();const sl=$('#slist');if(!sl)return;const picks=[0,1,2].map(k=>spotShop(k)).filter((s,k,a)=>s&&a.indexOf(s)===k);
+  sl.insertAdjacentHTML('beforebegin',`<div class="spotrow"><div class="muted" style="margin-bottom:4px">📣 いま応援したいお店（順番に紹介しています）</div><div class="spotcards">${picks.map(s=>`<div class="spc" data-act="openshop" data-shop="${s.id}" style="--c:${s.color}"><span>${esc(s.emoji)}</span><b>${esc(s.short||s.name)}</b><small>${esc(spotLine(s))}</small></div>`).join('')}</div></div>`)}}
 
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
