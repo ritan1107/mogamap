@@ -972,16 +972,6 @@ function openUpay(id,amount){const sh=shopById(id),p=payOf(sh);
   ${sh.uw?A(sh.uw,'🤝 コミュニティページで値段を見る ↗'):''}
   <div class="err" id="up_err"></div>
   <div class="acts"><button class="btn sub" data-act="openshop" data-shop="${sh.id}">もどる</button><button class="btn ok" data-act="paid" data-shop="${sh.id}" data-m="Uぺい">支払いました</button></div>`)}
-function openSupport(id){const sh=shopById(id),p=payOf(sh),comm=sh.uw||p.community;
-  openModal(`<h2>📣 遠くから応援する</h2><div class="muted">${esc(sh.emoji)} ${esc(sh.name)} を応援ポイントで応援します。</div>
-  <label class="fl">あなたのUW.ID<input id="sp_uw" maxlength="30" value="${esc(S.uw||'')}" placeholder="例：UW-12345"></label>
-  <label class="fl">応援ポイント<div class="amt"><input id="sp_pt" inputmode="numeric" maxlength="6" placeholder="100"><span>pt</span></div></label>
-  <label class="fl">応援メッセージ（なくてもOK）<input id="sp_msg" maxlength="40" placeholder="例：がんばってください！"></label>
-  ${p.uwid?`<div class="tip" style="margin-top:10px">応援先のUW.ID：<b>${esc(p.uwid)}</b></div>`:''}
-  <div class="muted" style="margin-top:8px">「応援する」を押すと、お店に応援が届きます。ポイントのやりとりはコミュニティページで行います${comm?'（ページが開きます）':''}。</div>
-  <div class="err" id="sp_err"></div>
-  <div class="acts"><button class="btn sub" data-act="openshop" data-shop="${sh.id}">もどる</button>${comm?`<a class="btn" data-act="sendsupport" data-shop="${sh.id}" href="${esc(comm)}" target="_blank" rel="noopener">📣 応援する</a>`:`<button class="btn" data-act="sendsupport" data-shop="${sh.id}">📣 応援する</button>`}</div>`)}
-
 /* ---------- お店のページ（タブで整理：買う／スタンプ／紹介／応援） ---------- */
 const shopTab={};const JOIN_URL='';
 function stampPanel(sh){const st=stampStatus(sh.id);const real=sh.real;
@@ -1180,12 +1170,6 @@ function startMic(btn){const SR=window.SpeechRecognition||window.webkitSpeechRec
 $('#chatin').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();sendChat()}});
 
 /* ---------- あそびかた ---------- */
-function openInfoOld(){openModal(`<h2>🍚 もぐマップ マルシェの遊びかた</h2>
-<ol class="steps"><li>地面をタップすると、アバターが歩きます。</li><li><b>お店のビルやテント・看板</b>をタップするか、上の🔍でさがすと、そのお店のページが開きます。「💬 お店と話す」でお店の人とメッセージもできます。</li><li>購入ページで買い物したり、お店で買ったら「スタンプを申請」します。</li><li>お店の人が<b>出店者画面</b>（またはもぐマップのお店アプリ）で確認して、スタンプを押します。<b>もぐマップのスタンプラリーと同じスタンプ帳</b>なので、マルシェでもらったスタンプも、お店でもらったスタンプも、両方に入ります。</li><li>スタンプ${GOAL}個で1クリア！そのあとも${GOAL}個ごとにクリアが続きます。</li><li>大きなもぐマークのビル<b>「情報局」</b>と<b>「案内所」</b>で、お知らせやガイドが見られます。</li><li>歩いている<b>街の住人</b>をタップすると話しかけられます。下の入力欄に打つか、🎤ボタンで声で話すと返事をしてくれます。（住人は自動でおしゃべりするキャラです）</li></ol>
-<div class="future"><b>本番版で追加できること</b><br>・もぐマップのお店データ・スタンプ帳とリアルタイムで連動<br>・みんなが同じ街にいて、リアルタイムで動く・話せる<br>・お店ごとの暗証番号ログイン、お店の人のキャラを自分で着せかえ<br>・開催日だけ開く「マルシェの日」、イベント告知</div>
-<div class="muted" style="margin-top:10px">※ お店の情報は、もぐマップに公開中のスタンプラリー参加店（11/18時点）です。体験版のスタンプや購入履歴は、このブラウザの中だけに保存されます。</div>
-<div class="acts"><button class="btn sub small" data-act="reset">お店・スタンプをリセット（キャラは残ります）</button><button class="btn" data-act="close">街にもどる</button></div>`)}
-
 /* ---------- アクション ---------- */
 const ACT={
   close:()=>closeModal(),
@@ -1340,7 +1324,7 @@ async function openChatShop(id,silent){const sh=shopById(id);if(!sh)return;
     <div class="muted" style="margin-top:4px">📷 = 購入ページのスクショを送ってスタンプ申請。お店が確認するとスタンプが押されます。</div>`;
   if(silent&&$('#chatbox')){const cb=$('#chatbox');const atBottom=cb.scrollTop+cb.clientHeight>=cb.scrollHeight-20;const v=$('#cmsg').value;$('#modal .sheet').innerHTML=`<button class="x" data-act="close" aria-label="閉じる">✕</button>`+html;$('#cmsg').value=v;if(atBottom)$('#chatbox').scrollTop=1e6}
   else{openModal(html);$('#chatbox').scrollTop=1e6}
-  clearTimeout(RL.chatT);RL.chatT=setTimeout(async()=>{if($('#chatbox')&&$('#chatbox').dataset.shop===id){await loadSubs();openChatShop(id,true)}},15000)}
+  clearTimeout(RL.chatT);RL.chatT=setTimeout(async()=>{if(!document.hidden&&$('#chatbox')&&$('#chatbox').dataset.shop===id){await loadSubs();openChatShop(id,true)}},15000)}
 async function sendMsg(id,btn){const t=($('#cmsg').value||'').trim();if(!t)return;btn.disabled=true;
   try{const p=await ensureParticipant();const dm=(RL.all||[]).filter(r=>r.shop_id===id&&String(r.purchase_message||'').startsWith(DM_MARK)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
     if(dm)await rpc('send_rally_message_from_participant',Object.assign(pAuth(p),{p_submission_id:dm.submission_id,p_message:t}));
@@ -1546,7 +1530,8 @@ requestAnimationFrame(tick);
 function boot(){if(!S.role&&autoFromMogu()){if(!me)startMe();setTimeout(()=>toast(`もぐマップの登録で入りました（${ROLE[S.role][1]}）。キャラは👤マイページで変えられます`,5000),700);return}if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
 readRef();cloudInit();
 if(S.avatar)boot();else{let done=false;restoreAvatar(b=>{if(done)return;done=true;S.avatar=normalize(b.avatar);if(!S.name)S.name=b.name||'';if(!S.role&&b.role){S.role=b.role;S.uw=b.uw||'';S.shopId=b.shopId||''}save();boot();toast('前に作ったキャラで入りました')});setTimeout(()=>{if(!done){done=true;boot()}},400)}
-loadLive().then(async()=>{liveUI();if(!LIVE){renderTicker();return}mpConnect();loadPosts();profLoad();await loadRally(true);await loadSubs();loadTicker();setInterval(()=>loadRally(),60*1000);setInterval(()=>{if(RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(loadTicker,10*60*1000)});setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
+loadLive().then(async()=>{liveUI();if(!LIVE){renderTicker();return}mpConnect();loadPosts();profLoad();await loadRally(true);await loadSubs();loadTicker();const seen=()=>!document.hidden;setInterval(()=>{if(seen())loadRally()},2*60*1000);setInterval(()=>{if(seen()&&RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(()=>{if(seen())loadTicker()},10*60*1000);
+  let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){hid=Date.now();return}if(hid&&Date.now()-hid>60*1000){loadRally();loadSubs()}})});setInterval(()=>{if(LIVE&&!document.hidden)loadLive()},10*60*1000);
 })();
 </script>
 </body>
