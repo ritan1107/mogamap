@@ -377,6 +377,8 @@ body.watching #chatrow{opacity:.45}
 .spotrow{margin:8px 0 6px}.spotcards{display:flex;gap:8px;overflow-x:auto}
 .spc{flex:1;min-width:96px;border:2px solid var(--c);border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;background:#fffdf8;text-align:center}
 .spc span{font-size:24px}.spc b{font-size:12px}.spc small{font-size:10px;color:#8a776c;line-height:1.3}
+.glist{display:flex;flex-direction:column;gap:6px;margin:8px 0}.glist>div{display:flex;gap:10px;align-items:center;border:2px solid var(--c);border-radius:12px;padding:8px 10px}.glist span{font-size:22px}.glist b{display:block;font-size:13px}.glist small{font-size:11px;color:#8a776c}
+.booth.hub .sign{border-color:var(--c);box-shadow:0 3px 0 var(--c)}
 </style>
 </head>
 <body>
@@ -745,7 +747,7 @@ function renderBooths(){
       el.innerHTML=`<div class="sign">${esc(sh.short||sh.name)}</div><div class="awn"></div><div class="pole l"></div><div class="pole r"></div><div class="counter"><span class="kind">${esc(kindOf(sh))}</span></div>${sh.real&&sh.rally!==false?'<div class="rally">スタンプ</div>':''}${got.has(sh.id)?'<div class="got">済</div>':''}`;
       world.appendChild(el)}
   });
-  INFOS.forEach(inf=>{const L=LOTS[inf.lot];placeBuilding(L,inf,'infohub',true);});
+  INFOS.forEach(inf=>{const L=LOTS[inf.lot];if(L)placeBuilding(L,inf,'infohub',true);});
   LOTS.forEach((L,i)=>{if(L.deco){const b=buildingSVG(L,['#b9cbe0','#d6c3e8','#c8e0c0'][i%3],'🏢',L.deco,false);const el=document.createElement('div');el.className='bld deco';el.style.cssText=`left:${b.minx}px;top:${b.miny}px;z-index:${b.z}`;el.innerHTML=b.svg;world.appendChild(el)}});
   freeLots().forEach(i=>{const L=LOTS[i];if(L.k==='bld'){placeBuilding(L,{id:'free'+i,name:'募集中',short:'募集中',kind:'出店募集',color:'#c9b49a'},'create',false);return}const el=document.createElement('div');el.className='lot';el.dataset.act='create';el.style.cssText=`left:${L.x-60}px;top:${L.b-56}px;z-index:${L.b}`;el.innerHTML='＋ 出店';world.appendChild(el)});
 }
@@ -1305,7 +1307,7 @@ async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=win
   MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));MP.ch.on('broadcast',{event:'inv'},({payload})=>onInvite(payload));MP.ch.on('broadcast',{event:'mode'},()=>loadEvent());
   MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){mpTrack(true);setTimeout(()=>{MP.ready=true;mpSync()},1500)}else if((st==='CHANNEL_ERROR'||st==='TIMED_OUT')&&!MP.decided)mpFail()})}catch(e){console.warn(e);mpFail()}}
 function mpFail(){MP.decided=true;MP.inside=true;if(typeof applyWatch==='function')applyWatch()}
-function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,p:myPid(),n:String(S.name||'ゲスト').slice(0,10)};return{p:myPid(),n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
+function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,p:myPid(),n:String(S.name||'ゲスト').slice(0,10)};return{p:myPid(),o:isOrganizer()?1:0,n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
 function mpTrack(force){if(!MP.ch||(!me&&MP.inside))return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
 function otherLabel(m){const nm=esc(m.n||'ゲスト');return m.r==='shop'?`<b class="rb s">🏪お店</b>${nm}`:m.r==='comm'?`<b class="rb c">🤝</b>${nm}`:`<b class="rb g">ゲスト</b>${nm}`}
 function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
@@ -1313,7 +1315,7 @@ function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
     if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
     e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y)}
   for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
-  setBots(seen.size);capCheck(seen.size,waiters)}
+  setBots(seen.size);capCheck(seen.size,waiters);if(typeof hubRefresh==='function')hubRefresh('hq')}
 let botTarget=null;
 function setBots(nOthers){const want=nOthers===0?NPCS.length:nOthers<=2?(botTarget&&botTarget.n===nOthers?botTarget.v:3+Math.floor(Math.random()*3)):0;botTarget={n:nOthers,v:want};
   ents.filter(e=>e.npc).forEach((e,i)=>{const off=i>=want;if(off!==!!e.off){e.off=off;e.el.style.display=off?'none':''}})}
@@ -1569,30 +1571,24 @@ function svgStage(){const w=240,h=190;let flags='';const cs=['#ff9eb5','#ffd36e'
   <rect x="30" y="40" width="180" height="100" rx="6" fill="#fff6e8" stroke="#e8c9a6" stroke-width="3"/><rect x="18" y="26" width="10" height="114" fill="#c98e5b"/><rect x="212" y="26" width="10" height="114" fill="#c98e5b"/>
   <path d="M18,30 Q120,-4 222,30" stroke="#7cc56f" stroke-width="12" fill="none" stroke-linecap="round"/>${[30,60,95,130,165,200].map((x,k)=>`<circle cx="${x}" cy="${26-Math.sin((x-18)/204*Math.PI)*16}" r="6" fill="${k%2?'#ff9eb5':'#ffd36e'}"/>`).join('')}
   <path d="M28,34 Q120,58 212,34" stroke="#b08a6a" stroke-width="1.5" fill="none"/>${flags}
-  <rect x="60" y="70" width="120" height="30" rx="15" fill="#ff8fab"/><text x="120" y="90.5" text-anchor="middle" font-size="15" font-weight="800" fill="#fff" font-family="M PLUS Rounded 1c,sans-serif">🎪 マルシェ ステージ</text>
+  <rect x="50" y="70" width="140" height="30" rx="15" fill="#ff8fab"/><text x="120" y="90" text-anchor="middle" font-size="13.5" font-weight="800" fill="#fff" font-family="M PLUS Rounded 1c,sans-serif">🎪 マルシェ ステージ</text>
   <rect x="36" y="104" width="20" height="34" rx="4" fill="#4a3b35"/><circle cx="46" cy="114" r="5" fill="#8a776c"/><circle cx="46" cy="128" r="6" fill="#8a776c"/><rect x="184" y="104" width="20" height="34" rx="4" fill="#4a3b35"/><circle cx="194" cy="114" r="5" fill="#8a776c"/><circle cx="194" cy="128" r="6" fill="#8a776c"/>`}
-function svgParasol(c){return SH(110,104,44,7)+`<rect x="53" y="30" width="4" height="64" fill="#8a776c"/><path d="M8,40 Q55,-8 102,40 Q78,34 55,40 Q32,34 8,40Z" fill="${c}"/><path d="M55,6 L55,40 M30,24 L32,38 M80,24 L78,38" stroke="#fff" stroke-width="2" opacity=".7"/><ellipse cx="55" cy="78" rx="24" ry="8" fill="#fff" stroke="#c9a77f" stroke-width="2"/><rect x="53" y="78" width="4" height="18" fill="#8a776c"/><rect x="14" y="80" width="14" height="16" rx="4" fill="#d9a06b"/><rect x="82" y="80" width="14" height="16" rx="4" fill="#d9a06b"/><text x="46" y="78" font-size="11">🥤</text><text x="58" y="78" font-size="11">🍰</text>`}
 function svgBalloons(){const cs=['#ff8fab','#ffd36e','#9fdcff','#a8e6b8','#c7b5ff','#ff9e6b'];let b='';[[20,30],[40,18],[58,32],[30,48],[50,52],[14,58]].forEach(([x,y],k)=>{b+=`<path d="M${x},${y+12} Q${36+(k%3-1)*4},90 36,118" stroke="#9a8a80" stroke-width="1" fill="none"/>`});
   [[20,30],[40,18],[58,32],[30,48],[50,52],[14,58]].forEach(([x,y],k)=>{b+=`<ellipse cx="${x}" cy="${y}" rx="11" ry="13" fill="${cs[k]}"/><ellipse cx="${x-4}" cy="${y-5}" rx="3" ry="4" fill="#fff" opacity=".6"/>`});return SH(72,120,10,3)+b+`<rect x="33" y="112" width="6" height="8" rx="2" fill="#8a776c"/>`}
 function svgBanner(c){return SH(30,118,8,3)+`<rect x="13" y="6" width="4" height="114" fill="#8a776c"/><circle cx="15" cy="6" r="4" fill="#ffd36e"/><path d="M17,12 L30,12 L30,64 L23.5,58 L17,64Z" fill="${c}"/>`}
 function buildPlaza(){world.querySelectorAll('.pdeco').forEach(e=>e.remove());
-  if(!EVENT){
-    [[11.2,11.2],[15,10.6],[10.6,15]].forEach(([i,j])=>deco(i,j,60,92,svgTree(),'',0));
-    deco(12.2,11,70,48,svgPlanter('#ff9eb5','#ffd36e'));deco(11,12.2,70,48,svgPlanter('#c7b5ff','#9fdcff'));deco(14.8,14.8,70,48,svgPlanter('#ff8c6b','#ffd36e'));
-    deco(13.9,15.4,70,46,svgBench());deco(15.4,13.9,70,46,svgBench());
-    return}
-  deco(10.35,10.35,240,190,svgStage(),'stage',-60);
-  deco(11.9,11.9,110,108,svgParasol('#ff9eb5'));deco(14.1,14.1,110,108,svgParasol('#9fdcff'));
-  deco(11.6,10.4,72,122,svgBalloons());deco(10.4,11.6,72,122,svgBalloons());deco(15.8,10.3,72,122,svgBalloons());deco(10.3,15.8,72,122,svgBalloons());
-  [[10.2,12.6,'#ff8fab'],[12.6,10.2,'#ffd36e'],[15.9,13,'#9fdcff'],[13,15.9,'#a8e6b8']].forEach(([i,j,c])=>deco(i,j,30,122,svgBanner(c)));
-  deco(15.9,15.9,70,48,svgPlanter('#ff9eb5','#c7b5ff'))}
+  [[10.3,15.7],[15.7,10.3]].forEach(([i,j])=>deco(i,j,60,92,svgTree()));
+  deco(15.9,15.9,70,48,svgPlanter('#ff9eb5','#ffd36e'));
+  if(!EVENT){deco(10.6,10.6,70,48,svgPlanter('#c7b5ff','#9fdcff'));return}
+  deco(9.9,9.9,240,190,svgStage(),'stage',-60);
+  [[10.2,14.2],[14.2,10.2]].forEach(([i,j])=>deco(i,j,72,122,svgBalloons()));
+  [[10.1,11.6,'#ff8fab'],[11.6,10.1,'#ffd36e'],[10.1,16.0,'#9fdcff'],[16.0,10.1,'#a8e6b8']].forEach(([i,j,c])=>deco(i,j,30,122,svgBanner(c)))}
 /* いつもの日は、広場のテントのお店を空いているビルに移す */
 function relocate(){const shops=allShops();const bld=LOTS.map((L,i)=>i).filter(i=>LOTS[i].k==='bld'&&!LOTS[i].deco);
   shops.forEach(s=>{if(s.lot0==null)s.lot0=s.lot});
-  if(EVENT){shops.forEach(s=>{s.lot=s.lot0});return}
   const used=new Set(shops.filter(s=>LOTS[s.lot0]&&LOTS[s.lot0].k==='bld').map(s=>s.lot0));INFOS.forEach(x=>used.add(x.lot));
   const free=bld.filter(i=>!used.has(i));shops.forEach(s=>{const L=LOTS[s.lot0];if(L&&L.k==='tent')s.lot=free.length?free.shift():s.lot0;else s.lot=s.lot0})}
-{const f=renderBooths;renderBooths=function(){relocate();f();if(!EVENT)world.querySelectorAll('.lot').forEach(e=>e.remove())}}
+{const f=renderBooths;renderBooths=function(){relocate();f();world.querySelectorAll('.lot').forEach(e=>e.remove())}}
 
 /* ---------- ビルの屋上看板：この街がどんな場所か ＋ 応援したいお店を順番に宣伝 ---------- */
 const BB_MSG=[
@@ -1614,16 +1610,50 @@ function buildBillboards(){world.querySelectorAll('.bboard').forEach(e=>e.remove
     if(spot){el.dataset.act='spotgo';el.innerHTML=spotHTML()}else{const m=BB_MSG[mi++%BB_MSG.length];el.dataset.act='info';el.innerHTML=bboardHTML(m)}world.appendChild(el)});
   /* 広場のそばに立て看板（2つ）：街の紹介と、応援したいお店 */
   const stand=(i,j,w,h,cls,act,html)=>{const[x,y]=P(i,j);const el=document.createElement('div');el.className='bboard stand '+cls;el.dataset.act=act;el.style.cssText=`left:${x-w/2}px;top:${y-h-40}px;width:${w}px;height:${h+40}px;z-index:${Math.round(y)}`;el.innerHTML=html;world.appendChild(el);return el};
-  stand(9.45,12.6,176,84,'welcome','info',welcomeHTML());stand(12.6,9.45,176,96,'spotb','spotgo',spotHTML())}
+}
 let wI=0;function welcomeHTML(){const m=BB_MSG[wI%BB_MSG.length];return bboardHTML(m)}
 setInterval(()=>{if(document.hidden)return;wI++;world.querySelectorAll('.bboard.welcome').forEach(el=>{el.classList.add('flip');setTimeout(()=>{el.innerHTML=welcomeHTML();el.classList.remove('flip')},250)})},6000);
-function spotNext(){SPOT.i++;world.querySelectorAll('.bboard.spotb').forEach(el=>{el.classList.add('flip');setTimeout(()=>{el.innerHTML=spotHTML();el.classList.remove('flip')},250)})}
+function spotNext(){SPOT.i++;if(typeof hubRefresh==='function')hubRefresh('spot');world.querySelectorAll('.bboard.spotb').forEach(el=>{el.classList.add('flip');setTimeout(()=>{el.innerHTML=spotHTML();el.classList.remove('flip')},250)})}
 setInterval(()=>{if(!document.hidden)spotNext()},8000);
 ACT.spotgo=()=>{const sh=spotShop();if(!sh)return;if(me)goShop(sh.id);else openShop(sh.id)};
 {const f=renderBooths;renderBooths=function(){f();buildBillboards()}}
 /* お店さがしの上にも「いま応援したいお店」（人気順ではなく、全部のお店を順番に紹介） */
 {const f=openSearch;openSearch=function(){f();const sl=$('#slist');if(!sl)return;const picks=[0,1,2].map(k=>spotShop(k)).filter((s,k,a)=>s&&a.indexOf(s)===k);
   sl.insertAdjacentHTML('beforebegin',`<div class="spotrow"><div class="muted" style="margin-bottom:4px">📣 いま応援したいお店（順番に紹介しています）</div><div class="spotcards">${picks.map(s=>`<div class="spc" data-act="openshop" data-shop="${s.id}" style="--c:${s.color}"><span>${esc(s.emoji)}</span><b>${esc(s.short||s.name)}</b><small>${esc(spotLine(s))}</small></div>`).join('')}</div></div>`)}}
+
+/* ---------- 広場のまんなか＝みんなの案内所（お店はまわりのビルへ） ---------- */
+INFOS.forEach(x=>{x.lot=-1});
+const HUB=[
+ {id:'guide',i:11.0,j:12.6,c:'#5fb36f',sign:'🧭 はじめての方へ',kind:'あそびかた'},
+ {id:'news',i:12.6,j:11.0,c:'#d4a52c',sign:'📰 お知らせ',kind:'情報局'},
+ {id:'spot',i:13.0,j:16.0,c:'#ff8fab',sign:'📣 応援したいお店',kind:''},
+ {id:'hq',i:16.0,j:13.0,c:'#8a6ad8',sign:'🎪 マルシェ本部',kind:'主催者'}];
+const hubById=id=>HUB.find(h=>h.id===id);
+function hubKind(h){if(h.id==='spot'){const s=spotShop();return s?`${s.emoji} ${s.short||s.name}`:'お店紹介'}if(h.id==='hq')return orgInTown()?'🟢 主催者がいます':'主催者';return h.kind}
+function buildHub(){world.querySelectorAll('.booth.hub').forEach(e=>e.remove());
+  HUB.forEach(h=>{const[x,y]=P(h.i,h.j);const el=document.createElement('div');el.className='booth small hub';el.dataset.act='hub';el.dataset.h=h.id;
+    el.style.cssText=`left:${x-80}px;top:${y-168}px;z-index:${Math.round(y)};--c:${h.c}`;
+    el.innerHTML=`<div class="sign">${esc(h.sign)}</div><div class="awn"></div><div class="pole l"></div><div class="pole r"></div><div class="counter"><span class="kind">${esc(hubKind(h))}</span></div>`;world.appendChild(el)})}
+function hubRefresh(id){const el=world.querySelector(`.booth.hub[data-h="${id}"] .kind`);if(el)el.textContent=hubKind(hubById(id))}
+function goHub(id){const h=hubById(id);if(!h)return;const[x,y]=P(h.i,h.j);if(!me)return openHub(id);walkTo(me,x+34,y+26,()=>{me.el.classList.remove('left');openHub(id)})}
+function orgInTown(){return ents.find(e=>e.other&&e.meta&&e.meta.o)||null}
+function openHub(id){if(id==='news')return openInfoHub('info-news');
+  if(id==='guide')return openModal(`<h2>🧭 はじめての方へ</h2><p style="font-size:14px;line-height:1.8">ここは<b>行けないけど、行った気分になれる</b>ネットのマルシェです。</p>
+    <div class="glist">${BB_MSG.map(m=>`<div style="--c:${m.c}"><span>${m.e}</span><div><b>${esc(m.t)}</b><small>${esc(m.s)}</small></div></div>`).join('')}</div>
+    <div class="acts"><button class="btn sub" data-act="hubrally">🎫 スタンプラリーのこと</button><button class="btn" data-act="info">？ あそびかた</button></div>`);
+  if(id==='spot'){const picks=[0,1,2,3].map(k=>spotShop(k)).filter((s,k,a)=>s&&a.indexOf(s)===k);
+    return openModal(`<h2>📣 応援したいお店</h2><div class="muted">人気順ではなく、全部のお店を順番に紹介しています。気になったら、のぞいて応援してね。</div>
+    <div class="spotcards" style="flex-wrap:wrap;margin-top:10px">${picks.map(s=>`<div class="spc" data-act="goshop" data-shop="${s.id}" style="--c:${s.color};min-width:44%"><span>${esc(s.emoji)}</span><b>${esc(s.short||s.name)}</b><small>${esc(spotLine(s))}</small></div>`).join('')}</div>
+    <div class="acts"><button class="btn sub" data-act="spotmore">🔄 ほかのお店</button><button class="btn" data-act="search">🔍 全部のお店</button></div>`)}
+  if(id==='hq'){const o=orgInTown();openModal(`<h2>🎪 マルシェ本部</h2><div class="muted">主催者がいるお店です。わからないこと・出店の相談は、こちらへどうぞ。</div>
+    ${o?`<div class="refbox">🟢 いま主催者の <b>${esc(o.name)}</b> さんが街にいます</div><button class="btn block" data-act="talkto" data-id="${o.other}">💬 主催者と話す</button>`:''}
+    <div class="mybtns"><a class="btn" href="${LINE_URL}" target="_blank" rel="noopener">💬 主催者に相談する（LINE）↗</a><button class="btn sub" data-act="openshop" data-shop="ritan">🏪 主催者のお店をみる</button><button class="btn sub" data-act="hubrally">🎫 スタンプラリーのこと</button></div>
+    <div class="muted" style="margin-top:8px">いまは「${EVENT?'🎪 マルシェの日':'🏙 いつもの街'}」です。</div>${LIVE&&isOrganizer()?eventCtlHTML():''}`)}}
+ACT.hub=d=>goHub(d.h);
+ACT.hubrally=()=>openInfoHub('info-rally');
+ACT.spotmore=()=>{SPOT.i+=4;openHub('spot')};
+goInfo=function(id){goHub(id==='info-news'?'news':'guide')};
+{const f=renderBooths;renderBooths=function(){f();buildHub()}}
 
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
