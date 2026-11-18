@@ -1287,18 +1287,18 @@ function shout(){const list=allShops().filter(s=>LOTS[s.lot]&&s.id!==lastShout);
 setInterval(()=>{if(document.hidden||$('#modal').classList.contains('show'))return;if(Math.random()<.6)shout()},10000);
 
 /* ---------- みんなで同じ街に（いる人が多いときは住人botを減らす） ---------- */
-const MP={ch:null,id:'u'+Math.random().toString(36).slice(2,10),last:0,t:null,hide:new Set(lsGet('marche_hidechat')||[])};
+const MP={ch:null,id:(()=>{let v='';try{v=sessionStorage.getItem('marche_mpid')||''}catch(e){}if(!v){v='u'+Math.random().toString(36).slice(2,10);try{sessionStorage.setItem('marche_mpid',v)}catch(e){}}return v})(),last:0,t:null,hide:new Set(lsGet('marche_hidechat')||[])};
 function loadSB(){return new Promise((res,rej)=>{if(window.supabase&&window.supabase.createClient)return res();const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
 async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=window.supabase.createClient(API,AKEY);MP.client=c;
   MP.ch=c.channel('marche-town',{config:{presence:{key:MP.id},broadcast:{self:false}}});
-  MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));MP.ch.on('broadcast',{event:'inv'},({payload})=>onInvite(payload));
+  MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));MP.ch.on('broadcast',{event:'inv'},({payload})=>onInvite(payload));MP.ch.on('broadcast',{event:'mode'},()=>loadEvent());
   MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){mpTrack(true);setTimeout(()=>{MP.ready=true;mpSync()},1500)}else if((st==='CHANNEL_ERROR'||st==='TIMED_OUT')&&!MP.decided)mpFail()})}catch(e){console.warn(e);mpFail()}}
 function mpFail(){MP.decided=true;MP.inside=true;if(typeof applyWatch==='function')applyWatch()}
-function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,n:String(S.name||'ゲスト').slice(0,10)};return{n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
+function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,p:myPid(),n:String(S.name||'ゲスト').slice(0,10)};return{p:myPid(),n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
 function mpTrack(force){if(!MP.ch||(!me&&MP.inside))return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
 function otherLabel(m){const nm=esc(m.n||'ゲスト');return m.r==='shop'?`<b class="rb s">🏪お店</b>${nm}`:m.r==='comm'?`<b class="rb c">🤝</b>${nm}`:`<b class="rb g">ゲスト</b>${nm}`}
 function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
-  const waiters=[];for(const k in st){if(k===MP.id)continue;const m=(st[k]||[])[0];if(!m)continue;if(m.w){waiters.push(m.q||0);continue}seen.add(k);let e=ents.find(x=>x.other===k);
+  const waiters=[],mine=myPid(),seenP=new Set();for(const k in st){if(k===MP.id)continue;const m=(st[k]||[])[0];if(!m)continue;if(m.p&&(m.p===mine||seenP.has(m.p)))continue;if(m.p)seenP.add(m.p);if(m.w){waiters.push(m.q||0);continue}seen.add(k);let e=ents.find(x=>x.other===k);
     if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
     e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y)}
   for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
@@ -1537,13 +1537,17 @@ function mailListHTML(){if(!LIVE)return'<div class="muted">お店とのメッセ
 {const f=updateBadges;updateBadges=function(){f();mailBadge()}}
 {const f=openChatShop;openChatShop=async function(id,silent){await f(id,silent);if($('#chatbox')&&$('#chatbox').dataset.shop===id)markShopSeen(id)}}
 {const f=openShopThread;openShopThread=async function(id){markThreadSeen(id);await f(id);checkMail(false)}}
-{const f=openMyPage;openMyPage=function(){f();const a=$('#modal .mybtns');if(a)a.insertAdjacentHTML('beforebegin',`<div class="sec"><b>📩 お店とのメッセージ</b><div id="myMail" style="margin-top:6px">${mailListHTML()}</div></div>`);checkMail(false)}}
+{const f=openMyPage;openMyPage=function(){f();const a=$('#modal .mybtns');if(a)a.insertAdjacentHTML('beforebegin',`${LIVE&&isOrganizer()?eventCtlHTML():''}<div class="sec"><b>📩 お店とのメッセージ</b><div id="myMail" style="margin-top:6px">${mailListHTML()}</div></div>`);checkMail(false)}}
 ACT.mypage=()=>openMyPage();
 
 /* ---------- いつもの街 ⇄ マルシェの日（広場がマルシェ会場になる） ---------- */
-const MARCHE_DAYS=[]; // 開催日（例：'2026-12-13'）。この日は広場がマルシェ会場になります
-const EVENT=(()=>{const q=new URLSearchParams(location.search).get('event');if(q==='1')return true;if(q==='0')return false;const d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);return MARCHE_DAYS.includes(d)})();
-document.body.classList.add(EVENT?'eventday':'normalday');
+let EVENT=false;
+function myPid(){const id=S.role==='shop'&&S.shopId?'s'+S.shopId:(part()?'p'+part().id:'');return id?strHash(id).toString(36):''}
+function setEvent(v){v=!!v;if(v===EVENT)return;EVENT=v;buildPlaza();renderBooths();if(v)toast('🎪 マルシェの日になりました！広場がマルシェ会場です',4500);else toast('いつもの街にもどりました')}
+async function loadEvent(){if(!LIVE)return;try{setEvent(await rpc('marche_event_status',{}))}catch(e){console.warn(e)}}
+const isOrganizer=()=>{const l=S.role==='shop'?shopLogin():null;return!!(l&&l.organizer)};
+function eventCtlHTML(){return`<div class="sec"><b>🎪 マルシェの日の切りかえ（主催者だけ）</b><div class="muted">いまは「${EVENT?'マルシェの日':'いつもの街'}」です。切りかえると、街にいる全員の画面が変わります。</div><div class="acts" style="justify-content:flex-start"><button class="btn ${EVENT?'sub':''}" data-act="setevent" data-on="1">🎪 マルシェの日にする</button><button class="btn ${EVENT?'':'sub'}" data-act="setevent" data-on="0">🏙 いつもの街にする</button></div><div class="err" id="ev_err"></div></div>`}
+ACT.setevent=async(d,b)=>{const l=shopLogin();if(!l||!l.organizer)return;b.disabled=true;try{const v=await rpc('marche_set_event',{p_shop_id:l.shopId,p_pin:l.pin,p_on:d.on==='1'});setEvent(v);if(MP.ch)MP.ch.send({type:'broadcast',event:'mode',payload:{}});openMyPage()}catch(e){const er=$('#ev_err');if(er)er.textContent=String(e.message||'').includes('主催者')?'主催者のPINで入ったときだけ切りかえられます':'切りかえられませんでした'}finally{b.disabled=false}};
 function deco(i,j,w,h,svg,cls,dz){const[x,y]=P(i,j);const el=document.createElement('div');el.className='pdeco '+(cls||'');el.style.cssText=`left:${x-w/2}px;top:${y-h}px;width:${w}px;height:${h}px;z-index:${Math.round(y+(dz||0))}`;el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;world.appendChild(el);return el}
 const SH=(w,cy,rx,ry)=>`<ellipse cx="${w/2}" cy="${cy}" rx="${rx}" ry="${ry}" fill="rgba(0,0,0,.13)"/>`;
 function svgTree(){return SH(60,86,22,7)+`<rect x="26" y="50" width="8" height="38" rx="3" fill="#a9805e"/><circle cx="30" cy="34" r="24" fill="#7cc56f"/><circle cx="16" cy="46" r="15" fill="#6fb862"/><circle cx="44" cy="44" r="15" fill="#8fd18a"/><circle cx="26" cy="22" r="11" fill="#9adb93"/>`}
@@ -1578,7 +1582,6 @@ function relocate(){const shops=allShops();const bld=LOTS.map((L,i)=>i).filter(i
   const used=new Set(shops.filter(s=>LOTS[s.lot0]&&LOTS[s.lot0].k==='bld').map(s=>s.lot0));INFOS.forEach(x=>used.add(x.lot));
   const free=bld.filter(i=>!used.has(i));shops.forEach(s=>{const L=LOTS[s.lot0];if(L&&L.k==='tent')s.lot=free.length?free.shift():s.lot0;else s.lot=s.lot0})}
 {const f=renderBooths;renderBooths=function(){relocate();f();if(!EVENT)world.querySelectorAll('.lot').forEach(e=>e.remove())}}
-if(EVENT)setTimeout(()=>toast('🎪 今日はマルシェの日！広場がマルシェ会場になっています',4500),1500);
 
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
@@ -1603,8 +1606,8 @@ requestAnimationFrame(tick);
 function boot(){if(!S.role&&autoFromMogu()){if(!me)startMe();setTimeout(()=>{if(LIVE)checkMail(true)},1500);setTimeout(()=>toast(`もぐマップの登録で入りました（${ROLE[S.role][1]}）。キャラは👤マイページで変えられます`,5000),700);return}if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
 readRef();cloudInit();
 if(S.avatar)boot();else{let done=false;restoreAvatar(b=>{if(done)return;done=true;S.avatar=normalize(b.avatar);if(!S.name)S.name=b.name||'';if(!S.role&&b.role){S.role=b.role;S.uw=b.uw||'';S.shopId=b.shopId||''}save();boot();toast('前に作ったキャラで入りました')});setTimeout(()=>{if(!done){done=true;boot()}},400)}
-loadLive().then(async()=>{liveUI();if(!LIVE){renderTicker();return}mpConnect();loadPosts();profLoad();await loadRally(true);await loadSubs();checkMail(true);loadTicker();const seen=()=>!document.hidden;setInterval(()=>{if(seen()){loadRally();checkMail(false)}},2*60*1000);setInterval(()=>{if(seen()&&RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(()=>{if(seen())loadTicker()},10*60*1000);
-  let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){hid=Date.now();return}if(hid&&Date.now()-hid>60*1000){loadRally();loadSubs().then(()=>checkMail(true))}})});setInterval(()=>{if(LIVE&&!document.hidden)loadLive()},10*60*1000);
+loadLive().then(async()=>{liveUI();if(!LIVE){renderTicker();return}loadEvent();mpConnect();loadPosts();profLoad();await loadRally(true);await loadSubs();checkMail(true);loadTicker();const seen=()=>!document.hidden;setInterval(()=>{if(seen()){loadRally();checkMail(false)}},2*60*1000);setInterval(()=>{if(seen()&&RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(()=>{if(seen())loadTicker()},10*60*1000);
+  let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){hid=Date.now();return}if(hid&&Date.now()-hid>60*1000){loadRally();loadSubs().then(()=>checkMail(true))}})});setInterval(()=>{if(LIVE&&!document.hidden){loadLive();loadEvent()}},10*60*1000);
 })();
 </script>
 </body>
