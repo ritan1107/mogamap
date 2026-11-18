@@ -392,6 +392,7 @@ body.watching #chatrow{opacity:.45}
 .nudge{background:#fff7e0;border:2px dashed #ffd36e;border-radius:12px;padding:8px 10px;font-size:12.5px;margin-bottom:8px}.nudge b{color:#d0567a}
 .favlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.favlist button{border:2px solid var(--c);background:#fff;border-radius:99px;padding:4px 10px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
 .bubble.linkb{pointer-events:auto;cursor:pointer;border-color:#ff8fab;text-decoration:underline dotted}
+.hubtabs{margin:0 0 10px;padding-right:40px}.hubtabs button{font-size:11.5px}
 </style>
 </head>
 <body>
@@ -1374,7 +1375,7 @@ function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
     if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
     e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y,()=>e.el.classList.toggle('sitting',!!(e.meta&&e.meta.s)));else e.el.classList.toggle('sitting',!!m.s)}
   for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
-  MP.list=[...seen];MP.nWatch=waiters.length;pplUI();setBots(seen.size);capCheck(seen.size,waiters);if(typeof hubRefresh==='function')hubRefresh('hq')}
+  MP.list=[...seen];MP.nWatch=waiters.length;pplUI();setBots(seen.size);capCheck(seen.size,waiters);if(typeof hubRefresh==='function')hubRefresh('guide')}
 let botTarget=null,BOTO=null;
 function botOrder(){if(BOTO)return;BOTO=NPCS.map(n=>n.name);for(let k=BOTO.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1));[BOTO[k],BOTO[r]]=[BOTO[r],BOTO[k]]}}
 setInterval(()=>{if(document.hidden||!BOTO)return;BOTO.push(BOTO.shift());setBots(botTarget?botTarget.n:0)},4*60*1000);
@@ -1639,9 +1640,9 @@ function svgBalloons(){const cs=['#ff8fab','#ffd36e','#9fdcff','#a8e6b8','#c7b5f
 function svgBanner(c){return SH(30,118,8,3)+`<rect x="13" y="6" width="4" height="114" fill="#8a776c"/><circle cx="15" cy="6" r="4" fill="#ffd36e"/><path d="M17,12 L30,12 L30,64 L23.5,58 L17,64Z" fill="${c}"/>`}
 function buildPlaza(){world.querySelectorAll('.pdeco').forEach(e=>e.remove());
   [[10.3,15.7],[15.7,10.3]].forEach(([i,j])=>deco(i,j,60,92,svgTree()));
-  if(!EVENT){deco(10.6,10.6,70,48,svgPlanter('#c7b5ff','#9fdcff'));return}
+  if(!EVENT)return;
   deco(9.9,9.9,240,190,svgStage(),'stage',-60);
-  [[10.2,14.2],[14.2,10.2]].forEach(([i,j])=>deco(i,j,72,122,svgBalloons()));
+  [[10.1,15.5],[15.5,10.1]].forEach(([i,j])=>deco(i,j,72,122,svgBalloons()));
   [[10.1,11.6,'#ff8fab'],[11.6,10.1,'#ffd36e'],[10.1,16.0,'#9fdcff'],[16.0,10.1,'#a8e6b8']].forEach(([i,j,c])=>deco(i,j,30,122,svgBanner(c)))}
 /* いつもの日は、広場のテントのお店を空いているビルに移す */
 function relocate(){const shops=allShops();const bld=LOTS.map((L,i)=>i).filter(i=>LOTS[i].k==='bld'&&!LOTS[i].deco);
@@ -1666,8 +1667,7 @@ function spotHTML(){const sh=spotShop();if(!sh)return'';return`<div class="bbp">
 function buildBillboards(){world.querySelectorAll('.bboard').forEach(e=>e.remove());
   /* 広場の手前と奥（入ってすぐ見える場所）に立て看板 */
   const stand=(i,j,w,h,cls,act,html)=>{const[x,y]=P(i,j);const el=document.createElement('div');el.className='bboard stand '+cls;el.dataset.act=act;el.style.cssText=`left:${x-w/2}px;top:${y-h-40}px;width:${w}px;height:${h+40}px;z-index:${Math.round(y)}`;el.innerHTML=html;world.appendChild(el);return el};
-  stand(16.95,16.95,204,88,'concept','info',conceptHTML());
-  if(!EVENT)stand(9.15,9.15,166,90,'spotb','spotgo',spotHTML())}
+  stand(13.5,10.7,166,90,'spotb','spotgo',spotHTML())}
 function conceptHTML(){return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf concept" style="--c:#ff8fab"><b>🌉 行けないけど、行った気分。</b><span>ここはネットのマルシェ</span><em>📦通販・📣応援ポイント・💬おしゃべり</em></div>`}
 let wI=0;
 function spotNext(){SPOT.i++;if(typeof hubRefresh==='function')hubRefresh('spot');world.querySelectorAll('.bboard.spotb').forEach(el=>{el.innerHTML=spotHTML()})}
@@ -1681,21 +1681,23 @@ ACT.spotgo=()=>{const sh=spotShop();if(!sh)return;if(me)goShop(sh.id);else openS
 /* ---------- 広場のまんなか＝みんなの案内所（お店はまわりのビルへ） ---------- */
 INFOS.forEach(x=>{x.lot=-1});
 const HUB=[
- {id:'guide',i:11.0,j:12.6,c:'#5fb36f',sign:'🧭 はじめての方へ',kind:'あそびかた'},
- {id:'news',i:12.6,j:11.0,c:'#d4a52c',sign:'📰 お知らせ',kind:'情報局'},
- {id:'spot',i:13.0,j:16.0,c:'#ff8fab',sign:'📣 応援したいお店',kind:''},
- {id:'hq',i:16.0,j:13.0,c:'#8a6ad8',sign:'🎪 マルシェ本部',kind:'主催者'}];
+ {id:'guide',i:10.7,j:13.5,c:'#5fb36f',sign:'🧭 案内所',kind:'なんでも案内'}];
 const hubById=id=>HUB.find(h=>h.id===id);
 const EVENT_HOST={shopId:'c196b801-ea11-4891-ad7f-5e99a62a7cec',name:'ぴあのぴあの'}; // 今回のイベント主催者
-function hubKind(h){if(h.id==='spot'){const s=spotShop();return s?`${s.emoji} ${s.short||s.name}`:'お店紹介'}if(h.id==='hq')return orgInTown()?'🟢 主催者がいます':'主催 '+EVENT_HOST.name;return h.kind}
+function hubKind(h){if(h.id==='guide')return orgInTown()?'🟢 主催者がいます':h.kind;if(h.id==='spot'){const s=spotShop();return s?`${s.emoji} ${s.short||s.name}`:'お店紹介'}if(h.id==='hq')return orgInTown()?'🟢 主催者がいます':'主催 '+EVENT_HOST.name;return h.kind}
 function buildHub(){world.querySelectorAll('.booth.hub').forEach(e=>e.remove());
   HUB.forEach(h=>{const[x,y]=P(h.i,h.j);const el=document.createElement('div');el.className='booth small hub';el.dataset.act='hub';el.dataset.h=h.id;
     el.style.cssText=`left:${x-80}px;top:${y-168}px;z-index:${Math.round(y)};--c:${h.c}`;
     el.innerHTML=`<div class="sign">${esc(h.sign)}</div><div class="awn"></div><div class="pole l"></div><div class="pole r"></div><div class="counter"><span class="kind">${esc(hubKind(h))}</span></div>`;world.appendChild(el)})}
 function hubRefresh(id){const el=world.querySelector(`.booth.hub[data-h="${id}"] .kind`);if(el)el.textContent=hubKind(hubById(id))}
-function goHub(id){const h=hubById(id);if(!h)return;const[x,y]=P(h.i,h.j);if(!me)return openHub(id);walkTo(me,x+34,y+26,()=>{me.el.classList.remove('left');openHub(id)})}
+function goHub(id){const h=HUB[0];const[x,y]=P(h.i,h.j);if(!me)return openHub(id);walkTo(me,x+34,y+26,()=>{me.el.classList.remove('left');openHub(id)})}
 function orgInTown(){return ents.find(e=>e.other&&e.meta&&e.meta.o)||null}
-function openHub(id){if(id==='news')return openInfoHub('info-news');
+const HUBTABS=[['guide','🧭 はじめて'],['news','📰 お知らせ'],['spot','📣 応援'],['hq','🎪 本部']];
+function hubTabsHTML(cur){return`<div class="stabs hubtabs">${HUBTABS.map(([k,l])=>`<button class="${k===cur?'on':''}" data-act="hubtab" data-h="${k}">${l}</button>`).join('')}</div>`}
+function addHubTabs(cur){const sh=$('#modal .sheet');if(sh&&!sh.querySelector('.hubtabs')){const x=sh.querySelector('.x');(x||sh.firstChild).insertAdjacentHTML(x?'afterend':'beforebegin',hubTabsHTML(cur))}}
+ACT.hubtab=d=>openHub(d.h);
+function openHub(id){openHubInner(id);addHubTabs(id)}
+function openHubInner(id){if(id==='news')return openInfoHub('info-news');
   if(id==='guide')return openModal(`<h2>🧭 はじめての方へ</h2><p style="font-size:14px;line-height:1.8">ここは<b>行けないけど、行った気分になれる</b>ネットのマルシェです。</p>
     <div class="glist">${BB_MSG.map(m=>`<div style="--c:${m.c}"><span>${m.e}</span><div><b>${esc(m.t)}</b><small>${esc(m.s)}</small></div></div>`).join('')}</div>
     <div class="acts"><button class="btn sub" data-act="hubrally">🎫 スタンプラリーのこと</button><button class="btn" data-act="info">？ あそびかた</button></div>`);
@@ -1709,10 +1711,10 @@ function openHub(id){if(id==='news')return openInfoHub('info-news');
     <div class="mybtns"><button class="btn" data-act="chatshop" data-shop="${EVENT_HOST.shopId}">💬 主催者にメッセージ</button><button class="btn sub" data-act="openshop" data-shop="${EVENT_HOST.shopId}">🏪 主催者のお店をみる</button><button class="btn sub" data-act="hubrally">🎫 スタンプラリーのこと</button></div>
     <div class="devnote">🛠 このアプリの不具合・気になる点・ご希望は <b>りーたん</b> へ <a href="${LINE_URL}" target="_blank" rel="noopener">メッセージする ↗</a></div>
     <div class="muted" style="margin-top:8px">いまは「${EVENT?'🎪 マルシェの日':'🏙 いつもの街'}」です。</div>${LIVE&&isOrganizer()?eventCtlHTML():''}`)}}
-ACT.hub=d=>goHub(d.h);
+ACT.hub=d=>goHub(d.h);hubRefresh('guide');
 ACT.hubrally=()=>openInfoHub('info-rally');
 ACT.spotmore=()=>{SPOT.i+=4;openHub('spot')};
-goInfo=function(id){goHub(id==='info-news'?'news':'guide')};
+goInfo=function(id){goHub('guide');setTimeout(()=>{if(id==='info-news'&&$('#modal.show'))openHub('news')},50)};
 {const f=renderBooths;renderBooths=function(){f();buildHub()}}
 
 /* ---------- りーたん：ご依頼・応援は「贈りポイント」で受付 ---------- */
