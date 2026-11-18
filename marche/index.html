@@ -385,6 +385,7 @@ body.watching #chatrow{opacity:.45}
 .av.sitting svg .lg{transform:scaleY(.42)!important;animation:none!important}.av.sitting svg{transform:translateY(9px)}.av.left.sitting svg{transform:scaleX(-1) translateY(9px)}.av.sitting .nm{margin-top:-8px}
 #zoomctl{position:fixed;right:10px;bottom:150px;z-index:90;display:flex;flex-direction:column;gap:6px}#zoomctl button{width:42px;height:42px;border-radius:14px;border:2px solid #f3dcc2;background:rgba(255,255,255,.94);font:inherit;font-size:20px;font-weight:800;color:#4a3b35;box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:0}#zoomctl .zall{height:50px;font-size:17px}#zoomctl small{font-size:9px;margin-top:2px}
 .pill.ppl{background:#eef8ec;border-color:#a8d89c;color:#3f7a35;margin-right:4px}.plist{display:flex;flex-direction:column;gap:6px;margin:10px 0}.prow{display:flex;align-items:center;gap:8px;border:2px solid #f3dcc2;border-radius:12px;padding:8px 10px;cursor:pointer}.prow.me{border-color:#ff8fab;cursor:default}.prow small{margin-left:auto;font-size:11px;color:#8a776c}
+.bbf.concept em{font-style:normal;font-size:9px;letter-spacing:-.2px;font-weight:800;color:#8a776c;margin-top:3px;white-space:nowrap}.bbf.concept b{font-size:12px;letter-spacing:-.3px}
 </style>
 </head>
 <body>
@@ -1632,7 +1633,6 @@ function svgBalloons(){const cs=['#ff8fab','#ffd36e','#9fdcff','#a8e6b8','#c7b5f
 function svgBanner(c){return SH(30,118,8,3)+`<rect x="13" y="6" width="4" height="114" fill="#8a776c"/><circle cx="15" cy="6" r="4" fill="#ffd36e"/><path d="M17,12 L30,12 L30,64 L23.5,58 L17,64Z" fill="${c}"/>`}
 function buildPlaza(){world.querySelectorAll('.pdeco').forEach(e=>e.remove());
   [[10.3,15.7],[15.7,10.3]].forEach(([i,j])=>deco(i,j,60,92,svgTree()));
-  deco(15.9,15.9,70,48,svgPlanter('#ff9eb5','#ffd36e'));
   if(!EVENT){deco(10.6,10.6,70,48,svgPlanter('#c7b5ff','#9fdcff'));return}
   deco(9.9,9.9,240,190,svgStage(),'stage',-60);
   [[10.2,14.2],[14.2,10.2]].forEach(([i,j])=>deco(i,j,72,122,svgBalloons()));
@@ -1658,13 +1658,11 @@ function spotLine(sh){const c=(sh.calls||[]).find(x=>!/^\d|日/.test(x))||(sh.ca
 function bboardHTML(m){return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf" style="--c:${m.c}"><b>${m.e} ${esc(m.t)}</b><span>${esc(m.s)}</span></div>`}
 function spotHTML(){const sh=spotShop();if(!sh)return'';return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf spot" style="--c:${sh.color}"><i>📣 いま応援したいお店</i><b>${esc(sh.emoji)} ${esc(sh.short||sh.name)}</b><span>${esc(spotLine(sh))}</span></div>`}
 function buildBillboards(){world.querySelectorAll('.bboard').forEach(e=>e.remove());
-  const decos=LOTS.map((L,i)=>i).filter(i=>LOTS[i].deco&&LOTS[i].deco==='オフィス').sort((a,b)=>LOTS[b].h-LOTS[a].h);let mi=0;
-  decos.forEach((i,n)=>{const L=LOTS[i],rc=P(L.i+1,L.j+1),spot=n===0;const w=spot?150:200,h=spot?82:66;
-    const el=document.createElement('div');el.className='bboard'+(spot?' spotb':'');el.style.cssText=`left:${rc[0]-w/2}px;top:${rc[1]-L.h-h-6}px;width:${w}px;height:${h+14}px;z-index:${Math.round(P(L.i,L.j)[1]+(L.f==='IJ'?T2:0))+1}`;
-    if(spot){el.dataset.act='spotgo';el.innerHTML=spotHTML()}else{const m=BB_MSG[mi++%BB_MSG.length];el.dataset.act='info';el.innerHTML=bboardHTML(m)}world.appendChild(el)});
-  /* 広場のそばに立て看板（2つ）：街の紹介と、応援したいお店 */
+  /* 広場の手前と奥（入ってすぐ見える場所）に立て看板 */
   const stand=(i,j,w,h,cls,act,html)=>{const[x,y]=P(i,j);const el=document.createElement('div');el.className='bboard stand '+cls;el.dataset.act=act;el.style.cssText=`left:${x-w/2}px;top:${y-h-40}px;width:${w}px;height:${h+40}px;z-index:${Math.round(y)}`;el.innerHTML=html;world.appendChild(el);return el};
-}
+  stand(16.95,16.95,204,88,'concept','info',conceptHTML());
+  if(!EVENT)stand(9.15,9.15,166,90,'spotb','spotgo',spotHTML())}
+function conceptHTML(){return`<div class="bbp"></div><div class="bbp r"></div><div class="bbf concept" style="--c:#ff8fab"><b>🌉 行けないけど、行った気分。</b><span>ここはネットのマルシェ</span><em>📦通販・📣応援ポイント・💬おしゃべり</em></div>`}
 let wI=0;
 function spotNext(){SPOT.i++;if(typeof hubRefresh==='function')hubRefresh('spot');world.querySelectorAll('.bboard.spotb').forEach(el=>{el.innerHTML=spotHTML()})}
 setInterval(()=>{if(!document.hidden)spotNext()},8000);
