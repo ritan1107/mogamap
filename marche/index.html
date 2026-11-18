@@ -353,15 +353,24 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
 @keyframes tin{from{transform:translateY(-10px);opacity:0}}
 .conf{position:fixed;top:-30px;font-size:22px;z-index:400;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+#capbar{position:fixed;left:50%;transform:translateX(-50%);top:92px;z-index:250;background:#4a3b35;color:#fff;border-radius:16px;padding:8px 12px;font-size:13px;font-weight:800;width:92%;max-width:440px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+#capbar button{margin-left:6px;border:0;border-radius:99px;padding:5px 10px;font:inherit;font-size:12px;background:#ff8fab;color:#fff;cursor:pointer}
+body.watching .av.me{display:none}
+body.watching #chatrow{opacity:.45}
+.gsteps{margin:4px 0 8px 1.2em;padding:0;font-size:13px;line-height:1.7}
+.waycard .btn.block{margin-top:6px}
+.idbig{font-size:40px;font-weight:900;letter-spacing:.15em;text-align:center;margin:8px 0;color:#e0607e}
+.mylist{margin:10px 0;border:2px solid #f3dcc2;border-radius:14px;overflow:hidden}
+.mylist div{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;font-size:13px}.mylist div+div{border-top:1px solid #f3dcc2}.mylist span{color:#8a776c}
+.mybtns{display:flex;flex-direction:column;gap:8px;margin-top:10px}.mybtns .btn{width:100%;text-align:center;text-decoration:none;box-sizing:border-box}
 </style>
 </head>
 <body>
 <header>
   <img class="hlogo" src="data:image/png;base64,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" alt="">
   <div class="logo">もぐマップ マルシェ</div>
-  <span class="tag">体験版</span>
+  <span class="tag" id="tagv">体験版</span>
   <div class="spacer"></div>
-  <button class="iconbtn" data-act="search" aria-label="お店をさがす">🔍</button>
   <button class="pill" data-act="book" id="pill">📮 0/3</button>
   <button class="iconbtn" data-act="info" aria-label="あそびかた">？</button>
 </header>
@@ -370,14 +379,13 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
   <input id="chatin" maxlength="40" placeholder="チャットを入力…" autocomplete="off">
   <button class="btn sub mic" data-act="mic" aria-label="音声入力">🎤</button>
   <button class="btn" data-act="send">話す</button>
-  <button class="btn sub" data-act="chatlog" aria-label="お話し">💬</button>
 </div>
 <nav>
-  <button data-act="avatar"><span class="i">🧑‍🎨</span>アバター</button>
+  <button data-act="search"><span class="i">🔍</span>お店</button>
   <button data-act="book"><span class="i">📮</span>スタンプ帳<span class="badge" id="bBook" hidden></span></button>
+  <button data-act="chatlog"><span class="i">💬</span>お話し</button>
   <button data-act="history"><span class="i">🧾</span>購入履歴</button>
-  <button data-act="create"><span class="i">🏪</span>出店する</button>
-  <button data-act="owner"><span class="i">🔑</span>出店者画面<span class="badge" id="bOwner" hidden></span></button>
+  <button data-act="mypage"><span class="i">👤</span>マイページ<span class="badge" id="bOwner" hidden></span></button>
 </nav>
 <div id="modal"></div>
 <div id="checkout"></div>
@@ -732,7 +740,7 @@ const ents=[];let me=null;
 function makeEnt(av,name,x,y,isMe){const el=document.createElement('div');el.className='av'+(isMe?' me':'');el.innerHTML=(typeof av==='string'?av:avatarSVG(av))+`<div class="nm">${esc(name)}</div>`;world.appendChild(el);
   const e={el,av,name,x,y,tx:x,ty:y,cb:null,me:!!isMe};place(e);ents.push(e);return e}
 function place(e){e.el.style.left=e.x+'px';e.el.style.top=e.y+'px';e.el.style.zIndex=Math.round(e.y)+1}
-function walkTo(e,x,y,cb){[x,y]=clampW(x,y);e.tx=x;e.ty=y;e.cb=cb||null;if(e===me)setTimeout(()=>mpTrack(),0);
+function walkTo(e,x,y,cb){if(e===me&&LIVE&&!MP.inside){if(cb)cb();return}[x,y]=clampW(x,y);e.tx=x;e.ty=y;e.cb=cb||null;if(e===me)setTimeout(()=>mpTrack(),0);
   if(x<e.x-2)e.el.classList.add('left');else if(x>e.x+2)e.el.classList.remove('left');
   if(Math.hypot(x-e.x,y-e.y)<1){e.cb=null;cb&&cb();return}e.el.classList.add('walking')}
 let last=performance.now();
@@ -800,8 +808,8 @@ function setMeLabel(){if(!me)return;const n=me.el.querySelector('.nm');if(n){n.i
 let entryRole=null;
 function openEntry(first){entryRole=null;
   openModal(`<h2>🍚 もぐマップ マルシェへようこそ</h2>${S.ref?`<div class="refbox">🤝 <b>${esc(S.ref.n)}</b> さんの紹介で来ました</div>`:''}<div class="muted">どなたとして入りますか？</div>
-  <div class="roles">${Object.entries(ROLE).map(([k,v])=>`<button class="role ${k}" data-act="role" data-r="${k}"><span>${v[0]}</span><b>${v[1]}</b><small>${k==='shop'?'出店しているお店・加盟店の方（PINで入ります）':k==='comm'?'UW.ID をお持ちの方（Uぺい・応援ポイントも使えます）':'登録なしでOK。PayPayでお買い物・スタンプ集めもできます'}</small></button>`).join('')}</div>
-  ${LIVE?(part()?`<div class="tip" style="margin-top:10px">📮 もぐマップのスタンプラリーとつながっています（参加者ID ${esc(part().entryId||'')}）</div>`:`<details class="codein"><summary>📮 もぐマップのスタンプラリーに参加済みの方</summary><div class="muted" style="margin-top:4px">マイページの参加者ID（5桁）とあいことば（4桁）で、同じスタンプ帳につながります。</div><div class="amt" style="margin-top:6px"><input id="lg_id" inputmode="numeric" maxlength="5" placeholder="参加者ID" style="font-size:16px!important;text-align:left"><input id="lg_pin" type="password" inputmode="numeric" maxlength="4" placeholder="あいことば" style="font-size:16px!important;text-align:left"><button class="btn small" data-act="plogin">つなぐ</button></div><div class="err" id="lg_err"></div></details>`):''}
+  <div class="roles">${Object.entries(ROLE).map(([k,v])=>`<button class="role ${k}" data-act="role" data-r="${k}"><span>${v[0]}</span><b>${v[1]}</b><small>${k==='shop'?'出店しているお店・加盟店の方（PINで入ります）':k==='comm'?'UW.ID をお持ちの方（お買い物・スタンプラリー・応援ポイント）':'登録なしでOK。見学とおしゃべりができます（お買い物はコミュニティ登録のあと）'}</small></button>`).join('')}</div>
+  ${LIVE?(part()?`<div class="tip" style="margin-top:10px">📮 もぐマップのスタンプラリーとつながっています（参加者ID ${esc(part().entryId||'')}）</div>`:`<details class="codein"><summary>📮 登録済みの方（もぐマップ・マルシェ）</summary><div class="muted" style="margin-top:4px">参加者ID（5桁）とあいことば（4桁）で入ると、キャラもスタンプ帳もそのまま使えます。</div><div class="amt" style="margin-top:6px"><input id="lg_id" inputmode="numeric" maxlength="5" placeholder="参加者ID" style="font-size:16px!important;text-align:left"><input id="lg_pin" type="password" inputmode="numeric" maxlength="4" placeholder="あいことば" style="font-size:16px!important;text-align:left"><button class="btn small" data-act="plogin">つなぐ</button></div><div class="err" id="lg_err"></div></details>`):''}
   <details class="codein"><summary>🔑 キャラの保存コードを持っている方</summary><div class="amt" style="margin-top:6px"><input id="en_code" placeholder="MOGU-…" style="font-size:15px!important;font-weight:700;text-align:left"><button class="btn small" data-act="usecode">使う</button></div><div class="err" id="code_err"></div></details>
   <div id="entryForm"></div>${first?'':'<div class="acts"><button class="btn sub" data-act="close">やめる</button></div>'}`,first)}
 function entryForm(r){entryRole=r;document.querySelectorAll('.role').forEach(b=>b.classList.toggle('on',b.dataset.r===r));const f=$('#entryForm');const p=lsGet(PKEY);
@@ -809,8 +817,8 @@ function entryForm(r){entryRole=r;document.querySelectorAll('.role').forEach(b=>
     <label class="fl">お店のPIN（もぐマップのお店アプリと同じ）<input id="en_pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN"></label>
     <label class="fl">お店の人のなまえ（キャラの名札）<input id="en_name" maxlength="10" value="${esc(S.role==='shop'?S.name:'')}" placeholder="例：ゆかりママ"></label>`;
   if(r==='comm')f.innerHTML=`<label class="fl">ニックネーム<input id="en_name" maxlength="10" value="${esc(S.name&&S.name!=='ゲスト'?S.name:(p&&p.nickname)||'')}" placeholder="例：りーたん"></label>
-    <label class="fl">UW.ID<input id="en_uw" maxlength="30" autocomplete="off" value="${esc(S.uw||(p&&p.uwId)||'')}" placeholder="例：UW-12345"></label><div class="muted">もぐマップのスタンプラリーで使うUW.IDと同じです。</div>`;
-  if(r==='guest')f.innerHTML=`<label class="fl">ニックネーム（なくてもOK）<input id="en_name" maxlength="10" value="${esc(S.name&&S.name!=='ゲスト'?S.name:'')}" placeholder="例：さっぽろ太郎"></label><div class="muted">ゲストとして入ると、名札に「ゲスト」と表示されます。</div>`;
+    <label class="fl">UW.ID<input id="en_uw" maxlength="30" autocomplete="off" value="${esc(S.uw||(p&&p.uwId)||'')}" placeholder="例：UW-12345"></label><div class="muted">もぐマップのスタンプラリーで使うUW.IDと同じです。</div>${LIVE&&!part()?`<label class="fl">あいことば（4桁の数字・別の端末で入るときに使います）<input id="en_pin4" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="例：1234"></label><div class="tip">📮 もぐマップで登録済みの方は、上の「登録済みの方」から入ってね（もう一度登録しなくてOK）</div>`:''}`;
+  if(r==='guest')f.innerHTML=`<label class="fl">ニックネーム（なくてもOK）<input id="en_name" maxlength="10" value="${esc(S.name&&S.name!=='ゲスト'?S.name:'')}" placeholder="例：さっぽろ太郎"></label><div class="muted">名札に「ゲスト」と表示されます。キャラはこの端末に保存されます。</div>`;
   f.innerHTML+=`<div class="err" id="en_err"></div>${LIVE||r==='guest'?'':'<div class="muted">※ 体験版のため、PIN・UW.IDの確認はしていません。公開版ではもぐマップで確認します。</div>'}<div class="acts"><button class="btn" data-act="entergo">${S.avatar?'入る':'次へ：アバターを作る →'}</button></div>`}
 async function enterGo(btn){const r=entryRole,err=t=>{$('#en_err').textContent=t};const nm=(($('#en_name')||{}).value||'').trim();
   btn.disabled=true;try{
@@ -818,11 +826,14 @@ async function enterGo(btn){const r=entryRole,err=t=>{$('#en_err').textContent=t
     if(LIVE){const x=await rpc('mogu_shop_login',{p_shop_id:id,p_pin:pin});if(!x||!x.ok)return err((x&&x.message)||'PINがちがいます');lsSet(LKEY,{shopId:id,pin,name:(shopById(id)||{}).name||'',organizer:!!x.organizer})}
     S.role='shop';S.shopId=id;S.name=nm||'お店の人';S.uw=''}
   if(r==='comm'){const uw=$('#en_uw').value.trim();if(!nm)return err('ニックネームを入れてください');if(!uw)return err('UW.IDを入れてください');
-    if(LIVE){const p=lsGet(PKEY);if(!(p&&p.uwId===uw)){const rows=await rpc('start_rally_with_uwid',{p_nickname:nm,p_uw_id:uw}),x=rows&&rows[0];if(!x)return err('UW.IDを確認できませんでした');lsSet(PKEY,{id:x.id||x.participant_id,token:x.participant_token,nickname:x.nickname||nm,entryId:x.participant_entry_id||'',uwId:x.uw_id||uw,style:'onsite'})}}
+    if(LIVE){const p=part();if(p){if(p.uwId!==uw){p.uwId=uw;lsSet(PKEY,p)}}else{const pin=(($('#en_pin4')||{}).value||'').trim();if(!/^\d{4}$/.test(pin))return err('あいことば（4桁の数字）を決めてください');
+      const rows=await rpc('start_rally_with_uwid',{p_nickname:nm,p_uw_id:uw}),x=rows&&rows[0];if(!x)return err('UW.IDを確認できませんでした');
+      const np={id:x.id||x.participant_id,token:x.participant_token,nickname:x.nickname||nm,entryId:x.participant_entry_id||'',uwId:x.uw_id||uw,style:'onsite'};lsSet(PKEY,np);
+      try{const q=await rpc('mogu_set_login_pin',{p_participant_id:np.id,p_participant_token:np.token,p_pin:pin});if(q&&q[0]&&q[0].entry_id){np.entryId=q[0].entry_id;lsSet(PKEY,np)}S.showId=true}catch(e){console.warn(e)}}}
     S.role='comm';S.uw=uw;S.name=nm;S.shopId=''}
   if(r==='guest'){S.role='guest';S.name=nm||S.name||'ゲスト';S.uw='';S.shopId=''}
-  save();renderBooths();setMeLabel();
-  if(!S.avatar)openAvatar(true);else{if(!me)startMe();closeModal();toast(`${ROLE[S.role][0]} ${ROLE[S.role][1]}として入りました`)}
+  save();renderBooths();setMeLabel();if(LIVE)await profReload();
+  if(!S.avatar)openAvatar(true);else{if(!me)startMe();if(S.showId){S.showId=false;save();openIdCard()}else closeModal();toast(`${ROLE[S.role][0]} ${ROLE[S.role][1]}として入りました`)}
   }catch(e){err(String(e.message||e).includes('UW')?'UW.IDを確認してください':'うまくいきませんでした。もう一度お試しください')}finally{btn.disabled=false}}
 
 /* ---------- スタンプラリー連動（もぐマップと同じ参加者・同じスタンプ帳） ---------- */
@@ -892,7 +903,7 @@ async function loginParticipant(btn){const id=($('#lg_id').value||'').trim(),pin
   if(!/^\d{5}$/.test(id)||!/^\d{4}$/.test(pin))return st.textContent='参加者ID（5桁）と4桁のあいことばを入れてください';btn.disabled=true;
   try{const x=(await rpc('mogu_login',{p_entry_id:id,p_pin:pin}))[0];if(!x||!x.ok){st.textContent=(x&&x.message)||'ログインできませんでした';return}
     lsSet(PKEY,{id:x.participant_id,token:x.participant_token,nickname:x.nickname||'',entryId:x.entry_id||id});if(!S.name&&x.nickname)S.name=x.nickname;save();
-    st.textContent='';toast(`おかえりなさい、${x.nickname||''}さん。もぐマップのスタンプ帳とつながりました`);await loadRally(true);await loadSubs();openEntry(!S.role)}
+    st.textContent='';toast(`おかえりなさい、${x.nickname||''}さん。もぐマップのスタンプ帳とつながりました`);await loadRally(true);await loadSubs();await profReload();if(S.role&&S.avatar){if(!me)startMe();setMeLabel();renderBooths();closeModal()}else openEntry(!S.role)}
   catch(e){st.textContent='ログインできませんでした'}finally{btn.disabled=false}}
 
 /* ---------- アバター編集 ---------- */
@@ -980,7 +991,7 @@ function stampPanel(sh){const st=stampStatus(sh.id);const real=sh.real;
   const how=sh.rally===false?'':`<div class="sec"><b>🎯 このお店でのもらい方</b><p>${esc(sh.note||'お店やイベントでのお買い物でスタンプがもらえます。')}</p>${sh.online?'<p class="muted" style="margin-top:4px">📦 遠くからでも、通販で買えばスタンプがもらえます</p>':''}</div>`;
   const hist=LIVE&&real?RL.subs.filter(r=>r.shop_id===sh.id).map(r=>`<div class="mini">${hm(r.created_at)} <span class="chip ${r.status==='approved'?'approved':r.status==='pending'?'pending':'rejected'}">${r.status==='approved'?'スタンプ済み':r.status==='pending'?'確認待ち':'見送り'}</span>${r.response_message?`<div class="muted">お店から：${esc(r.response_message)}</div>`:''}</div>`).join(''):mine.map(p=>`<div class="mini">${esc(p.itemName)} ${hm(p.time)} <span class="chip ${p.stamp==='none'?'bought':p.stamp}">${{none:'未申請',pending:'確認待ち',approved:'スタンプ済み',rejected:'確認できず'}[p.stamp]}</span></div>`).join('');
   return box+how+(hist?`<div class="sec"><b>🧾 これまでの申請</b>${hist}</div>`:'')}
-function buyPanel(sh){const p=payOf(sh);const steps=[];
+function buyPanel(sh){if(isGuest())return guestBuyPanel(sh);const p=payOf(sh);const steps=[];
   if(sh.menu&&sh.menu.length){const mine=S.purchases.filter(x=>x.buyer==='me'&&x.shopId===sh.id);
     steps.push(`<div class="menu">${sh.menu.map((m,i)=>{const n=mine.filter(x=>x.itemName===m.name).length;return`<div class="item"><div class="em">${esc(m.emoji)}</div><div class="body"><div class="inm">${esc(m.name)}</div><div class="pr">${yen(m.price)}</div>${m.desc?`<div class="ds">${esc(m.desc)}</div>`:''}${n?`<div class="bought">✓ 購入済み（${n}回）</div>`:''}</div><button class="btn small" data-act="buy" data-shop="${sh.id}" data-i="${i}">買う</button></div>`}).join('')}</div>`)}
   if(sh.buy)steps.push(`<div class="waycard main"><div class="wh">🌐 ネットで買う<small>おすすめ・遠くからでもOK</small></div><a class="btn block" href="${esc(sh.buy)}" target="_blank" rel="noopener">購入ページを開く ↗</a><div class="muted">買い終わったらマルシェに戻って「📮 スタンプ申請」をしてね。</div></div>`);
@@ -1146,7 +1157,7 @@ function botReply(n,v){const E=n.end;
   if(/バイバイ|またね|じゃあね|おやすみ/.test(v))return 'またね〜！楽しんでね';
   if(/[?？]|かな/.test(v))return 'うーん…案内所の人に聞くとわかるかも！';
   return pick(['そうなんだ〜！',`わかる${E}！`,'いいね！','へぇ〜！もっと聞かせて',`${n.like}の話もしたい${E}`,'うんうん！'])}
-function sendChat(){const inp=$('#chatin');const v=inp.value.trim();if(!v||!me)return;say(me,v);logChat(S.name,v);inp.value='';mpSend(v);
+function sendChat(){if(LIVE&&!MP.inside){toast('満員のあいだは見るだけです。「入室を待つ」で順番に入れます',3500);return}const inp=$('#chatin');const v=inp.value.trim();if(!v||!me)return;say(me,v);logChat(S.name,v);inp.value='';mpSend(v);
   let t=partner&&Math.hypot(partner.x-me.x,partner.y-me.y)<320?partner:null;
   if(!t){const near=npcs().map(e=>[e,Math.hypot(e.x-me.x,e.y-me.y)]).filter(x=>x[1]<300).sort((a,b)=>a[1]-b[1]);if(near.length)t=near[0][0]}
   if(t){t.busy=Date.now()+5000;t.tx=t.x;t.ty=t.y;t.el.classList.remove('walking');t.el.classList.toggle('left',me.x<t.x);setTimeout(()=>{const r=botReply(t.npc,v);say(t,r);logChat(t.name,r)},900+Math.random()*900)}}
@@ -1167,7 +1178,7 @@ function startMic(btn){const SR=window.SpeechRecognition||window.webkitSpeechRec
 $('#chatin').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();sendChat()}});
 
 /* ---------- あそびかた ---------- */
-function openInfo(){openModal(`<h2>🍚 もぐマップ マルシェの遊びかた</h2>
+function openInfoOld(){openModal(`<h2>🍚 もぐマップ マルシェの遊びかた</h2>
 <ol class="steps"><li>地面をタップすると、アバターが歩きます。</li><li><b>お店のビルやテント・看板</b>をタップするか、上の🔍でさがすと、そのお店のページが開きます。「💬 お店と話す」でお店の人とメッセージもできます。</li><li>購入ページで買い物したり、お店で買ったら「スタンプを申請」します。</li><li>お店の人が<b>出店者画面</b>（またはもぐマップのお店アプリ）で確認して、スタンプを押します。<b>もぐマップのスタンプラリーと同じスタンプ帳</b>なので、マルシェでもらったスタンプも、お店でもらったスタンプも、両方に入ります。</li><li>スタンプ${GOAL}個で1クリア！そのあとも${GOAL}個ごとにクリアが続きます。</li><li>大きなもぐマークのビル<b>「情報局」</b>と<b>「案内所」</b>で、お知らせやガイドが見られます。</li><li>歩いている<b>街の住人</b>をタップすると話しかけられます。下の入力欄に打つか、🎤ボタンで声で話すと返事をしてくれます。（住人は自動でおしゃべりするキャラです）</li></ol>
 <div class="future"><b>本番版で追加できること</b><br>・もぐマップのお店データ・スタンプ帳とリアルタイムで連動<br>・みんなが同じ街にいて、リアルタイムで動く・話せる<br>・お店ごとの暗証番号ログイン、お店の人のキャラを自分で着せかえ<br>・開催日だけ開く「マルシェの日」、イベント告知</div>
 <div class="muted" style="margin-top:10px">※ お店の情報は、もぐマップに公開中のスタンプラリー参加店（11/18時点）です。体験版のスタンプや購入履歴は、このブラウザの中だけに保存されます。</div>
@@ -1293,16 +1304,17 @@ function loadSB(){return new Promise((res,rej)=>{if(window.supabase&&window.supa
 async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=window.supabase.createClient(API,AKEY);MP.client=c;
   MP.ch=c.channel('marche-town',{config:{presence:{key:MP.id},broadcast:{self:false}}});
   MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));MP.ch.on('broadcast',{event:'inv'},({payload})=>onInvite(payload));
-  MP.ch.subscribe(st=>{if(st==='SUBSCRIBED')mpTrack(true)})}catch(e){console.warn(e)}}
-function mpMeta(){const c=avatarCode().split('-');return{n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
-function mpTrack(force){if(!MP.ch||!me)return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
+  MP.ch.subscribe(st=>{if(st==='SUBSCRIBED'){mpTrack(true);setTimeout(()=>{MP.ready=true;mpSync()},1500)}else if((st==='CHANNEL_ERROR'||st==='TIMED_OUT')&&!MP.decided)mpFail()})}catch(e){console.warn(e);mpFail()}}
+function mpFail(){MP.decided=true;MP.inside=true;if(typeof applyWatch==='function')applyWatch()}
+function mpMeta(){const c=avatarCode().split('-');if(!MP.inside)return{w:1,q:MP.mode==='wait'?MP.q:0,n:String(S.name||'ゲスト').slice(0,10)};return{n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
+function mpTrack(force){if(!MP.ch||(!me&&MP.inside))return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
 function otherLabel(m){const nm=esc(m.n||'ゲスト');return m.r==='shop'?`<b class="rb s">🏪お店</b>${nm}`:m.r==='comm'?`<b class="rb c">🤝</b>${nm}`:`<b class="rb g">ゲスト</b>${nm}`}
 function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
-  for(const k in st){if(k===MP.id)continue;const m=(st[k]||[])[0];if(!m)continue;seen.add(k);let e=ents.find(x=>x.other===k);
+  const waiters=[];for(const k in st){if(k===MP.id)continue;const m=(st[k]||[])[0];if(!m)continue;if(m.w){waiters.push(m.q||0);continue}seen.add(k);let e=ents.find(x=>x.other===k);
     if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
     e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y)}
   for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
-  setBots(seen.size)}
+  setBots(seen.size);capCheck(seen.size,waiters)}
 let botTarget=null;
 function setBots(nOthers){const want=nOthers===0?NPCS.length:nOthers<=2?(botTarget&&botTarget.n===nOthers?botTarget.v:3+Math.floor(Math.random()*3)):0;botTarget={n:nOthers,v:want};
   ents.filter(e=>e.npc).forEach((e,i)=>{const off=i>=want;if(off!==!!e.off){e.off=off;e.el.style.display=off?'none':''}})}
@@ -1396,7 +1408,7 @@ function onInvite(p){if(!p||!Array.isArray(p.to)||!p.to.includes(MP.id)||MP.hide
 function createRoom(ids){if(!MP.ch||!ids.length)return;const names=ids.map(i=>{const e=ents.find(x=>x.other===i);return e?e.name:'？'});const id=Math.random().toString(36).slice(2)+Date.now().toString(36);
   const name=ids.length===1?`${names[0]}さんと`:[S.name].concat(names).join('・').slice(0,24);const r=roomJoin(id,name,[S.name].concat(names));
   MP.ch.send({type:'broadcast',event:'inv',payload:{to:ids,room:id,name:ids.length===1?`${S.name}さんと`:name,members:r.members,from:MP.id,fn:S.name}});openRoom(id)}
-function talkBadge(){const n=Object.values(RM.rooms).reduce((a,r)=>a+r.unread,0);let b=$('#bTalk');if(!b){const btn=document.querySelector('#chatrow [data-act=chatlog]');if(!btn)return;btn.style.position='relative';btn.insertAdjacentHTML('beforeend','<span class="badge" id="bTalk" hidden></span>');b=$('#bTalk')}b.hidden=!n;b.textContent=n}
+function talkBadge(){const n=Object.values(RM.rooms).reduce((a,r)=>a+r.unread,0);let b=$('#bTalk');if(!b){const btn=document.querySelector('nav [data-act=chatlog]');if(!btn)return;btn.style.position='relative';btn.insertAdjacentHTML('beforeend','<span class="badge" id="bTalk" hidden></span>');b=$('#bTalk')}b.hidden=!n;b.textContent=n}
 function openTalk(){RM.cur=null;const others=ents.filter(e=>e.other);
   openModal(`<h2>💬 お話し</h2>${LIVE?'':'<div class="tip">ないしょのお話しは公開版で使えます。</div>'}
   <div class="trow" data-act="publog"><span>🌐</span><div><b>みんなのチャット</b><div class="muted">街のみんなに見える会話</div></div></div>
@@ -1411,8 +1423,105 @@ function roomSend(){const r=RM.rooms[RM.cur],i=$('#rmsg');if(!r||!i)return;const
 function roomLeave(){const r=RM.rooms[RM.cur];if(!r)return;try{r.ch.send({type:'broadcast',event:'m',payload:{sys:'leave',n:S.name}});MP.client.removeChannel(r.ch)}catch(e){}delete RM.rooms[RM.cur];RM.cur=null;openTalk()}
 document.addEventListener('keydown',e=>{if(e.target.id==='rmsg'&&e.key==='Enter'&&!e.isComposing){e.preventDefault();roomSend()}});
 
+/* ---------- 会員だけお買い物・30人まで・登録の引き継ぎと自動保存 ---------- */
+const CAP=window.MARCHE_CAP||30,LINE_URL='https://lin.ee/7NSN6RL';
+const isGuest=()=>!S.role||S.role==='guest';
+function refInTown(){if(!S.ref)return null;return ents.find(e=>e.other&&e.meta&&e.meta.n===S.ref.n&&(e.meta.r==='comm'||e.meta.r==='shop'))||null}
+function guestCard(){const r=refInTown();
+  return `<div class="waycard guest"><div class="wh">🙋 お買い物はコミュニティの人だけ</div><p>ゲストさんは、街の見学とおしゃべりができます。</p>
+  <ol class="gsteps"><li>${S.ref?`紹介者の <b>${esc(S.ref.n)}</b> さん`:'紹介者さん'}から、コミュニティ登録（無料版・有料版）を送ってもらう</li><li>登録できたら、UW.IDで入り直す</li></ol>
+  ${r?`<button class="btn block" data-act="talkto" data-id="${r.other}">💬 ${esc(S.ref.n)}さんと話す（いま街にいます）</button>`:''}
+  ${JOIN_URL?`<a class="btn block" href="${esc(JOIN_URL)}" target="_blank" rel="noopener">コミュニティ登録 ↗</a>`:''}
+  ${S.ref?'':`<a class="btn sub block" href="${LINE_URL}" target="_blank" rel="noopener">紹介者がいない方は、運営のLINEへ ↗</a>`}
+  <button class="btn sub block" data-act="becomecomm">✅ 登録できた → UW.IDで入り直す</button></div>`}
+function guestBuyPanel(sh){const menu=sh.menu&&sh.menu.length?`<div class="menu">${sh.menu.map(m=>`<div class="item"><div class="em">${esc(m.emoji)}</div><div class="body"><div class="inm">${esc(m.name)}</div><div class="pr">${yen(m.price)}</div>${m.desc?`<div class="ds">${esc(m.desc)}</div>`:''}</div></div>`).join('')}</div>`:'';return guestCard()+menu}
+function openGuestBuy(){openModal(`<h2>🙋 ゲストさんへ</h2>${guestCard()}<div class="acts"><button class="btn sub" data-act="close">とじる</button></div>`)}
+['buy','upay','paid','bought','sendbought','apply','sendapply','pay','extdone'].forEach(k=>{const f=ACT[k];if(f)ACT[k]=(d,b,e)=>isGuest()?openGuestBuy():f(d,b,e)});
+ACT.becomecomm=()=>{openEntry(false);setTimeout(()=>entryForm('comm'),0)};
+
+/* --- 30人まで：満員なら「外から見る」か「入室を待つ」 --- */
+MP.inside=false;MP.mode='';MP.q=0;MP.cnt={inside:0,ahead:0};MP.decided=false;
+function applyWatch(){document.body.classList.toggle('watching',LIVE&&!MP.inside);capBar()}
+function capBar(){let b=$('#capbar');if(!b){b=document.createElement('div');b.id='capbar';document.body.appendChild(b)}
+  if(!LIVE||MP.inside||!MP.decided){b.hidden=true;return}b.hidden=false;
+  b.innerHTML=MP.mode==='wait'?`⏳ 入室待ち（前に${MP.cnt.ahead}人）… 空いたら自動で入ります <button data-act="capwatch">やめる</button>`:`👀 いま満員（${CAP}人）なので、外から見ています <button data-act="capwait">⏳ 入室を待つ</button>`}
+function enterTown(){const was=MP.mode==='wait';MP.inside=true;MP.mode='';MP.q=0;applyWatch();mpTrack(true);if(was)toast('🎉 入室できました！',3500)}
+function capCheck(inside,waiters){MP.cnt.inside=inside;if(MP.inside||!MP.ready)return;const first=!MP.decided;MP.decided=true;
+  if(MP.mode==='wait'){const ahead=waiters.filter(q=>q&&q<MP.q).length;MP.cnt.ahead=ahead;if(inside+ahead<CAP)return enterTown();return capBar()}
+  if(inside+waiters.filter(Boolean).length<CAP)return enterTown();
+  if(!MP.mode){MP.mode='watch';applyWatch();mpTrack(true);if(first)toast(`いま街は満員（${CAP}人）です。外から見るか、入室を待てます`,4500)}else capBar()}
+ACT.capwait=()=>{MP.mode='wait';MP.q=Date.now();mpTrack(true);mpSync()};
+ACT.capwatch=()=>{MP.mode='watch';MP.q=0;mpTrack(true);capBar()};
+
+/* --- 登録した人のキャラは自動で保存（別の端末でも同じキャラ） --- */
+const PRF={t:null,loaded:false,last:''};
+function profKey(){if(S.role==='shop'){const l=shopLogin();return l?{k:'s',l}:null}const p=part();return p?{k:'p',p}:null}
+const avDigits=()=>(avatarCode().split('-')[1])||'';
+function refreshMe(){if(!me)return;me.av=S.avatar;me.name=S.name;me.el.innerHTML=avatarSVG(S.avatar)+'<div class="nm"></div>';setMeLabel()}
+async function profLoad(){if(!LIVE)return;const k=profKey();if(!k)return;
+  try{const rows=k.k==='p'?await rpc('marche_get_profile_p',pAuth(k.p)):await rpc('marche_get_profile_s',{p_shop_id:k.l.shopId,p_pin:k.l.pin});const v=rows&&rows[0];PRF.loaded=true;
+    if(v&&v.avatar){const [dg,uw]=String(v.avatar).split('|');const pa=parseCode('MOGU-'+dg+'-x');if(!pa)return;const changed=avDigits()!==dg;S.avatar=pa.avatar;if(v.name)S.name=v.name;
+      if(k.k==='p'&&(v.role==='comm'||v.role==='guest')){S.role=v.role;if(uw){S.uw=uw;if(!k.p.uwId){k.p.uwId=uw;lsSet(PKEY,k.p)}}}
+      PRF.last=k.k+String(v.avatar)+S.name+S.role;save();if(me){if(changed)refreshMe();else setMeLabel()}else if(S.role)startMe();renderBooths();mpTrack(true);if(changed)toast('保存してあるキャラで入りました')}
+    else profSave(true)}catch(e){console.warn(e)}}
+function profSave(force){if(!LIVE||!S.avatar||!S.role)return;const k=profKey();if(!k||(!PRF.loaded&&!force))return;
+  const av=avDigits()+(S.role==='comm'&&S.uw?'|'+String(S.uw).slice(0,30):''),sig=k.k+av+S.name+S.role;if(sig===PRF.last)return;
+  clearTimeout(PRF.t);PRF.t=setTimeout(async()=>{try{if(k.k==='p')await rpc('marche_save_profile_p',Object.assign(pAuth(k.p),{p_avatar:av,p_name:String(S.name||'').slice(0,20),p_role:S.role}));
+    else await rpc('marche_save_profile_s',{p_shop_id:k.l.shopId,p_pin:k.l.pin,p_avatar:av,p_name:String(S.name||'').slice(0,20)});PRF.last=sig;PRF.loaded=true}catch(e){console.warn(e)}},1200)}
+{const base=cloudSave;cloudSave=function(){base();profSave()}}
+function profReload(){PRF.loaded=false;PRF.last='';return profLoad()}
+
+/* --- もぐマップで登録済みの人は、そのまま入れる（キャラは自動で用意・あとで着せかえOK） --- */
+function strHash(s){let h=7;for(const c of String(s))h=(Math.imul(h,31)+c.charCodeAt(0))>>>0;return h}
+function autoFromMogu(){if(S.role)return false;const l=lsGet(LKEY),p=part();
+  if(l&&l.shopId&&l.pin&&shopById(l.shopId)){S.role='shop';S.shopId=l.shopId;S.uw='';if(!S.name)S.name='お店の人'}
+  else if(p){S.role=p.uwId?'comm':'guest';S.uw=p.uwId||'';S.shopId='';if(!S.name||S.name==='ゲスト')S.name=String(p.nickname||'ゲスト').slice(0,10)}
+  else return false;
+  if(!S.avatar)S.avatar=normalize(randAvatar(seeded(strHash((p&&p.id)||(l&&l.shopId)||'x'))));save();return true}
+
+/* --- 参加者ID（別の端末で入るとき用） --- */
+function openIdCard(){const p=part();if(!p)return;openModal(`<h2>🎫 あなたの参加者ID</h2><div class="idbig">${esc(p.entryId||'——')}</div>
+  <p>別のスマホ・パソコンでは、入り口の「登録済みの方」で<b>参加者ID</b>と<b>あいことば（4桁）</b>を入れると、キャラもスタンプもそのまま使えます。</p><div class="muted">スクショしておくと安心です。</div>
+  <details class="codein"><summary>🔒 あいことばを決める・変える</summary><div class="amt" style="margin-top:6px"><input id="np_pin" type="password" inputmode="numeric" maxlength="4" placeholder="4桁の数字" style="font-size:16px!important;text-align:left"><button class="btn small" data-act="setpin">決める</button></div><div class="err" id="np_err"></div></details>
+  <div class="acts"><button class="btn" data-act="close">OK</button></div>`)}
+ACT.idcard=()=>openIdCard();
+ACT.setpin=async(d,b)=>{const p=part(),pin=($('#np_pin').value||'').trim(),st=$('#np_err');if(!/^\d{4}$/.test(pin))return st.textContent='4桁の数字にしてください';b.disabled=true;
+  try{const q=await rpc('mogu_set_login_pin',{p_participant_id:p.id,p_participant_token:p.token,p_pin:pin});if(q&&q[0]&&q[0].entry_id){p.entryId=q[0].entry_id;lsSet(PKEY,p)}toast('あいことばを決めました');openIdCard()}catch(e){st.textContent='うまくいきませんでした'}finally{b.disabled=false}};
+{const f=ACT.saveav;ACT.saveav=d=>{f(d);if(S.showId){S.showId=false;save();setTimeout(openIdCard,500)}}}
+
+/* --- マイページ --- */
+function openMyPage(){const p=part(),sh=S.role==='shop'?shopById(S.shopId):null,r=ROLE[S.role||'guest'];const cloud=LIVE&&!!profKey();
+  openModal(`<div class="prof"><div class="pav">${S.avatar?avatarSVG(S.avatar,'head'):''}</div><div><h2 style="margin:0">${esc(S.name||'ゲスト')} さん</h2><div class="muted">${r[0]} ${r[1]}${sh?'・'+esc(sh.name):''}</div></div></div>
+  <div class="mylist">${S.role==='comm'?`<div><span>UW.ID</span><b>${esc(S.uw)}</b></div>`:''}${p&&p.entryId&&S.role!=='shop'?`<div><span>参加者ID</span><b>${esc(p.entryId)}</b></div>`:''}
+  <div><span>キャラ</span><b>${cloud?'☁️ 自動で保存中（別の端末でも同じ）':'📱 この端末に保存中'}</b></div></div>
+  ${isGuest()?guestCard():''}
+  <div class="mybtns"><button class="btn" data-act="avatar">🧑‍🎨 キャラを着せかえる</button>
+  ${S.role==='shop'?'<button class="btn" data-act="owner">🔑 出店者画面（申請・メッセージ）</button>':''}
+  ${S.role==='comm'||S.role==='shop'?'<button class="btn sub" data-act="invite">🤝 紹介リンクを送る</button>':''}
+  ${LIVE&&p&&S.role!=='shop'?'<button class="btn sub" data-act="idcard">🎫 別の端末で入るには</button>':''}
+  ${cloud?'':'<button class="btn sub" data-act="savecode">🔑 キャラの保存コード</button>'}
+  <button class="btn sub" data-act="relogin">🔄 入り直す（お店の人・コミュニティに切りかえ）</button>
+  <a class="btn sub" href="${LINE_URL}" target="_blank" rel="noopener">🏪 出店したい・困ったとき（運営LINE）↗</a>
+  <button class="btn sub" data-act="info">？ あそびかた</button></div>`)}
+ACT.mypage=()=>openMyPage();
+ACT.savecode=()=>openModal(`<h2>🔑 キャラの保存コード</h2><div class="muted">別のスマホやブラウザの入り口で、このコードを入れると同じキャラになります。</div><div class="code">${esc(avatarCode())}</div><div class="acts"><button class="btn" data-act="copycode">📋 コピー</button></div>`);
+{const f=ACT.owner;ACT.owner=(d,b,e)=>{if(LIVE&&S.role!=='shop')return openModal('<h2>🔑 出店者画面</h2><p>お店の人として入ると、スタンプ申請の確認やメッセージのお返事ができます。</p><div class="acts"><button class="btn" data-act="relogin">お店の人として入る</button></div>');return f(d,b,e)}}
+{const f=ACT.create;ACT.create=(d,b,e)=>{if(LIVE)return openModal(`<h2>🏪 出店したい方へ</h2><p>マルシェへの出店は、もぐマップのスタンプラリー加盟店として登録すると、街にお店が出ます。</p><a class="btn block" href="${LINE_URL}" target="_blank" rel="noopener">運営のLINEで相談する ↗</a>`);return f(d,b,e)}}
+
+/* --- あそびかた（いまの仕組みに合わせて） --- */
+function openInfo(){openModal(`<h2>🍚 あそびかた</h2>
+<ol class="steps"><li><b>歩く</b>：地面をタップ。お店の看板をタップすると、お店のページが開きます。</li>
+<li><b>買う</b>：お店の「🛒 買う」から。お買い物はコミュニティの人だけです（ゲストさんは見学とおしゃべり）。遠くからはPayPay・クレジット、お店では現金・ポイントも使えます。</li>
+<li><b>スタンプ</b>：買ったら「📮 スタンプ申請」で購入画面のスクショを送ります。お店が確認するとスタンプが押されます。もぐマップのスタンプ帳と同じです。</li>
+<li><b>話す</b>：下の入力欄でみんなと。人をタップすると、ふたりやグループで話せます（周りには見えず、保存もされません）。</li>
+<li><b>キャラ</b>：👤マイページで着せかえ。登録した人は自動で保存され、別の端末でも参加者IDとあいことばで入れます。</li></ol>
+<div class="muted">街に入れるのは${CAP}人まで。満員のときは、外から見るか入室を待てます。</div>
+${LIVE?'':`<div class="tip" style="margin-top:8px">ここは体験版です。みんなと会えるのは <a href="${SITE}" target="_blank" rel="noopener">公開ページ</a> です。</div>`}
+<div class="acts">${LIVE?'':'<button class="btn sub small" data-act="reset">お店・スタンプをリセット</button>'}<button class="btn" data-act="close">街にもどる</button></div>`)}
+function liveUI(){const t=$('#tagv');if(LIVE){document.title='もぐマップ マルシェ';if(t)t.remove()}else if(t)t.innerHTML=`<a href="${SITE}" target="_blank" rel="noopener" style="color:inherit">体験版・本番はこちら↗</a>`;applyWatch()}
+
 /* ---------- 起動 ---------- */
-function startMe(){const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
+function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
 function npcs(){return ents.filter(e=>e.npc&&!e.off)}
 const DOG=`<svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="43" rx="18" ry="3" fill="rgba(0,0,0,.13)"/><g><path d="M12,24 Q4,14 8,10" stroke="#e8c79a" stroke-width="5" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-12 12 24;14 12 24;-12 12 24" dur=".5s" repeatCount="indefinite"/></path></g><ellipse cx="27" cy="29" rx="16" ry="10" fill="#fff4e3"/><rect x="15" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><rect x="33" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><circle cx="43" cy="20" r="11" fill="#fff4e3"/><ellipse cx="35" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(20 35 17)"/><ellipse cx="51" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(-20 51 17)"/><circle cx="40" cy="20" r="1.8" fill="#3a2a2a"/><circle cx="47" cy="20" r="1.8" fill="#3a2a2a"/><ellipse cx="44" cy="25" rx="2.2" ry="1.6" fill="#3a2a2a"/><ellipse cx="38" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><ellipse cx="50" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><rect x="33" y="28" width="16" height="3" rx="1.5" fill="#ff5c8a"/><circle cx="41" cy="32" r="2" fill="#ffd36e"/></svg>`;
@@ -1431,10 +1540,10 @@ function startNPCs(){NPCS.forEach(n=>{const p=randWalk();const e=makeEnt(n.av,n.
 load();buildBg();renderBooths();fit();startNPCs();startPets();updateBadges();
 window.addEventListener('resize',()=>{fit();follow(1)});
 requestAnimationFrame(tick);
-function boot(){if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
+function boot(){if(!S.role&&autoFromMogu()){if(!me)startMe();setTimeout(()=>toast(`もぐマップの登録で入りました（${ROLE[S.role][1]}）。キャラは👤マイページで変えられます`,5000),700);return}if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
 readRef();cloudInit();
 if(S.avatar)boot();else{let done=false;restoreAvatar(b=>{if(done)return;done=true;S.avatar=normalize(b.avatar);if(!S.name)S.name=b.name||'';if(!S.role&&b.role){S.role=b.role;S.uw=b.uw||'';S.shopId=b.shopId||''}save();boot();toast('前に作ったキャラで入りました')});setTimeout(()=>{if(!done){done=true;boot()}},400)}
-loadLive().then(async()=>{if(!LIVE){renderTicker();return}mpConnect();loadPosts();await loadRally(true);await loadSubs();loadTicker();setInterval(()=>loadRally(),60*1000);setInterval(()=>{if(RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(loadTicker,10*60*1000)});setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
+loadLive().then(async()=>{liveUI();if(!LIVE){renderTicker();return}mpConnect();loadPosts();profLoad();await loadRally(true);await loadSubs();loadTicker();setInterval(()=>loadRally(),60*1000);setInterval(()=>{if(RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(loadTicker,10*60*1000)});setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
 })();
 </script>
 </body>
