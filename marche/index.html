@@ -355,7 +355,7 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
 .conf{position:fixed;top:-30px;font-size:22px;z-index:400;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 #capbar{position:fixed;left:50%;transform:translateX(-50%);top:92px;z-index:250;background:#4a3b35;color:#fff;border-radius:16px;padding:8px 12px;font-size:13px;font-weight:800;width:92%;max-width:440px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.2)}
-#capbar button{margin-left:6px;border:0;border-radius:99px;padding:5px 10px;font:inherit;font-size:12px;background:#ff8fab;color:#fff;cursor:pointer}
+#capbar .capn{color:#ffd166;font-size:16px}#capbar .capsub{font-size:11px;font-weight:700;opacity:.85;margin:2px 0 4px}#capbar button{margin-left:6px;border:0;border-radius:99px;padding:5px 10px;font:inherit;font-size:12px;background:#ff8fab;color:#fff;cursor:pointer}
 body.watching .av.me{display:none}
 body.watching #chatrow{opacity:.45}
 .gsteps{margin:4px 0 8px 1.2em;padding:0;font-size:13px;line-height:1.7}
@@ -1446,14 +1446,15 @@ MP.inside=false;MP.mode='';MP.q=0;MP.cnt={inside:0,ahead:0};MP.decided=false;
 function applyWatch(){document.body.classList.toggle('watching',LIVE&&!MP.inside);capBar()}
 function capBar(){let b=$('#capbar');if(!b){b=document.createElement('div');b.id='capbar';document.body.appendChild(b)}
   if(!LIVE||MP.inside||!MP.decided){b.hidden=true;return}b.hidden=false;
-  b.innerHTML=MP.mode==='wait'?`⏳ 入室待ち（前に${MP.cnt.ahead}人）… 空いたら自動で入ります <button data-act="capwatch">やめる</button>`:`👀 いま満員（${CAP}人）なので、外から見ています <button data-act="capwait">⏳ 入室を待つ</button>`}
+  b.innerHTML=MP.mode==='wait'?`<div>⏳ 満員です（${CAP}人）。あなたは <b class="capn">${MP.cnt.ahead+1}番目</b></div><div class="capsub">待っている人 ${MP.cnt.waiting}人・順番が来たら自動で入ります（それまで外から見られます）</div><button data-act="capwatch">見るだけにする</button>`:`<div>👀 いま満員（${CAP}人）なので、外から見ています</div><div class="capsub">待っている人 ${MP.cnt.waiting}人</div><button data-act="capwait">⏳ 順番待ちに並ぶ</button>`}
 function enterTown(){const was=MP.mode==='wait';MP.inside=true;MP.mode='';MP.q=0;applyWatch();mpTrack(true);if(was)toast('🎉 入室できました！',3500)}
 function capCheck(inside,waiters){MP.cnt.inside=inside;if(MP.inside||!MP.ready)return;const first=!MP.decided;MP.decided=true;
+  MP.cnt.waiting=waiters.filter(Boolean).length+(MP.mode==='wait'?1:0);
   if(MP.mode==='wait'){const ahead=waiters.filter(q=>q&&q<MP.q).length;MP.cnt.ahead=ahead;if(inside+ahead<CAP)return enterTown();return capBar()}
   if(inside+waiters.filter(Boolean).length<CAP)return enterTown();
-  if(!MP.mode){MP.mode='watch';applyWatch();mpTrack(true);if(first)toast(`いま街は満員（${CAP}人）です。外から見るか、入室を待てます`,4500)}else capBar()}
+  if(!MP.mode){MP.mode='wait';MP.q=Date.now();MP.cnt.ahead=waiters.filter(Boolean).length;MP.cnt.waiting=MP.cnt.ahead+1;applyWatch();mpTrack(true);if(first)toast(`いま街は満員（${CAP}人）です。順番待ちに並びました`,4500)}else capBar()}
 ACT.capwait=()=>{MP.mode='wait';MP.q=Date.now();mpTrack(true);mpSync()};
-ACT.capwatch=()=>{MP.mode='watch';MP.q=0;mpTrack(true);capBar()};
+ACT.capwatch=()=>{MP.mode='watch';MP.q=0;MP.cnt.waiting=Math.max(0,MP.cnt.waiting-1);mpTrack(true);capBar()};
 
 /* --- 登録した人のキャラは自動で保存（別の端末でも同じキャラ） --- */
 const PRF={t:null,loaded:false,last:''};
@@ -1517,7 +1518,7 @@ function openInfo(){openModal(`<h2>🍚 あそびかた</h2>
 <li><b>スタンプ</b>：買ったら「📮 スタンプ申請」で購入画面のスクショを送ります。お店が確認するとスタンプが押されます。もぐマップのスタンプ帳と同じです。</li>
 <li><b>話す</b>：下の入力欄でみんなと。人をタップすると、ふたりやグループで話せます（周りには見えず、保存もされません）。</li>
 <li><b>キャラ</b>：👤マイページで着せかえ。登録した人は自動で保存され、別の端末でも参加者IDとあいことばで入れます。</li></ol>
-<div class="muted">街に入れるのは${CAP}人まで。満員のときは、外から見るか入室を待てます。</div>
+<div class="muted">街に入れるのは${CAP}人まで。満員のときは自動で順番待ちになり、何番目かが表示されます。順番が来たら自動で入れます（待っている間も外から見られます）。</div>
 ${LIVE?'':`<div class="tip" style="margin-top:8px">ここは体験版です。みんなと会えるのは <a href="${SITE}" target="_blank" rel="noopener">公開ページ</a> です。</div>`}
 <div class="acts">${LIVE?'':'<button class="btn sub small" data-act="reset">お店・スタンプをリセット</button>'}<button class="btn" data-act="close">街にもどる</button></div>`)}
 function liveUI(){const t=$('#tagv');if(LIVE){if(t)t.remove()}else if(t)t.innerHTML=`<a href="${SITE}" target="_blank" rel="noopener" style="color:inherit">体験版・本番はこちら↗</a>`;applyWatch()}
