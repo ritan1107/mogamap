@@ -330,6 +330,13 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
 .ct{font-size:10px;color:#b49a8a;margin-top:2px}
 .chatin{display:flex;gap:6px;margin-top:8px}.chatin input{flex:1;min-width:0;border:2px solid #f3dcc2;border-radius:99px;padding:9px 14px;font:inherit;font-size:16px;outline:none}
 .shopfoot .btn{font-size:13px}
+.prof{display:flex;gap:12px;align-items:center}.pav{width:64px;height:64px;border-radius:50%;background:#fff6ea;overflow:hidden;flex:none}.pav svg{width:100%;height:100%}
+.refbox{margin-top:12px;background:#f0f4ff;border:2px solid #c9d6ff;border-radius:14px;padding:10px 12px;font-size:14px}
+.trow{display:flex;gap:10px;align-items:center;border:2px solid #f3e6d6;border-radius:14px;padding:10px;margin-top:8px;cursor:pointer;position:relative}
+.trow span{font-size:24px}.trow b{font-size:14px}.trow .ub{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:#ff4d6d;color:#fff;font-style:normal;font-size:11px;border-radius:99px;padding:1px 7px}
+.plist{display:flex;flex-direction:column;gap:6px;margin-top:8px}.plist label{display:flex;gap:8px;align-items:center;border:2px solid #f3e6d6;border-radius:12px;padding:8px 10px;font-weight:800;font-size:14px}
+.code{font-family:ui-monospace,Menlo,monospace;word-break:break-all;background:#fff;border:2px dashed #f3dcc2;border-radius:10px;padding:8px}
+#chatrow .badge{top:-4px;right:-4px;left:auto}
 #toasts{position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:92%;max-width:420px}
 .toast{background:#4a3b35;color:#fff;padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;animation:tin .25s;box-shadow:0 4px 14px rgba(0,0,0,.18);text-align:center}
 @keyframes tin{from{transform:translateY(-10px);opacity:0}}
@@ -352,7 +359,7 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
   <input id="chatin" maxlength="40" placeholder="チャットを入力…" autocomplete="off">
   <button class="btn sub mic" data-act="mic" aria-label="音声入力">🎤</button>
   <button class="btn" data-act="send">話す</button>
-  <button class="btn sub" data-act="chatlog" aria-label="チャット履歴">💬</button>
+  <button class="btn sub" data-act="chatlog" aria-label="お話し">💬</button>
 </div>
 <nav>
   <button data-act="avatar"><span class="i">🧑‍🎨</span>アバター</button>
@@ -599,7 +606,7 @@ let S={avatar:null,name:'',myShops:[],purchases:[],newStamps:[],seeded:false};
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&typeof d==='object')S=Object.assign(S,d)}catch(e){}
   if(S.avatar)S.avatar=normalize(S.avatar);S.myShops.forEach(x=>{if(x.keeper)x.keeper=normalize(x.keeper)});
   if(!S.seeded){S.purchases.push({id:'seed1',orderNo:'（レシート写真あり）',shopId:'c196b801-ea11-4891-ad7f-5e99a62a7cec',itemName:'ソフトクリーム',itemEmoji:'🍦',price:0,buyer:'さくら',time:Date.now()-15*60000,stamp:'pending',note:'さっき買いました！また来ます♪'});S.seeded=true;save()}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(S.avatar&&typeof backupAvatar==='function')backupAvatar()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(S.avatar&&typeof backupAvatar==='function')backupAvatar();if(typeof cloudSave==='function')cloudSave()}
 const allShops=()=>DEFAULT_SHOPS.concat(S.myShops);
 const shopById=id=>allShops().find(s=>s.id===id);
 const infoById=id=>INFOS.find(s=>s.id===id);
@@ -781,7 +788,7 @@ function labelHTML(){const r=S.role||'guest',nm=esc(S.name||'ゲスト');if(r===
 function setMeLabel(){if(!me)return;const n=me.el.querySelector('.nm');if(n){n.innerHTML=labelHTML();n.className='nm role-'+(S.role||'guest')}}
 let entryRole=null;
 function openEntry(first){entryRole=null;
-  openModal(`<h2>🍚 もぐマップ マルシェへようこそ</h2><div class="muted">どなたとして入りますか？</div>
+  openModal(`<h2>🍚 もぐマップ マルシェへようこそ</h2>${S.ref?`<div class="refbox">🤝 <b>${esc(S.ref.n)}</b> さんの紹介で来ました</div>`:''}<div class="muted">どなたとして入りますか？</div>
   <div class="roles">${Object.entries(ROLE).map(([k,v])=>`<button class="role ${k}" data-act="role" data-r="${k}"><span>${v[0]}</span><b>${v[1]}</b><small>${k==='shop'?'出店しているお店・加盟店の方（PINで入ります）':k==='comm'?'UW.ID をお持ちの方（Uぺい・応援ポイントも使えます）':'登録なしでOK。PayPayでお買い物・スタンプ集めもできます'}</small></button>`).join('')}</div>
   ${LIVE?(part()?`<div class="tip" style="margin-top:10px">📮 もぐマップのスタンプラリーとつながっています（参加者ID ${esc(part().entryId||'')}）</div>`:`<details class="codein"><summary>📮 もぐマップのスタンプラリーに参加済みの方</summary><div class="muted" style="margin-top:4px">マイページの参加者ID（5桁）とあいことば（4桁）で、同じスタンプ帳につながります。</div><div class="amt" style="margin-top:6px"><input id="lg_id" inputmode="numeric" maxlength="5" placeholder="参加者ID" style="font-size:16px!important;text-align:left"><input id="lg_pin" type="password" inputmode="numeric" maxlength="4" placeholder="あいことば" style="font-size:16px!important;text-align:left"><button class="btn small" data-act="plogin">つなぐ</button></div><div class="err" id="lg_err"></div></details>`):''}
   <details class="codein"><summary>🔑 キャラの保存コードを持っている方</summary><div class="amt" style="margin-top:6px"><input id="en_code" placeholder="MOGU-…" style="font-size:15px!important;font-weight:700;text-align:left"><button class="btn small" data-act="usecode">使う</button></div><div class="err" id="code_err"></div></details>
@@ -887,7 +894,7 @@ const TABS=[['😊 かお',[['skin','はだの色','c'],['face','りんかく','
 function openAvatar(first){draft=normalize(S.avatar)||Object.assign({},AV_DEFAULT);
   openModal(`<h2>${first?'ようこそ！まずはアバターを作ろう':'🧑‍🎨 アバターを着せかえ'}</h2>
   <div class="avtop"><div class="avstage"><div class="avprev ${edWalk?'walking':''}" id="avprev">${avatarSVG(draft)}</div><button class="chipb" data-act="avwalk">${edWalk?'⏸ とめる':'🚶 歩かせる'}</button></div>
-  <div class="avside">${S.role?`<div class="muted" style="margin-bottom:6px">${ROLE[S.role][0]} ${ROLE[S.role][1]}${S.role==='comm'?'（UW.ID '+esc(S.uw)+'）':S.role==='shop'&&shopById(S.shopId)?'（'+esc(shopById(S.shopId).name)+'）':''} <button class="chipb" data-act="relogin">入り直す</button></div>`:''}<label class="fl" style="margin-top:0">なまえ（10文字まで）<input id="avname" maxlength="10" value="${esc(S.name)}" placeholder="例：りーたん"></label><button class="btn sub small" style="margin-top:10px" data-act="randav">🎲 おまかせ</button></div></div>
+  <div class="avside">${S.role?`<div class="muted" style="margin-bottom:6px">${ROLE[S.role][0]} ${ROLE[S.role][1]}${S.role==='comm'?'（UW.ID '+esc(S.uw)+'）':S.role==='shop'&&shopById(S.shopId)?'（'+esc(shopById(S.shopId).name)+'）':''} <button class="chipb" data-act="relogin">入り直す</button>${S.role==='comm'||S.role==='shop'?' <button class="chipb" data-act="invite">🤝 紹介リンク</button>':''}</div>`:''}<label class="fl" style="margin-top:0">なまえ（10文字まで）<input id="avname" maxlength="10" value="${esc(S.name)}" placeholder="例：りーたん"></label><button class="btn sub small" style="margin-top:10px" data-act="randav">🎲 おまかせ</button></div></div>
   <div class="avtabs">${TABS.map((t,i)=>`<button class="tabb ${i===edTab?'on':''}" data-act="avtab" data-i="${i}">${t[0]}</button>`).join('')}</div>
   <div id="avgrid"></div>
   ${S.avatar?`<div class="codebox"><b>🔑 キャラの保存コード</b><div class="muted">別のスマホやブラウザで入るときに、このコードを入れると同じキャラで遊べます。</div><div class="code">${esc(avatarCode())}</div><button class="chipb" data-act="copycode">📋 コピー</button></div>`:''}
@@ -1223,14 +1230,16 @@ const ACT={
   mic:(d,b)=>startMic(b),
   talknpc:d=>talkTo(d.n),
   pet:d=>{const e=ents.find(x=>x.pet===d.k);if(!e)return;say(e,d.k==='dog'?pick(['ワンワン！💕','しっぽふりふり🐾','なでて〜ワン！']):pick(['にゃ〜ん💕','ごろにゃ〜ん','すりすり🐾']));if(me)walkTo(me,e.x+(me.x<e.x?-36:36),e.y+4)},
-  chatlog:()=>openModal(`<h2>💬 チャット履歴</h2><div class="chatlog">${chatLog.length?chatLog.slice().reverse().map(c=>`<div><b>${esc(c.n)}</b>${esc(c.t)}</div>`).join(''):'<div class="muted" style="background:none">まだ会話はありません。下の入力欄から話しかけてみよう！</div>'}</div>`),
+  chatlog:()=>openTalk(),
+  publog:()=>openModal(`<h2>💬 チャット履歴</h2><div class="chatlog">${chatLog.length?chatLog.slice().reverse().map(c=>`<div><b>${esc(c.n)}</b>${esc(c.t)}</div>`).join(''):'<div class="muted" style="background:none">まだ会話はありません。下の入力欄から話しかけてみよう！</div>'}</div>`),
   copycode:async(d,b)=>{const c=avatarCode();try{await navigator.clipboard.writeText(c);toast('コピーしました。メモなどに貼って保存してね')}catch(e){toast('長押しでコードを選んでコピーしてね')}},
   usecode:()=>{const r=parseCode($('#en_code').value);if(!r){$('#code_err').textContent='コードを確認してください';return}S.avatar=r.avatar;if(r.name)S.name=r.name;save();if(me){me.av=S.avatar;me.el.innerHTML=avatarSVG(S.avatar)+'<div class="nm"></div>';setMeLabel()}toast('キャラを復元しました！次に、どなたとして入るか選んでね')},
   lvapprove:(d,b)=>resolveLive(d.id,'approve',b),
   lvreject:(d,b)=>resolveLive(d.id,'reject',b),
   plogin:(d,b)=>loginParticipant(b),
   stab:(d,b)=>{const sheet=b.closest('.sheet'),id=sheet&&sheet.dataset.shop;if(!id)return;shopTab[id]=d.t;sheet.querySelectorAll('.stabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===d.t));sheet.querySelectorAll('.spanel').forEach(x=>x.hidden=x.dataset.p!==d.t);const t=sheet.querySelector('.stabs');if(t)sheet.scrollTo({top:t.offsetTop-10,behavior:'smooth'})},
-  otheru:d=>{const id=d.id;if(MP.hide.has(id)){MP.hide.delete(id);toast('このひとの吹き出しを表示します')}else{MP.hide.add(id);toast('このひとの吹き出しを非表示にしました（もう一度タップで戻ります）')}lsSet('marche_hidechat',[...MP.hide])},
+  otheru:d=>openProfile(d.id),
+  hidechat:d=>{const id=d.id;if(MP.hide.has(id)){MP.hide.delete(id);toast('このひとの吹き出しを表示します')}else{MP.hide.add(id);toast('このひとの吹き出しを非表示にしました（もう一度タップで戻ります）')}lsSet('marche_hidechat',[...MP.hide])},
   search:()=>openSearch(),
   sfilter:d=>{searchF=d.k;document.querySelectorAll('.chips .tabb').forEach(b=>b.classList.toggle('on',b.dataset.k===d.k));renderSearch()},
   chatshop:d=>openChatShop(d.shop),
@@ -1239,6 +1248,13 @@ const ACT={
   shopthread:d=>openShopThread(d.id),
   shopreply:(d,b)=>shopReply(d.id,($('#smsg').value||'').trim(),b),
   sendqr:(d,b)=>sendQR(d.id,d.n,b),
+  talkto:d=>{if(!MP.ch)return toast('公開版で使えます');createRoom([d.id])},
+  openroom:d=>openRoom(d.id),
+  roomsend:()=>roomSend(),
+  roomleave:()=>roomLeave(),
+  mkroom:()=>{const ids=[...document.querySelectorAll('.plist input:checked')].map(i=>i.value);if(!ids.length)return toast('話したい人を選んでね');createRoom(ids)},
+  invite:()=>openInvite(),
+  copyinv:async()=>{try{await navigator.clipboard.writeText(inviteLink());toast('コピーしました')}catch(e){toast('長押しでコピーしてね')}},
   role:d=>entryForm(d.r),
   entergo:(d,b)=>enterGo(b),
   relogin:()=>openEntry(false),
@@ -1263,17 +1279,17 @@ setInterval(()=>{if(document.hidden||$('#modal').classList.contains('show'))retu
 /* ---------- みんなで同じ街に（いる人が多いときは住人botを減らす） ---------- */
 const MP={ch:null,id:'u'+Math.random().toString(36).slice(2,10),last:0,t:null,hide:new Set(lsGet('marche_hidechat')||[])};
 function loadSB(){return new Promise((res,rej)=>{if(window.supabase&&window.supabase.createClient)return res();const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
-async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=window.supabase.createClient(API,AKEY);
+async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=window.supabase.createClient(API,AKEY);MP.client=c;
   MP.ch=c.channel('marche-town',{config:{presence:{key:MP.id},broadcast:{self:false}}});
-  MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));
+  MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));MP.ch.on('broadcast',{event:'inv'},({payload})=>onInvite(payload));
   MP.ch.subscribe(st=>{if(st==='SUBSCRIBED')mpTrack(true)})}catch(e){console.warn(e)}}
-function mpMeta(){const c=avatarCode().split('-');return{n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
+function mpMeta(){const c=avatarCode().split('-');return{n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',f:S.ref?{n:S.ref.n,u:S.ref.u||'',r:S.ref.r||''}:null,a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
 function mpTrack(force){if(!MP.ch||!me)return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
 function otherLabel(m){const nm=esc(m.n||'ゲスト');return m.r==='shop'?`<b class="rb s">🏪お店</b>${nm}`:m.r==='comm'?`<b class="rb c">🤝</b>${nm}`:`<b class="rb g">ゲスト</b>${nm}`}
 function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
   for(const k in st){if(k===MP.id)continue;const m=(st[k]||[])[0];if(!m)continue;seen.add(k);let e=ents.find(x=>x.other===k);
     if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
-    e.name=m.n;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y)}
+    e.name=m.n;e.meta=m;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y)}
   for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
   setBots(seen.size)}
 let botTarget=null;
@@ -1333,6 +1349,57 @@ function renderSearch(){const el=$('#slist');if(!el)return;const q=($('#sq').val
 document.addEventListener('input',e=>{if(e.target.id==='sq')renderSearch()});
 document.addEventListener('change',e=>{if(e.target.id==='ownSel'){ownerShop=e.target.value;openOwner()}});
 
+/* ---------- キャラを消さない：Claudeのページではアカウントにも保存 ---------- */
+let CDOC=null,cloudT=null;
+async function cloudInit(){try{if(!(window.claude&&typeof window.claude.use==='function'))return;const db=await window.claude.use('db'),u=await window.claude.use('user');if(!db||!u)return;
+  const id=await u.id();if(!id)return;CDOC=db.collection('data/users/'+id).doc('marche');const snap=await CDOC.get();const v=snap&&typeof snap.data==='function'?snap.data():snap;
+  if(v&&v.avatar&&(!S.avatar||!S.role)){S.avatar=normalize(v.avatar);S.name=v.name||S.name;if(!S.role&&v.role){S.role=v.role;S.uw=v.uw||'';S.shopId=v.shopId||''}if(v.ref&&!S.ref)S.ref=v.ref;save();
+    if(me){me.av=S.avatar;me.el.innerHTML=avatarSVG(S.avatar)+'<div class="nm"></div>'}else startMe();setMeLabel();
+    if(S.role&&$('#modal').classList.contains('show')&&$('#modal .roles'))closeModal();toast('前に作ったキャラで入りました')}
+  else if(S.avatar)cloudSave()}catch(e){console.warn(e)}}
+function cloudSave(){if(!CDOC||!S.avatar)return;clearTimeout(cloudT);cloudT=setTimeout(()=>{try{CDOC.set({avatar:S.avatar,name:S.name||'',role:S.role||'',uw:S.uw||'',shopId:S.shopId||'',ref:S.ref||null,t:Date.now()})}catch(e){}},1500)}
+
+/* ---------- 紹介リンク（なくても入れる） ---------- */
+const SITE='https://ritan1107.github.io/mogamap/marche/';
+const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d=t=>{try{return JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/')))))}catch(e){return null}};
+function readRef(){try{const q=new URLSearchParams(location.search),r=q.get('ref');if(!r)return;const o=b64d(r);if(o&&o.n){S.ref={n:String(o.n).slice(0,12),u:String(o.u||'').slice(0,30),r:o.r||'',s:String(o.s||'').slice(0,40)};save();history.replaceState(null,'',location.pathname);setTimeout(()=>toast(`🤝 ${S.ref.n}さんの紹介で来ました。ようこそ！`,4500),800)}}catch(e){}}
+function inviteLink(){const sh=S.role==='shop'?shopById(S.shopId):null;return SITE+'?ref='+b64e({n:S.name||'',u:S.uw||'',r:S.role||'',s:sh?sh.name:''})}
+function openInvite(){if(!(S.role==='comm'||S.role==='shop')){openModal('<h2>🤝 紹介リンク</h2><p>紹介リンクは、コミュニティの人・お店の人として入ると作れます。</p><div class="acts"><button class="btn" data-act="relogin">入り直す</button></div>');return}
+  const link=inviteLink();openModal(`<h2>🤝 紹介リンク</h2><div class="muted">このリンクから来た人は、名札をタップすると「${esc(S.name)}さんの紹介」と表示されます。紹介リンクがなくても入れます。</div><div class="code" style="margin-top:10px;font-size:12px">${esc(link)}</div>
+  <div class="acts"><a class="btn" style="background:#06c755;text-decoration:none" href="https://line.me/R/msg/text/?${encodeURIComponent('もぐマップ マルシェに遊びに来てね！\n'+link)}" target="_blank" rel="noopener">LINEで送る</a><button class="btn sub" data-act="copyinv">📋 コピー</button></div>`)}
+
+/* ---------- 人のプロフィール（タップで吹き出し） ---------- */
+function openProfile(id){const e=ents.find(x=>x.other===id);if(!e)return;const m=e.meta||{};const role={shop:'🏪 お店の人',comm:'🤝 コミュニティの人',guest:'🙋 ゲスト'}[m.r]||'🙋 ゲスト';
+  openModal(`<div class="prof"><div class="pav">${avatarSVG(e.av,'head')}</div><div><h2 style="margin:0">${esc(m.n||'ゲスト')} さん</h2><div class="muted">${role}</div></div></div>
+  ${m.f?`<div class="refbox">🤝 <b>${esc(m.f.n)}</b> さんの紹介${m.f.u?`<div class="muted">紹介者のUW.ID：${esc(m.f.u)}</div>`:''}</div>`:''}
+  <div class="acts"><button class="btn sub small" data-act="hidechat" data-id="${id}">${MP.hide.has(id)?'🙉 吹き出しを表示':'🙈 吹き出しを非表示'}</button><button class="btn" data-act="talkto" data-id="${id}">💬 ふたりで話す</button></div>`)}
+
+/* ---------- ないしょのお話し（1対1・グループ／保存しない） ---------- */
+const RM={rooms:{},cur:null};
+function roomJoin(id,name,members){if(RM.rooms[id])return RM.rooms[id];if(!MP.client)return null;const c=MP.client.channel('marche-room-'+id,{config:{broadcast:{self:false}}});
+  const r={id,name,members:members||[],msgs:[],unread:0,ch:c};
+  c.on('broadcast',{event:'m'},({payload})=>{if(!payload)return;if(payload.sys==='leave')r.msgs.push({sys:true,t:`${payload.n}さんが退出しました`});else r.msgs.push(payload);if(RM.cur!==id){r.unread++;if(!payload.sys)toast(`💬 ${payload.n}：${String(payload.t||'').slice(0,20)}`)}renderRoom();talkBadge()});
+  c.subscribe();RM.rooms[id]=r;return r}
+function onInvite(p){if(!p||!Array.isArray(p.to)||!p.to.includes(MP.id)||MP.hide.has(p.from))return;const r=roomJoin(p.room,p.name,p.members);if(!r)return;r.msgs.push({sys:true,t:`${p.fn}さんがお話しをはじめました`});r.unread++;talkBadge();toast(`💬 ${p.fn}さんから「${p.name}」に招待されました。💬ボタンから開けます`,4500)}
+function createRoom(ids){if(!MP.ch||!ids.length)return;const names=ids.map(i=>{const e=ents.find(x=>x.other===i);return e?e.name:'？'});const id=Math.random().toString(36).slice(2)+Date.now().toString(36);
+  const name=ids.length===1?`${names[0]}さんと`:[S.name].concat(names).join('・').slice(0,24);const r=roomJoin(id,name,[S.name].concat(names));
+  MP.ch.send({type:'broadcast',event:'inv',payload:{to:ids,room:id,name:ids.length===1?`${S.name}さんと`:name,members:r.members,from:MP.id,fn:S.name}});openRoom(id)}
+function talkBadge(){const n=Object.values(RM.rooms).reduce((a,r)=>a+r.unread,0);let b=$('#bTalk');if(!b){const btn=document.querySelector('#chatrow [data-act=chatlog]');if(!btn)return;btn.style.position='relative';btn.insertAdjacentHTML('beforeend','<span class="badge" id="bTalk" hidden></span>');b=$('#bTalk')}b.hidden=!n;b.textContent=n}
+function openTalk(){RM.cur=null;const others=ents.filter(e=>e.other);
+  openModal(`<h2>💬 お話し</h2>${LIVE?'':'<div class="tip">ないしょのお話しは公開版で使えます。</div>'}
+  <div class="trow" data-act="publog"><span>🌐</span><div><b>みんなのチャット</b><div class="muted">街のみんなに見える会話</div></div></div>
+  ${Object.values(RM.rooms).map(r=>`<div class="trow" data-act="openroom" data-id="${r.id}"><span>${r.members.length>2?'👥':'💬'}</span><div><b>${esc(r.name)}</b><div class="muted">${r.msgs.length?esc(String((r.msgs[r.msgs.length-1]||{}).t||'').slice(0,24)):'まだ会話はありません'}</div></div>${r.unread?`<i class="ub">${r.unread}</i>`:''}</div>`).join('')}
+  <div class="sec"><b>👥 ふたり・グループで話す</b><div class="muted">いま街にいる人を選んでね（周りからは見えません・会話は保存されません）</div>
+  ${others.length?`<div class="plist">${others.map(e=>`<label><input type="checkbox" value="${e.other}"> ${esc(e.name)}</label>`).join('')}</div><div class="acts"><button class="btn" data-act="mkroom">はじめる</button></div>`:'<div class="muted" style="margin-top:6px">いまは街にほかの人がいません</div>'}</div>`)}
+function openRoom(id){const r=RM.rooms[id];if(!r)return;RM.cur=id;r.unread=0;talkBadge();
+  openModal(`<h2>${r.members.length>2?'👥':'💬'} ${esc(r.name)}</h2><div class="muted">ないしょのお話し（周りからは見えません・保存されません）</div><div class="chatbox" id="roombox"></div>
+  <div class="chatin"><input id="rmsg" maxlength="200" placeholder="メッセージ…"><button class="btn" data-act="roomsend">送る</button></div><div class="acts"><button class="btn sub small" data-act="roomleave">退出する</button><button class="btn sub small" data-act="chatlog">← 一覧</button></div>`);renderRoom()}
+function renderRoom(){const b=$('#roombox');if(!b||!RM.cur||!RM.rooms[RM.cur])return;const r=RM.rooms[RM.cur];b.innerHTML=r.msgs.map(m=>m.sys?`<div class="muted" style="text-align:center">${esc(m.t)}</div>`:bubbleHTML(m.me,(m.me?'':m.n+'：')+m.t,m.time)).join('')||'<div class="muted" style="text-align:center;padding:16px 0">話しかけてみよう</div>';b.scrollTop=1e6}
+function roomSend(){const r=RM.rooms[RM.cur],i=$('#rmsg');if(!r||!i)return;const t=i.value.trim();if(!t)return;const m={n:S.name||'ゲスト',t,time:Date.now()};r.ch.send({type:'broadcast',event:'m',payload:m});r.msgs.push(Object.assign({me:true},m));i.value='';renderRoom()}
+function roomLeave(){const r=RM.rooms[RM.cur];if(!r)return;try{r.ch.send({type:'broadcast',event:'m',payload:{sys:'leave',n:S.name}});MP.client.removeChannel(r.ch)}catch(e){}delete RM.rooms[RM.cur];RM.cur=null;openTalk()}
+document.addEventListener('keydown',e=>{if(e.target.id==='rmsg'&&e.key==='Enter'&&!e.isComposing){e.preventDefault();roomSend()}});
+
 /* ---------- 起動 ---------- */
 function startMe(){const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
@@ -1354,6 +1421,7 @@ load();buildBg();renderBooths();fit();startNPCs();startPets();updateBadges();
 window.addEventListener('resize',()=>{fit();follow(1)});
 requestAnimationFrame(tick);
 function boot(){if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
+readRef();cloudInit();
 if(S.avatar)boot();else{let done=false;restoreAvatar(b=>{if(done)return;done=true;S.avatar=normalize(b.avatar);if(!S.name)S.name=b.name||'';if(!S.role&&b.role){S.role=b.role;S.uw=b.uw||'';S.shopId=b.shopId||''}save();boot();toast('前に作ったキャラで入りました')});setTimeout(()=>{if(!done){done=true;boot()}},400)}
 loadLive().then(async()=>{if(!LIVE){renderTicker();return}mpConnect();loadPosts();await loadRally(true);await loadSubs();loadTicker();setInterval(()=>loadRally(),60*1000);setInterval(()=>{if(RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(loadTicker,10*60*1000)});setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
 })();
