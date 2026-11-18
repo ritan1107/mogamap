@@ -310,6 +310,11 @@ svg .tl{transform-box:fill-box;transform-origin:0% 100%;animation:wag 1.1s ease-
 .shopfoot{position:sticky;bottom:calc(-22px - env(safe-area-inset-bottom));margin:14px -18px calc(-22px - env(safe-area-inset-bottom));padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:2px solid #f3e6d6;display:flex;gap:8px;z-index:3}
 .shopfoot .btn{flex:1;padding:12px 6px}
 .scene{height:170px!important}.scene .kp{width:54px!important;margin-left:-27px!important;bottom:52px!important}.scene .sg{top:46px!important}.scene .say.k{bottom:112px!important}
+.av.npc .nm{display:none}
+.av.otheru{pointer-events:auto;cursor:pointer}
+.av.otheru .nm{background:#fff;border:2px solid #b5b5b5}.av.otheru.role-comm .nm{border-color:#6f8fd6}.av.otheru.role-shop .nm{border-color:#3fb984}
+.shout{position:absolute;transform:translate(-50%,-100%);background:#fff;border:2.5px solid var(--c);border-radius:14px;padding:4px 10px;font-size:12px;font-weight:800;max-width:220px;text-align:center;line-height:1.35;cursor:pointer;box-shadow:0 3px 0 var(--c);animation:pop .25s}
+.shout::after{content:'';position:absolute;top:100%;left:50%;margin-left:-6px;border:6px solid transparent;border-top-color:var(--c)}
 #toasts{position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:92%;max-width:420px}
 .toast{background:#4a3b35;color:#fff;padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;animation:tin .25s;box-shadow:0 4px 14px rgba(0,0,0,.18);text-align:center}
 @keyframes tin{from{transform:translateY(-10px);opacity:0}}
@@ -569,7 +574,7 @@ const INFOS=[
 const NPC_DEF=[['さくら','スイーツ','だよ〜'],['ゆうと','コーヒー','っす'],['みき','占い','だよ'],['はるな','雑貨','なの'],['けんた','ラーメン','だぜ'],['あおい','お花','です♪'],
  ['りく','日本酒','っす'],['ひなた','カフェめぐり','だよ'],['そら','絵本','だよ〜'],['まい','パン','です'],['こうき','写真','だね'],['ゆい','ヨガ','です♪'],
  ['しょう','キャンプ','だぜ'],['なな','ネイル','だよ'],['たくみ','音楽','っす'],['えみ','手づくり','です'],['ごろう','おでん','じゃ'],['ちか','温泉','だよ〜'],['はると','サッカー','だよ'],['みお','ハンドメイド','です♪'],['だいち','ジンギスカン','だべ'],['りこ','カフェラテ','だよ〜'],['けいこ','お茶','ですよ'],['ゆずき','ダンス','だよ']];
-const NPCS=NPC_DEF.slice(0,8).map(([name,like,end],k)=>({name,like,end,av:randAvatar(seeded(hashN(name+k)*7+3))}));const NPC_TALK=['こんにちは〜！','スタンプあと1個でクリア！','どのお店から回る？','情報局のお知らせ見た？','マルシェたのしいね','お店の人に話しかけてみよう','13日のスーパーマルシェ楽しみ！','すすきののお店も行きたいな','札幌さむくなってきたね〜','ぴあのぴあの行ってみたい！','スタンプ帳見せて〜','おなかすいた〜'];
+const NPCS=NPC_DEF.slice(0,6).map(([name,like,end],k)=>({name,like,end,av:randAvatar(seeded(hashN(name+k)*7+3))}));const NPC_TALK=['こんにちは〜！','スタンプあと1個でクリア！','どのお店から回る？','情報局のお知らせ見た？','マルシェたのしいね','お店の人に話しかけてみよう','13日のスーパーマルシェ楽しみ！','すすきののお店も行きたいな','札幌さむくなってきたね〜','ぴあのぴあの行ってみたい！','スタンプ帳見せて〜','おなかすいた〜'];
 const NPC_PAIRS=[['どこ行く？','カフェ行こうよ！'],['スタンプいくつ？','いま2個！あと1個でクリア'],['寒くない？','手袋してきた〜'],['情報局見た？','見た！13日楽しみ'],['おすすめある？','占いが当たるらしいよ'],['今日はどこから来たの？','西区からだよ〜']];
 const KEEPER_TALK=['いらっしゃいませ〜','スタンプ押しますよ〜','ぜひ見ていってね！','お待ちしてます♪'];
 
@@ -682,11 +687,10 @@ function renderBooths(){
       const goods=sh.menu&&sh.menu.length?sh.menu.slice(0,3).map(m=>esc(m.emoji)).join(''):esc(sh.emoji)+' '+esc(sh.emoji);
       el.innerHTML=`<div class="sign">${esc(sh.emoji)} ${esc(sh.name)}</div><div class="awn"></div><div class="pole l"></div><div class="pole r"></div><div class="board">${esc(sh.tag||'お店')}</div><div class="counter">${goods}</div>${sh.real&&sh.rally!==false?'<div class="rally">🎫 ラリー</div>':''}${got.has(sh.id)?'<div class="got">済</div>':''}`;
       world.appendChild(el)}
-    const k=addKeeper(L,keeperOf(sh),`${sh.emoji} ${sh.name}`,sh.color,'★ お店の人','goshop','shop',sh.id);k.shopId=sh.id});
-  INFOS.forEach(inf=>{const L=LOTS[inf.lot];placeBuilding(L,inf,'infohub',true);
-    const k=addKeeper(L,{skin:'#ffe6d5',hairStyle:'bob',hairColor:'#7a4a2a',eyes:'smile',outfit:'overall',outfitColor:inf.color,acc:inf.lot===0?'hat':'ribbon'},inf.staff,inf.color,'★ 案内係','infohub','id',inf.id);k.info=inf.id});
+  });
+  INFOS.forEach(inf=>{const L=LOTS[inf.lot];placeBuilding(L,inf,'infohub',true);});
   LOTS.forEach((L,i)=>{if(L.deco){const b=buildingSVG(L,['#b9cbe0','#d6c3e8','#c8e0c0'][i%3],'🏢',L.deco,false);const el=document.createElement('div');el.className='bld deco';el.style.cssText=`left:${b.minx}px;top:${b.miny}px;z-index:${b.z}`;el.innerHTML=b.svg;world.appendChild(el)}});
-  freeLots().forEach(i=>{const L=LOTS[i];if(L.k==='bld'){placeBuilding(L,{id:'free'+i,name:'テナント募集中',short:'テナント募集',emoji:'📢',color:'#c9b49a'},'create',false);return}const el=document.createElement('div');el.className='lot';el.dataset.act='create';el.style.cssText=`left:${L.x-60}px;top:${L.b-56}px;z-index:${L.b}`;el.innerHTML='＋ 空き区画<br>出店できます';world.appendChild(el)});
+  freeLots().forEach(i=>{const L=LOTS[i];if(L.k==='bld'){placeBuilding(L,{id:'free'+i,name:'募集中',short:'募集中',emoji:'📢',color:'#c9b49a'},'create',false);return}const el=document.createElement('div');el.className='lot';el.dataset.act='create';el.style.cssText=`left:${L.x-60}px;top:${L.b-56}px;z-index:${L.b}`;el.innerHTML='＋ 出店';world.appendChild(el)});
 }
 
 /* ---------- キャラクター移動 ---------- */
@@ -694,7 +698,7 @@ const ents=[];let me=null;
 function makeEnt(av,name,x,y,isMe){const el=document.createElement('div');el.className='av'+(isMe?' me':'');el.innerHTML=(typeof av==='string'?av:avatarSVG(av))+`<div class="nm">${esc(name)}</div>`;world.appendChild(el);
   const e={el,av,name,x,y,tx:x,ty:y,cb:null,me:!!isMe};place(e);ents.push(e);return e}
 function place(e){e.el.style.left=e.x+'px';e.el.style.top=e.y+'px';e.el.style.zIndex=Math.round(e.y)+1}
-function walkTo(e,x,y,cb){[x,y]=clampW(x,y);e.tx=x;e.ty=y;e.cb=cb||null;
+function walkTo(e,x,y,cb){[x,y]=clampW(x,y);e.tx=x;e.ty=y;e.cb=cb||null;if(e===me)setTimeout(()=>mpTrack(),0);
   if(x<e.x-2)e.el.classList.add('left');else if(x>e.x+2)e.el.classList.remove('left');
   if(Math.hypot(x-e.x,y-e.y)<1){e.cb=null;cb&&cb();return}e.el.classList.add('walking')}
 let last=performance.now();
@@ -889,7 +893,7 @@ function sceneHTML(sh){const k=keeperOf(sh);const c1=NPCS[hashN(sh.id)%NPCS.leng
   <div class="cu a">${avatarSVG(c1)}</div><div class="cu b">${avatarSVG(c2)}</div>
   <div class="say a">これください！</div><div class="say k">ありがとうございます♪</div><div class="say b">スタンプ押せますか？</div>
   <div class="sp" style="left:12%;top:70px">✨</div><div class="sp" style="right:14%;top:80px;animation-delay:.8s">✨</div><div class="sp" style="left:48%;top:96px;animation-delay:1.5s">💖</div></div>
-  <div class="media-note">📷 お店の写真や🎬動画が届いたら、ここにスライドで並べられます</div>`}
+`}
 function openMyShop(sh){
   openModal(`<div class="shophead" style="--c:${sh.color}"><div class="big">${esc(sh.emoji)}</div><div><h2>${esc(sh.name)}</h2><div class="tags"><span class="tg">${esc(sh.tag)}</span><span class="tg">🌉 Hope Bridge Design</span></div></div></div>${sceneHTML(sh)}
   <a class="mogubtn" style="background:#f08f78;box-shadow:0 4px 0 #c86a55" href="${sh.hp}" target="_blank" rel="noopener">🏠 りーたんのホームページを見る ↗</a>
@@ -1106,7 +1110,7 @@ function botReply(n,v){const E=n.end;
   if(/バイバイ|またね|じゃあね|おやすみ/.test(v))return 'またね〜！楽しんでね';
   if(/[?？]|かな/.test(v))return 'うーん…案内所の人に聞くとわかるかも！';
   return pick(['そうなんだ〜！',`わかる${E}！`,'いいね！','へぇ〜！もっと聞かせて',`${n.like}の話もしたい${E}`,'うんうん！'])}
-function sendChat(){const inp=$('#chatin');const v=inp.value.trim();if(!v||!me)return;say(me,v);logChat(S.name,v);inp.value='';
+function sendChat(){const inp=$('#chatin');const v=inp.value.trim();if(!v||!me)return;say(me,v);logChat(S.name,v);inp.value='';mpSend(v);
   let t=partner&&Math.hypot(partner.x-me.x,partner.y-me.y)<320?partner:null;
   if(!t){const near=npcs().map(e=>[e,Math.hypot(e.x-me.x,e.y-me.y)]).filter(x=>x[1]<300).sort((a,b)=>a[1]-b[1]);if(near.length)t=near[0][0]}
   if(t){t.busy=Date.now()+5000;t.tx=t.x;t.ty=t.y;t.el.classList.remove('walking');t.el.classList.toggle('left',me.x<t.x);setTimeout(()=>{const r=botReply(t.npc,v);say(t,r);logChat(t.name,r)},900+Math.random()*900)}}
@@ -1143,7 +1147,7 @@ const ACT={
   avwalk:(d,b)=>{edWalk=!edWalk;$('#avprev').classList.toggle('walking',edWalk);b.textContent=edWalk?'⏸ とめる':'🚶 歩かせる'},
   randav:()=>{draft=randAvatar();refreshEditor()},
   saveav:d=>{const nm=($('#avname').value||'').trim()||(S.role==='shop'?'お店の人':'ゲスト');S.avatar=Object.assign({},draft);S.name=nm;save();
-    if(me){me.av=S.avatar;me.name=nm;me.el.innerHTML=avatarSVG(S.avatar)+`<div class="nm"></div>`;setMeLabel()}else startMe();
+    if(me){me.av=S.avatar;me.name=nm;me.el.innerHTML=avatarSVG(S.avatar)+`<div class="nm"></div>`;setMeLabel()}else startMe();mpTrack(true);
     renderBooths();closeModal();
     if(d.first){setTimeout(()=>say(me,'こんにちは！'),300);toast('お店の看板か「★お店の人」をタップすると、加盟店ページが開くよ！',4500)}else toast('着せかえしました ✨')},
   goshop:d=>{if(me)goShop(d.shop)},
@@ -1209,6 +1213,7 @@ const ACT={
   lvreject:(d,b)=>resolveLive(d.id,'reject',b),
   plogin:(d,b)=>loginParticipant(b),
   stab:(d,b)=>{const sheet=b.closest('.sheet'),id=sheet&&sheet.dataset.shop;if(!id)return;shopTab[id]=d.t;sheet.querySelectorAll('.stabs button').forEach(x=>x.classList.toggle('on',x.dataset.t===d.t));sheet.querySelectorAll('.spanel').forEach(x=>x.hidden=x.dataset.p!==d.t);const t=sheet.querySelector('.stabs');if(t)sheet.scrollTo({top:t.offsetTop-10,behavior:'smooth'})},
+  otheru:d=>{const id=d.id;if(MP.hide.has(id)){MP.hide.delete(id);toast('このひとの吹き出しを表示します')}else{MP.hide.add(id);toast('このひとの吹き出しを非表示にしました（もう一度タップで戻ります）')}lsSet('marche_hidechat',[...MP.hide])},
   role:d=>entryForm(d.r),
   entergo:(d,b)=>enterGo(b),
   relogin:()=>openEntry(false),
@@ -1216,10 +1221,46 @@ const ACT={
 };
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const f=ACT[b.dataset.act];if(!f)return;e.stopPropagation();if(b.tagName==='A'){if(b.getAttribute('href')!=='#'){if(b.dataset.act==='sendsupport')f(b.dataset,b,e);return}e.preventDefault()}if(b.closest('#modal')&&(b.dataset.act==='goshop'||b.dataset.act==='infohub'))closeModal();f(b.dataset,b,e)});
 
+/* ---------- お店の告知（ランダムに1件ずつ・重ならない） ---------- */
+let lastShout=null;
+function shoutLines(sh){const out=[];const posts=(RL.posts||[]).filter(x=>x&&x.shop_id===sh.id&&x.title);posts.slice(0,3).forEach(x=>out.push('📣 '+x.title));
+  if(sh.menu&&sh.menu.length){const m=pick(sh.menu);out.push(`${m.emoji} ${m.name} ${yen(m.price)} 売ってます！`)}
+  const d=String(sh.desc||'').split(/[\n。！!]/).map(x=>x.trim()).filter(x=>x.length>=4&&x.length<=26);if(d.length)out.push(pick(d));
+  if(sh.online)out.push('📦 通販で買ってもスタンプOK！');if(sh.buy)out.push('🌐 ネットでも買えます！');
+  return out}
+function shout(){const list=allShops().filter(s=>LOTS[s.lot]&&s.id!==lastShout);if(!list.length)return;const sh=pick(list);const lines=shoutLines(sh);if(!lines.length)return;lastShout=sh.id;
+  const pill=world.querySelector(`.bname[data-shop="${sh.id}"]`)||world.querySelector(`.booth[data-shop="${sh.id}"]`);if(!pill)return;
+  world.querySelectorAll('.shout').forEach(x=>x.remove());const r=pill.getBoundingClientRect(),w=world.getBoundingClientRect();
+  const el=document.createElement('div');el.className='shout';el.dataset.act='goshop';el.dataset.shop=sh.id;el.style.setProperty('--c',sh.color);
+  el.style.left=((r.left+r.width/2-w.left)/SC)+'px';el.style.top=((r.top-w.top)/SC-6)+'px';el.style.zIndex=5000;el.textContent=pick(lines);world.appendChild(el);setTimeout(()=>el.remove(),6500)}
+setInterval(()=>{if(document.hidden||$('#modal').classList.contains('show'))return;if(Math.random()<.6)shout()},10000);
+
+/* ---------- みんなで同じ街に（いる人が多いときは住人botを減らす） ---------- */
+const MP={ch:null,id:'u'+Math.random().toString(36).slice(2,10),last:0,t:null,hide:new Set(lsGet('marche_hidechat')||[])};
+function loadSB(){return new Promise((res,rej)=>{if(window.supabase&&window.supabase.createClient)return res();const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+async function mpConnect(){if(!LIVE||MP.ch)return;try{await loadSB();const c=window.supabase.createClient(API,AKEY);
+  MP.ch=c.channel('marche-town',{config:{presence:{key:MP.id},broadcast:{self:false}}});
+  MP.ch.on('presence',{event:'sync'},mpSync);MP.ch.on('broadcast',{event:'chat'},({payload})=>mpChat(payload));
+  MP.ch.subscribe(st=>{if(st==='SUBSCRIBED')mpTrack(true)})}catch(e){console.warn(e)}}
+function mpMeta(){const c=avatarCode().split('-');return{n:String(S.name||'ゲスト').slice(0,10),r:S.role||'guest',a:c[1]||'',x:Math.round(me?me.tx:0),y:Math.round(me?me.ty:0)}}
+function mpTrack(force){if(!MP.ch||!me)return;const now=Date.now();if(!force&&now-MP.last<900){clearTimeout(MP.t);MP.t=setTimeout(()=>mpTrack(true),900);return}MP.last=now;MP.ch.track(mpMeta())}
+function otherLabel(m){const nm=esc(m.n||'ゲスト');return m.r==='shop'?`<b class="rb s">🏪お店</b>${nm}`:m.r==='comm'?`<b class="rb c">🤝</b>${nm}`:`<b class="rb g">ゲスト</b>${nm}`}
+function mpSync(){const st=MP.ch.presenceState(),seen=new Set();
+  for(const k in st){if(k===MP.id)continue;const m=(st[k]||[])[0];if(!m)continue;seen.add(k);let e=ents.find(x=>x.other===k);
+    if(!e){const pa=parseCode('MOGU-'+m.a+'-x');e=makeEnt(pa?pa.avatar:randAvatar(),m.n,m.x,m.y,false);e.other=k;e.el.classList.add('otheru','role-'+m.r);e.el.dataset.act='otheru';e.el.dataset.id=k}
+    e.name=m.n;const nm=e.el.querySelector('.nm');if(nm)nm.innerHTML=otherLabel(m);if(Math.hypot(e.tx-m.x,e.ty-m.y)>2)walkTo(e,m.x,m.y)}
+  for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.other&&!seen.has(e.other)){e.el.remove();ents.splice(i,1)}}
+  setBots(seen.size)}
+let botTarget=null;
+function setBots(nOthers){const want=nOthers===0?NPCS.length:nOthers<=2?(botTarget&&botTarget.n===nOthers?botTarget.v:3+Math.floor(Math.random()*3)):0;botTarget={n:nOthers,v:want};
+  ents.filter(e=>e.npc).forEach((e,i)=>{const off=i>=want;if(off!==!!e.off){e.off=off;e.el.style.display=off?'none':''}})}
+function mpChat(p){if(!p||MP.hide.has(p.id))return;const e=ents.find(x=>x.other===p.id);if(!e)return;const t=String(p.t||'').slice(0,40);say(e,t);logChat(e.name,t)}
+function mpSend(t){if(MP.ch)MP.ch.send({type:'broadcast',event:'chat',payload:{id:MP.id,t}})}
+
 /* ---------- 起動 ---------- */
 function startMe(){const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
-function npcs(){return ents.filter(e=>!e.me&&!e.keeper)}
+function npcs(){return ents.filter(e=>e.npc&&!e.off)}
 const DOG=`<svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="43" rx="18" ry="3" fill="rgba(0,0,0,.13)"/><g><path d="M12,24 Q4,14 8,10" stroke="#e8c79a" stroke-width="5" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-12 12 24;14 12 24;-12 12 24" dur=".5s" repeatCount="indefinite"/></path></g><ellipse cx="27" cy="29" rx="16" ry="10" fill="#fff4e3"/><rect x="15" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><rect x="33" y="33" width="5" height="9" rx="2.5" fill="#fff4e3"/><circle cx="43" cy="20" r="11" fill="#fff4e3"/><ellipse cx="35" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(20 35 17)"/><ellipse cx="51" cy="17" rx="4.5" ry="8" fill="#c98e5b" transform="rotate(-20 51 17)"/><circle cx="40" cy="20" r="1.8" fill="#3a2a2a"/><circle cx="47" cy="20" r="1.8" fill="#3a2a2a"/><ellipse cx="44" cy="25" rx="2.2" ry="1.6" fill="#3a2a2a"/><ellipse cx="38" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><ellipse cx="50" cy="25" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><rect x="33" y="28" width="16" height="3" rx="1.5" fill="#ff5c8a"/><circle cx="41" cy="32" r="2" fill="#ffd36e"/></svg>`;
 const CAT=`<svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="43" rx="17" ry="3" fill="rgba(0,0,0,.13)"/><path d="M14,30 Q2,26 6,12" stroke="#f2a65a" stroke-width="5" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="0 14 30;-14 14 30;0 14 30" dur="1.6s" repeatCount="indefinite"/></path><ellipse cx="27" cy="31" rx="14" ry="9" fill="#f2a65a"/><path d="M20,24 l3,14 M27,23 l0,15 M34,24 l-2,14" stroke="#e08a3c" stroke-width="2"/><rect x="16" y="35" width="5" height="7" rx="2.5" fill="#f2a65a"/><rect x="31" y="35" width="5" height="7" rx="2.5" fill="#f2a65a"/><circle cx="43" cy="22" r="11" fill="#f2a65a"/><path d="M33,17 L35,6 L41,13 Z M53,17 L51,6 L45,13 Z" fill="#f2a65a"/><path d="M35,14 L36,9 L39,13 Z M51,14 L50,9 L47,13 Z" fill="#ffc7b5"/><path d="M37,22 q2,-2 4,0 M45,22 q2,-2 4,0" stroke="#3a2a2a" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M42,26 l1,1 l1,-1" stroke="#3a2a2a" stroke-width="1.2" fill="none"/><path d="M33,25 h-6 M33,27 h-5 M53,25 h6 M53,27 h5" stroke="#8a5a3a" stroke-width=".8"/><ellipse cx="38" cy="27" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/><ellipse cx="48" cy="27" rx="2" ry="1.2" fill="#ff9aa8" opacity=".7"/></svg>`;
 function startPets(){[['dog',DOG,'わんた',P(12,9.5)],['cat',CAT,'みけ',P(9.5,12)]].forEach(([k,svg,name,p])=>{const e=makeEnt(svg,`${k==='dog'?'🐶':'🐱'} ${name}`,p[0],p[1],false);e.pet=k;e.el.classList.add('pet');e.el.dataset.act='pet';e.el.dataset.k=k})}
@@ -1227,10 +1268,10 @@ function startNPCs(){NPCS.forEach(n=>{const p=randWalk();const e=makeEnt(n.av,n.
   setInterval(()=>{const now=Date.now();ents.forEach(e=>{if(e.me)return;
     if(e.keeper){const near=me&&Math.hypot(e.x-me.x,e.y-me.y)<380;if(Math.random()<(near?.11:.035)&&!e.el.classList.contains('talking')){const sh=e.shopId&&shopById(e.shopId);say(e,e.info?pick(['わからないことは聞いてね！','お知らせはこちらです〜','スタンプラリーの案内してます！']):pick(sh&&sh.calls||KEEPER_TALK))}return}
     if(e.pet){if(Math.random()<.3&&!e.el.classList.contains('walking')){const p=randWalk(true);walkTo(e,p[0],p[1])}if(Math.random()<.03)say(e,e.pet==='dog'?pick(['ワン！','ワンワン🐾','くぅ〜ん']):pick(['にゃ〜','にゃん🐾','ごろごろ…']));return}
-    if(e.busy>now)return;
+    if(e.other||e.off||e.busy>now)return;
     if(Math.random()<.2&&!e.el.classList.contains('walking')){const p=randWalk();walkTo(e,p[0],p[1])}
-    if(Math.random()<.02){const t=pick(NPC_TALK);say(e,t);logChat(e.name,t)}});
-    if(Math.random()<.12){const list=npcs();const a=pick(list);const b=list.filter(x=>x!==a&&!x.el.classList.contains('walking')).sort((x,y)=>Math.hypot(x.x-a.x,x.y-a.y)-Math.hypot(y.x-a.x,y.y-a.y))[0];
+    if(Math.random()<.006){const t=pick(NPC_TALK);say(e,t);logChat(e.name,t)}});
+    if(Math.random()<.04){const list=npcs();const a=pick(list);const b=list.filter(x=>x!==a&&!x.el.classList.contains('walking')).sort((x,y)=>Math.hypot(x.x-a.x,x.y-a.y)-Math.hypot(y.x-a.x,y.y-a.y))[0];
       if(a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<260){const pr=pick(NPC_PAIRS);a.busy=b.busy=now+6000;a.tx=a.x;a.ty=a.y;a.el.classList.remove('walking');say(a,pr[0]);logChat(a.name,pr[0]);setTimeout(()=>{say(b,pr[1]);logChat(b.name,pr[1])},1600)}}
   },1200)}
 load();buildBg();renderBooths();fit();startNPCs();startPets();updateBadges();
@@ -1238,7 +1279,7 @@ window.addEventListener('resize',()=>{fit();follow(1)});
 requestAnimationFrame(tick);
 function boot(){if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
 if(S.avatar)boot();else{let done=false;restoreAvatar(b=>{if(done)return;done=true;S.avatar=normalize(b.avatar);if(!S.name)S.name=b.name||'';if(!S.role&&b.role){S.role=b.role;S.uw=b.uw||'';S.shopId=b.shopId||''}save();boot();toast('前に作ったキャラで入りました')});setTimeout(()=>{if(!done){done=true;boot()}},400)}
-loadLive().then(async()=>{if(!LIVE){renderTicker();return}await loadRally(true);await loadSubs();loadTicker();setInterval(()=>loadRally(),60*1000);setInterval(()=>{if(RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(loadTicker,10*60*1000)});setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
+loadLive().then(async()=>{if(!LIVE){renderTicker();return}mpConnect();loadPosts();await loadRally(true);await loadSubs();loadTicker();setInterval(()=>loadRally(),60*1000);setInterval(()=>{if(RL.subs.some(r=>r.status==='pending'))loadSubs().then(()=>loadRally())},3*60*1000);setInterval(loadTicker,10*60*1000)});setInterval(()=>{if(LIVE)loadLive()},10*60*1000);
 })();
 </script>
 </body>
