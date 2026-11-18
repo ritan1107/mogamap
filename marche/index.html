@@ -365,6 +365,7 @@ body.watching #chatrow{opacity:.45}
 .mylist div{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;font-size:13px}.mylist div+div{border-top:1px solid #f3dcc2}.mylist span{color:#8a776c}
 .mybtns{display:flex;flex-direction:column;gap:8px;margin-top:10px}.mybtns .btn{width:100%;text-align:center;text-decoration:none;box-sizing:border-box}
 .newdot{display:inline-block;background:#ff4d6d;color:#fff;font-style:normal;font-size:10px;font-weight:800;border-radius:99px;padding:1px 6px;vertical-align:1px}
+.pdeco{position:absolute;pointer-events:none}.pdeco svg{display:block;overflow:visible}
 </style>
 </head>
 <body>
@@ -1539,6 +1540,46 @@ function mailListHTML(){if(!LIVE)return'<div class="muted">お店とのメッセ
 {const f=openMyPage;openMyPage=function(){f();const a=$('#modal .mybtns');if(a)a.insertAdjacentHTML('beforebegin',`<div class="sec"><b>📩 お店とのメッセージ</b><div id="myMail" style="margin-top:6px">${mailListHTML()}</div></div>`);checkMail(false)}}
 ACT.mypage=()=>openMyPage();
 
+/* ---------- いつもの街 ⇄ マルシェの日（広場がマルシェ会場になる） ---------- */
+const MARCHE_DAYS=[]; // 開催日（例：'2026-12-13'）。この日は広場がマルシェ会場になります
+const EVENT=(()=>{const q=new URLSearchParams(location.search).get('event');if(q==='1')return true;if(q==='0')return false;const d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10);return MARCHE_DAYS.includes(d)})();
+document.body.classList.add(EVENT?'eventday':'normalday');
+function deco(i,j,w,h,svg,cls,dz){const[x,y]=P(i,j);const el=document.createElement('div');el.className='pdeco '+(cls||'');el.style.cssText=`left:${x-w/2}px;top:${y-h}px;width:${w}px;height:${h}px;z-index:${Math.round(y+(dz||0))}`;el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`;world.appendChild(el);return el}
+const SH=(w,cy,rx,ry)=>`<ellipse cx="${w/2}" cy="${cy}" rx="${rx}" ry="${ry}" fill="rgba(0,0,0,.13)"/>`;
+function svgTree(){return SH(60,86,22,7)+`<rect x="26" y="50" width="8" height="38" rx="3" fill="#a9805e"/><circle cx="30" cy="34" r="24" fill="#7cc56f"/><circle cx="16" cy="46" r="15" fill="#6fb862"/><circle cx="44" cy="44" r="15" fill="#8fd18a"/><circle cx="26" cy="22" r="11" fill="#9adb93"/>`}
+function svgPlanter(c1,c2){return SH(70,46,30,6)+`<polygon points="8,26 62,26 58,44 12,44" fill="#c98e5b"/><polygon points="8,26 62,26 62,30 8,30" fill="#a8703f"/>${[14,24,34,44,54].map((x,k)=>`<circle cx="${x}" cy="${20-(k%2)*4}" r="7" fill="${k%2?c1:c2}"/><circle cx="${x}" cy="${20-(k%2)*4}" r="2.5" fill="#fff6c9"/>`).join('')}<circle cx="20" cy="24" r="5" fill="#6fb862"/><circle cx="48" cy="24" r="5" fill="#6fb862"/>`}
+function svgBench(){return SH(70,40,28,5)+`<polygon points="6,26 38,10 64,22 32,38" fill="#c98e5b"/><polygon points="6,26 32,38 32,44 6,32" fill="#a8703f"/><polygon points="6,26 38,10 38,0 6,16" fill="#d9a06b"/>`}
+function svgStage(){const w=240,h=190;let flags='';const cs=['#ff9eb5','#ffd36e','#9fdcff','#a8e6b8','#c7b5ff'];for(let k=0;k<11;k++){const x=24+k*18.5,y=34+Math.sin(k/10*Math.PI)*12;flags+=`<path d="M${x-7},${y} L${x+7},${y} L${x},${y+13}Z" fill="${cs[k%5]}"/>`}
+  return SH(w,180,112,12)+`<polygon points="10,150 230,150 222,176 18,176" fill="#b9845a"/><rect x="10" y="138" width="220" height="14" rx="3" fill="#d9a06b"/>${[30,70,110,150,190].map(x=>`<rect x="${x}" y="152" width="3" height="22" fill="#a8703f"/>`).join('')}
+  <rect x="30" y="40" width="180" height="100" rx="6" fill="#fff6e8" stroke="#e8c9a6" stroke-width="3"/><rect x="18" y="26" width="10" height="114" fill="#c98e5b"/><rect x="212" y="26" width="10" height="114" fill="#c98e5b"/>
+  <path d="M18,30 Q120,-4 222,30" stroke="#7cc56f" stroke-width="12" fill="none" stroke-linecap="round"/>${[30,60,95,130,165,200].map((x,k)=>`<circle cx="${x}" cy="${26-Math.sin((x-18)/204*Math.PI)*16}" r="6" fill="${k%2?'#ff9eb5':'#ffd36e'}"/>`).join('')}
+  <path d="M28,34 Q120,58 212,34" stroke="#b08a6a" stroke-width="1.5" fill="none"/>${flags}
+  <rect x="60" y="70" width="120" height="30" rx="15" fill="#ff8fab"/><text x="120" y="90.5" text-anchor="middle" font-size="15" font-weight="800" fill="#fff" font-family="M PLUS Rounded 1c,sans-serif">🎪 マルシェ ステージ</text>
+  <rect x="36" y="104" width="20" height="34" rx="4" fill="#4a3b35"/><circle cx="46" cy="114" r="5" fill="#8a776c"/><circle cx="46" cy="128" r="6" fill="#8a776c"/><rect x="184" y="104" width="20" height="34" rx="4" fill="#4a3b35"/><circle cx="194" cy="114" r="5" fill="#8a776c"/><circle cx="194" cy="128" r="6" fill="#8a776c"/>`}
+function svgParasol(c){return SH(110,104,44,7)+`<rect x="53" y="30" width="4" height="64" fill="#8a776c"/><path d="M8,40 Q55,-8 102,40 Q78,34 55,40 Q32,34 8,40Z" fill="${c}"/><path d="M55,6 L55,40 M30,24 L32,38 M80,24 L78,38" stroke="#fff" stroke-width="2" opacity=".7"/><ellipse cx="55" cy="78" rx="24" ry="8" fill="#fff" stroke="#c9a77f" stroke-width="2"/><rect x="53" y="78" width="4" height="18" fill="#8a776c"/><rect x="14" y="80" width="14" height="16" rx="4" fill="#d9a06b"/><rect x="82" y="80" width="14" height="16" rx="4" fill="#d9a06b"/><text x="46" y="78" font-size="11">🥤</text><text x="58" y="78" font-size="11">🍰</text>`}
+function svgBalloons(){const cs=['#ff8fab','#ffd36e','#9fdcff','#a8e6b8','#c7b5ff','#ff9e6b'];let b='';[[20,30],[40,18],[58,32],[30,48],[50,52],[14,58]].forEach(([x,y],k)=>{b+=`<path d="M${x},${y+12} Q${36+(k%3-1)*4},90 36,118" stroke="#9a8a80" stroke-width="1" fill="none"/>`});
+  [[20,30],[40,18],[58,32],[30,48],[50,52],[14,58]].forEach(([x,y],k)=>{b+=`<ellipse cx="${x}" cy="${y}" rx="11" ry="13" fill="${cs[k]}"/><ellipse cx="${x-4}" cy="${y-5}" rx="3" ry="4" fill="#fff" opacity=".6"/>`});return SH(72,120,10,3)+b+`<rect x="33" y="112" width="6" height="8" rx="2" fill="#8a776c"/>`}
+function svgBanner(c){return SH(30,118,8,3)+`<rect x="13" y="6" width="4" height="114" fill="#8a776c"/><circle cx="15" cy="6" r="4" fill="#ffd36e"/><path d="M17,12 L30,12 L30,64 L23.5,58 L17,64Z" fill="${c}"/>`}
+function buildPlaza(){world.querySelectorAll('.pdeco').forEach(e=>e.remove());
+  if(!EVENT){
+    [[11.2,11.2],[15,10.6],[10.6,15]].forEach(([i,j])=>deco(i,j,60,92,svgTree(),'',0));
+    deco(12.2,11,70,48,svgPlanter('#ff9eb5','#ffd36e'));deco(11,12.2,70,48,svgPlanter('#c7b5ff','#9fdcff'));deco(14.8,14.8,70,48,svgPlanter('#ff8c6b','#ffd36e'));
+    deco(13.9,15.4,70,46,svgBench());deco(15.4,13.9,70,46,svgBench());
+    return}
+  deco(10.35,10.35,240,190,svgStage(),'stage',-60);
+  deco(11.9,11.9,110,108,svgParasol('#ff9eb5'));deco(14.1,14.1,110,108,svgParasol('#9fdcff'));
+  deco(11.6,10.4,72,122,svgBalloons());deco(10.4,11.6,72,122,svgBalloons());deco(15.8,10.3,72,122,svgBalloons());deco(10.3,15.8,72,122,svgBalloons());
+  [[10.2,12.6,'#ff8fab'],[12.6,10.2,'#ffd36e'],[15.9,13,'#9fdcff'],[13,15.9,'#a8e6b8']].forEach(([i,j,c])=>deco(i,j,30,122,svgBanner(c)));
+  deco(15.9,15.9,70,48,svgPlanter('#ff9eb5','#c7b5ff'))}
+/* いつもの日は、広場のテントのお店を空いているビルに移す */
+function relocate(){const shops=allShops();const bld=LOTS.map((L,i)=>i).filter(i=>LOTS[i].k==='bld'&&!LOTS[i].deco);
+  shops.forEach(s=>{if(s.lot0==null)s.lot0=s.lot});
+  if(EVENT){shops.forEach(s=>{s.lot=s.lot0});return}
+  const used=new Set(shops.filter(s=>LOTS[s.lot0]&&LOTS[s.lot0].k==='bld').map(s=>s.lot0));INFOS.forEach(x=>used.add(x.lot));
+  const free=bld.filter(i=>!used.has(i));shops.forEach(s=>{const L=LOTS[s.lot0];if(L&&L.k==='tent')s.lot=free.length?free.shift():s.lot0;else s.lot=s.lot0})}
+{const f=renderBooths;renderBooths=function(){relocate();f();if(!EVENT)world.querySelectorAll('.lot').forEach(e=>e.remove())}}
+if(EVENT)setTimeout(()=>toast('🎪 今日はマルシェの日！広場がマルシェ会場になっています',4500),1500);
+
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
@@ -1556,7 +1597,7 @@ function startNPCs(){NPCS.forEach(n=>{const p=randWalk();const e=makeEnt(n.av,n.
     if(Math.random()<.04){const list=npcs();const a=pick(list);const b=list.filter(x=>x!==a&&!x.el.classList.contains('walking')).sort((x,y)=>Math.hypot(x.x-a.x,x.y-a.y)-Math.hypot(y.x-a.x,y.y-a.y))[0];
       if(a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<260){const pr=pick(NPC_PAIRS);a.busy=b.busy=now+6000;a.tx=a.x;a.ty=a.y;a.el.classList.remove('walking');say(a,pr[0]);logChat(a.name,pr[0]);setTimeout(()=>{say(b,pr[1]);logChat(b.name,pr[1])},1600)}}
   },1200)}
-load();buildBg();renderBooths();fit();startNPCs();startPets();updateBadges();
+load();buildBg();buildPlaza();renderBooths();fit();startNPCs();startPets();updateBadges();
 window.addEventListener('resize',()=>{fit();follow(1)});
 requestAnimationFrame(tick);
 function boot(){if(!S.role&&autoFromMogu()){if(!me)startMe();setTimeout(()=>{if(LIVE)checkMail(true)},1500);setTimeout(()=>toast(`もぐマップの登録で入りました（${ROLE[S.role][1]}）。キャラは👤マイページで変えられます`,5000),700);return}if(!S.role){if(S.avatar)startMe();openEntry(true)}else if(S.avatar)startMe();else openAvatar(true)}
