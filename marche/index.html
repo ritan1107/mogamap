@@ -31,7 +31,7 @@ header{height:50px;flex:none;display:flex;align-items:center;gap:8px;padding:0 1
 @media(max-width:420px){.pill.hp{font-size:11px;padding:3px 8px}.logo{font-size:14px}.tag{display:none}}
 .pill{background:#fff3d6;border:2px solid #ffd27a;border-radius:99px;padding:3px 11px;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;color:#4a3b35}
 .iconbtn{width:34px;height:34px;flex:none;border-radius:50%;border:2px solid #f3dcc2;background:#fff;font-size:15px;cursor:pointer;color:#4a3b35;font-weight:800}
-#viewport{flex:1;overflow:auto;position:relative;background:#f6ead8;-webkit-overflow-scrolling:touch}
+#viewport{flex:1;overflow:auto;position:relative;touch-action:pan-x pan-y;background:#f6ead8;-webkit-overflow-scrolling:touch}
 #wrap{position:relative;margin:0 auto}
 #world{position:absolute;left:0;top:0;width:2400px;height:1420px;transform-origin:0 0;cursor:pointer;user-select:none;-webkit-user-select:none;overflow:hidden}
 #bg{position:absolute;inset:0}
@@ -383,6 +383,7 @@ body.watching #chatrow{opacity:.45}
 .ptcard{border:2px solid #e3d6c4;border-radius:12px;padding:16px;margin-top:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff}.ptcard p{font-weight:800;font-size:14px;line-height:1.6;margin:0 0 6px}.ptcard img{image-rendering:pixelated;width:220px;height:220px}.ptcard b{margin-top:8px;font-size:13px}.ptmail{border:0;background:none;color:#d0267a;font:inherit;font-size:15px;font-weight:700;text-decoration:underline;cursor:pointer}.ptcard small{font-size:11px}
 .seat{position:absolute;cursor:pointer}.seat svg{display:block;overflow:visible}
 .av.sitting svg .lg{transform:scaleY(.42)!important;animation:none!important}.av.sitting svg{transform:translateY(9px)}.av.left.sitting svg{transform:scaleX(-1) translateY(9px)}.av.sitting .nm{margin-top:-8px}
+#zoomctl{position:fixed;right:10px;bottom:150px;z-index:90;display:flex;flex-direction:column;gap:6px}#zoomctl button{width:42px;height:42px;border-radius:14px;border:2px solid #f3dcc2;background:rgba(255,255,255,.94);font:inherit;font-size:20px;font-weight:800;color:#4a3b35;box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:0}#zoomctl .zall{height:50px;font-size:17px}#zoomctl small{font-size:9px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -407,6 +408,7 @@ body.watching #chatrow{opacity:.45}
   <button data-act="history"><span class="i">🧾</span>購入履歴</button>
   <button data-act="mypage"><span class="i">👤</span>マイページ<span class="badge" id="bOwner" hidden></span></button>
 </nav>
+<div id="zoomctl"><button data-act="zin" aria-label="拡大">＋</button><button data-act="zout" aria-label="縮小">－</button><button data-act="zall" class="zall" aria-label="全体を見る">🗺<small>全体</small></button></div>
 <div id="modal"></div>
 <div id="checkout"></div>
 <div id="toasts"></div>
@@ -803,10 +805,20 @@ function tick(t){const dt=Math.min(.05,(t-last)/1000);last=t;
 function say(e,text){let b=e.el.querySelector('.bubble');if(b)b.remove();b=document.createElement('div');b.className='bubble';b.textContent=text;e.el.appendChild(b);e.el.classList.add('talking');clearTimeout(e.bt);e.bt=setTimeout(()=>{b.remove();e.el.classList.remove('talking')},4500)}
 function ripple(x,y){const r=document.createElement('div');r.className='ripple';r.style.left=x+'px';r.style.top=y+'px';r.style.zIndex=2;world.appendChild(r);setTimeout(()=>r.remove(),520)}
 
-let SC=1;
-function fit(){const W=vp.clientWidth,H=vp.clientHeight;let sc=Math.max(.8,Math.min(1.15,H/WH*1.35));if(W/WW>sc)sc=Math.min(W/WW,1.3);SC=sc;
-  world.style.transform=`scale(${sc})`;const w=$('#wrap');w.style.width=WW*sc+'px';w.style.height=WH*sc+'px';w.style.marginTop=Math.max(0,(H-WH*sc)/2)+'px'}
-function follow(k){if(!me)return;const tx=me.x*SC-vp.clientWidth/2,ty=me.y*SC-vp.clientHeight/2;vp.scrollLeft+=(tx-vp.scrollLeft)*k;vp.scrollTop+=(ty-vp.scrollTop)*k}
+let SC=1,BASE=1,ZM=1,ZPREV=1;
+const zMin=()=>Math.min(vp.clientWidth/WW,vp.clientHeight/WH)/BASE,zMax=()=>1.9/BASE;
+function fit(){const W=vp.clientWidth,H=vp.clientHeight;let sc=Math.max(.8,Math.min(1.15,H/WH*1.35));if(W/WW>sc)sc=Math.min(W/WW,1.3);BASE=sc;ZM=Math.max(zMin(),Math.min(zMax(),ZM));sc=sc*ZM;SC=sc;
+  world.style.transform=`scale(${sc})`;const w=$('#wrap');w.style.width=WW*sc+'px';w.style.height=WH*sc+'px';w.style.marginTop=Math.max(0,(H-WH*sc)/2)+'px';zoomUI()}
+/* 拡大・縮小（ボタン・2本指・Ctrl+ホイール） */
+function zoomTo(z,cx,cy){const vr=vp.getBoundingClientRect();if(cx==null){cx=vr.left+vr.width/2;cy=vr.top+vr.height/2}const r=world.getBoundingClientRect(),wx=(cx-r.left)/SC,wy=(cy-r.top)/SC;
+  ZM=z;fit();const r2=world.getBoundingClientRect();vp.scrollLeft+=r2.left+wx*SC-cx;vp.scrollTop+=r2.top+wy*SC-cy}
+function zoomUI(){const b=document.querySelector('#zoomctl [data-act=zall]');if(b){const all=ZM<=zMin()+.01;b.innerHTML=all?'📍<small>もどる</small>':'🗺<small>全体</small>';b.title=all?'自分のまわりにもどる':'街の全体を見る'}}
+let PZ=null;const tdist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+vp.addEventListener('touchstart',e=>{if(e.touches.length===2)PZ={d:tdist(e.touches),z:ZM}},{passive:true});
+vp.addEventListener('touchmove',e=>{if(!PZ||e.touches.length!==2)return;e.preventDefault();const t=e.touches;zoomTo(PZ.z*tdist(t)/PZ.d,(t[0].clientX+t[1].clientX)/2,(t[0].clientY+t[1].clientY)/2)},{passive:false});
+vp.addEventListener('touchend',e=>{if(e.touches.length<2)PZ=null},{passive:true});
+vp.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();zoomTo(ZM*Math.exp(-e.deltaY*.01),e.clientX,e.clientY)},{passive:false});
+function follow(k){if(!me||ZM<=zMin()+.01)return;const tx=me.x*SC-vp.clientWidth/2,ty=me.y*SC-vp.clientHeight/2;vp.scrollLeft+=(tx-vp.scrollLeft)*k;vp.scrollTop+=(ty-vp.scrollTop)*k}
 
 world.addEventListener('click',ev=>{if(!me)return;if(ev.target.closest('[data-act]'))return;const r=world.getBoundingClientRect();const x=(ev.clientX-r.left)/SC,y=(ev.clientY-r.top)/SC;{const c=clampW(x,y);ripple(c[0],c[1])};walkTo(me,x,y)});
 
@@ -1720,6 +1732,10 @@ ACT.sit=d=>{if(!me)return;if(LIVE&&!MP.inside)return toast('満員のあいだ�
   walkTo(me,s.x,s.y,()=>{if(s.by&&s.by!==me){const t=freeSeat(null,me);if(!t)return;return ACT.sit({k:t.g})}sitDown(me,s);mpTrack(true);toast('座りました💬 チャットで話しかけてみよう',3000)})};
 ACT.gopark=()=>{closeModal();if(!me)return;const s=freeSeat(null,{x:P(22,22)[0],y:P(22,22)[1]});if(s)ACT.sit({k:s.g});else{const p=P(21.6,22.4);walkTo(me,p[0],p[1])}toast('🌳 もぐもぐ公園へ。雑談したい人が集まる場所です',3500)};
 
+/* 拡大縮小ボタン */
+ACT.zin=()=>zoomTo(ZM*1.3);
+ACT.zout=()=>zoomTo(ZM/1.3);
+ACT.zall=()=>{if(ZM>zMin()+.01){ZPREV=ZM;zoomTo(zMin())}else{ZM=Math.max(1,ZPREV);fit();follow(1)}};
 /* ---------- 起動 ---------- */
 function startMe(){if(me)return;const p=P(9.5,9.5);me=makeEnt(S.avatar,S.name,p[0],p[1]+20,true);setMeLabel();requestAnimationFrame(()=>follow(1))}
 function randWalk(any){for(let n=0;n<60;n++){const i=.4+Math.random()*(N-.8),j=.4+Math.random()*(N-.8);const t=tileType(Math.floor(i),Math.floor(j));if(t==='road'||t==='walk'||t==='plaza'||t==='park'||(any&&t==='green'))return P(i,j)}return P(9,9)}
