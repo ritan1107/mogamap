@@ -3,171 +3,255 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Seaside Terrace 大堂津｜海辺のキッチンカー</title>
-<meta name="description" content="宮崎県日南市・大堂津海水浴場のキッチンカー「シーサイドテラス大堂津」。お酒・ソフトドリンク・食事・おつまみを、海を眺めながら。">
+<title>Seaside Terrace 大堂津｜宮崎・日南の海辺のキッチンカー</title>
+<meta name="description" content="宮崎県日南市・大堂津海水浴場のキッチンカー「シーサイドテラス大堂津」。南国宮崎の海を眺めながら、お酒・ドリンク・食事・おつまみを。">
+<meta property="og:title" content="Seaside Terrace 大堂津｜宮崎・日南の海辺のキッチンカー">
+<meta property="og:description" content="南国宮崎・日南の海で、夏をもう少し。大堂津海水浴場のキッチンカーです。">
+<meta property="og:image" content="assets/hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#0b2a40; --deep:#0a3d5c; --sea:#0b8fc2; --aqua:#5fd0e8;
-  --sand:#fbf4e6; --sun:#ffb340; --coral:#ff6b4a; --leaf:#2fa36b;
-  --ink:#16324a;
+  --sea:#00a6d6; --sea2:#00c2d8; --deep:#05506f; --navy:#0a2c45;
+  --mango:#ffa21f; --sun:#ffd23c; --hibiscus:#ff3d6e; --leaf:#16a865;
+  --sand:#fff6e3; --ink:#123047;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:500;color:var(--ink);line-height:1.9;background:#fff;-webkit-font-smoothing:antialiased}
+body{margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:500;color:var(--ink);line-height:1.9;background:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 .script{font-family:'Kaushan Script',cursive;font-weight:400}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-
-/* header */
-header{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,box-shadow .3s}
-header.scrolled{background:rgba(11,42,64,.92);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.hbar{display:flex;align-items:center;justify-content:space-between;height:70px}
-.brand{color:#fff;line-height:1}
-.brand .script{font-size:1.7rem;display:block}
-.brand small{font-size:.68rem;letter-spacing:.35em;opacity:.85;font-weight:700}
-nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0}
-nav a{color:#fff;font-weight:700;font-size:.9rem;position:relative}
-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:-4px;height:2px;background:var(--sun);transition:right .25s}
-nav a:hover::after{right:0}
-.menu-btn{display:none;background:none;border:0;color:#fff;font-size:1.6rem;cursor:pointer}
-
-/* hero */
-.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;color:#fff;overflow:hidden;
-  background:linear-gradient(180deg,#0b6f9e 0%,#0b8fc2 45%,#46c3e0 100%)}
-.hero .sun{position:absolute;width:520px;height:520px;border-radius:50%;right:-120px;top:-140px;
-  background:radial-gradient(circle,rgba(255,206,110,.55),rgba(255,179,64,0) 65%)}
-.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-top:90px;padding-bottom:150px}
-.tag{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:4px 16px;border-radius:99px;font-size:.8rem;letter-spacing:.2em;font-weight:700}
-.hero h1{font-size:clamp(2.4rem,5.2vw,4.4rem);line-height:1.35;font-weight:900;margin:22px 0 18px;letter-spacing:.04em;text-shadow:0 4px 24px rgba(0,40,70,.25)}
+.pop{font-family:'Dela Gothic One',sans-serif;font-weight:400;letter-spacing:.02em}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px;position:relative}
 .nw{white-space:nowrap}
-.hero h1 em{font-style:normal;color:#fff3c4}
-.hero p.lead{font-size:clamp(1rem,1.6vw,1.15rem);max-width:30em;opacity:.95}
-.btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 30px;border-radius:99px;font-weight:900;transition:transform .2s,box-shadow .2s}
-.btn:hover{transform:translateY(-2px)}
-.btn-sun{background:var(--sun);color:var(--navy);box-shadow:0 8px 24px rgba(255,179,64,.45)}
-.btn-ghost{border:2px solid rgba(255,255,255,.8);color:#fff}
-.photo-card{background:#fff;padding:12px 12px 18px;border-radius:6px;transform:rotate(2.5deg);box-shadow:0 30px 60px rgba(0,30,60,.35)}
-.photo-card img{aspect-ratio:4/3.4;object-position:center 40%;object-fit:cover;border-radius:3px}
-.photo-card figcaption{color:var(--ink);text-align:center;font-size:1.5rem;margin-top:8px}
-.wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;z-index:3}
-.wave svg{width:100%;height:120px}
-.wave .w1{animation:drift 9s ease-in-out infinite alternate}
-@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+.sp{display:none}
 
-/* sections */
+header{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,box-shadow .3s}
+header.scrolled{background:rgba(0,120,165,.94);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.hbar{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{color:#fff;line-height:1;text-shadow:0 2px 10px rgba(0,60,90,.3)}
+.brand .script{font-size:1.75rem;display:block}
+.brand small{font-size:.66rem;letter-spacing:.35em;font-weight:900}
+nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+nav a{color:#fff;font-weight:900;font-size:.88rem;padding:6px 14px;border-radius:99px;transition:background .2s}
+nav a:hover{background:rgba(255,255,255,.2)}
+.menu-btn{display:none;background:var(--sun);border:0;color:var(--navy);width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;font-weight:900}
+
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;color:#fff;overflow:hidden;
+  background:linear-gradient(180deg,#0095d0 0%,#00b4dd 40%,#5ee0ea 78%,#bff4f2 100%)}
+.sunburst{position:absolute;right:-180px;top:-200px;width:760px;height:760px;animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sunball{position:absolute;right:30px;top:20px;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,#fff7c2,#ffd23c 45%,#ffa21f 100%);box-shadow:0 0 120px 40px rgba(255,210,60,.45)}
+.palm{position:absolute;bottom:60px;z-index:1;pointer-events:none;height:auto;aspect-ratio:300/420}
+.palm.l{left:-40px;width:300px;transform-origin:bottom center;animation:sway 6s ease-in-out infinite alternate}
+.palm.r{right:-30px;width:250px;transform:scaleX(-1);transform-origin:bottom center;animation:sway2 7s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
+@keyframes sway2{from{transform:scaleX(-1) rotate(-2deg)}to{transform:scaleX(-1) rotate(2deg)}}
+.gull{position:absolute;z-index:1;width:44px;height:18px;animation:fly 14s linear infinite}
+@keyframes fly{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,-18px)}}
+.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;padding-top:100px;padding-bottom:170px}
+.tag{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--deep);padding:6px 18px;border-radius:99px;font-size:.82rem;font-weight:900;box-shadow:0 6px 18px rgba(0,80,120,.2)}
+.tag i{width:10px;height:10px;border-radius:50%;background:var(--hibiscus);display:inline-block}
+.big-script{display:block;font-size:clamp(2.5rem,5.6vw,4.6rem);line-height:1.1;margin:24px 0 0;color:#fff;text-shadow:3px 4px 0 var(--mango),0 10px 30px rgba(0,60,100,.25);transform:rotate(-4deg);transform-origin:left}
+.hero h1{font-size:clamp(1.9rem,4.2vw,3.4rem);line-height:1.4;margin:16px 0;text-shadow:0 4px 20px rgba(0,60,100,.3)}
+.hero h1 .y{color:var(--sun)}
+.hero p.lead{font-size:clamp(1rem,1.5vw,1.12rem);max-width:30em;font-weight:700;text-shadow:0 2px 10px rgba(0,60,100,.35)}
+.btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;border-radius:99px;font-weight:900;transition:transform .2s}
+.btn:hover{transform:translateY(-3px) rotate(-1deg)}
+.btn-sun{background:var(--sun);color:var(--navy);box-shadow:0 6px 0 #e2a400,0 14px 24px rgba(0,0,0,.15)}
+.btn-pink{background:var(--hibiscus);color:#fff;box-shadow:0 6px 0 #c8204a,0 14px 24px rgba(0,0,0,.15)}
+.hero-photo{position:relative}
+.blob{border-radius:46% 54% 42% 58% / 52% 44% 56% 48%;overflow:hidden;border:8px solid #fff;box-shadow:0 30px 60px rgba(0,60,100,.35);aspect-ratio:1/1;animation:morph 10s ease-in-out infinite alternate}
+.blob img{width:100%;height:100%;object-fit:cover;object-position:45% 50%}
+@keyframes morph{to{border-radius:56% 44% 58% 42% / 42% 56% 44% 58%}}
+.sticker{position:absolute;display:grid;place-items:center;text-align:center;border-radius:50%;font-weight:900;line-height:1.25;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.st1{left:-26px;top:16px;width:124px;height:124px;background:var(--hibiscus);color:#fff;rotate:-12deg;font-size:.9rem;animation:bob 3s ease-in-out infinite}
+.st2{right:-10px;bottom:6px;width:136px;height:136px;background:var(--sun);color:var(--navy);rotate:10deg;font-size:.85rem;animation:bob 3.6s ease-in-out infinite reverse}
+.st2 .pop{font-size:1.25rem;display:block}
+@keyframes bob{50%{translate:0 -10px}}
+.hib{position:absolute;z-index:4;left:-10px;bottom:-10px;width:90px;height:90px;rotate:-20deg}
+.wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;z-index:5}
+.wave svg{width:100%;height:140px}
+.wave .w1{animation:drift 8s ease-in-out infinite alternate}
+.wave .w2{animation:drift 11s ease-in-out infinite alternate-reverse}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-60px)}}
+
+.marquee{background:var(--mango);color:#fff;overflow:hidden;white-space:nowrap;padding:14px 0;transform:rotate(-1.5deg);margin:-14px -20px 0;position:relative;z-index:6;box-shadow:0 8px 20px rgba(255,140,0,.25)}
+.marquee .track{display:inline-block;animation:marq 28s linear infinite;font-size:1.3rem}
+.marquee span{margin:0 22px}
+@keyframes marq{to{transform:translateX(-50%)}}
+
 section{position:relative}
-.sec{padding:110px 0}
-.kicker{font-family:'Kaushan Script',cursive;color:var(--sea);font-size:1.6rem;line-height:1}
-h2{font-size:clamp(1.8rem,3.6vw,2.7rem);line-height:1.45;font-weight:900;margin:10px 0 26px;letter-spacing:.03em}
+.sec{padding:120px 0}
+.kicker{font-family:'Kaushan Script',cursive;color:var(--hibiscus);font-size:1.8rem;line-height:1;display:inline-block;transform:rotate(-3deg)}
+h2{font-size:clamp(1.8rem,3.4vw,2.6rem);line-height:1.5;margin:12px 0 26px}
 .center{text-align:center}
+.hl{background:linear-gradient(transparent 60%,rgba(255,210,60,.7) 60%)}
 
-.about-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:64px;align-items:center}
-.about-img{position:relative}
-.about-img img{border-radius:24px;aspect-ratio:4/3.3;object-fit:cover;width:100%}
-.about-img .badge{position:absolute;right:-18px;bottom:-22px;background:var(--coral);color:#fff;width:132px;height:132px;border-radius:50%;
-  display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.35;font-size:.92rem;box-shadow:0 12px 30px rgba(255,107,74,.4);transform:rotate(-8deg)}
+.about-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:70px;align-items:center}
+.polaroid{background:#fff;padding:14px 14px 22px;border-radius:6px;box-shadow:0 24px 50px rgba(0,60,100,.18);rotate:-3deg;position:relative}
+.polaroid img{aspect-ratio:4/3.2;object-fit:cover;border-radius:3px}
+.polaroid p{margin:10px 0 0;text-align:center;font-family:'Kaushan Script',cursive;font-size:1.5rem;color:var(--deep)}
+.tape{position:absolute;width:110px;height:30px;background:rgba(255,210,60,.75);top:-12px;left:50%;translate:-50% 0;rotate:4deg}
 .about p{margin:0 0 1em}
 .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
-.fact{background:var(--sand);border-radius:16px;padding:16px 10px;text-align:center}
-.fact b{display:block;font-size:1.35rem;color:var(--deep);font-weight:900;line-height:1.3}
-.fact span{font-size:.78rem;color:#5a6b78}
+.fact{border-radius:20px;padding:18px 8px;text-align:center;color:#fff}
+.fact:nth-child(1){background:var(--sea)}.fact:nth-child(2){background:var(--hibiscus)}.fact:nth-child(3){background:var(--leaf)}
+.fact b{display:block;font-size:1.3rem;line-height:1.3}
+.fact span{font-size:.78rem}
 
-.enjoy{background:var(--sand)}
-.enjoy::before{content:"";position:absolute;left:0;right:0;top:-1px;height:60px;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0 0h1440v20c-120 30-240 40-360 20S840 0 720 20 480 60 360 40 120 0 0 20z' fill='%23ffffff'/%3E%3C/svg%3E") center/100% 100% no-repeat}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:46px}
-.card{background:#fff;border-radius:26px;padding:38px 28px 32px;text-align:center;box-shadow:0 16px 40px rgba(11,42,64,.07);transition:transform .25s}
-.card:hover{transform:translateY(-6px)}
-.icon{width:84px;height:84px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center}
-.icon svg{width:44px;height:44px}
-.i1{background:#fff0d6}.i2{background:#ffe3dc}.i3{background:#dff5fb}
-.card h3{font-size:1.25rem;margin:0 0 8px;font-weight:900}
-.card p{margin:0;font-size:.95rem;color:#4b5f6e}
-.voice{margin:56px auto 0;max-width:640px;background:#fff;border-radius:20px;padding:26px 30px;display:flex;gap:18px;align-items:center;box-shadow:0 10px 30px rgba(11,42,64,.06)}
-.voice .q{font-size:3rem;color:var(--sun);line-height:1;font-family:Georgia,serif}
-.voice p{margin:0;font-weight:700}
-.voice small{display:block;color:#7a8a96;font-weight:500}
+.enjoy{background:var(--sand);overflow:hidden}
+.enjoy::before{content:"";position:absolute;left:0;right:0;top:-1px;height:70px;z-index:1;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath d='M0 0h1440v25c-120 35-240 45-360 22S840 0 720 22 480 70 360 47 120 0 0 25z' fill='%23ffffff'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,162,31,.2) 2px,transparent 2.5px);background-size:26px 26px;pointer-events:none}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:46px;position:relative}
+.card{border-radius:30px;padding:40px 28px 34px;text-align:center;color:#fff;transition:transform .25s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-8px) rotate(-1deg)}
+.card:nth-child(1){background:linear-gradient(160deg,#ffb53b,#ff8a1f)}
+.card:nth-child(2){background:linear-gradient(160deg,#ff5f85,#ff3d6e)}
+.card:nth-child(3){background:linear-gradient(160deg,#1fc8e0,#0096c7)}
+.card::after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.14);right:-50px;top:-50px}
+.icon{width:92px;height:92px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:#fff}
+.icon svg{width:50px;height:50px}
+.card h3{font-size:1.35rem;margin:0 0 8px}
+.card p{margin:0;font-size:.95rem;font-weight:700}
+.voice{margin:56px auto 0;max-width:640px;background:#fff;border-radius:24px;padding:24px 30px;display:flex;gap:16px;align-items:center;position:relative;border:3px dashed var(--mango)}
+.voice .q{font-size:3.2rem;color:var(--hibiscus);line-height:1;font-family:Georgia,serif}
+.voice p{margin:0;font-weight:900;font-size:1.1rem}
+.voice small{display:block;color:#7a8a96;font-weight:500;font-size:.78rem}
 
-/* message */
-.message{background:var(--navy);color:#fff;overflow:hidden}
-.msg-grid{max-width:860px;margin:0 auto;text-align:center}
-.msg-body{padding:100px 24px}
-.msg-logo{width:min(320px,80%);margin:0 auto 34px;border-radius:18px}
-.message .kicker{color:var(--aqua)}
-.message blockquote{margin:18px 0 26px;font-size:clamp(1.25rem,2.2vw,1.65rem);line-height:2;font-weight:700}
-.message blockquote span{background:linear-gradient(transparent 62%,rgba(255,179,64,.45) 62%)}
-.ocean{font-size:2rem;color:var(--sun)}
+.miyazaki{background:linear-gradient(180deg,#e6fbff,#fff)}
+.spots{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px}
+.spot{background:#fff;border-radius:24px;padding:28px 20px;text-align:center;box-shadow:0 12px 30px rgba(0,100,140,.1);border-top:6px solid var(--sea)}
+.spot:nth-child(2){border-color:var(--mango)}.spot:nth-child(3){border-color:var(--hibiscus)}.spot:nth-child(4){border-color:var(--leaf)}
+.spot svg{width:64px;height:64px;margin:0 auto 10px;display:block}
+.spot h3{margin:0 0 6px;font-size:1.08rem}
+.spot p{margin:0;font-size:.86rem;color:#4b5f6e}
+.miya-lead{max-width:700px;margin:0 auto}
 
-/* info */
+.message{background:linear-gradient(160deg,#ff9a3c 0%,#ff5f6d 45%,#7b3fa0 100%);color:#fff;overflow:hidden;text-align:center}
+.sunset{position:absolute;left:50%;bottom:-180px;translate:-50% 0;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#ffe58a,rgba(255,200,80,0) 70%);opacity:.6}
+.msg-body{padding:110px 24px;max-width:860px;margin:0 auto;position:relative}
+.msg-logo{width:min(320px,80%);margin:0 auto 34px;border-radius:22px;box-shadow:0 20px 40px rgba(60,0,60,.3);rotate:-2deg}
+.message .kicker{color:#fff3c4}
+.message blockquote{margin:18px 0 26px;font-size:clamp(1.15rem,2.2vw,1.6rem);line-height:2.1;font-weight:900}
+.message blockquote span{background:linear-gradient(transparent 60%,rgba(255,210,60,.55) 60%)}
+.ocean{font-size:2.4rem;color:#fff3c4;rotate:-4deg;display:inline-block}
+
 .info-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:start}
 dl{margin:0}
-.row{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:18px 4px;border-bottom:1px dashed #c9d7df}
-.row:first-child{border-top:1px dashed #c9d7df}
-dt{font-weight:900;color:var(--deep)}
+.row{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:16px 4px;border-bottom:2px dotted #b9e3ee}
+.row:first-child{border-top:2px dotted #b9e3ee}
+dt{font-weight:900;color:var(--sea)}
 dd{margin:0}
 dd small{display:block;color:#6b7c88;font-size:.82rem}
-.hours{background:linear-gradient(150deg,var(--sea),var(--deep));color:#fff;border-radius:28px;padding:40px 34px;text-align:center;box-shadow:0 20px 50px rgba(11,93,140,.3)}
-.hours .script{font-size:1.8rem;color:#fff3c4}
-.hours .time{font-size:2.6rem;font-weight:900;line-height:1.2;margin:10px 0 4px;letter-spacing:.02em}
-.hours .off{display:inline-block;margin-top:10px;background:rgba(255,255,255,.18);padding:4px 16px;border-radius:99px;font-size:.88rem}
+.hours{background:linear-gradient(150deg,var(--sea2),var(--deep));color:#fff;border-radius:32px;padding:42px 30px;text-align:center;box-shadow:0 20px 50px rgba(0,110,150,.3);position:relative;overflow:hidden}
+.hours::before{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:var(--sun);opacity:.25;right:-70px;top:-70px}
+.hours .script{font-size:1.9rem;color:#fff3c4;position:relative}
+.hours .time{font-size:2.5rem;line-height:1.2;margin:10px 0 6px;position:relative}
+.hours .off{display:inline-block;margin-top:10px;background:var(--hibiscus);padding:4px 18px;border-radius:99px;font-size:.88rem;font-weight:900}
 .hours .btn{margin-top:26px}
 .note{font-size:.8rem;color:#6b7c88;margin-top:18px}
 
-/* cta + footer */
-.cta{background:linear-gradient(180deg,#46c3e0,#0b8fc2);color:#fff;text-align:center;padding:110px 0 120px;overflow:hidden}
-.cta h2{font-size:clamp(2rem,4.4vw,3.2rem)}
-.cta .script{font-size:clamp(2.2rem,5vw,3.6rem);display:block;color:#fff3c4;line-height:1.2}
-footer{background:#071f30;color:#c7d8e2;text-align:center;padding:56px 20px 34px;font-size:.82rem}
-footer img{width:220px;margin:0 auto 20px;border-radius:14px}
-footer nav ul{justify-content:center;margin-bottom:20px;flex-wrap:wrap;gap:20px}
+.cta{background:linear-gradient(180deg,#5ee0ea,#00a6d6);color:#fff;text-align:center;padding:120px 0 130px;overflow:hidden}
+.cta h2{font-size:clamp(1.9rem,4.4vw,3.2rem);text-shadow:0 4px 16px rgba(0,60,100,.2)}
+.cta .script{font-size:clamp(2.4rem,6vw,4rem);display:block;color:var(--sun);line-height:1.2;text-shadow:3px 3px 0 var(--hibiscus);rotate:-3deg}
+.cta .palm{bottom:0}
+footer{background:var(--navy);color:#c7d8e2;text-align:center;padding:56px 20px 34px;font-size:.82rem}
+footer .script{font-size:2rem;color:#fff}
+footer nav ul{justify-content:center;margin:18px 0;flex-wrap:wrap}
 
-.sp{display:none}
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.3,1.2)}
 .reveal.on{opacity:1;transform:none}
 
-@media(max-width:860px){
-  nav{position:fixed;inset:70px 0 auto 0;background:rgba(11,42,64,.97);max-height:0;overflow:hidden;transition:max-height .3s}
-  nav.open{max-height:320px}
+@media(max-width:900px){
+  nav{position:fixed;inset:72px 0 auto 0;background:rgba(0,120,165,.97);max-height:0;overflow:hidden;transition:max-height .3s}
+  nav.open{max-height:340px}
   nav ul{flex-direction:column;gap:0;padding:8px 24px 18px}
-  nav li a{display:block;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  nav li a{display:block;padding:12px 6px;border-bottom:1px solid rgba(255,255,255,.15);border-radius:0}
   header .menu-btn{display:block}
-  header:has(nav.open){background:rgba(11,42,64,.97)}
+  header:has(nav.open){background:rgba(0,120,165,.97)}
   footer nav{position:static;max-height:none;background:none}
   footer nav ul{flex-direction:row;padding:0}
-  footer nav li a{border:0;padding:0}
-  .hero-grid,.about-grid,.info-grid,.msg-grid{grid-template-columns:1fr}
-  .hero-grid{gap:40px;padding-top:110px;padding-bottom:130px}
-  .photo-card{max-width:460px;margin:0 auto}
-  .sec{padding:80px 0}
-  .about-img .badge{right:8px;width:110px;height:110px;font-size:.8rem}
+  footer nav li a{border:0;padding:4px 10px}
+  .hero-grid,.about-grid,.info-grid{grid-template-columns:1fr}
+  .hero-grid{gap:44px;padding-top:110px;padding-bottom:160px}
+  .hero-photo{max-width:380px;margin:0 auto;width:86%}
+  .sunburst{width:520px;height:520px;right:-200px;top:-160px}
+  .sunball{width:170px;height:170px;right:-40px;top:60px}
+  .hero .palm.l{width:170px;left:-70px;bottom:100px;opacity:.8}
+  .hero .palm.r{display:none}
+  .st1{width:96px;height:96px;font-size:.74rem;left:-20px}
+  .st2{width:106px;height:106px;font-size:.72rem;right:-16px}
+  .st2 .pop{font-size:1rem}
+  .sec{padding:84px 0}
   .cards{grid-template-columns:1fr}
-  .msg-body{padding:72px 22px}
-  .row{grid-template-columns:96px 1fr}
+  .spots{grid-template-columns:1fr 1fr;gap:14px}
+  .spot{padding:22px 12px}
+  .msg-body{padding:80px 22px}
+  .row{grid-template-columns:92px 1fr}
   .sp{display:inline}
-  h2{font-size:1.6rem}
+  h2{font-size:1.55rem}
   .fact b{font-size:.98rem}
-  .fact span{font-size:.68rem;line-height:1.4;display:block}
-  .fact{padding:14px 6px}
-  .hours .time{font-size:2.1rem}
-  .hours{padding:34px 22px}
+  .fact span{font-size:.66rem;line-height:1.4;display:block}
+  .fact{padding:14px 4px}
+  .hours .time{font-size:2rem}
+  .marquee .track{font-size:1.05rem}
+  .cta .palm{width:130px!important}
 }
-@media(prefers-reduced-motion:reduce){.wave .w1{animation:none}.reveal{opacity:1;transform:none;transition:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none;transition:none}}
 </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="palm" viewBox="0 0 300 420">
+      <path d="M150 140 C 160 220, 140 300, 160 420 L 178 420 C 160 300, 182 220, 166 140 Z" fill="#8a5a2b"/>
+      <path d="M152 170h22M150 200h24M150 232h26M152 266h26M154 300h26M158 336h26M160 372h26" stroke="#6e4520" stroke-width="5" stroke-linecap="round"/>
+      <g fill="#14a35c">
+        <path d="M158 140 C 110 90, 50 90, 0 130 C 60 110, 110 118, 158 146 Z"/>
+        <path d="M158 140 C 120 70, 60 40, 10 50 C 70 70, 120 100, 158 146 Z"/>
+        <path d="M160 138 C 150 70, 130 20, 90 0 C 130 50, 145 95, 156 146 Z"/>
+        <path d="M160 138 C 190 70, 240 40, 290 50 C 230 70, 190 100, 160 146 Z"/>
+        <path d="M160 140 C 210 90, 260 95, 300 135 C 250 115, 205 120, 162 148 Z"/>
+        <path d="M160 140 C 200 130, 240 160, 260 210 C 225 175, 195 160, 162 150 Z"/>
+        <path d="M156 142 C 115 135, 70 165, 50 215 C 85 180, 120 160, 156 152 Z"/>
+      </g>
+      <g fill="#0d7d45" opacity=".6">
+        <path d="M158 142 C 120 100, 80 95, 40 115 C 90 108, 125 120, 158 146 Z"/>
+        <path d="M160 140 C 200 100, 240 100, 270 115 C 225 112, 195 122, 160 146 Z"/>
+      </g>
+      <circle cx="152" cy="150" r="9" fill="#ffa21f"/><circle cx="168" cy="152" r="9" fill="#ff8a1f"/>
+    </symbol>
+    <symbol id="hibiscus" viewBox="0 0 100 100">
+      <g fill="#ff3d6e">
+        <ellipse cx="50" cy="26" rx="19" ry="24"/>
+        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(72 50 50)"/>
+        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(144 50 50)"/>
+        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(216 50 50)"/>
+        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(288 50 50)"/>
+      </g>
+      <circle cx="50" cy="50" r="12" fill="#c8204a"/>
+      <path d="M50 50 L 72 22" stroke="#ffd23c" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="73" cy="20" r="5" fill="#ffd23c"/>
+    </symbol>
+    <symbol id="gull" viewBox="0 0 60 24"><path d="M2 14 C 12 2, 22 4, 30 16 C 38 4, 48 2, 58 14" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
 
 <header id="hdr">
   <div class="wrap hbar">
     <a href="#top" class="brand"><span class="script">Seaside Terrace</span><small>大堂津 ODOTSU</small></a>
     <button class="menu-btn" id="menuBtn" aria-label="メニューを開く">☰</button>
     <nav id="nav"><ul>
-      <li><a href="#about">私たちについて</a></li>
+      <li><a href="#about">お店について</a></li>
       <li><a href="#enjoy">楽しみ方</a></li>
+      <li><a href="#miyazaki">日南の海</a></li>
       <li><a href="#message">メッセージ</a></li>
       <li><a href="#info">営業案内</a></li>
     </ul></nav>
@@ -176,42 +260,58 @@ footer nav ul{justify-content:center;margin-bottom:20px;flex-wrap:wrap;gap:20px}
 
 <main>
 <section class="hero" id="top">
-  <div class="sun"></div>
+  <svg class="sunburst" viewBox="0 0 200 200" aria-hidden="true"><g fill="rgba(255,255,255,.16)" id="rays"></g></svg>
+  <div class="sunball" aria-hidden="true"></div>
+  <svg class="palm l" viewBox="0 0 300 420" aria-hidden="true"><use href="#palm"/></svg>
+  <svg class="palm r" viewBox="0 0 300 420" aria-hidden="true"><use href="#palm"/></svg>
+  <svg class="gull" viewBox="0 0 60 24" style="left:42%;top:16%" aria-hidden="true"><use href="#gull"/></svg>
+  <svg class="gull" viewBox="0 0 60 24" style="left:50%;top:22%;width:30px;animation-delay:-5s" aria-hidden="true"><use href="#gull"/></svg>
+
   <div class="wrap hero-grid">
     <div>
-      <span class="tag">宮崎県日南市・大堂津海水浴場</span>
-      <h1><span class="nw">夏が過ぎても、</span><br><em class="nw">海はここにある。</em></h1>
-      <p class="lead">波の音と潮風に包まれながら、冷たいドリンクとごはんを。<br>大堂津の浜辺にやってきた、海辺のキッチンカーです。</p>
+      <span class="tag"><i></i>宮崎県日南市・大堂津海水浴場</span>
+      <span class="big-script script">Summer in Miyazaki!</span>
+      <h1 class="pop"><span class="nw">南国みやざきの海で、</span><br><span class="nw y">夏をもう少し。</span></h1>
+      <p class="lead">青い海、白い砂浜、ゆれるヤシの木。<br>大堂津の浜辺にやってきた、海辺のキッチンカーです。</p>
       <div class="btns">
-        <a class="btn btn-sun" href="#info">営業時間を見る →</a>
-        <a class="btn btn-ghost" href="#about">お店について</a>
+        <a class="btn btn-sun" href="#info">営業時間をチェック ☀</a>
+        <a class="btn btn-pink" href="#about">お店をのぞく</a>
       </div>
     </div>
-    <figure class="photo-card reveal">
-      <img src="assets/owner-back.jpg" alt="大堂津の海岸を背に立つスタッフ。背中にシーサイドテラスのロゴ">
-      <figcaption class="script">Welcome to the beach!</figcaption>
-    </figure>
+    <div class="hero-photo reveal">
+      <div class="blob"><img src="assets/hero.jpg" alt="大堂津の海岸と、シーサイドテラスのロゴ入りシャツを着たスタッフの後ろ姿"></div>
+      <div class="sticker st1">日南の<br>海辺で<br>乾杯！</div>
+      <div class="sticker st2"><span><span class="pop">15:00〜</span>夕暮れから<br>夜まで</span></div>
+      <svg class="hib" viewBox="0 0 100 100" aria-hidden="true"><use href="#hibiscus"/></svg>
+    </div>
   </div>
   <div class="wave" aria-hidden="true">
-    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-      <path class="w1" d="M0 60c120-30 240-40 360-20s240 50 360 30 240-60 360-50 240 40 400 30v70H0z" fill="rgba(255,255,255,.35)"/>
-      <path d="M0 80c160-30 320-30 480 0s320 30 480 0 320-30 480 0v40H0z" fill="#fff"/>
+    <svg viewBox="0 0 1440 140" preserveAspectRatio="none">
+      <path class="w1" d="M0 60c120-30 240-40 360-20s240 50 360 30 240-60 360-50 240 40 420 30v90H0z" fill="rgba(255,255,255,.4)"/>
+      <path class="w2" d="M0 80c140-35 280-30 420 0s300 35 440 5 300-40 440-10 200 20 200 20v45H0z" fill="rgba(255,255,255,.6)"/>
+      <path d="M0 100c160-30 320-30 480 0s320 30 480 0 320-30 480 0v40H0z" fill="#fff"/>
     </svg>
   </div>
 </section>
 
+<div class="marquee" aria-hidden="true"><div class="track pop">
+  <span>☀ MIYAZAKI</span><span>✦ NICHINAN</span><span>✦ ODOTSU BEACH</span><span>✦ 南国みやざき</span><span>✦ SUMMER NEVER ENDS</span><span>✦ Seaside Terrace</span>
+  <span>☀ MIYAZAKI</span><span>✦ NICHINAN</span><span>✦ ODOTSU BEACH</span><span>✦ 南国みやざき</span><span>✦ SUMMER NEVER ENDS</span><span>✦ Seaside Terrace</span>
+</div></div>
+
 <section class="sec about" id="about">
   <div class="wrap about-grid">
-    <div class="about-img reveal">
-      <img src="assets/shop.jpg" alt="南国風に飾られたシーサイドテラス大堂津のキッチンカー">
-      <div class="badge">一年中<br>海を<br>楽しもう！</div>
+    <div class="polaroid reveal">
+      <div class="tape"></div>
+      <img src="assets/shop.jpg" alt="ヤシの葉やハイビスカスで南国風に飾られたキッチンカー">
+      <p>Our kitchen car ♪</p>
     </div>
     <div class="reveal">
       <div class="kicker">Our Story</div>
-      <h2>海水浴シーズンが<br>終わっても、<br class="sp">楽しめる海へ。</h2>
+      <h2 class="pop">海水浴シーズンが<br>終わっても、<br class="sp"><span class="hl">海はまだまだ楽しい！</span></h2>
       <p>「シーサイドテラス大堂津」は、大堂津海水浴場の指定管理者・大堂津新選組が始めたキッチンカーです。</p>
-      <p>海水浴の季節が過ぎると、静かになっていく浜辺。でも大堂津の海の魅力は一年中続いています。その素晴らしさをもっと多くの人に知ってほしい。そんな想いから、次の海開きまで浜辺でお店を開いています。</p>
-      <p>波乗り帰りのサーファーさんも、お散歩中の地元の方も、旅の途中の方も。ふらっと立ち寄ってください。</p>
+      <p>ヤシの葉とハイビスカスで飾ったカウンターは、まるで南の島の海の家。大堂津の海の素晴らしさを一年中知ってほしくて、次の海開きまで浜辺でお店を開いています。</p>
+      <p>波乗り帰りのサーファーさんも、お散歩中の地元の方も、日南海岸をドライブ中の方も。ふらっと立ち寄ってください。</p>
       <div class="facts">
         <div class="fact"><b>15:00〜</b><span>夕方からオープン</span></div>
         <div class="fact"><b>月曜休み</b><span>火〜日曜営業</span></div>
@@ -222,24 +322,25 @@ footer nav ul{justify-content:center;margin-bottom:20px;flex-wrap:wrap;gap:20px}
 </section>
 
 <section class="sec enjoy" id="enjoy">
+  <div class="dots"></div>
   <div class="wrap">
     <div class="center reveal">
       <div class="kicker">Enjoy the Seaside</div>
-      <h2>海辺の過ごし方は、自由。</h2>
+      <h2 class="pop">海辺の過ごし方は、自由。</h2>
     </div>
     <div class="cards">
       <article class="card reveal">
-        <div class="icon i1"><svg viewBox="0 0 48 48" fill="none" stroke="#e08a12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10h28L26 26v12M18 42h16M24 26 10 10"/><circle cx="34" cy="8" r="4"/></svg></div>
+        <div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#ff8a1f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h28L24 28v11M17 42h14M24 28 10 12"/><circle cx="35" cy="9" r="4.5" fill="#ffd23c"/><path d="M16 18h16"/></svg></div>
         <h3>お酒・ドリンク</h3>
-        <p>ビールやお酒、ソフトドリンクも。夕暮れの海を眺めながら乾杯を。</p>
+        <p>ビールやお酒、ソフトドリンクも。夕暮れの海を眺めながら乾杯！</p>
       </article>
       <article class="card reveal">
-        <div class="icon i2"><svg viewBox="0 0 48 48" fill="none" stroke="#e5553a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28h36a18 14 0 0 1-36 0z"/><path d="M16 22c0-4 4-4 4-8M24 22c0-4 4-4 4-8M32 22c0-4 4-4 4-8"/></svg></div>
+        <div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#ff3d6e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28h36a18 14 0 0 1-36 0z"/><path d="M16 22c0-4 4-4 4-8M24 22c0-4 4-4 4-8M32 22c0-4 4-4 4-8"/></svg></div>
         <h3>お食事</h3>
-        <p>パスタなど、海辺でお腹を満たせるメニューをご用意しています。</p>
+        <p>パスタなど、海で遊んだあとのお腹を満たすメニューをご用意。</p>
       </article>
       <article class="card reveal">
-        <div class="icon i3"><svg viewBox="0 0 48 48" fill="none" stroke="#0b8fc2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30c6-10 12-14 20-14 6 0 10 3 12 6"/><path d="M6 36c4 3 8 3 12 0s8-3 12 0 8 3 12 0"/><path d="M30 16l4-8"/></svg></div>
+        <div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#0096c7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30c6-10 12-14 20-14 6 0 10 3 12 6"/><path d="M6 36c4 3 8 3 12 0s8-3 12 0 8 3 12 0"/><path d="M30 16l4-8"/></svg></div>
         <h3>おつまみ</h3>
         <p>お酒のお供にぴったりの一品も。サーフィン帰りやお散歩ついでに。</p>
       </article>
@@ -251,26 +352,53 @@ footer nav ul{justify-content:center;margin-bottom:20px;flex-wrap:wrap;gap:20px}
   </div>
 </section>
 
-<section class="message" id="message">
-  <div class="msg-grid">
-    <div class="msg-body reveal">
-      <img class="msg-logo" src="assets/logo.jpg" alt="Seaside Terrace 大堂津 ロゴ">
-      <div class="kicker">Message</div>
-      <blockquote>
-        どれだけ大きな波が来ても、<br>怯まずに舵を切り続ける。<br>
-        <span>この海のように、たくさんの人の<br>受け皿になれる事業を、</span><br>
-        僕はここから創り上げる。
-      </blockquote>
-      <p>これから、海辺で過ごします！</p>
-      <div class="ocean script">Ocean Bound!</div>
+<section class="sec miyazaki" id="miyazaki">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="kicker">Welcome to Nichinan</div>
+      <h2 class="pop">せっかくなら、<br class="sp">日南の海をまるごと。</h2>
+      <p class="miya-lead">大堂津があるのは、南国ムードたっぷりの日南海岸エリア。ドライブや観光の途中に、海辺でひと休みしていきませんか？</p>
     </div>
+    <div class="spots">
+      <div class="spot reveal">
+        <svg viewBox="0 0 64 64" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 44c6 4 10 4 16 0s10-4 16 0 10 4 16 0 6-2 6-2" stroke="#00a6d6"/><path d="M6 52c6 4 10 4 16 0s10-4 16 0 10 4 16 0" stroke="#00a6d6"/><circle cx="44" cy="20" r="9" fill="#ffd23c" stroke="#ffa21f"/></svg>
+        <h3>大堂津海水浴場</h3><p>地元で愛される日南の海水浴場。お店はこの浜辺にあります</p>
+      </div>
+      <div class="spot reveal">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#ffa21f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="46" r="7"/><circle cx="46" cy="46" r="7"/><path d="M8 40l6-12h30l10 12v6H8z"/><path d="M24 28v12"/></svg>
+        <h3>日南海岸ドライブ</h3><p>海沿いの道を走れば、どこまでも続く青い海と南国の景色</p>
+      </div>
+      <div class="spot reveal">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#ff3d6e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18h44M14 26h36"/><path d="M8 14c8 4 40 4 48 0"/><path d="M20 26v28M44 26v28"/></svg>
+        <h3>鵜戸神宮</h3><p>海に面した洞窟の中に本殿がある、日南を代表するパワースポット</p>
+      </div>
+      <div class="spot reveal">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#16a865" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 54V24c0-8 4-14 10-14s10 6 10 14v30"/><path d="M26 30h4M34 30h4M28 40h8"/><path d="M14 54h36"/></svg>
+        <h3>サンメッセ日南</h3><p>太平洋を見下ろす丘に、モアイ像が並ぶ絶景スポット</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="message" id="message">
+  <div class="sunset"></div>
+  <div class="msg-body reveal">
+    <img class="msg-logo" src="assets/logo.jpg" alt="Seaside Terrace 大堂津 ロゴ">
+    <div class="kicker">Message</div>
+    <blockquote>
+      どれだけ大きな波が来ても、<br>怯まずに舵を切り続ける。<br>
+      <span>この海のように、たくさんの人の<br>受け皿になれる事業を、</span><br>
+      僕はここから創り上げる。
+    </blockquote>
+    <p>これから、海辺で過ごします！</p>
+    <div class="ocean script">Ocean Bound!</div>
   </div>
 </section>
 
 <section class="sec" id="info">
   <div class="wrap">
     <div class="kicker reveal">Information</div>
-    <h2 class="reveal">営業のご案内</h2>
+    <h2 class="pop reveal">営業のご案内</h2>
     <div class="info-grid">
       <dl class="reveal">
         <div class="row"><dt>店名</dt><dd>シーサイドテラス大堂津<small>Seaside Terrace 大堂津</small></dd></div>
@@ -283,7 +411,7 @@ footer nav ul{justify-content:center;margin-bottom:20px;flex-wrap:wrap;gap:20px}
       </dl>
       <div class="hours reveal">
         <div class="script">Open Hours</div>
-        <div class="time"><span class="nw">15:00</span> – <span class="nw">22:00</span></div>
+        <div class="time pop"><span class="nw">15:00</span> – <span class="nw">22:00</span></div>
         <div>夕方から夜まで、海辺でお待ちしています</div>
         <span class="off">月曜定休</span><br>
         <a class="btn btn-sun" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4" target="_blank" rel="noopener">Googleマップで見る →</a>
@@ -294,28 +422,32 @@ footer nav ul{justify-content:center;margin-bottom:20px;flex-wrap:wrap;gap:20px}
 </section>
 
 <section class="cta">
+  <svg class="palm" viewBox="0 0 300 420" style="width:200px;left:-50px" aria-hidden="true"><use href="#palm"/></svg>
+  <svg class="palm" viewBox="0 0 300 420" style="width:170px;right:-40px;transform:scaleX(-1)" aria-hidden="true"><use href="#palm"/></svg>
   <div class="wrap reveal">
     <span class="script">See you at the beach!</span>
-    <h2>大堂津の海で、<br class="sp">待ってます。</h2>
-    <p>波の音を聞きながら、ゆっくりしていってください。</p>
+    <h2 class="pop">大堂津の海で、<br class="sp">待ってます。</h2>
+    <p style="font-weight:700">波の音を聞きながら、ゆっくりしていってください。</p>
     <a class="btn btn-sun" href="#info">営業案内を見る</a>
   </div>
 </section>
 </main>
 
 <footer>
-  <div class="script" style="font-size:2rem;color:#fff">Seaside Terrace</div>
-  <div style="letter-spacing:.35em;margin-bottom:22px">大堂津 ODOTSU</div>
+  <div class="script">Seaside Terrace</div>
+  <div style="letter-spacing:.35em">大堂津 ODOTSU</div>
   <nav><ul>
-    <li><a href="#about">私たちについて</a></li>
+    <li><a href="#about">お店について</a></li>
     <li><a href="#enjoy">楽しみ方</a></li>
-    <li><a href="#message">メッセージ</a></li>
+    <li><a href="#miyazaki">日南の海</a></li>
     <li><a href="#info">営業案内</a></li>
   </ul></nav>
   <div>© Seaside Terrace 大堂津</div>
 </footer>
 
 <script>
+const rays=document.getElementById('rays');
+for(let a=0;a<360;a+=20){const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M100 100 L94 0 L106 0Z');p.setAttribute('transform','rotate('+a+' 100 100)');rays.appendChild(p)}
 const hdr=document.getElementById('hdr');
 const onScroll=()=>hdr.classList.toggle('scrolled',window.scrollY>40);
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
@@ -323,7 +455,7 @@ const nav=document.getElementById('nav');
 document.getElementById('menuBtn').addEventListener('click',()=>nav.classList.toggle('open'));
 nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
 if('IntersectionObserver' in window){
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.15});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 }else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('on'))}
 </script>
