@@ -3,503 +3,599 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Seaside Terrace 大堂津｜宮崎・日南の海辺のキッチンカー</title>
-<meta name="description" content="宮崎県日南市・大堂津海水浴場のキッチンカー「シーサイドテラス大堂津」。南国宮崎の海を眺めながら、お酒・ドリンク・食事・おつまみを。">
-<meta property="og:title" content="Seaside Terrace 大堂津｜宮崎・日南の海辺のキッチンカー">
-<meta property="og:description" content="南国宮崎・日南の海で、夏をもう少し。大堂津海水浴場のキッチンカーです。">
-<meta property="og:image" content="assets/hero.jpg">
+<title>Seaside Terrace 大堂津｜夏を延長する、日南の海辺のキッチンカー</title>
+<meta name="description" content="宮崎県日南市・大堂津海水浴場のキッチンカー。JR大堂津駅から歩いてすぐ。15:00〜22:00（月曜定休）、次の海開きまで営業。パスタ・ピラフ・からあげとお酒を、海を眺めながら。">
+<meta name="theme-color" content="#0a9ad1">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Seaside Terrace 大堂津｜夏を延長する、日南の海辺のキッチンカー">
+<meta property="og:description" content="海開きまで、夏は終わらない。大堂津の浜辺で、ごはんとお酒を。15:00〜22:00・月曜定休">
+<meta property="og:url" content="https://ritan1107.github.io/mogamap/seaside/">
+<meta property="og:image" content="https://ritan1107.github.io/mogamap/seaside/assets/ogp.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --sea:#00a6d6; --sea2:#00c2d8; --deep:#05506f; --navy:#0a2c45;
-  --mango:#ffa21f; --sun:#ffd23c; --hibiscus:#ff3d6e; --leaf:#16a865;
-  --sand:#fff6e3; --ink:#123047;
+  --navy:#0b2236; --ocean:#0a9ad1; --sky:#7fd6ef; --lagoon:#e8f8fc;
+  --sunset:#ff7a2f; --sun:#ffc83d; --hibiscus:#ff3d5a; --palm:#1fa35f;
+  --sand:#fbf3e4; --ink:#14283b; --mute:#5d7080;
+  --r:28px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
 body{margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:500;color:var(--ink);line-height:1.9;background:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 .script{font-family:'Kaushan Script',cursive;font-weight:400}
-.pop{font-family:'Dela Gothic One',sans-serif;font-weight:400;letter-spacing:.02em}
-.wrap{max-width:1140px;margin:0 auto;padding:0 24px;position:relative}
+.d{font-family:'Dela Gothic One',sans-serif;font-weight:400;letter-spacing:.02em}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px;position:relative}
 .nw{white-space:nowrap}
 .sp{display:none}
+.sec{padding:120px 0;position:relative}
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:'Kaushan Script',cursive;font-size:1.5rem;color:var(--sunset);line-height:1}
+.eyebrow::before{content:"";width:36px;height:3px;border-radius:3px;background:currentColor}
+.center .eyebrow{justify-content:center}
+h2{font-family:'Dela Gothic One',sans-serif;font-weight:400;font-size:clamp(1.8rem,3.6vw,2.8rem);line-height:1.45;margin:14px 0 22px;letter-spacing:.02em}
+.center{text-align:center}
+.lead{font-size:1.05rem;color:var(--mute);max-width:640px}
+.center .lead{margin:0 auto}
+.mark{background:linear-gradient(transparent 62%,rgba(255,200,61,.75) 62%)}
 
-header{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,box-shadow .3s}
-header.scrolled{background:rgba(0,120,165,.94);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.hbar{display:flex;align-items:center;justify-content:space-between;height:72px}
-.brand{color:#fff;line-height:1;text-shadow:0 2px 10px rgba(0,60,90,.3)}
-.brand .script{font-size:1.75rem;display:block}
-.brand small{font-size:.66rem;letter-spacing:.35em;font-weight:900}
-nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
-nav a{color:#fff;font-weight:900;font-size:.88rem;padding:6px 14px;border-radius:99px;transition:background .2s}
-nav a:hover{background:rgba(255,255,255,.2)}
-.menu-btn{display:none;background:var(--sun);border:0;color:var(--navy);width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer;font-weight:900}
+/* ===== header ===== */
+header{position:fixed;inset:0 0 auto;z-index:60;transition:background .35s,box-shadow .35s,color .35s;color:#fff}
+header.solid{background:rgba(255,255,255,.96);backdrop-filter:blur(10px);box-shadow:0 2px 20px rgba(11,34,54,.08);color:var(--navy)}
+.hbar{display:flex;align-items:center;gap:20px;height:74px}
+.brand{display:flex;align-items:center;gap:10px;line-height:1;margin-right:auto}
+.brand img{width:44px;height:44px;border-radius:12px;object-fit:cover}
+.brand .script{font-size:1.45rem;display:block}
+.brand small{font-size:.6rem;letter-spacing:.32em;font-weight:900}
+.gnav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+.gnav a{font-weight:900;font-size:.86rem;padding:8px 13px;border-radius:99px;transition:background .2s}
+.gnav a:hover{background:rgba(127,214,239,.25)}
+.hcta{background:var(--sunset);color:#fff;font-weight:900;font-size:.86rem;padding:10px 20px;border-radius:99px;box-shadow:0 6px 16px rgba(255,122,47,.35)}
+.menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--sun);color:var(--navy);font-size:1.2rem;font-weight:900;cursor:pointer}
 
-.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;color:#fff;overflow:hidden;
-  background:linear-gradient(180deg,#0095d0 0%,#00b4dd 40%,#5ee0ea 78%,#bff4f2 100%)}
-.sunburst{position:absolute;right:-180px;top:-200px;width:760px;height:760px;animation:spin 60s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.sunball{position:absolute;right:30px;top:20px;width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle at 40% 40%,#fff7c2,#ffd23c 45%,#ffa21f 100%);box-shadow:0 0 120px 40px rgba(255,210,60,.45)}
-.palm{position:absolute;bottom:60px;z-index:1;pointer-events:none;height:auto;aspect-ratio:300/420}
-.palm.l{left:-40px;width:300px;transform-origin:bottom center;animation:sway 6s ease-in-out infinite alternate}
-.palm.r{right:-30px;width:250px;transform:scaleX(-1);transform-origin:bottom center;animation:sway2 7s ease-in-out infinite alternate}
-@keyframes sway{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
-@keyframes sway2{from{transform:scaleX(-1) rotate(-2deg)}to{transform:scaleX(-1) rotate(2deg)}}
-.gull{position:absolute;z-index:1;width:44px;height:18px;animation:fly 14s linear infinite}
-@keyframes fly{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,-18px)}}
-.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;padding-top:100px;padding-bottom:170px}
-.tag{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--deep);padding:6px 18px;border-radius:99px;font-size:.82rem;font-weight:900;box-shadow:0 6px 18px rgba(0,80,120,.2)}
-.tag i{width:10px;height:10px;border-radius:50%;background:var(--hibiscus);display:inline-block}
-.big-script{display:block;font-size:clamp(2.5rem,5.6vw,4.6rem);line-height:1.1;margin:24px 0 0;color:#fff;text-shadow:3px 4px 0 var(--mango),0 10px 30px rgba(0,60,100,.25);transform:rotate(-4deg);transform-origin:left}
-.hero h1{font-size:clamp(1.9rem,4.2vw,3.4rem);line-height:1.4;margin:16px 0;text-shadow:0 4px 20px rgba(0,60,100,.3)}
+/* ===== status pill ===== */
+.status{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--navy);border-radius:99px;padding:8px 18px 8px 14px;font-weight:900;font-size:.9rem;box-shadow:0 10px 30px rgba(0,50,80,.18)}
+.status i{width:11px;height:11px;border-radius:50%;background:#aab4bc;position:relative}
+.status.open i{background:#20c46b}
+.status.open i::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid #20c46b;animation:ping 1.6s ease-out infinite}
+@keyframes ping{from{opacity:1;transform:scale(.6)}to{opacity:0;transform:scale(1.6)}}
+.status small{font-weight:700;color:var(--mute)}
+
+/* ===== hero ===== */
+.hero{position:relative;min-height:100svh;color:#fff;overflow:hidden;display:flex;align-items:center;
+  background:linear-gradient(180deg,#0786c0 0%,#0a9ad1 35%,#3fc0e2 70%,#a8e7f2 100%)}
+.hero::before{content:"";position:absolute;width:760px;height:760px;border-radius:50%;right:-220px;top:-260px;
+  background:radial-gradient(circle,rgba(255,226,140,.9) 0%,rgba(255,200,61,.5) 25%,rgba(255,200,61,0) 60%)}
+.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding-top:110px;padding-bottom:180px;width:100%}
+.hero .catch{font-family:'Kaushan Script',cursive;font-size:clamp(1.6rem,2.6vw,2.2rem);color:#fff6d0;margin:26px 0 0;transform:rotate(-3deg);transform-origin:left;text-shadow:0 3px 0 rgba(255,122,47,.6)}
+.hero h1{font-family:'Dela Gothic One',sans-serif;font-weight:400;font-size:clamp(2.5rem,6.2vw,5.4rem);line-height:1.22;margin:8px 0 22px;letter-spacing:.01em;text-shadow:0 6px 30px rgba(0,50,90,.25)}
 .hero h1 .y{color:var(--sun)}
-.hero p.lead{font-size:clamp(1rem,1.5vw,1.12rem);max-width:30em;font-weight:700;text-shadow:0 2px 10px rgba(0,60,100,.35)}
-.btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;border-radius:99px;font-weight:900;transition:transform .2s}
-.btn:hover{transform:translateY(-3px) rotate(-1deg)}
-.btn-sun{background:var(--sun);color:var(--navy);box-shadow:0 6px 0 #e2a400,0 14px 24px rgba(0,0,0,.15)}
-.btn-pink{background:var(--hibiscus);color:#fff;box-shadow:0 6px 0 #c8204a,0 14px 24px rgba(0,0,0,.15)}
-.hero-photo{position:relative}
-.blob{border-radius:46% 54% 42% 58% / 52% 44% 56% 48%;overflow:hidden;border:8px solid #fff;box-shadow:0 30px 60px rgba(0,60,100,.35);aspect-ratio:1/1;animation:morph 10s ease-in-out infinite alternate}
-.blob img{width:100%;height:100%;object-fit:cover;object-position:45% 50%}
-@keyframes morph{to{border-radius:56% 44% 58% 42% / 42% 56% 44% 58%}}
-.sticker{position:absolute;display:grid;place-items:center;text-align:center;border-radius:50%;font-weight:900;line-height:1.25;box-shadow:0 10px 24px rgba(0,0,0,.18)}
-.st1{left:-26px;top:16px;width:124px;height:124px;background:var(--hibiscus);color:#fff;rotate:-12deg;font-size:.9rem;animation:bob 3s ease-in-out infinite}
-.st2{right:-10px;bottom:6px;width:136px;height:136px;background:var(--sun);color:var(--navy);rotate:10deg;font-size:.85rem;animation:bob 3.6s ease-in-out infinite reverse}
-.st2 .pop{font-size:1.25rem;display:block}
-@keyframes bob{50%{translate:0 -10px}}
-.hib{position:absolute;z-index:4;left:-10px;bottom:-10px;width:90px;height:90px;rotate:-20deg}
-.wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;z-index:5}
-.wave svg{width:100%;height:140px}
+.hero p{font-size:clamp(1rem,1.5vw,1.12rem);font-weight:700;max-width:28em;margin:0;text-shadow:0 2px 12px rgba(0,50,90,.3)}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 30px;border-radius:99px;font-weight:900;transition:transform .2s,box-shadow .2s;font-size:1rem}
+.btn:hover{transform:translateY(-3px)}
+.btn-sun{background:var(--sun);color:var(--navy);box-shadow:0 6px 0 #dca319,0 16px 30px rgba(0,0,0,.15)}
+.btn-white{background:#fff;color:var(--ocean);box-shadow:0 6px 0 #c9e9f3,0 16px 30px rgba(0,0,0,.12)}
+.btn-navy{background:var(--navy);color:#fff}
+.collage{position:relative;height:540px}
+.collage figure{position:absolute;margin:0;background:#fff;padding:10px 10px 14px;border-radius:8px;box-shadow:0 30px 60px rgba(0,40,80,.3)}
+.collage img{border-radius:4px;object-fit:cover}
+.c1{width:330px;right:40px;top:0;rotate:4deg;z-index:2}
+.c1 img{width:100%;aspect-ratio:1/1.08;object-position:45% 40%}
+.c2{width:270px;left:10px;bottom:40px;rotate:-6deg;z-index:3}
+.c2 img{width:100%;aspect-ratio:4/3}
+.collage figcaption{font-family:'Kaushan Script',cursive;color:var(--navy);text-align:center;font-size:1.2rem;line-height:1.4;padding-top:6px}
+.c3{position:absolute;right:-40px;bottom:-30px;width:210px;z-index:4;filter:drop-shadow(0 20px 30px rgba(0,40,80,.35));animation:float 5s ease-in-out infinite}
+@keyframes float{50%{translate:0 -14px}}
+.badge-rot{position:absolute;left:44%;top:-6px;width:130px;height:130px;z-index:5;animation:spin 18s linear infinite}
+.badge-rot text{font-family:'Dela Gothic One',sans-serif;font-size:13.5px;letter-spacing:3px;fill:#fff}
+.badge-core{position:absolute;left:calc(44% + 35px);top:29px;width:60px;height:60px;border-radius:50%;background:var(--hibiscus);z-index:5;display:grid;place-items:center;font-size:1.6rem;box-shadow:0 8px 20px rgba(255,61,90,.4)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.palm{position:absolute;bottom:70px;z-index:1;pointer-events:none;aspect-ratio:300/420;opacity:.95}
+.palm.l{left:-60px;width:260px;transform-origin:50% 100%;animation:sway 6s ease-in-out infinite alternate}
+@keyframes sway{from{rotate:-2deg}to{rotate:2deg}}
+.wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;z-index:4}
+.wave svg{width:100%;height:150px}
 .wave .w1{animation:drift 8s ease-in-out infinite alternate}
 .wave .w2{animation:drift 11s ease-in-out infinite alternate-reverse}
-@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-60px)}}
+@keyframes drift{to{transform:translateX(-70px)}}
+.scroll{position:absolute;left:50%;bottom:26px;translate:-50% 0;z-index:6;color:var(--ocean);font-size:.7rem;letter-spacing:.3em;font-weight:900;text-align:center}
+.scroll::after{content:"";display:block;width:2px;height:34px;margin:6px auto 0;background:linear-gradient(var(--ocean),transparent);animation:sc 1.8s ease-in-out infinite}
+@keyframes sc{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-.marquee{background:var(--mango);color:#fff;overflow:hidden;white-space:nowrap;padding:14px 0;transform:rotate(-1.5deg);margin:-14px -20px 0;position:relative;z-index:6;box-shadow:0 8px 20px rgba(255,140,0,.25)}
-.marquee .track{display:inline-block;animation:marq 28s linear infinite;font-size:1.3rem}
-.marquee span{margin:0 22px}
+/* ===== marquee ===== */
+.marquee{background:var(--navy);color:#fff;overflow:hidden;white-space:nowrap;padding:16px 0}
+.marquee .t{display:inline-block;animation:marq 32s linear infinite;font-family:'Dela Gothic One',sans-serif;font-size:1.15rem}
+.marquee span{margin:0 26px}.marquee span:nth-child(odd){color:var(--sun)}
 @keyframes marq{to{transform:translateX(-50%)}}
 
-section{position:relative}
-.sec{padding:120px 0}
-.kicker{font-family:'Kaushan Script',cursive;color:var(--hibiscus);font-size:1.8rem;line-height:1;display:inline-block;transform:rotate(-3deg)}
-h2{font-size:clamp(1.8rem,3.4vw,2.6rem);line-height:1.5;margin:12px 0 26px}
-.center{text-align:center}
-.hl{background:linear-gradient(transparent 60%,rgba(255,210,60,.7) 60%)}
+/* ===== concept ===== */
+.concept{text-align:center;padding:130px 0 110px;background:#fff}
+.concept .big{max-width:none!important;font-family:'Dela Gothic One',sans-serif;font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.25;margin:16px 0 30px;color:var(--navy)}
+.concept .big em{font-style:normal;background:linear-gradient(90deg,var(--sunset),var(--hibiscus));-webkit-background-clip:text;background-clip:text;color:transparent}
+.concept p{max-width:640px;margin:0 auto 1em;font-size:1.06rem}
 
-.about-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:70px;align-items:center}
-.polaroid{background:#fff;padding:14px 14px 22px;border-radius:6px;box-shadow:0 24px 50px rgba(0,60,100,.18);rotate:-3deg;position:relative}
-.polaroid img{aspect-ratio:4/3.2;object-fit:cover;border-radius:3px}
-.polaroid p{margin:10px 0 0;text-align:center;font-family:'Kaushan Script',cursive;font-size:1.5rem;color:var(--deep)}
-.tape{position:absolute;width:110px;height:30px;background:rgba(255,210,60,.75);top:-12px;left:50%;translate:-50% 0;rotate:4deg}
-.about p{margin:0 0 1em}
-.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
-.fact{border-radius:20px;padding:18px 8px;text-align:center;color:#fff}
-.fact:nth-child(1){background:var(--sea)}.fact:nth-child(2){background:var(--hibiscus)}.fact:nth-child(3){background:var(--leaf)}
-.fact b{display:block;font-size:1.3rem;line-height:1.3}
-.fact span{font-size:.78rem}
+/* ===== reasons ===== */
+.reasons{background:var(--sand)}
+.r-list{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:50px}
+.r{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 18px 40px rgba(120,80,20,.08);transition:transform .3s}
+.r:hover{transform:translateY(-8px)}
+.r .vis{height:200px;position:relative;overflow:hidden;display:grid;place-items:center}
+.r .vis img{width:100%;height:100%;object-fit:cover}
+.r .num{position:absolute;left:18px;top:12px;font-family:'Dela Gothic One',sans-serif;font-size:2.6rem;color:#fff;text-shadow:0 4px 16px rgba(0,0,0,.25);line-height:1}
+.r .body{padding:26px 26px 30px}
+.r h3{font-family:'Dela Gothic One',sans-serif;font-weight:400;font-size:1.3rem;line-height:1.5;margin:0 0 10px}
+.r p{margin:0;color:var(--mute);font-size:.95rem}
+.vis.v2{background:linear-gradient(180deg,#ff9a4a,#ff5f6d 60%,#6b3c97)}
+.vis.v3{background:linear-gradient(160deg,#7fd6ef,#0a9ad1)}
+.vis svg{width:58%;height:auto}
 
-.enjoy{background:var(--sand);overflow:hidden}
-.enjoy::before{content:"";position:absolute;left:0;right:0;top:-1px;height:70px;z-index:1;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath d='M0 0h1440v25c-120 35-240 45-360 22S840 0 720 22 480 70 360 47 120 0 0 25z' fill='%23ffffff'/%3E%3C/svg%3E") center/100% 100% no-repeat}
-.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,162,31,.2) 2px,transparent 2.5px);background-size:26px 26px;pointer-events:none}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:46px;position:relative}
-.card{border-radius:30px;padding:40px 28px 34px;text-align:center;color:#fff;transition:transform .25s;position:relative;overflow:hidden}
-.card:hover{transform:translateY(-8px) rotate(-1deg)}
-.card:nth-child(1){background:linear-gradient(160deg,#ffb53b,#ff8a1f)}
-.card:nth-child(2){background:linear-gradient(160deg,#ff5f85,#ff3d6e)}
-.card:nth-child(3){background:linear-gradient(160deg,#1fc8e0,#0096c7)}
-.card::after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.14);right:-50px;top:-50px}
-.icon{width:92px;height:92px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:#fff}
-.icon svg{width:50px;height:50px}
-.card h3{font-size:1.35rem;margin:0 0 8px}
-.card p{margin:0;font-size:.95rem;font-weight:700}
-.voice{margin:56px auto 0;max-width:640px;background:#fff;border-radius:24px;padding:24px 30px;display:flex;gap:16px;align-items:center;position:relative;border:3px dashed var(--mango)}
-.voice .q{font-size:3.2rem;color:var(--hibiscus);line-height:1;font-family:Georgia,serif}
-.voice p{margin:0;font-weight:900;font-size:1.1rem}
-.voice small{display:block;color:#7a8a96;font-weight:500;font-size:.78rem}
+/* ===== timeline ===== */
+.timeline{background:linear-gradient(180deg,#0a9ad1 0%,#ff9a4a 55%,#3a2a6b 100%);color:#fff;overflow:hidden}
+.timeline .eyebrow{color:#fff3c4}
+.timeline .lead{color:rgba(255,255,255,.88)}
+.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:60px;position:relative}
+.tl::before{content:"";position:absolute;left:0;right:0;top:34px;height:3px;background:rgba(255,255,255,.4);border-radius:3px}
+.tl-item{padding:0 16px;position:relative}
+.tl-item .dot{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--navy);font-family:'Dela Gothic One',sans-serif;font-size:.95rem;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.2);margin-bottom:22px}
+.tl-item:nth-child(2) .dot{background:var(--sun)}
+.tl-item:nth-child(3) .dot{background:var(--sunset);color:#fff}
+.tl-item:nth-child(4) .dot{background:var(--navy);color:var(--sun)}
+.tl-item h3{font-size:1.15rem;margin:0 0 6px;font-weight:900}
+.tl-item p{margin:0;font-size:.92rem;opacity:.92}
 
-
-/* menu */
-.menu{background:linear-gradient(180deg,#fff,#fff3dc)}
-.menu-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:26px;margin-top:44px}
-.dish{grid-column:span 2;background:#fff;border-radius:30px;padding:18px 18px 26px;text-align:center;box-shadow:0 14px 34px rgba(255,140,0,.13);position:relative;transition:transform .25s}
+/* ===== menu ===== */
+.menu{background:#fff}
+.m-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:24px;margin-top:50px}
+.dish{grid-column:span 2;background:var(--sand);border-radius:var(--r);padding:16px 18px 26px;text-align:center;position:relative;transition:transform .3s,background .3s}
 .dish:nth-child(4){grid-column:2/span 2}
-.dish:hover{transform:translateY(-8px) rotate(-1deg)}
-.dish img{width:100%;aspect-ratio:5/4;object-fit:contain;transition:transform .4s}
-.dish:hover img{transform:scale(1.06) rotate(3deg)}
-.dish .cat{position:absolute;top:16px;left:16px;font-size:.74rem;font-weight:900;color:#fff;padding:3px 12px;border-radius:99px}
-.cat.meal{background:var(--hibiscus)}.cat.snack{background:var(--mango)}
-.dish h3{margin:8px 0 2px;font-size:1.2rem}
-.dish p{margin:0;font-size:.86rem;color:#5b6d7a}
-.menu-note{text-align:center;margin-top:30px;font-size:.88rem;color:#5b6d7a}
-.menu-note b{color:var(--hibiscus)}
+.dish:hover{transform:translateY(-8px);background:#fff0d4}
+.dish img{width:100%;aspect-ratio:5/4;object-fit:contain;transition:transform .45s}
+.dish:hover img{transform:scale(1.07) rotate(4deg)}
+.tagc{position:absolute;top:16px;left:16px;font-size:.72rem;font-weight:900;color:#fff;padding:3px 12px;border-radius:99px;background:var(--ocean)}
+.tagc.s{background:var(--sunset)}
+.dish h3{margin:4px 0 0;font-size:1.18rem;font-weight:900}
+.dish p{margin:2px 0 0;font-size:.85rem;color:var(--mute)}
+.drinks{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
+.drinks b{font-family:'Dela Gothic One',sans-serif;font-weight:400;margin-right:6px}
+.chip{background:var(--lagoon);color:#06688f;padding:8px 18px;border-radius:99px;font-weight:900;font-size:.9rem}
+.m-note{text-align:center;font-size:.8rem;color:var(--mute);margin-top:18px}
 
-.miyazaki{background:linear-gradient(180deg,#e6fbff,#fff)}
-.spots{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px}
-.spot{background:#fff;border-radius:24px;padding:28px 20px;text-align:center;box-shadow:0 12px 30px rgba(0,100,140,.1);border-top:6px solid var(--sea)}
-.spot:nth-child(2){border-color:var(--mango)}.spot:nth-child(3){border-color:var(--hibiscus)}.spot:nth-child(4){border-color:var(--leaf)}
-.spot svg{width:64px;height:64px;margin:0 auto 10px;display:block}
-.spot h3{margin:0 0 6px;font-size:1.08rem}
-.spot p{margin:0;font-size:.86rem;color:#4b5f6e}
-.miya-lead{max-width:700px;margin:0 auto}
+/* ===== for you ===== */
+.foryou{background:var(--lagoon)}
+.fy{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:46px}
+.fy-c{background:#fff;border-radius:24px;padding:30px 22px;text-align:center}
+.fy-c .ic{font-size:2.4rem;line-height:1;margin-bottom:12px}
+.fy-c h3{margin:0 0 6px;font-size:1.05rem;font-weight:900}
+.fy-c p{margin:0;font-size:.88rem;color:var(--mute)}
+.voice{max-width:720px;margin:56px auto 0;background:var(--navy);color:#fff;border-radius:var(--r);padding:34px 40px;position:relative}
+.voice::before{content:"“";position:absolute;left:24px;top:-26px;font-size:6rem;line-height:1;color:var(--sun);font-family:Georgia,serif}
+.voice p{margin:0;font-family:'Dela Gothic One',sans-serif;font-size:clamp(1.2rem,2.4vw,1.6rem);text-align:center}
+.voice small{display:block;text-align:center;margin-top:10px;opacity:.7;font-size:.78rem}
 
-.message{background:linear-gradient(160deg,#ff9a3c 0%,#ff5f6d 45%,#7b3fa0 100%);color:#fff;overflow:hidden;text-align:center}
-.sunset{position:absolute;left:50%;bottom:-180px;translate:-50% 0;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#ffe58a,rgba(255,200,80,0) 70%);opacity:.6}
-.msg-body{padding:110px 24px;max-width:860px;margin:0 auto;position:relative}
-.msg-logo{width:min(320px,80%);margin:0 auto 34px;border-radius:22px;box-shadow:0 20px 40px rgba(60,0,60,.3);rotate:-2deg}
-.message .kicker{color:#fff3c4}
-.message blockquote{margin:18px 0 26px;font-size:clamp(1.15rem,2.2vw,1.6rem);line-height:2.1;font-weight:900}
-.message blockquote span{background:linear-gradient(transparent 60%,rgba(255,210,60,.55) 60%)}
-.ocean{font-size:2.4rem;color:#fff3c4;rotate:-4deg;display:inline-block}
+/* ===== message ===== */
+.message{background:var(--navy);color:#fff;overflow:hidden}
+.msg{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:center}
+.msg .photo{position:relative}
+.msg .photo img{border-radius:var(--r);aspect-ratio:4/4.4;object-fit:cover;object-position:50% 60%;width:100%}
+.msg .photo .logo{position:absolute;right:-30px;bottom:-30px;width:190px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.4);rotate:-5deg;border:4px solid #fff}
+.message .eyebrow{color:var(--sun)}
+.message blockquote{margin:16px 0 26px;font-family:'Dela Gothic One',sans-serif;font-size:clamp(1.15rem,2.1vw,1.55rem);line-height:2}
+.message blockquote span{color:var(--sun)}
+.message .ob{font-family:'Kaushan Script',cursive;font-size:2.6rem;color:var(--sky);display:inline-block;rotate:-4deg}
 
-.info-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:start}
+/* ===== access ===== */
+.access{background:#fff}
+.ac{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;margin-top:46px;align-items:stretch}
+.mapbox{border-radius:var(--r);overflow:hidden;min-height:420px;background:var(--lagoon);box-shadow:0 18px 40px rgba(0,60,100,.1)}
+.mapbox iframe{width:100%;height:100%;min-height:420px;border:0;display:block}
+.info{background:var(--sand);border-radius:var(--r);padding:34px 30px}
+.hours{background:var(--ocean);color:#fff;border-radius:20px;padding:22px;text-align:center;margin-bottom:22px}
+.hours .tm{font-family:'Dela Gothic One',sans-serif;font-size:2.2rem;line-height:1.2}
+.hours .tm small{font-size:1rem}
+.hours .off{display:inline-block;background:var(--hibiscus);border-radius:99px;padding:2px 14px;font-weight:900;font-size:.84rem;margin-top:6px}
+.hours .status{margin-top:12px;box-shadow:none}
 dl{margin:0}
-.row{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:16px 4px;border-bottom:2px dotted #b9e3ee}
-.row:first-child{border-top:2px dotted #b9e3ee}
-dt{font-weight:900;color:var(--sea)}
+.row{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:12px 0;border-bottom:2px dotted #e4d5b8;font-size:.95rem}
+.row:last-child{border:0}
+dt{font-weight:900;color:var(--sunset)}
 dd{margin:0}
-dd small{display:block;color:#6b7c88;font-size:.82rem}
-.hours{background:linear-gradient(150deg,var(--sea2),var(--deep));color:#fff;border-radius:32px;padding:42px 30px;text-align:center;box-shadow:0 20px 50px rgba(0,110,150,.3);position:relative;overflow:hidden}
-.hours::before{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:var(--sun);opacity:.25;right:-70px;top:-70px}
-.hours .script{font-size:1.9rem;color:#fff3c4;position:relative}
-.hours .time{font-size:2.5rem;line-height:1.2;margin:10px 0 6px;position:relative}
-.hours .off{display:inline-block;margin-top:10px;background:var(--hibiscus);padding:4px 18px;border-radius:99px;font-size:.88rem;font-weight:900}
-.hours .btn{margin-top:26px}
-.note{font-size:.8rem;color:#6b7c88;margin-top:18px}
+dd small{display:block;color:var(--mute);font-size:.8rem}
+.info .btn{width:100%;margin-top:18px}
 
-.cta{background:linear-gradient(180deg,#5ee0ea,#00a6d6);color:#fff;text-align:center;padding:120px 0 130px;overflow:hidden}
-.cta h2{font-size:clamp(1.9rem,4.4vw,3.2rem);text-shadow:0 4px 16px rgba(0,60,100,.2)}
-.cta .script{font-size:clamp(2.4rem,6vw,4rem);display:block;color:var(--sun);line-height:1.2;text-shadow:3px 3px 0 var(--hibiscus);rotate:-3deg}
+/* ===== faq ===== */
+.faq{background:var(--sand)}
+.qa{max-width:800px;margin:40px auto 0}
+details{background:#fff;border-radius:20px;margin-bottom:14px;padding:0 24px;box-shadow:0 6px 20px rgba(120,80,20,.06)}
+summary{list-style:none;cursor:pointer;padding:20px 30px 20px 0;font-weight:900;position:relative;display:flex;gap:12px;align-items:baseline}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"Q";font-family:'Dela Gothic One',sans-serif;color:var(--ocean);font-size:1.2rem}
+summary::after{content:"+";position:absolute;right:0;top:50%;translate:0 -50%;font-size:1.6rem;color:var(--sunset);transition:rotate .25s}
+details[open] summary::after{rotate:45deg}
+details p{margin:0;padding:0 0 22px 30px;color:var(--mute)}
+
+/* ===== nearby ===== */
+.nearby{background:#fff}
+.nb{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.nb-c{border-radius:24px;padding:28px 26px;color:#fff;position:relative;overflow:hidden;min-height:180px}
+.nb-c:nth-child(1){background:linear-gradient(150deg,#ff6b7c,#ff3d5a)}
+.nb-c:nth-child(2){background:linear-gradient(150deg,#ffb347,#ff7a2f)}
+.nb-c:nth-child(3){background:linear-gradient(150deg,#3fd08a,#1fa35f)}
+.nb-c h3{font-family:'Dela Gothic One',sans-serif;font-weight:400;font-size:1.3rem;margin:0 0 8px}
+.nb-c p{margin:0;font-size:.92rem;font-weight:700;opacity:.95}
+.nb-c .k{font-family:'Kaushan Script',cursive;font-size:1.1rem;opacity:.85}
+
+/* ===== cta / footer ===== */
+.cta{background:linear-gradient(180deg,#a8e7f2,#0a9ad1);color:#fff;text-align:center;padding:130px 0 150px;overflow:hidden}
+.cta .script{font-size:clamp(2.6rem,7vw,5rem);display:block;line-height:1.1;color:#fff;text-shadow:4px 4px 0 var(--sunset);rotate:-3deg}
+.cta h2{color:#fff;margin-top:20px}
 .cta .palm{bottom:0}
-footer{background:var(--navy);color:#c7d8e2;text-align:center;padding:56px 20px 34px;font-size:.82rem}
-footer .script{font-size:2rem;color:#fff}
-footer nav ul{justify-content:center;margin:18px 0;flex-wrap:wrap}
+footer{background:var(--navy);color:#b8c9d6;padding:60px 24px 110px;text-align:center;font-size:.84rem}
+footer img{width:120px;border-radius:16px;margin:0 auto 16px}
+footer ul{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;list-style:none;padding:0;margin:18px 0}
+footer a{color:#fff;font-weight:700}
 
-.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.3,1.2)}
+/* ===== mobile bar ===== */
+.mbar{display:none}
+
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.25,1)}
 .reveal.on{opacity:1;transform:none}
 
-@media(max-width:900px){
-  nav{position:fixed;inset:72px 0 auto 0;background:rgba(0,120,165,.97);max-height:0;overflow:hidden;transition:max-height .3s}
-  nav.open{max-height:340px}
-  nav ul{flex-direction:column;gap:0;padding:8px 24px 18px}
-  nav li a{display:block;padding:12px 6px;border-bottom:1px solid rgba(255,255,255,.15);border-radius:0}
-  header .menu-btn{display:block}
-  header:has(nav.open){background:rgba(0,120,165,.97)}
-  footer nav{position:static;max-height:none;background:none}
-  footer nav ul{flex-direction:row;padding:0}
-  footer nav li a{border:0;padding:4px 10px}
-  .hero-grid,.about-grid,.info-grid{grid-template-columns:1fr}
-  .hero-grid{gap:44px;padding-top:110px;padding-bottom:160px}
-  .hero-photo{max-width:380px;margin:0 auto;width:86%}
-  .sunburst{width:520px;height:520px;right:-200px;top:-160px}
-  .sunball{width:170px;height:170px;right:-40px;top:60px}
-  .hero .palm.l{width:170px;left:-70px;bottom:100px;opacity:.8}
-  .hero .palm.r{display:none}
-  .st1{width:96px;height:96px;font-size:.74rem;left:-20px}
-  .st2{width:106px;height:106px;font-size:.72rem;right:-16px}
-  .st2 .pop{font-size:1rem}
+@media(max-width:960px){
+  .gnav,.hcta{display:none}
+  .menu-btn{display:block}
+  .gnav.open{display:block;position:fixed;inset:74px 0 auto;background:#fff;color:var(--navy);box-shadow:0 10px 30px rgba(0,0,0,.1)}
+  .gnav.open ul{flex-direction:column;padding:8px 20px 18px}
+  .gnav.open a{display:block;padding:14px 6px;border-bottom:1px solid #eef2f4;border-radius:0}
+  .hero-grid{grid-template-columns:1fr;padding-top:104px;padding-bottom:150px;gap:30px}
+  .collage{height:380px;max-width:420px;margin:0 auto;width:100%}
+  .c1{width:220px;right:10px}
+  .c2{width:190px;bottom:20px}
+  .c3{width:150px;right:-6px;bottom:0}
+  .badge-rot{left:30%;top:-20px;width:100px;height:100px}
+  .badge-core{left:calc(30% + 27px);top:7px;width:46px;height:46px;font-size:1.2rem}
+  .palm.l{width:160px;left:-70px;bottom:120px;opacity:.7}
+  .scroll{display:none}
   .sec{padding:84px 0}
-  .cards{grid-template-columns:1fr}
-  .spots{grid-template-columns:1fr 1fr;gap:14px}
-  .menu-grid{grid-template-columns:1fr 1fr;gap:14px}
+  .r-list,.nb{grid-template-columns:1fr}
+  .tl{grid-template-columns:1fr;gap:26px}
+  .tl::before{left:34px;right:auto;top:0;bottom:0;width:3px;height:auto}
+  .tl-item{display:grid;grid-template-columns:70px 1fr;gap:16px;padding:0}
+  .tl-item .dot{margin:0}
+  .m-grid{grid-template-columns:1fr 1fr;gap:14px}
   .dish,.dish:nth-child(4){grid-column:auto;padding:12px 10px 18px;border-radius:22px}
-  .dish:last-child{grid-column:1/-1;max-width:50%;justify-self:center;width:100%}
-  .dish h3{font-size:1rem}
-  .dish p{font-size:.74rem}
-  .dish .cat{top:10px;left:10px;font-size:.64rem}
-  .spot{padding:22px 12px}
-  .msg-body{padding:80px 22px}
-  .row{grid-template-columns:92px 1fr}
+  .dish:last-child{grid-column:1/-1;width:55%;justify-self:center}
+  .dish h3{font-size:1rem}.dish p{font-size:.74rem}
+  .tagc{top:10px;left:10px;font-size:.64rem}
+  .fy{grid-template-columns:1fr 1fr;gap:12px}
+  .fy-c{padding:22px 12px}
+  .msg{grid-template-columns:1fr;gap:56px}
+  .msg .photo .logo{width:130px;right:-6px}
+  .ac{grid-template-columns:1fr}
+  .mapbox,.mapbox iframe{min-height:300px}
   .sp{display:inline}
-  h2{font-size:1.55rem}
-  .fact b{font-size:.98rem}
-  .fact span{font-size:.66rem;line-height:1.4;display:block}
-  .fact{padding:14px 4px}
-  .hours .time{font-size:2rem}
-  .marquee .track{font-size:1.05rem}
-  .cta .palm{width:130px!important}
+  .pc{display:none}
+  h2{font-size:1.6rem}
+  .voice{padding:30px 22px}
+  .mbar{display:grid;grid-template-columns:1fr 1fr 1fr;position:fixed;left:10px;right:10px;bottom:10px;z-index:70;background:rgba(11,34,54,.96);border-radius:20px;padding:8px;gap:6px;box-shadow:0 10px 30px rgba(0,0,0,.3);transform:translateY(130%);transition:transform .35s}
+  .mbar.show{transform:none}
+  .mbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:.72rem;font-weight:900;padding:6px 4px;border-radius:14px;line-height:1.3}
+  .mbar a span{font-size:1.2rem}
+  .mbar a.hot{background:var(--sunset)}
+  .mbar .st{font-size:.68rem}
+  .mbar .st i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#aab4bc;margin-right:4px}
+  .mbar .st.open i{background:#20c46b}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none;transition:none}}
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="palm" viewBox="0 0 300 420">
-      <path d="M150 140 C 160 220, 140 300, 160 420 L 178 420 C 160 300, 182 220, 166 140 Z" fill="#8a5a2b"/>
-      <path d="M152 170h22M150 200h24M150 232h26M152 266h26M154 300h26M158 336h26M160 372h26" stroke="#6e4520" stroke-width="5" stroke-linecap="round"/>
-      <g fill="#14a35c">
-        <path d="M158 140 C 110 90, 50 90, 0 130 C 60 110, 110 118, 158 146 Z"/>
-        <path d="M158 140 C 120 70, 60 40, 10 50 C 70 70, 120 100, 158 146 Z"/>
-        <path d="M160 138 C 150 70, 130 20, 90 0 C 130 50, 145 95, 156 146 Z"/>
-        <path d="M160 138 C 190 70, 240 40, 290 50 C 230 70, 190 100, 160 146 Z"/>
-        <path d="M160 140 C 210 90, 260 95, 300 135 C 250 115, 205 120, 162 148 Z"/>
-        <path d="M160 140 C 200 130, 240 160, 260 210 C 225 175, 195 160, 162 150 Z"/>
-        <path d="M156 142 C 115 135, 70 165, 50 215 C 85 180, 120 160, 156 152 Z"/>
-      </g>
-      <g fill="#0d7d45" opacity=".6">
-        <path d="M158 142 C 120 100, 80 95, 40 115 C 90 108, 125 120, 158 146 Z"/>
-        <path d="M160 140 C 200 100, 240 100, 270 115 C 225 112, 195 122, 160 146 Z"/>
-      </g>
-      <circle cx="152" cy="150" r="9" fill="#ffa21f"/><circle cx="168" cy="152" r="9" fill="#ff8a1f"/>
-    </symbol>
-    <symbol id="hibiscus" viewBox="0 0 100 100">
-      <g fill="#ff3d6e">
-        <ellipse cx="50" cy="26" rx="19" ry="24"/>
-        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(72 50 50)"/>
-        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(144 50 50)"/>
-        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(216 50 50)"/>
-        <ellipse cx="50" cy="26" rx="19" ry="24" transform="rotate(288 50 50)"/>
-      </g>
-      <circle cx="50" cy="50" r="12" fill="#c8204a"/>
-      <path d="M50 50 L 72 22" stroke="#ffd23c" stroke-width="4" stroke-linecap="round"/>
-      <circle cx="73" cy="20" r="5" fill="#ffd23c"/>
-    </symbol>
-    <symbol id="gull" viewBox="0 0 60 24"><path d="M2 14 C 12 2, 22 4, 30 16 C 38 4, 48 2, 58 14" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></symbol>
-  </defs>
-</svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="palm" viewBox="0 0 300 420">
+    <path d="M150 140 C 160 220, 140 300, 160 420 L 178 420 C 160 300, 182 220, 166 140 Z" fill="#7a4e25"/>
+    <path d="M152 170h22M150 200h24M150 232h26M152 266h26M154 300h26M158 336h26M160 372h26" stroke="#5e3b1a" stroke-width="5" stroke-linecap="round"/>
+    <g fill="#169a55">
+      <path d="M158 140 C 110 90, 50 90, 0 130 C 60 110, 110 118, 158 146 Z"/>
+      <path d="M158 140 C 120 70, 60 40, 10 50 C 70 70, 120 100, 158 146 Z"/>
+      <path d="M160 138 C 150 70, 130 20, 90 0 C 130 50, 145 95, 156 146 Z"/>
+      <path d="M160 138 C 190 70, 240 40, 290 50 C 230 70, 190 100, 160 146 Z"/>
+      <path d="M160 140 C 210 90, 260 95, 300 135 C 250 115, 205 120, 162 148 Z"/>
+      <path d="M160 140 C 200 130, 240 160, 260 210 C 225 175, 195 160, 162 150 Z"/>
+      <path d="M156 142 C 115 135, 70 165, 50 215 C 85 180, 120 160, 156 152 Z"/>
+    </g>
+    <circle cx="152" cy="150" r="9" fill="#ffa21f"/><circle cx="168" cy="152" r="9" fill="#ff8a1f"/>
+  </symbol>
+</defs></svg>
 
 <header id="hdr">
   <div class="wrap hbar">
-    <a href="#top" class="brand"><span class="script">Seaside Terrace</span><small>大堂津 ODOTSU</small></a>
-    <button class="menu-btn" id="menuBtn" aria-label="メニューを開く">☰</button>
-    <nav id="nav"><ul>
-      <li><a href="#about">お店について</a></li>
-      <li><a href="#enjoy">楽しみ方</a></li>
+    <a href="#top" class="brand"><img src="assets/icon.png" alt=""><span><span class="script">Seaside Terrace</span><small>大堂津 ODOTSU</small></span></a>
+    <nav class="gnav" id="gnav"><ul>
+      <li><a href="#reasons">ココがいい</a></li>
       <li><a href="#menu">メニュー</a></li>
-      <li><a href="#miyazaki">日南の海</a></li>
-      <li><a href="#message">メッセージ</a></li>
-      <li><a href="#info">営業案内</a></li>
+      <li><a href="#message">想い</a></li>
+      <li><a href="#access">アクセス</a></li>
+      <li><a href="#faq">よくある質問</a></li>
     </ul></nav>
+    <a class="hcta" href="#access">行き方を見る</a>
+    <button class="menu-btn" id="menuBtn" aria-label="メニュー" aria-expanded="false">☰</button>
   </div>
 </header>
 
 <main>
+<!-- HERO -->
 <section class="hero" id="top">
-  <svg class="sunburst" viewBox="0 0 200 200" aria-hidden="true"><g fill="rgba(255,255,255,.16)" id="rays"></g></svg>
-  <div class="sunball" aria-hidden="true"></div>
   <svg class="palm l" viewBox="0 0 300 420" aria-hidden="true"><use href="#palm"/></svg>
-  <svg class="palm r" viewBox="0 0 300 420" aria-hidden="true"><use href="#palm"/></svg>
-  <svg class="gull" viewBox="0 0 60 24" style="left:42%;top:16%" aria-hidden="true"><use href="#gull"/></svg>
-  <svg class="gull" viewBox="0 0 60 24" style="left:50%;top:22%;width:30px;animation-delay:-5s" aria-hidden="true"><use href="#gull"/></svg>
-
   <div class="wrap hero-grid">
     <div>
-      <span class="tag"><i></i>宮崎県日南市・大堂津海水浴場</span>
-      <span class="big-script script">Summer in Miyazaki!</span>
-      <h1 class="pop"><span class="nw">南国みやざきの海で、</span><br><span class="nw y">夏をもう少し。</span></h1>
-      <p class="lead">青い海、白い砂浜、ゆれるヤシの木。<br>大堂津の浜辺にやってきた、海辺のキッチンカーです。</p>
+      <div class="status js-status"><i></i><span class="js-st-main">営業状況を確認中…</span></div>
+      <div class="catch">Endless Summer at Odotsu</div>
+      <h1><span class="nw">海開きまで、</span><br><span class="nw y">夏は終わらない。</span></h1>
+      <p>宮崎・日南、大堂津の浜辺にとまる小さなキッチンカー。<br>海を眺めながら、パスタとからあげと冷えた一杯を。</p>
       <div class="btns">
-        <a class="btn btn-sun" href="#info">営業時間をチェック ☀</a>
-        <a class="btn btn-pink" href="#about">お店をのぞく</a>
+        <a class="btn btn-sun" href="#menu">メニューを見る</a>
+        <a class="btn btn-white" href="#access">📍 行き方・営業時間</a>
       </div>
     </div>
-    <div class="hero-photo reveal">
-      <div class="blob"><img src="assets/hero.jpg" alt="大堂津の海岸と、シーサイドテラスのロゴ入りシャツを着たスタッフの後ろ姿"></div>
-      <div class="sticker st1">日南の<br>海辺で<br>乾杯！</div>
-      <div class="sticker st2"><span><span class="pop">15:00〜</span>夕暮れから<br>夜まで</span></div>
-      <svg class="hib" viewBox="0 0 100 100" aria-hidden="true"><use href="#hibiscus"/></svg>
+    <div class="collage reveal" aria-hidden="true">
+      <figure class="c1"><img src="assets/hero.jpg" alt=""><figcaption>Ocean Bound!</figcaption></figure>
+      <figure class="c2"><img src="assets/shop.jpg" alt=""><figcaption>our kitchen car</figcaption></figure>
+      <img class="c3" src="assets/menu-karaage.webp" alt="">
+      <svg class="badge-rot" viewBox="0 0 130 130"><defs><path id="circ" d="M65 65 m-50 0 a50 50 0 1 1 100 0 a50 50 0 1 1 -100 0"/></defs><circle cx="65" cy="65" r="64" fill="#0b2236"/><text><textPath href="#circ">MIYAZAKI ✦ NICHINAN ✦ ODOTSU ✦ </textPath></text></svg>
+      <div class="badge-core">🌺</div>
     </div>
   </div>
-  <div class="wave" aria-hidden="true">
-    <svg viewBox="0 0 1440 140" preserveAspectRatio="none">
-      <path class="w1" d="M0 60c120-30 240-40 360-20s240 50 360 30 240-60 360-50 240 40 420 30v90H0z" fill="rgba(255,255,255,.4)"/>
-      <path class="w2" d="M0 80c140-35 280-30 420 0s300 35 440 5 300-40 440-10 200 20 200 20v45H0z" fill="rgba(255,255,255,.6)"/>
-      <path d="M0 100c160-30 320-30 480 0s320 30 480 0 320-30 480 0v40H0z" fill="#fff"/>
-    </svg>
-  </div>
+  <div class="wave" aria-hidden="true"><svg viewBox="0 0 1440 150" preserveAspectRatio="none">
+    <path class="w1" d="M0 60c120-30 240-40 360-20s240 50 360 30 240-60 360-50 240 40 420 30v100H0z" fill="rgba(255,255,255,.35)"/>
+    <path class="w2" d="M0 85c140-35 280-30 420 0s300 35 440 5 300-40 440-10 200 20 200 20v50H0z" fill="rgba(255,255,255,.6)"/>
+    <path d="M0 110c160-30 320-30 480 0s320 30 480 0 320-30 480 0v40H0z" fill="#fff"/>
+  </svg></div>
+  <div class="scroll">SCROLL</div>
 </section>
 
-<div class="marquee" aria-hidden="true"><div class="track pop">
-  <span>☀ MIYAZAKI</span><span>✦ NICHINAN</span><span>✦ ODOTSU BEACH</span><span>✦ 南国みやざき</span><span>✦ SUMMER NEVER ENDS</span><span>✦ Seaside Terrace</span>
-  <span>☀ MIYAZAKI</span><span>✦ NICHINAN</span><span>✦ ODOTSU BEACH</span><span>✦ 南国みやざき</span><span>✦ SUMMER NEVER ENDS</span><span>✦ Seaside Terrace</span>
+<div class="marquee" aria-hidden="true"><div class="t">
+  <span>ENDLESS SUMMER</span><span>大堂津の浜辺で待ってます</span><span>15:00 – 22:00</span><span>月曜定休</span><span>JR大堂津駅から歩いてすぐ</span><span>OCEAN BOUND!</span>
+  <span>ENDLESS SUMMER</span><span>大堂津の浜辺で待ってます</span><span>15:00 – 22:00</span><span>月曜定休</span><span>JR大堂津駅から歩いてすぐ</span><span>OCEAN BOUND!</span>
 </div></div>
 
-<section class="sec about" id="about">
-  <div class="wrap about-grid">
-    <div class="polaroid reveal">
-      <div class="tape"></div>
-      <img src="assets/shop.jpg" alt="ヤシの葉やハイビスカスで南国風に飾られたキッチンカー">
-      <p>Our kitchen car ♪</p>
-    </div>
-    <div class="reveal">
-      <div class="kicker">Our Story</div>
-      <h2 class="pop">海水浴シーズンが<br>終わっても、<br class="sp"><span class="hl">海はまだまだ楽しい！</span></h2>
-      <p>「シーサイドテラス大堂津」は、大堂津海水浴場の指定管理者・大堂津新選組が始めたキッチンカーです。</p>
-      <p>ヤシの葉とハイビスカスで飾ったカウンターは、まるで南の島の海の家。大堂津の海の素晴らしさを一年中知ってほしくて、次の海開きまで浜辺でお店を開いています。</p>
-      <p>波乗り帰りのサーファーさんも、お散歩中の地元の方も、日南海岸をドライブ中の方も。ふらっと立ち寄ってください。</p>
-      <div class="facts">
-        <div class="fact"><b>15:00〜</b><span>夕方からオープン</span></div>
-        <div class="fact"><b>月曜休み</b><span>火〜日曜営業</span></div>
-        <div class="fact"><b>海開きまで</b><span>オフシーズンも営業</span></div>
-      </div>
-    </div>
+<!-- CONCEPT -->
+<section class="concept">
+  <div class="wrap reveal">
+    <div class="eyebrow" style="justify-content:center">Concept</div>
+    <p class="big">夏を、<em>延長</em>しよう。</p>
+    <p>海水浴シーズンが終わると、静かになっていく浜辺。<br class="pc">でも大堂津の海の気持ちよさは、一年中ずっと続いています。</p>
+    <p>だから私たちは、次の海開きまで浜辺にお店を出すことにしました。<br class="pc">いつ来ても、ここだけはちょっと夏。それがシーサイドテラス大堂津です。</p>
   </div>
 </section>
 
-<section class="sec enjoy" id="enjoy">
-  <div class="dots"></div>
+<!-- REASONS -->
+<section class="sec reasons" id="reasons">
   <div class="wrap">
     <div class="center reveal">
-      <div class="kicker">Enjoy the Seaside</div>
-      <h2 class="pop">海辺の過ごし方は、自由。</h2>
+      <div class="eyebrow">Why Seaside Terrace</div>
+      <h2>ココに行きたくなる、<br class="sp">3つの理由</h2>
     </div>
-    <div class="cards">
-      <article class="card reveal">
-        <div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#ff8a1f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h28L24 28v11M17 42h14M24 28 10 12"/><circle cx="35" cy="9" r="4.5" fill="#ffd23c"/><path d="M16 18h16"/></svg></div>
-        <h3>お酒・ドリンク</h3>
-        <p>ビールやお酒、ソフトドリンクも。夕暮れの海を眺めながら乾杯！</p>
+    <div class="r-list">
+      <article class="r reveal">
+        <div class="vis"><img src="assets/beach.jpg" alt="松並木が続く大堂津の砂浜"><span class="num">01</span></div>
+        <div class="body"><h3>目の前は、<br>波おだやかな入り江</h3><p>沖に浮かぶ大島を正面に眺める、大きな入り江の海。波の音を聞きながら、ぼーっとするだけでも来る価値ありです。</p></div>
       </article>
-      <article class="card reveal">
-        <div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#ff3d6e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28h36a18 14 0 0 1-36 0z"/><path d="M16 22c0-4 4-4 4-8M24 22c0-4 4-4 4-8M32 22c0-4 4-4 4-8"/></svg></div>
-        <h3>お食事</h3>
-        <p>パスタやピラフなど、海で遊んだあとのお腹を満たすメニューをご用意。</p>
+      <article class="r reveal">
+        <div class="vis v2"><span class="num">02</span>
+          <svg viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="52" r="26" fill="#ffd36b"/><rect x="0" y="52" width="120" height="28" fill="#3a2a6b" opacity=".55"/><path d="M0 58c10 4 20 4 30 0s20-4 30 0 20 4 30 0 20-4 30 0M10 68c10 3 20 3 30 0s20-3 30 0 20 3 30 0" stroke="#fff" stroke-width="2.5" fill="none" opacity=".8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="body"><h3>夕方から夜まで、<br>22時までオープン</h3><p>15時オープン。空がオレンジに染まる夕暮れも、波音だけが響く夜の浜辺も。仕事帰りにも寄れる時間です。</p></div>
       </article>
-      <article class="card reveal">
-        <div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#0096c7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30c6-10 12-14 20-14 6 0 10 3 12 6"/><path d="M6 36c4 3 8 3 12 0s8-3 12 0 8 3 12 0"/><path d="M30 16l4-8"/></svg></div>
-        <h3>おつまみ</h3>
-        <p>ビールにぴったりのからあげも。サーフィン帰りやお散歩ついでに。</p>
+      <article class="r reveal">
+        <div class="vis v3"><span class="num">03</span>
+          <svg viewBox="0 0 120 80" aria-hidden="true" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="14" width="40" height="46" rx="8"/><path d="M20 40h40M30 60l-6 10M50 60l6 10"/><circle cx="30" cy="50" r="2.5" fill="#fff"/><circle cx="50" cy="50" r="2.5" fill="#fff"/><path d="M76 66h30M84 66V44l12-8 12 8v22" stroke="#ffc83d"/><text x="88" y="60" font-size="14" fill="#ffc83d" stroke="none" font-weight="900">P</text></svg>
+        </div>
+        <div class="body"><h3>駅から歩いてすぐ、<br>車でも来やすい</h3><p>JR日南線・大堂津駅から徒歩数分。海水浴場の駐車場もあるので、日南海岸ドライブの寄り道にも。</p></div>
       </article>
-    </div>
-    <div class="voice reveal">
-      <div class="q">“</div>
-      <p>まるでリゾート地に来たみたい！<small>— 来場されたお客さまの声（宮崎日日新聞より）</small></p>
     </div>
   </div>
 </section>
 
+<!-- TIMELINE -->
+<section class="sec timeline">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">How to Enjoy</div>
+      <h2>シーサイドテラスの、<br class="sp">ある日の過ごし方</h2>
+      <p class="lead">何時に来ても、それぞれの海があります。</p>
+    </div>
+    <div class="tl">
+      <div class="tl-item reveal"><div class="dot">15:00</div><div><h3>サーフィン帰りに一杯</h3><p>オープンと同時に、波乗りを終えた人たちが集まってきます。まずは冷たいドリンクで。</p></div></div>
+      <div class="tl-item reveal"><div class="dot">17:00</div><div><h3>夕暮れの浜辺をお散歩</h3><p>空の色が変わっていく時間。お散歩のついでに、ふらっと立ち寄って。</p></div></div>
+      <div class="tl-item reveal"><div class="dot">19:00</div><div><h3>波の音と、夜ごはん</h3><p>パスタやピラフでお腹いっぱいに。からあげとビールで乾杯も。</p></div></div>
+      <div class="tl-item reveal"><div class="dot">22:00</div><div><h3>また来ます、の時間</h3><p>月曜以外は毎日営業。次の海開きまで、何度でもどうぞ。</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
 <section class="sec menu" id="menu">
   <div class="wrap">
     <div class="center reveal">
-      <div class="kicker">Food Menu</div>
-      <h2 class="pop">海辺でたべたい、<br class="sp"><span class="hl">ごきげんメニュー</span></h2>
-      <p>海で遊んだあとも、乾杯のお供にも。浜辺で食べるごはんは格別です。</p>
+      <div class="eyebrow">Food Menu</div>
+      <h2>浜辺で食べると、<br class="sp"><span class="mark">なんでも3割増し。</span></h2>
+      <p class="lead">しっかりごはんも、お酒のお供も。海を眺めながらどうぞ。</p>
     </div>
-    <div class="menu-grid">
-      <article class="dish reveal"><span class="cat meal">お食事</span><img src="assets/menu-pepe.webp" alt="ペペロンチーノ"><h3>ペペロンチーノ</h3><p>にんにくと唐辛子がきいた定番パスタ</p></article>
-      <article class="dish reveal"><span class="cat meal">お食事</span><img src="assets/menu-meat.webp" alt="ミートソースパスタ"><h3>ミートソース</h3><p>ひき肉たっぷり、みんな大好きな味</p></article>
-      <article class="dish reveal"><span class="cat meal">お食事</span><img src="assets/menu-mentai.webp" alt="明太子パスタ"><h3>明太子パスタ</h3><p>ぷちぷち食感のクリーミーなパスタ</p></article>
-      <article class="dish reveal"><span class="cat meal">お食事</span><img src="assets/menu-pilaf.webp" alt="えびピラフ"><h3>えびピラフ</h3><p>ぷりっとえびと彩り野菜のピラフ</p></article>
-      <article class="dish reveal"><span class="cat snack">おつまみ</span><img src="assets/menu-karaage.webp" alt="からあげ"><h3>からあげ</h3><p>ビールがすすむ、カリッとジューシー</p></article>
+    <div class="m-grid">
+      <article class="dish reveal"><span class="tagc">お食事</span><img src="assets/menu-pepe.webp" alt="ペペロンチーノ"><h3>ペペロンチーノ</h3><p>にんにくと唐辛子がきいた定番</p></article>
+      <article class="dish reveal"><span class="tagc">お食事</span><img src="assets/menu-meat.webp" alt="ミートソースパスタ"><h3>ミートソース</h3><p>ひき肉たっぷり、みんな大好きな味</p></article>
+      <article class="dish reveal"><span class="tagc">お食事</span><img src="assets/menu-mentai.webp" alt="明太子パスタ"><h3>明太子パスタ</h3><p>ぷちぷち食感のクリーミーパスタ</p></article>
+      <article class="dish reveal"><span class="tagc">お食事</span><img src="assets/menu-pilaf.webp" alt="えびピラフ"><h3>えびピラフ</h3><p>ぷりっとえびと彩り野菜</p></article>
+      <article class="dish reveal"><span class="tagc s">おつまみ</span><img src="assets/menu-karaage.webp" alt="からあげ"><h3>からあげ</h3><p>ビールがすすむ、カリッとジューシー</p></article>
     </div>
-    <p class="menu-note reveal">🍺 ビール・お酒・ソフトドリンクも各種ご用意しています<br><small>※メニュー・価格は変わる場合があります。くわしくは店頭のメニューボードをご覧ください。</small></p>
+    <div class="drinks reveal"><b>DRINK</b><span class="chip">🍺 ビール</span><span class="chip">🍶 お酒いろいろ</span><span class="chip">🥤 ソフトドリンク</span></div>
+    <p class="m-note">※メニュー・価格は変わる場合があります。最新のメニューは店頭のボードでご確認ください。</p>
   </div>
 </section>
 
-<section class="sec miyazaki" id="miyazaki">
+<!-- FOR YOU -->
+<section class="sec foryou">
   <div class="wrap">
     <div class="center reveal">
-      <div class="kicker">Welcome to Nichinan</div>
-      <h2 class="pop">せっかくなら、<br class="sp">日南の海をまるごと。</h2>
-      <p class="miya-lead">大堂津があるのは、南国ムードたっぷりの日南海岸エリア。ドライブや観光の途中に、海辺でひと休みしていきませんか？</p>
+      <div class="eyebrow">For You</div>
+      <h2>こんな人に、<br class="sp">来てほしい。</h2>
     </div>
-    <div class="spots">
-      <div class="spot reveal">
-        <svg viewBox="0 0 64 64" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 44c6 4 10 4 16 0s10-4 16 0 10 4 16 0 6-2 6-2" stroke="#00a6d6"/><path d="M6 52c6 4 10 4 16 0s10-4 16 0 10 4 16 0" stroke="#00a6d6"/><circle cx="44" cy="20" r="9" fill="#ffd23c" stroke="#ffa21f"/></svg>
-        <h3>大堂津海水浴場</h3><p>地元で愛される日南の海水浴場。お店はこの浜辺にあります</p>
-      </div>
-      <div class="spot reveal">
-        <svg viewBox="0 0 64 64" fill="none" stroke="#ffa21f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="46" r="7"/><circle cx="46" cy="46" r="7"/><path d="M8 40l6-12h30l10 12v6H8z"/><path d="M24 28v12"/></svg>
-        <h3>日南海岸ドライブ</h3><p>海沿いの道を走れば、どこまでも続く青い海と南国の景色</p>
-      </div>
-      <div class="spot reveal">
-        <svg viewBox="0 0 64 64" fill="none" stroke="#ff3d6e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18h44M14 26h36"/><path d="M8 14c8 4 40 4 48 0"/><path d="M20 26v28M44 26v28"/></svg>
-        <h3>鵜戸神宮</h3><p>海に面した洞窟の中に本殿がある、日南を代表するパワースポット</p>
-      </div>
-      <div class="spot reveal">
-        <svg viewBox="0 0 64 64" fill="none" stroke="#16a865" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 54V24c0-8 4-14 10-14s10 6 10 14v30"/><path d="M26 30h4M34 30h4M28 40h8"/><path d="M14 54h36"/></svg>
-        <h3>サンメッセ日南</h3><p>太平洋を見下ろす丘に、モアイ像が並ぶ絶景スポット</p>
-      </div>
+    <div class="fy">
+      <div class="fy-c reveal"><div class="ic">🏄</div><h3>サーファーさん</h3><p>波乗りのあとの<br>ひと休みに</p></div>
+      <div class="fy-c reveal"><div class="ic">🚶</div><h3>地元の方</h3><p>夕方のお散歩<br>ついでに</p></div>
+      <div class="fy-c reveal"><div class="ic">🚗</div><h3>ドライブ中の方</h3><p>日南海岸を走る<br>途中の寄り道に</p></div>
+      <div class="fy-c reveal"><div class="ic">🚃</div><h3>列車旅の方</h3><p>大堂津駅で降りて<br>海辺の寄り道を</p></div>
+    </div>
+    <div class="voice reveal"><p>「まるでリゾート地に来たみたい！」</p><small>来場されたお客さまの声（宮崎日日新聞の記事より）</small></div>
+  </div>
+</section>
+
+<!-- MESSAGE -->
+<section class="sec message" id="message">
+  <div class="wrap msg">
+    <div class="photo reveal">
+      <img src="assets/hero.jpg" alt="大堂津の海を見つめる、ロゴ入りシャツのスタッフの後ろ姿">
+      <img class="logo" src="assets/logo.jpg" alt="Seaside Terrace 大堂津 ロゴ">
+    </div>
+    <div class="reveal">
+      <div class="eyebrow">Our Message</div>
+      <blockquote>
+        どれだけ大きな波が来ても、<br>怯まずに舵を切り続ける。<br>
+        <span>この海のように、たくさんの人の<br>受け皿になれる事業を、</span><br>
+        僕はここから創り上げる。
+      </blockquote>
+      <p>シーサイドテラス大堂津は、大堂津海水浴場の指定管理者「大堂津新選組」が運営しています。海を守る人たちが、海の楽しさをもっと多くの人に届けるために始めたお店です。</p>
+      <p>これから、海辺で過ごします！</p>
+      <span class="ob">Ocean Bound!</span>
     </div>
   </div>
 </section>
 
-<section class="message" id="message">
-  <div class="sunset"></div>
-  <div class="msg-body reveal">
-    <img class="msg-logo" src="assets/logo.jpg" alt="Seaside Terrace 大堂津 ロゴ">
-    <div class="kicker">Message</div>
-    <blockquote>
-      どれだけ大きな波が来ても、<br>怯まずに舵を切り続ける。<br>
-      <span>この海のように、たくさんの人の<br>受け皿になれる事業を、</span><br>
-      僕はここから創り上げる。
-    </blockquote>
-    <p>これから、海辺で過ごします！</p>
-    <div class="ocean script">Ocean Bound!</div>
-  </div>
-</section>
-
-<section class="sec" id="info">
+<!-- ACCESS -->
+<section class="sec access" id="access">
   <div class="wrap">
-    <div class="kicker reveal">Information</div>
-    <h2 class="pop reveal">営業のご案内</h2>
-    <div class="info-grid">
-      <dl class="reveal">
-        <div class="row"><dt>店名</dt><dd>シーサイドテラス大堂津<small>Seaside Terrace 大堂津</small></dd></div>
-        <div class="row"><dt>場所</dt><dd>大堂津海水浴場（宮崎県日南市）</dd></div>
-        <div class="row"><dt>営業時間</dt><dd>15:00〜22:00</dd></div>
-        <div class="row"><dt>定休日</dt><dd>月曜日</dd></div>
-        <div class="row"><dt>営業期間</dt><dd>来年の海開きまで</dd></div>
-        <div class="row"><dt>メニュー</dt><dd>お酒・ソフトドリンク・お食事・おつまみ</dd></div>
-        <div class="row"><dt>運営</dt><dd>大堂津新選組（大堂津海水浴場 指定管理者）</dd></div>
-      </dl>
-      <div class="hours reveal">
-        <div class="script">Open Hours</div>
-        <div class="time pop"><span class="nw">15:00</span> – <span class="nw">22:00</span></div>
-        <div>夕方から夜まで、海辺でお待ちしています</div>
-        <span class="off">月曜定休</span><br>
-        <a class="btn btn-sun" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4" target="_blank" rel="noopener">Googleマップで見る →</a>
+    <div class="center reveal">
+      <div class="eyebrow">Access &amp; Hours</div>
+      <h2>大堂津の浜辺で、<br class="sp">待ってます。</h2>
+    </div>
+    <div class="ac">
+      <div class="mapbox reveal"><iframe src="https://www.google.com/maps?q=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4&z=15&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="大堂津海水浴場の地図"></iframe></div>
+      <div class="info reveal">
+        <div class="hours">
+          <div class="tm">15:00 <small>–</small> 22:00</div>
+          <span class="off">月曜定休</span>
+          <div><div class="status js-status"><i></i><span class="js-st-main">確認中…</span></div></div>
+        </div>
+        <dl>
+          <div class="row"><dt>場所</dt><dd>大堂津海水浴場の浜辺<small>宮崎県日南市大堂津</small></dd></div>
+          <div class="row"><dt>電車</dt><dd>JR日南線「大堂津駅」から徒歩すぐ</dd></div>
+          <div class="row"><dt>車</dt><dd>東九州道 日南東郷ICから約30分<small>海水浴場の駐車場あり</small></dd></div>
+          <div class="row"><dt>営業期間</dt><dd>次の海開きまで</dd></div>
+          <div class="row"><dt>運営</dt><dd>大堂津新選組</dd></div>
+        </dl>
+        <a class="btn btn-navy" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4" target="_blank" rel="noopener">📍 地図アプリで道案内</a>
       </div>
     </div>
-    <p class="note">※天候などにより営業時間が変更になる場合があります。最新情報はSNSでお知らせします。</p>
+    <p class="m-note">※天候などにより営業時間が変わる場合があります。</p>
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="sec faq" id="faq">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">Q &amp; A</div>
+      <h2>よくある質問</h2>
+    </div>
+    <div class="qa reveal">
+      <details><summary>海水浴シーズンじゃなくても営業していますか？</summary><p>はい！シーサイドテラス大堂津は、海水浴シーズンが終わったあとも、次の海開きまで浜辺で営業しています。</p></details>
+      <details><summary>営業日と営業時間は？</summary><p>15:00〜22:00、月曜日が定休日です。天候などで変わる場合があります。</p></details>
+      <details><summary>どこにお店がありますか？</summary><p>宮崎県日南市の大堂津海水浴場の浜辺です。JR日南線の大堂津駅から歩いてすぐです。</p></details>
+      <details><summary>車で行けますか？</summary><p>東九州道の日南東郷ICから約30分です。海水浴場の駐車場をご利用ください。</p></details>
+      <details><summary>お酒を飲まなくても大丈夫？</summary><p>もちろんです。ソフトドリンクやお食事だけでもお気軽にどうぞ。お車の方はソフトドリンクで。</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- NEARBY -->
+<section class="sec nearby">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="eyebrow">Around Nichinan</div>
+      <h2>日南の海めぐりと、<br class="sp">いっしょにどうぞ。</h2>
+      <p class="lead">大堂津は南国ムードたっぷりの日南海岸エリア。観光の締めくくりに、浜辺でひと休みを。</p>
+    </div>
+    <div class="nb">
+      <div class="nb-c reveal"><div class="k">Spot 01</div><h3>鵜戸神宮</h3><p>海に面した洞窟の中に本殿がある、日南を代表するパワースポット。</p></div>
+      <div class="nb-c reveal"><div class="k">Spot 02</div><h3>サンメッセ日南</h3><p>太平洋を見下ろす丘に、モアイ像が並ぶ絶景スポット。</p></div>
+      <div class="nb-c reveal"><div class="k">Spot 03</div><h3>日南海岸ドライブ</h3><p>海沿いの国道220号は、青い海とヤシの木が続く南国ロード。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
 <section class="cta">
-  <svg class="palm" viewBox="0 0 300 420" style="width:200px;left:-50px" aria-hidden="true"><use href="#palm"/></svg>
+  <svg class="palm" viewBox="0 0 300 420" style="width:210px;left:-50px" aria-hidden="true"><use href="#palm"/></svg>
   <svg class="palm" viewBox="0 0 300 420" style="width:170px;right:-40px;transform:scaleX(-1)" aria-hidden="true"><use href="#palm"/></svg>
   <div class="wrap reveal">
     <span class="script">See you at the beach!</span>
-    <h2 class="pop">大堂津の海で、<br class="sp">待ってます。</h2>
-    <p style="font-weight:700">波の音を聞きながら、ゆっくりしていってください。</p>
-    <a class="btn btn-sun" href="#info">営業案内を見る</a>
+    <h2>今日の海、<br class="sp">見に来ませんか？</h2>
+    <div class="btns" style="justify-content:center">
+      <a class="btn btn-sun" href="#access">📍 行き方を見る</a>
+      <a class="btn btn-white" href="#menu">メニューを見る</a>
+    </div>
   </div>
 </section>
 </main>
 
 <footer>
-  <div class="script">Seaside Terrace</div>
-  <div style="letter-spacing:.35em">大堂津 ODOTSU</div>
-  <nav><ul>
-    <li><a href="#about">お店について</a></li>
-    <li><a href="#enjoy">楽しみ方</a></li>
-    <li><a href="#menu">メニュー</a></li>
-    <li><a href="#miyazaki">日南の海</a></li>
-    <li><a href="#info">営業案内</a></li>
-  </ul></nav>
+  <img src="assets/logo.jpg" alt="Seaside Terrace 大堂津">
+  <div>シーサイドテラス大堂津｜宮崎県日南市・大堂津海水浴場</div>
+  <ul><li><a href="#reasons">ココがいい</a></li><li><a href="#menu">メニュー</a></li><li><a href="#message">想い</a></li><li><a href="#access">アクセス</a></li><li><a href="#faq">よくある質問</a></li></ul>
   <div>© Seaside Terrace 大堂津</div>
 </footer>
 
+<nav class="mbar" id="mbar" aria-label="クイックメニュー">
+  <a href="#access" class="st js-mstat"><span>🕒</span><b class="js-mtext"><i></i>営業時間</b></a>
+  <a href="#menu"><span>🍝</span>メニュー</a>
+  <a class="hot" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4" target="_blank" rel="noopener"><span>📍</span>道案内</a>
+</nav>
+
 <script>
-const rays=document.getElementById('rays');
-for(let a=0;a<360;a+=20){const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d','M100 100 L94 0 L106 0Z');p.setAttribute('transform','rotate('+a+' 100 100)');rays.appendChild(p)}
-const hdr=document.getElementById('hdr');
-const onScroll=()=>hdr.classList.toggle('scrolled',window.scrollY>40);
+// 営業状況（日本時間・火〜日 15:00-22:00）
+(function(){
+  const OPEN=15,CLOSE=22,HOLIDAY=1; // 1=月曜
+  const days=['日','月','火','水','木','金','土'];
+  function jst(){const p=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());
+    const o={};p.forEach(x=>o[x.type]=x.value);const map={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+    return{d:map[o.weekday],h:parseInt(o.hour)%24,m:parseInt(o.minute)}}
+  function calc(){const t=jst(),now=t.h+t.m/60;
+    if(t.d!==HOLIDAY&&now>=OPEN&&now<CLOSE) return{open:true,text:'ただいま営業中',sub:'22:00まで',short:'営業中'};
+    if(t.d!==HOLIDAY&&now<OPEN) return{open:false,text:'本日 15:00 オープン',sub:'',short:'15時〜'};
+    let nd=(t.d+1)%7; if(nd===HOLIDAY) nd=(nd+1)%7;
+    const label=(nd===(t.d+1)%7)?'明日':days[nd]+'曜';
+    return{open:false,text:(t.d===HOLIDAY&&now<CLOSE?'本日は定休日・':'')+'次は'+label+' 15:00〜',sub:'',short:label+'15時〜'}}
+  function render(){const s=calc();
+    document.querySelectorAll('.js-status').forEach(el=>{el.classList.toggle('open',s.open);el.querySelector('.js-st-main').innerHTML=s.text+(s.sub?' <small>'+s.sub+'</small>':'')});
+    const m=document.querySelector('.js-mstat');m.classList.toggle('open',s.open);m.querySelector('.js-mtext').innerHTML='<i></i>'+s.short}
+  try{render();setInterval(render,60000)}catch(e){}
+})();
+// header / menu
+const hdr=document.getElementById('hdr'),mbar=document.getElementById('mbar');
+const onScroll=()=>{const y=window.scrollY;hdr.classList.toggle('solid',y>60);mbar.classList.toggle('show',y>500)};
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
-const nav=document.getElementById('nav');
-document.getElementById('menuBtn').addEventListener('click',()=>nav.classList.toggle('open'));
-nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
-if('IntersectionObserver' in window){
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-}else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('on'))}
+const gnav=document.getElementById('gnav'),mb=document.getElementById('menuBtn');
+mb.addEventListener('click',()=>{const o=gnav.classList.toggle('open');mb.setAttribute('aria-expanded',o);hdr.classList.add('solid')});
+gnav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{gnav.classList.remove('open');mb.setAttribute('aria-expanded',false)}));
+// reveal
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el))}else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('on'))}
 </script>
 </body>
 </html>
