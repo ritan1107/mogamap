@@ -70,7 +70,7 @@ header.scrolled .bar{height:64px}
 .slide{position:absolute;inset:0;margin:0;opacity:0;transition:opacity 2s ease}
 .slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 10s cubic-bezier(.22,.1,.25,1)}
 .slide.on{opacity:1}.slide.on img{transform:scale(1.02)}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,26,34,.45) 0%,rgba(8,26,34,.05) 30%,rgba(8,26,34,.1) 60%,rgba(8,26,34,.6) 100%);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,26,34,.5) 0%,rgba(8,26,34,.1) 30%,rgba(8,26,34,.2) 55%,rgba(8,26,34,.78) 100%);pointer-events:none}
 .hero-in{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:clamp(40px,7vh,80px)}
 .hero-copy{writing-mode:vertical-rl;position:absolute;right:clamp(32px,8vw,130px);top:clamp(120px,18vh,180px);font-family:var(--f-min);display:flex;flex-direction:column;gap:26px;white-space:nowrap}
 .hero-copy .l1{font-size:clamp(26px,3.4vw,42px);font-weight:500;letter-spacing:.3em;line-height:1.7}
@@ -80,8 +80,9 @@ header.scrolled .bar{height:64px}
 @keyframes reveal{to{clip-path:inset(0 0 0 0)}}
 .hero-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
 .hero-title{font-family:var(--f-en);font-weight:400;line-height:1}
-.hero-title small{display:block;font-size:13px;letter-spacing:.5em;margin-bottom:18px;opacity:.85}
-.hero-title span{display:block;font-size:clamp(46px,7.4vw,108px);letter-spacing:.02em;font-style:italic}
+.hero-title small{display:block;font-size:12px;letter-spacing:.5em;margin-top:14px;opacity:.85;padding-left:4%}
+.hero-title img{width:clamp(280px,40vw,600px);height:auto;filter:drop-shadow(0 6px 24px rgba(0,0,0,.45));opacity:0;transform:translateY(16px);animation:logoIn 1.6s var(--ease) .3s forwards}
+@keyframes logoIn{to{opacity:1;transform:none}}
 .hero-side{display:flex;flex-direction:column;align-items:flex-end;gap:18px}
 .status{display:inline-flex;align-items:center;gap:10px;font-size:12.5px;letter-spacing:.12em;border:1px solid rgba(255,255,255,.55);padding:8px 16px;background:rgba(8,26,34,.25);backdrop-filter:blur(4px)}
 .status i{width:6px;height:6px;border-radius:50%;background:#a4b0b4;flex:none}
@@ -133,7 +134,7 @@ header.scrolled .bar{height:64px}
 .band figure{margin:0;overflow:hidden;position:relative}
 .band img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s var(--ease)}
 .band figure:hover img{transform:scale(1.04)}
-.band .logo-p{background:#1c2130;display:grid;place-items:center}.band .logo-p img{width:72%;height:auto;object-fit:contain}
+.band .logo-p{background:radial-gradient(circle at 50% 45%,#16404f,#0d2a36 70%);display:grid;place-items:center}.band .logo-p img{width:80%;height:auto;object-fit:contain}.band .logo-p:hover img{transform:scale(1.03)}
 .band figcaption{position:absolute;left:22px;bottom:18px;color:#fff;font-family:var(--f-en);font-style:italic;font-size:15px;letter-spacing:.12em;text-shadow:0 1px 12px rgba(0,0,0,.5)}
 
 /* ---------- menu ---------- */
@@ -162,6 +163,34 @@ header.scrolled .bar{height:64px}
 .item .dots{border-bottom:1px dotted var(--line2);transform:translateY(-6px)}
 .item .pr{font-family:var(--f-en);font-size:18px;letter-spacing:.06em;white-space:nowrap}
 .item .pr.tbd{font-family:var(--f-go);font-size:12px;color:var(--sub);letter-spacing:.14em}
+
+.mlist>div>.mcat:last-child{margin-bottom:0}
+.bdg{font-style:normal;font-family:var(--f-en);font-size:11px;letter-spacing:.14em;color:var(--gold);border:1px solid var(--gold);padding:0 7px;margin-left:10px;vertical-align:2px;line-height:1.6;display:inline-block}
+/* drink */
+.sig{background:var(--navy);color:#fff;padding:54px 48px;margin-bottom:80px}
+.sig-h{font-family:var(--f-min);letter-spacing:.2em;font-size:14px;color:#c9d8dc;margin-bottom:30px;display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.sig-h .en{font-size:30px;color:#fff;font-style:italic}
+.sig-list{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #2b4b57}
+.sg{padding:24px 18px 0 0;display:flex;flex-direction:column;gap:4px}
+.sg+.sg{padding-left:18px;border-left:1px solid #2b4b57}
+.sg .n{font-family:var(--f-en);font-style:italic;color:#d8b07a;letter-spacing:.2em;font-size:13px}
+.sg b{font-family:var(--f-min);font-weight:500;font-size:14.5px;letter-spacing:.02em;line-height:1.6;word-break:keep-all}
+.sg small{font-size:11.5px;color:#a9bfc6;letter-spacing:.04em;line-height:1.7}
+.sg .pr{font-family:var(--f-en);font-size:20px;margin-top:6px}
+.dgroup{margin-bottom:70px}
+.dg-h{font-family:var(--f-en);font-weight:400;font-size:28px;letter-spacing:.12em;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--ink);margin-bottom:6px}
+.dg-h small{font-family:var(--f-go);font-size:12px;letter-spacing:.22em;color:var(--sub)}
+.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:0 48px}
+.dc{padding:20px 0;border-bottom:1px solid var(--line2)}
+.dh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
+.dh b{font-family:var(--f-min);font-weight:500;font-size:16px;letter-spacing:.08em}
+.dh .pr{font-family:var(--f-en);font-size:18px}
+.dc p,.soft{font-size:13px;color:#33464d;line-height:1.95;letter-spacing:.04em}
+.dc small{display:block;font-size:11.5px;color:var(--sub);margin-top:4px}
+.soft{padding:20px 0;border-bottom:1px solid var(--line2)}
+.alc{border:1px solid var(--line2);background:#fff;padding:28px 32px;font-size:12.5px;color:var(--sub);margin-top:10px}
+.alc b{display:block;font-family:var(--f-min);font-weight:500;color:var(--ink);font-size:14px;letter-spacing:.12em;margin-bottom:8px}
+.alc ul{margin:0;padding-left:1.2em;line-height:1.9}
 .m-note{font-size:12px;color:var(--sub);text-align:center;margin-top:30px;letter-spacing:.1em}
 
 /* ---------- gallery ---------- */
@@ -198,7 +227,7 @@ header.scrolled .bar{height:64px}
 .message .grid{display:grid;grid-template-columns:1fr 1.05fr;gap:100px;align-items:center}
 .msg-ph{position:relative}
 .msg-ph img{aspect-ratio:4/5;object-fit:cover;width:100%;object-position:52% 40%}
-.msg-ph .lg{position:absolute;right:-40px;bottom:-40px;width:150px;aspect-ratio:auto;border:6px solid var(--sand)}
+.msg-ph .lg{position:absolute;right:-40px;bottom:-40px;width:220px;padding:18px;background:var(--navy);border:6px solid var(--sand)}.msg-ph .lg img{width:100%;aspect-ratio:auto}
 .message blockquote{margin:0 0 40px;font-family:var(--f-min);font-size:clamp(19px,2vw,24px);line-height:2.3;letter-spacing:.14em}
 .message .txt p{color:#33464d;font-size:14.5px}
 .sign{margin-top:40px;display:flex;align-items:center;gap:18px}
@@ -251,6 +280,7 @@ details p{padding:0 0 28px;color:var(--sub);font-size:14px}
 footer{background:var(--navy);color:#9fb3b9;padding:80px 0 110px;font-size:12.5px}
 .ft{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
 footer .logo{color:#fff}
+.flogo img{width:240px;height:auto}
 footer ul{display:flex;gap:30px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
 footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#fff}
 .copy{margin-top:50px;padding-top:24px;border-top:1px solid #23414c;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;letter-spacing:.12em}
@@ -284,7 +314,7 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
   .hero-copy .l2{font-size:11.5px}
   .hero-bottom{flex-direction:column;align-items:flex-start}
   .hero-side{align-items:flex-start}
-  .hero-title span{font-size:50px}
+  .hero-title img{width:min(86vw,380px)}
   .hero-title small{display:none}
   .scroll{display:none}
   .sec,.gallery{padding:100px 0}
@@ -296,10 +326,19 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
   .dishes{grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:50px}
   .dish{padding:8px}.dish figcaption{font-size:11.5px}
   .mlist{grid-template-columns:1fr}
+  .mlist>div>.mcat:last-child{margin-bottom:56px}
+  .sig{padding:40px 22px;margin:0 -22px 60px}
+  .sig-list{grid-template-columns:1fr}
+  .sg,.sg+.sg{padding:18px 0;border-left:0;border-bottom:1px solid #2b4b57;display:grid;grid-template-columns:30px 1fr auto;column-gap:10px;align-items:baseline}
+  .sg small{grid-column:2}
+  .sg .pr{grid-column:3;grid-row:1;margin:0}
+  .dgrid{grid-template-columns:1fr}
+  .dg-h{font-size:24px}
+  .alc{padding:22px 20px}
   .time .tl{border-top:0;border-left:1px solid var(--ink);margin-left:4px}
   .tl-i,.tl-i+.tl-i{padding:0 0 40px 28px}
   .tl-i::before,.tl-i+.tl-i::before{left:-4px;top:12px}
-  .msg-ph .lg{width:110px;right:-10px;bottom:-26px}
+  .msg-ph .lg{width:150px;padding:10px;right:-10px;bottom:-26px}
   .map,.map iframe{min-height:320px}
   .ft{flex-direction:column;align-items:flex-start}
   .mbar{display:grid;grid-template-columns:1.3fr 1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(13,42,54,.97);border-top:1px solid #23414c;transform:translateY(100%);transition:transform .5s var(--ease);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -332,12 +371,12 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
 <main id="top">
 <!-- ========== HERO ========== -->
 <section class="hero" aria-label="メインビジュアル">
-  <figure class="slide on"><img src="assets/hero.jpg" alt="大堂津の海を見つめる、ロゴ入りシャツのスタッフ" style="object-position:45% 45%"></figure>
-  <figure class="slide"><img src="assets/shop.jpg" alt="ヤシの葉で飾られたキッチンカー" style="object-position:50% 40%"></figure>
+  <figure class="slide on"><img src="assets/shop.jpg" alt="ヤシの葉で飾られたキッチンカー" style="object-position:50% 40%"></figure>
+  <figure class="slide"><img src="assets/hero.jpg" alt="大堂津の海を見つめる、ロゴ入りシャツのスタッフ" style="object-position:45% 45%"></figure>
   <div class="hero-in">
     <p class="hero-copy"><span class="l1">海開きまで、<br>夏は終わらない。</span><span class="l2">宮崎・日南　大堂津の浜辺から</span></p>
     <div class="wrap hero-bottom">
-      <h1 class="hero-title"><small>KITCHEN CAR ON ODOTSU BEACH</small><span>Endless Summer</span></h1>
+      <h1 class="hero-title"><img src="assets/logo.webp" alt="Seaside Terrace 大堂津" width="1200" height="723"><small>KITCHEN CAR ON ODOTSU BEACH</small></h1>
       <div class="hero-side">
         <div class="status js-st"><i></i><span class="js-stt">—</span></div>
         <div class="hero-nav" role="group" aria-label="スライド">
@@ -371,7 +410,7 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
 
 <div class="band">
   <figure class="rv-i"><img src="assets/shop.jpg" alt="南国風に飾ったキッチンカーのカウンター"><figcaption>Our kitchen car</figcaption></figure>
-  <figure class="rv-i logo-p"><img src="assets/logo-soft.jpg" alt="Seaside Terrace 大堂津 ロゴ"><figcaption>Seaside Terrace Odotsu</figcaption></figure>
+  <figure class="rv-i logo-p"><img src="assets/logo.webp" alt="Seaside Terrace 大堂津 ロゴ"><figcaption>Seaside Terrace Odotsu</figcaption></figure>
 </div>
 
 <!-- ========== MENU ========== -->
@@ -385,56 +424,126 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
     </div>
 
     <!-- ▼▼▼ フードメニュー ▼▼▼
-         品目の追加：<div class="item">〜</div> を1行コピーして名前・説明・価格を書き換え
-         価格が決まったら <span class="pr tbd">準備中</span> を <span class="pr">¥000</span> に -->
+         品目の追加：<div class="item">〜</div> を1行コピーして名前と価格を書き換え -->
     <div class="panel on" id="p-food" role="tabpanel" aria-labelledby="t-food">
       <div class="dishes">
         <figure class="dish"><img src="assets/menu-pepe.webp" alt="ペペロンチーノ"><figcaption>ペペロンチーノ</figcaption></figure>
-        <figure class="dish"><img src="assets/menu-meat.webp" alt="ミートソース"><figcaption>ミートソース</figcaption></figure>
         <figure class="dish"><img src="assets/menu-mentai.webp" alt="明太子パスタ"><figcaption>明太子パスタ</figcaption></figure>
-        <figure class="dish"><img src="assets/menu-pilaf.webp" alt="えびピラフ"><figcaption>えびピラフ</figcaption></figure>
-        <figure class="dish"><img src="assets/menu-karaage.webp" alt="からあげ"><figcaption>からあげ</figcaption></figure>
+        <figure class="dish"><img src="assets/menu-meat.webp" alt="ミートパスタ"><figcaption>ミートパスタ</figcaption></figure>
+        <figure class="dish"><img src="assets/menu-pilaf.webp" alt="エビピラフ"><figcaption>エビピラフ</figcaption></figure>
+        <figure class="dish"><img src="assets/menu-karaage.webp" alt="特製ミニ唐揚げ"><figcaption>特製ミニ唐揚げ</figcaption></figure>
       </div>
       <div class="mlist">
-        <div class="mcat">
-          <h3>Meal<small>お食事</small></h3>
-          <div class="item"><span class="nm">ペペロンチーノ<small>にんにくと唐辛子をきかせた定番パスタ</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-          <div class="item"><span class="nm">ミートソース<small>ひき肉たっぷりのやさしい味わい</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-          <div class="item"><span class="nm">明太子パスタ<small>ぷちぷち食感のクリーミーな一皿</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-          <div class="item"><span class="nm">えびピラフ<small>ぷりっとしたえびと彩り野菜</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
+        <div>
+          <div class="mcat">
+            <h3>Meal<small>お食事</small></h3>
+            <div class="item"><span class="nm">ペペロンチーノ</span><span class="dots"></span><span class="pr">¥700</span></div>
+            <div class="item"><span class="nm">明太子パスタ</span><span class="dots"></span><span class="pr">¥700</span></div>
+            <div class="item"><span class="nm">ミートパスタ</span><span class="dots"></span><span class="pr">¥700</span></div>
+            <div class="item"><span class="nm">エビピラフ</span><span class="dots"></span><span class="pr">¥600</span></div>
+          </div>
+          <div class="mcat">
+            <h3>Dessert<small>デザート</small></h3>
+            <div class="item"><span class="nm">大堂津映えアイス<em class="bdg">Odotsu</em></span><span class="dots"></span><span class="pr">¥700</span></div>
+            <div class="item"><span class="nm">バニラアイス</span><span class="dots"></span><span class="pr">¥500</span></div>
+          </div>
         </div>
         <div class="mcat">
           <h3>Snack<small>おつまみ</small></h3>
-          <div class="item"><span class="nm">からあげ<small>カリッとジューシー、ビールのお供に</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-          <div class="item"><span class="nm">おつまみ各種<small>店頭のボードをご覧ください</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
+          <div class="item"><span class="nm">日南手羽（タレ）<em class="bdg">Nichinan</em></span><span class="dots"></span><span class="pr">¥500</span></div>
+          <div class="item"><span class="nm">日南手羽（ペッパー）<em class="bdg">Nichinan</em></span><span class="dots"></span><span class="pr">¥500</span></div>
+          <div class="item"><span class="nm">鶏皮ポン酢</span><span class="dots"></span><span class="pr">¥400</span></div>
+          <div class="item"><span class="nm">砂ズリポン酢</span><span class="dots"></span><span class="pr">¥400</span></div>
+          <div class="item"><span class="nm">チキンナゲット</span><span class="dots"></span><span class="pr">¥500</span></div>
+          <div class="item"><span class="nm">特製ミニ唐揚げ（100g）</span><span class="dots"></span><span class="pr">¥400</span></div>
+          <div class="item"><span class="nm">タコスディップサルサ</span><span class="dots"></span><span class="pr">¥500</span></div>
+          <div class="item"><span class="nm">ガーリックシュリンプ</span><span class="dots"></span><span class="pr">¥900</span></div>
+          <div class="item"><span class="nm">MIXナッツ</span><span class="dots"></span><span class="pr">¥300</span></div>
+          <div class="item"><span class="nm">マカダミアナッツ<small>6粒 ¥500／10粒 ¥800</small></span><span class="dots"></span><span class="pr">1粒 ¥100〜</span></div>
+          <div class="item"><span class="nm">エイヒレ炙り</span><span class="dots"></span><span class="pr">¥500</span></div>
+          <div class="item"><span class="nm">クリームチーズ マルタニ醤油漬け</span><span class="dots"></span><span class="pr">¥400</span></div>
+          <div class="item"><span class="nm">チーズサラミ盛り合わせ</span><span class="dots"></span><span class="pr">¥900</span></div>
+          <div class="item"><span class="nm">フライドポテト（200g）</span><span class="dots"></span><span class="pr">¥500</span></div>
         </div>
       </div>
+      <p class="m-note">価格はすべて税込です。　テイクアウトもできます。</p>
     </div>
     <!-- ▲▲▲ フードメニューここまで ▲▲▲ -->
 
     <!-- ▼▼▼ ドリンクメニュー ▼▼▼
-         品目の追加・価格の入れ方はフードと同じ -->
+         カテゴリの追加：<div class="dc">〜</div> をコピーして書き換え -->
     <div class="panel" id="p-drink" role="tabpanel" aria-labelledby="t-drink">
-      <div class="mlist">
-        <div class="mcat">
-          <h3>Beer<small>ビール</small></h3>
-          <div class="item"><span class="nm">生ビール<small>品目は準備中</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-          <div class="item"><span class="nm">瓶ビール<small>品目は準備中</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-        </div>
-        <div class="mcat">
-          <h3>Liquor<small>お酒</small></h3>
-          <div class="item"><span class="nm">焼酎<small>品目は準備中</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-          <div class="item"><span class="nm">ハイボール・サワー<small>品目は準備中</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
-        </div>
-        <div class="mcat">
-          <h3>Soft Drink<small>ソフトドリンク</small></h3>
-          <div class="item"><span class="nm">ソフトドリンク各種<small>品目は準備中</small></span><span class="dots"></span><span class="pr tbd">準備中</span></div>
+      <div class="sig">
+        <p class="sig-h"><span class="en">Local &amp; Original</span>宮崎・日南ならではの一杯</p>
+        <div class="sig-list">
+          <div class="sg"><span class="n">01</span><b>日南トロピカルサンセット</b><small>パッソア・パイン・オレンジ</small><span class="pr">¥700</span></div>
+          <div class="sg"><span class="n">02</span><b>宮崎トロピカルサンセット</b><small>マンゴヤン・オレンジ・パイン</small><span class="pr">¥700</span></div>
+          <div class="sg"><span class="n">03</span><b>大堂津トロピカル</b><small>バナナ・マンゴー・パイン</small><span class="pr">¥700</span></div>
+          <div class="sg"><span class="n">04</span><b>南国マンゴーラッシー</b><small>ヨーグリート・マンゴー・オレンジ</small><span class="pr">¥700</span></div>
+          <div class="sg"><span class="n">05</span><b>店主オリジナル</b><small>その日のおすすめはスタッフまで</small><span class="pr">¥700</span></div>
         </div>
       </div>
+
+      <div class="dgroup">
+        <h3 class="dg-h">Beer &amp; Spirits<small>ビール・焼酎・洋酒</small></h3>
+        <div class="dgrid">
+          <div class="dc"><div class="dh"><b>ビール</b><span class="pr">¥700</span></div><p>瓶ビール ／ アサヒ生ジョッキ缶 ／ ノンアルコール</p></div>
+          <div class="dc"><div class="dh"><b>焼酎</b><span class="pr">¥500</span></div><p>松の露（日南） ／ 飫肥杉（日南） ／ 本霧島 ／ 白霧島 ／ 黒霧島 ／ 木挽 ／ 木挽ブルー ／ 松露（串間）</p><small>水・緑茶・ウーロン茶・お湯・ロック</small></div>
+          <div class="dc"><div class="dh"><b>ウイスキー</b><span class="pr">¥500〜</span></div><p>角 ¥600 ／ トリス ／ ホワイトホース ／ ブラックニッカ ／ ジムビーム</p><small>水・炭酸・ロック・ストレート・ショット</small></div>
+          <div class="dc"><div class="dh"><b>ブランデー</b><span class="pr">¥500</span></div><p>ブランデーVO</p><small>水・炭酸・ロック・ストレート・ショット</small></div>
+          <div class="dc"><div class="dh"><b>赤ワイン</b><span class="pr">¥600</span></div><p>グラスワイン ／ カリモーチョ ／ キティ ／ サングリア赤</p></div>
+          <div class="dc"><div class="dh"><b>白ワイン</b><span class="pr">¥600</span></div><p>グラスワイン ／ スプリッツァー ／ オペレーター</p></div>
+          <div class="dc"><div class="dh"><b>日本酒</b><span class="pr">各¥500〜</span></div><p>各種ございます</p></div>
+          <div class="dc"><div class="dh"><b>泡盛など</b><span class="pr">各¥600〜</span></div><p>各種ございます</p></div>
+        </div>
+      </div>
+
+      <div class="dgroup">
+        <h3 class="dg-h">Cocktail<small>カクテル　すべて ¥700</small></h3>
+        <div class="dgrid">
+          <div class="dc"><div class="dh"><b>カシス</b></div><p>カシスオレンジ ／ カシスパイン ／ カシスソーダ ／ カシスコーラ ／ カシスウーロン ／ カシスグレープフルーツ</p></div>
+          <div class="dc"><div class="dh"><b>ピーチ</b></div><p>ピーチウーロン ／ ピーチフィズ ／ ピーチミルク ／ ファジーネーブル ／ ピーチパイン ／ ピーチグレープフルーツ ／ ピーチコーラ</p></div>
+          <div class="dc"><div class="dh"><b>パッソア</b></div><p>パッソアオレンジ ／ パッソアパイン ／ パッソアソーダ ／ パッソアコーラ ／ パッソアグレープフルーツ ／ 日南トロピカルサンセット</p></div>
+          <div class="dc"><div class="dh"><b>マンゴヤン</b></div><p>マンゴヤンオレンジ ／ マンゴヤンパイン ／ マンゴヤンソーダ ／ マンゴヤンコーラ ／ マンゴヤンミルク ／ マンゴヤングレープフルーツ ／ 宮崎トロピカルサンセット</p></div>
+          <div class="dc"><div class="dh"><b>ジン</b></div><p>ジントニック ／ ジンバック ／ ジンリッキー ／ ジンコーク ／ ジンライム</p></div>
+          <div class="dc"><div class="dh"><b>ウォッカ</b></div><p>モスコミュール ／ ソルティードッグ ／ ブルドッグ ／ スクリュードライバー</p></div>
+          <div class="dc"><div class="dh"><b>DITA（ライチ）</b></div><p>ディタオレンジ ／ ディタパイン ／ ディタソーダ ／ ディタトニック ／ チャイナブルー</p></div>
+          <div class="dc"><div class="dh"><b>モヒート</b></div><p>モヒート ／ モヒートジンジャー ／ トニックモヒート ／ コークモヒート</p></div>
+          <div class="dc"><div class="dh"><b>バナナ</b></div><p>バナナミルク ／ バナナオレンジ ／ バナナパイン ／ バナナコーク ／ 大堂津トロピカル</p></div>
+          <div class="dc"><div class="dh"><b>ヨーグリート</b></div><p>ヨーグリートパイン ／ ヨーグリートオレンジ ／ ヨーグリートソーダ ／ ヨーグリートジンジャー ／ ヨーグリートコーラ ／ 南国マンゴーラッシー</p></div>
+          <div class="dc"><div class="dh"><b>マリブ</b></div><p>マリブミルク ／ マリブパイン ／ マリブオレンジ ／ マリブコーク</p></div>
+          <div class="dc"><div class="dh"><b>カルーア</b></div><p>カルーアミルク ／ ブラックルシアン</p></div>
+          <div class="dc"><div class="dh"><b>キャラメル</b></div><p>キャラメルミルク ／ キャラメルコーク ／ キャラメルラテ</p><small>キャラメルラテ：キャラメル・カルーア・ミルク</small></div>
+          <div class="dc"><div class="dh"><b>バニラ</b></div><p>バニラミルク ／ バニラコーヒー ／ バニラコーク ／ バニラココナッツミルク</p></div>
+        </div>
+      </div>
+
+      <div class="dgroup">
+        <h3 class="dg-h">Shaker<small>シェーカー　すべて ¥800</small></h3>
+        <div class="dgrid">
+          <div class="dc"><div class="dh"><b>ギムレット</b></div><small>ジン or ウォッカ・シロップ・ライム</small></div>
+          <div class="dc"><div class="dh"><b>サイドカー</b></div><small>ブランデー・ホワイトキュラソー・レモン</small></div>
+          <div class="dc"><div class="dh"><b>ホワイトレディ</b></div><small>ジン・ホワイトキュラソー・レモン</small></div>
+          <div class="dc"><div class="dh"><b>カミカゼ</b></div><small>ウォッカ・ホワイトキュラソー・ライム</small></div>
+        </div>
+      </div>
+
+      <div class="dgroup">
+        <h3 class="dg-h">Soft Drink<small>ソフトドリンク　すべて ¥500</small></h3>
+        <p class="soft">オレンジ ／ アップル ／ パイナップル ／ グレープフルーツ ／ コーラ ／ ジンジャーエール ／ コーヒー ／ 緑茶 ／ ウーロン茶 ／ トニックウォーター ／ 炭酸水 ／ ガラナ ／ ノンアルカクテル</p>
+      </div>
+
+      <div class="alc">
+        <b>お酒をご注文のお客さまへ</b>
+        <ul>
+          <li>お車を運転される方、20歳未満の方へのアルコールの提供はお断りしております。</li>
+          <li>ご注文の際に、年齢確認をさせていただく場合がございます。</li>
+          <li>妊娠中・授乳期の飲酒は、胎児・乳児の発育に悪影響を与えるおそれがあります。</li>
+        </ul>
+      </div>
+      <p class="m-note">価格はすべて税込です。</p>
     </div>
     <!-- ▲▲▲ ドリンクメニューここまで ▲▲▲ -->
-
-    <p class="m-note">価格・品目は順次掲載いたします。最新のメニューは店頭のボードでご確認ください。</p>
   </div>
 </section>
 
@@ -447,7 +556,7 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
     <figure class="g"><div class="ph d"><img src="assets/menu-pepe.webp" alt="ペペロンチーノ"></div><figcaption><b>Food</b>海風といっしょに、定番のペペロンチーノ。</figcaption></figure>
     <figure class="g w"><div class="ph"><img src="assets/beach.jpg" alt="大堂津の砂浜"></div><figcaption><b>Beach</b>松並木と砂浜が続く、大堂津の海岸。</figcaption></figure>
     <figure class="g"><div class="ph d"><img src="assets/menu-karaage.webp" alt="からあげ"></div><figcaption><b>Snack</b>ビールのお供は、揚げたてのからあげ。</figcaption></figure>
-    <figure class="g"><div class="ph" style="background:#000;display:grid;place-items:center"><img src="assets/logo.jpg" alt="ロゴ" style="object-fit:contain;height:auto"></div><figcaption><b>Logo</b>夕陽と波とハイビスカス。大堂津の夏をひとつに。</figcaption></figure>
+    <figure class="g"><div class="ph" style="background:radial-gradient(circle,#16404f,#0d2a36 75%);display:grid;place-items:center"><img src="assets/logo.webp" alt="Seaside Terrace 大堂津 ロゴ" style="object-fit:contain;height:auto;width:88%"></div><figcaption><b>Logo</b>夕陽と波とハイビスカス。大堂津の夏をひとつに。</figcaption></figure>
   </div>
   <div class="wrap gctl"><button type="button" id="gPrev" aria-label="前へ">←</button><button type="button" id="gNext" aria-label="次へ">→</button></div>
 </section>
@@ -468,7 +577,7 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
 <!-- ========== MESSAGE ========== -->
 <section class="sec message" id="message">
   <div class="wrap grid">
-    <div class="msg-ph rv-i"><img src="assets/shop.jpg" alt="キッチンカーのカウンターに立つスタッフ"><img class="lg" src="assets/logo.jpg" alt="Seaside Terrace 大堂津 ロゴ"></div>
+    <div class="msg-ph rv-i"><img src="assets/shop.jpg" alt="キッチンカーのカウンターに立つスタッフ"><span class="lg"><img src="assets/logo.webp" alt="Seaside Terrace 大堂津 ロゴ"></span></div>
     <div class="txt rv">
       <div class="head" style="margin-bottom:40px"><span class="en">Message</span></div>
       <blockquote>どれだけ大きな波が来ても、<br>怯まずに舵を切り続ける。<br>この海のように、たくさんの人の<br>受け皿になれる事業を、<br>僕はここから創り上げる。</blockquote>
@@ -513,7 +622,8 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
       <details><summary>営業日と営業時間を教えてください。</summary><p>15:00〜22:00、月曜日が定休日です。天候などにより変わる場合があります。</p></details>
       <details><summary>お店はどこにありますか？</summary><p>宮崎県日南市の大堂津海水浴場の浜辺です。JR日南線の大堂津駅から歩いてすぐです。</p></details>
       <details><summary>車で行けますか？</summary><p>東九州道の日南東郷ICから約30分です。海水浴場の駐車場をご利用ください。</p></details>
-      <details><summary>お酒を飲まなくても利用できますか？</summary><p>もちろんです。ソフトドリンクやお食事だけでもお気軽にどうぞ。お車の方はソフトドリンクで。</p></details>
+      <details><summary>テイクアウトはできますか？</summary><p>はい、フードはテイクアウトもできます。浜辺でのんびり召し上がるのもおすすめです。</p></details>
+      <details><summary>お酒を飲まなくても利用できますか？</summary><p>もちろんです。ソフトドリンクやノンアルカクテル、お食事だけでもお気軽にどうぞ。お車を運転される方へのアルコールの提供はお断りしております。</p></details>
     </div>
   </div>
 </section>
@@ -547,7 +657,7 @@ footer ul a{font-family:var(--f-en);font-size:15px;letter-spacing:.14em;color:#f
 <footer>
   <div class="wrap">
     <div class="ft">
-      <a class="logo" href="#top"><img src="assets/icon.png" alt=""><span><b>Seaside Terrace</b><small>ODOTSU · MIYAZAKI</small></span></a>
+      <a class="flogo" href="#top"><img src="assets/logo.webp" alt="Seaside Terrace 大堂津"></a>
       <ul><li><a href="#concept">Concept</a></li><li><a href="#menu">Menu</a></li><li><a href="#time">Time</a></li><li><a href="#message">Message</a></li><li><a href="#access">Access</a></li></ul>
     </div>
     <div class="copy"><span>宮崎県日南市 大堂津海水浴場　15:00–22:00（月曜定休）</span><span>© Seaside Terrace Odotsu</span></div>
