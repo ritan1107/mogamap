@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seaside Terrace 大堂津｜海辺のキッチンカー</title>
+<meta name="description" content="宮崎県日南市・大堂津海水浴場のキッチンカー「シーサイドテラス大堂津」。お酒・ソフトドリンク・食事・おつまみを、海を眺めながら。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b2a40; --deep:#0a3d5c; --sea:#0b8fc2; --aqua:#5fd0e8;
+  --sand:#fbf4e6; --sun:#ffb340; --coral:#ff6b4a; --leaf:#2fa36b;
+  --ink:#16324a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:500;color:var(--ink);line-height:1.9;background:#fff;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.script{font-family:'Kaushan Script',cursive;font-weight:400}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* header */
+header{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,box-shadow .3s}
+header.scrolled{background:rgba(11,42,64,.92);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.hbar{display:flex;align-items:center;justify-content:space-between;height:70px}
+.brand{color:#fff;line-height:1}
+.brand .script{font-size:1.7rem;display:block}
+.brand small{font-size:.68rem;letter-spacing:.35em;opacity:.85;font-weight:700}
+nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0}
+nav a{color:#fff;font-weight:700;font-size:.9rem;position:relative}
+nav a::after{content:"";position:absolute;left:0;right:100%;bottom:-4px;height:2px;background:var(--sun);transition:right .25s}
+nav a:hover::after{right:0}
+.menu-btn{display:none;background:none;border:0;color:#fff;font-size:1.6rem;cursor:pointer}
+
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;color:#fff;overflow:hidden;
+  background:linear-gradient(180deg,#0b6f9e 0%,#0b8fc2 45%,#46c3e0 100%)}
+.hero .sun{position:absolute;width:520px;height:520px;border-radius:50%;right:-120px;top:-140px;
+  background:radial-gradient(circle,rgba(255,206,110,.55),rgba(255,179,64,0) 65%)}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-top:90px;padding-bottom:150px}
+.tag{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:4px 16px;border-radius:99px;font-size:.8rem;letter-spacing:.2em;font-weight:700}
+.hero h1{font-size:clamp(2.4rem,5.2vw,4.4rem);line-height:1.35;font-weight:900;margin:22px 0 18px;letter-spacing:.04em;text-shadow:0 4px 24px rgba(0,40,70,.25)}
+.nw{white-space:nowrap}
+.hero h1 em{font-style:normal;color:#fff3c4}
+.hero p.lead{font-size:clamp(1rem,1.6vw,1.15rem);max-width:30em;opacity:.95}
+.btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 30px;border-radius:99px;font-weight:900;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-sun{background:var(--sun);color:var(--navy);box-shadow:0 8px 24px rgba(255,179,64,.45)}
+.btn-ghost{border:2px solid rgba(255,255,255,.8);color:#fff}
+.photo-card{background:#fff;padding:12px 12px 18px;border-radius:6px;transform:rotate(2.5deg);box-shadow:0 30px 60px rgba(0,30,60,.35)}
+.photo-card img{aspect-ratio:4/3.4;object-position:center 40%;object-fit:cover;border-radius:3px}
+.photo-card figcaption{color:var(--ink);text-align:center;font-size:1.5rem;margin-top:8px}
+.wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;z-index:3}
+.wave svg{width:100%;height:120px}
+.wave .w1{animation:drift 9s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+
+/* sections */
+section{position:relative}
+.sec{padding:110px 0}
+.kicker{font-family:'Kaushan Script',cursive;color:var(--sea);font-size:1.6rem;line-height:1}
+h2{font-size:clamp(1.8rem,3.6vw,2.7rem);line-height:1.45;font-weight:900;margin:10px 0 26px;letter-spacing:.03em}
+.center{text-align:center}
+
+.about-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:64px;align-items:center}
+.about-img{position:relative}
+.about-img img{border-radius:24px;aspect-ratio:4/3.3;object-fit:cover;width:100%}
+.about-img .badge{position:absolute;right:-18px;bottom:-22px;background:var(--coral);color:#fff;width:132px;height:132px;border-radius:50%;
+  display:grid;place-items:center;text-align:center;font-weight:900;line-height:1.35;font-size:.92rem;box-shadow:0 12px 30px rgba(255,107,74,.4);transform:rotate(-8deg)}
+.about p{margin:0 0 1em}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+.fact{background:var(--sand);border-radius:16px;padding:16px 10px;text-align:center}
+.fact b{display:block;font-size:1.35rem;color:var(--deep);font-weight:900;line-height:1.3}
+.fact span{font-size:.78rem;color:#5a6b78}
+
+.enjoy{background:var(--sand)}
+.enjoy::before{content:"";position:absolute;left:0;right:0;top:-1px;height:60px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0 0h1440v20c-120 30-240 40-360 20S840 0 720 20 480 60 360 40 120 0 0 20z' fill='%23ffffff'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:46px}
+.card{background:#fff;border-radius:26px;padding:38px 28px 32px;text-align:center;box-shadow:0 16px 40px rgba(11,42,64,.07);transition:transform .25s}
+.card:hover{transform:translateY(-6px)}
+.icon{width:84px;height:84px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center}
+.icon svg{width:44px;height:44px}
+.i1{background:#fff0d6}.i2{background:#ffe3dc}.i3{background:#dff5fb}
+.card h3{font-size:1.25rem;margin:0 0 8px;font-weight:900}
+.card p{margin:0;font-size:.95rem;color:#4b5f6e}
+.voice{margin:56px auto 0;max-width:640px;background:#fff;border-radius:20px;padding:26px 30px;display:flex;gap:18px;align-items:center;box-shadow:0 10px 30px rgba(11,42,64,.06)}
+.voice .q{font-size:3rem;color:var(--sun);line-height:1;font-family:Georgia,serif}
+.voice p{margin:0;font-weight:700}
+.voice small{display:block;color:#7a8a96;font-weight:500}
+
+/* message */
+.message{background:var(--navy);color:#fff;overflow:hidden}
+.msg-grid{max-width:860px;margin:0 auto;text-align:center}
+.msg-body{padding:100px 24px}
+.msg-logo{width:min(320px,80%);margin:0 auto 34px;border-radius:18px}
+.message .kicker{color:var(--aqua)}
+.message blockquote{margin:18px 0 26px;font-size:clamp(1.25rem,2.2vw,1.65rem);line-height:2;font-weight:700}
+.message blockquote span{background:linear-gradient(transparent 62%,rgba(255,179,64,.45) 62%)}
+.ocean{font-size:2rem;color:var(--sun)}
+
+/* info */
+.info-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:start}
+dl{margin:0}
+.row{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:18px 4px;border-bottom:1px dashed #c9d7df}
+.row:first-child{border-top:1px dashed #c9d7df}
+dt{font-weight:900;color:var(--deep)}
+dd{margin:0}
+dd small{display:block;color:#6b7c88;font-size:.82rem}
+.hours{background:linear-gradient(150deg,var(--sea),var(--deep));color:#fff;border-radius:28px;padding:40px 34px;text-align:center;box-shadow:0 20px 50px rgba(11,93,140,.3)}
+.hours .script{font-size:1.8rem;color:#fff3c4}
+.hours .time{font-size:2.6rem;font-weight:900;line-height:1.2;margin:10px 0 4px;letter-spacing:.02em}
+.hours .off{display:inline-block;margin-top:10px;background:rgba(255,255,255,.18);padding:4px 16px;border-radius:99px;font-size:.88rem}
+.hours .btn{margin-top:26px}
+.note{font-size:.8rem;color:#6b7c88;margin-top:18px}
+
+/* cta + footer */
+.cta{background:linear-gradient(180deg,#46c3e0,#0b8fc2);color:#fff;text-align:center;padding:110px 0 120px;overflow:hidden}
+.cta h2{font-size:clamp(2rem,4.4vw,3.2rem)}
+.cta .script{font-size:clamp(2.2rem,5vw,3.6rem);display:block;color:#fff3c4;line-height:1.2}
+footer{background:#071f30;color:#c7d8e2;text-align:center;padding:56px 20px 34px;font-size:.82rem}
+footer img{width:220px;margin:0 auto 20px;border-radius:14px}
+footer nav ul{justify-content:center;margin-bottom:20px;flex-wrap:wrap;gap:20px}
+
+.sp{display:none}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s}
+.reveal.on{opacity:1;transform:none}
+
+@media(max-width:860px){
+  nav{position:fixed;inset:70px 0 auto 0;background:rgba(11,42,64,.97);max-height:0;overflow:hidden;transition:max-height .3s}
+  nav.open{max-height:320px}
+  nav ul{flex-direction:column;gap:0;padding:8px 24px 18px}
+  nav li a{display:block;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  header .menu-btn{display:block}
+  header:has(nav.open){background:rgba(11,42,64,.97)}
+  footer nav{position:static;max-height:none;background:none}
+  footer nav ul{flex-direction:row;padding:0}
+  footer nav li a{border:0;padding:0}
+  .hero-grid,.about-grid,.info-grid,.msg-grid{grid-template-columns:1fr}
+  .hero-grid{gap:40px;padding-top:110px;padding-bottom:130px}
+  .photo-card{max-width:460px;margin:0 auto}
+  .sec{padding:80px 0}
+  .about-img .badge{right:8px;width:110px;height:110px;font-size:.8rem}
+  .cards{grid-template-columns:1fr}
+  .msg-body{padding:72px 22px}
+  .row{grid-template-columns:96px 1fr}
+  .sp{display:inline}
+  h2{font-size:1.6rem}
+  .fact b{font-size:.98rem}
+  .fact span{font-size:.68rem;line-height:1.4;display:block}
+  .fact{padding:14px 6px}
+  .hours .time{font-size:2.1rem}
+  .hours{padding:34px 22px}
+}
+@media(prefers-reduced-motion:reduce){.wave .w1{animation:none}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="wrap hbar">
+    <a href="#top" class="brand"><span class="script">Seaside Terrace</span><small>大堂津 ODOTSU</small></a>
+    <button class="menu-btn" id="menuBtn" aria-label="メニューを開く">☰</button>
+    <nav id="nav"><ul>
+      <li><a href="#about">私たちについて</a></li>
+      <li><a href="#enjoy">楽しみ方</a></li>
+      <li><a href="#message">メッセージ</a></li>
+      <li><a href="#info">営業案内</a></li>
+    </ul></nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <div class="sun"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag">宮崎県日南市・大堂津海水浴場</span>
+      <h1><span class="nw">夏が過ぎても、</span><br><em class="nw">海はここにある。</em></h1>
+      <p class="lead">波の音と潮風に包まれながら、冷たいドリンクとごはんを。<br>大堂津の浜辺にやってきた、海辺のキッチンカーです。</p>
+      <div class="btns">
+        <a class="btn btn-sun" href="#info">営業時間を見る →</a>
+        <a class="btn btn-ghost" href="#about">お店について</a>
+      </div>
+    </div>
+    <figure class="photo-card reveal">
+      <img src="assets/owner-back.jpg" alt="大堂津の海岸を背に立つスタッフ。背中にシーサイドテラスのロゴ">
+      <figcaption class="script">Welcome to the beach!</figcaption>
+    </figure>
+  </div>
+  <div class="wave" aria-hidden="true">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path class="w1" d="M0 60c120-30 240-40 360-20s240 50 360 30 240-60 360-50 240 40 400 30v70H0z" fill="rgba(255,255,255,.35)"/>
+      <path d="M0 80c160-30 320-30 480 0s320 30 480 0 320-30 480 0v40H0z" fill="#fff"/>
+    </svg>
+  </div>
+</section>
+
+<section class="sec about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-img reveal">
+      <img src="assets/shop.jpg" alt="南国風に飾られたシーサイドテラス大堂津のキッチンカー">
+      <div class="badge">一年中<br>海を<br>楽しもう！</div>
+    </div>
+    <div class="reveal">
+      <div class="kicker">Our Story</div>
+      <h2>海水浴シーズンが<br>終わっても、<br class="sp">楽しめる海へ。</h2>
+      <p>「シーサイドテラス大堂津」は、大堂津海水浴場の指定管理者・大堂津新選組が始めたキッチンカーです。</p>
+      <p>海水浴の季節が過ぎると、静かになっていく浜辺。でも大堂津の海の魅力は一年中続いています。その素晴らしさをもっと多くの人に知ってほしい。そんな想いから、次の海開きまで浜辺でお店を開いています。</p>
+      <p>波乗り帰りのサーファーさんも、お散歩中の地元の方も、旅の途中の方も。ふらっと立ち寄ってください。</p>
+      <div class="facts">
+        <div class="fact"><b>15:00〜</b><span>夕方からオープン</span></div>
+        <div class="fact"><b>月曜休み</b><span>火〜日曜営業</span></div>
+        <div class="fact"><b>海開きまで</b><span>オフシーズンも営業</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec enjoy" id="enjoy">
+  <div class="wrap">
+    <div class="center reveal">
+      <div class="kicker">Enjoy the Seaside</div>
+      <h2>海辺の過ごし方は、自由。</h2>
+    </div>
+    <div class="cards">
+      <article class="card reveal">
+        <div class="icon i1"><svg viewBox="0 0 48 48" fill="none" stroke="#e08a12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10h28L26 26v12M18 42h16M24 26 10 10"/><circle cx="34" cy="8" r="4"/></svg></div>
+        <h3>お酒・ドリンク</h3>
+        <p>ビールやお酒、ソフトドリンクも。夕暮れの海を眺めながら乾杯を。</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon i2"><svg viewBox="0 0 48 48" fill="none" stroke="#e5553a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28h36a18 14 0 0 1-36 0z"/><path d="M16 22c0-4 4-4 4-8M24 22c0-4 4-4 4-8M32 22c0-4 4-4 4-8"/></svg></div>
+        <h3>お食事</h3>
+        <p>パスタなど、海辺でお腹を満たせるメニューをご用意しています。</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon i3"><svg viewBox="0 0 48 48" fill="none" stroke="#0b8fc2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30c6-10 12-14 20-14 6 0 10 3 12 6"/><path d="M6 36c4 3 8 3 12 0s8-3 12 0 8 3 12 0"/><path d="M30 16l4-8"/></svg></div>
+        <h3>おつまみ</h3>
+        <p>お酒のお供にぴったりの一品も。サーフィン帰りやお散歩ついでに。</p>
+      </article>
+    </div>
+    <div class="voice reveal">
+      <div class="q">“</div>
+      <p>まるでリゾート地に来たみたい！<small>— 来場されたお客さまの声（宮崎日日新聞より）</small></p>
+    </div>
+  </div>
+</section>
+
+<section class="message" id="message">
+  <div class="msg-grid">
+    <div class="msg-body reveal">
+      <img class="msg-logo" src="assets/logo.jpg" alt="Seaside Terrace 大堂津 ロゴ">
+      <div class="kicker">Message</div>
+      <blockquote>
+        どれだけ大きな波が来ても、<br>怯まずに舵を切り続ける。<br>
+        <span>この海のように、たくさんの人の<br>受け皿になれる事業を、</span><br>
+        僕はここから創り上げる。
+      </blockquote>
+      <p>これから、海辺で過ごします！</p>
+      <div class="ocean script">Ocean Bound!</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="info">
+  <div class="wrap">
+    <div class="kicker reveal">Information</div>
+    <h2 class="reveal">営業のご案内</h2>
+    <div class="info-grid">
+      <dl class="reveal">
+        <div class="row"><dt>店名</dt><dd>シーサイドテラス大堂津<small>Seaside Terrace 大堂津</small></dd></div>
+        <div class="row"><dt>場所</dt><dd>大堂津海水浴場（宮崎県日南市）</dd></div>
+        <div class="row"><dt>営業時間</dt><dd>15:00〜22:00</dd></div>
+        <div class="row"><dt>定休日</dt><dd>月曜日</dd></div>
+        <div class="row"><dt>営業期間</dt><dd>来年の海開きまで</dd></div>
+        <div class="row"><dt>メニュー</dt><dd>お酒・ソフトドリンク・お食事・おつまみ</dd></div>
+        <div class="row"><dt>運営</dt><dd>大堂津新選組（大堂津海水浴場 指定管理者）</dd></div>
+      </dl>
+      <div class="hours reveal">
+        <div class="script">Open Hours</div>
+        <div class="time"><span class="nw">15:00</span> – <span class="nw">22:00</span></div>
+        <div>夕方から夜まで、海辺でお待ちしています</div>
+        <span class="off">月曜定休</span><br>
+        <a class="btn btn-sun" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4" target="_blank" rel="noopener">Googleマップで見る →</a>
+      </div>
+    </div>
+    <p class="note">※天候などにより営業時間が変更になる場合があります。最新情報はSNSでお知らせします。</p>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap reveal">
+    <span class="script">See you at the beach!</span>
+    <h2>大堂津の海で、<br class="sp">待ってます。</h2>
+    <p>波の音を聞きながら、ゆっくりしていってください。</p>
+    <a class="btn btn-sun" href="#info">営業案内を見る</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="script" style="font-size:2rem;color:#fff">Seaside Terrace</div>
+  <div style="letter-spacing:.35em;margin-bottom:22px">大堂津 ODOTSU</div>
+  <nav><ul>
+    <li><a href="#about">私たちについて</a></li>
+    <li><a href="#enjoy">楽しみ方</a></li>
+    <li><a href="#message">メッセージ</a></li>
+    <li><a href="#info">営業案内</a></li>
+  </ul></nav>
+  <div>© Seaside Terrace 大堂津</div>
+</footer>
+
+<script>
+const hdr=document.getElementById('hdr');
+const onScroll=()=>hdr.classList.toggle('scrolled',window.scrollY>40);
+window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+const nav=document.getElementById('nav');
+document.getElementById('menuBtn').addEventListener('click',()=>nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('on'))}
+</script>
+</body>
+</html>
