@@ -71,7 +71,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line)}
 .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(6,20,26,.55) 0%,rgba(6,20,26,.15) 38%,rgba(6,20,26,.1) 60%,rgba(6,20,26,.45) 100%)}
 .hero-in{position:relative;z-index:3;padding-top:96px}
 .hero h1{margin:0}
-.hero h1 img{width:clamp(280px,36vw,500px);height:auto;filter:drop-shadow(0 6px 22px rgba(0,0,0,.45));opacity:0;transform:translateY(14px);animation:up 1.1s var(--ease) .15s forwards}
+.hero h1 img{width:clamp(300px,39vw,540px);height:auto;margin-left:-2.5%;opacity:0;transform:translateY(14px);animation:up 1.1s var(--ease) .15s forwards}
 .hero h1 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @keyframes up{to{opacity:1;transform:none}}
 .tagline{margin-top:14px;font-size:clamp(14px,1.5vw,16px);font-weight:700;line-height:2;text-shadow:0 2px 12px rgba(0,0,0,.55);opacity:0;animation:up 1s var(--ease) .5s forwards}
@@ -342,20 +342,24 @@ footer ul a{color:#fff;font-weight:700}
 footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 
 
-/* ===== sound ===== */
-.snd{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:8px 16px 8px 12px;font-family:var(--f);font-weight:900;font-size:13px;letter-spacing:.08em;cursor:pointer;transition:transform .2s,background .3s}
-.snd:hover{transform:translateY(-2px)}
-.snd .ic{width:22px;height:22px;border-radius:50%;background:var(--red);display:grid;place-items:center;font-size:12px}
-.snd.on{background:var(--red)}
-.snd.on .ic{background:#fff;color:var(--red)}
-.snd .eq{display:none;gap:2px;align-items:flex-end;height:12px}
-.snd.on .eq{display:inline-flex}
-.snd .eq i{width:3px;background:#fff;border-radius:2px;height:4px;animation:eq .5s ease-in-out infinite alternate}
-.snd .eq i:nth-child(2){animation-delay:.15s}.snd .eq i:nth-child(3){animation-delay:.3s}
-@keyframes eq{to{height:12px}}
-.hsnd{padding:6px 12px 6px 8px;font-size:12px}
-.hero .snd.big{margin-top:16px;padding:10px 20px 10px 12px;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.3);opacity:0;animation:up 1s var(--ease) 1s forwards}
-.hero .snd.big .ic{width:28px;height:28px;font-size:15px}
+/* ===== sound（太鼓ボタン） ===== */
+.dr{position:relative;width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:#fff;padding:3px;cursor:pointer;flex:none;transition:transform .2s}
+.dr svg{width:100%;height:100%;display:block}
+.dr .mute{position:absolute;left:50%;top:50%;width:46px;height:2.5px;background:var(--ink);border-radius:2px;transform:translate(-50%,-50%) rotate(-40deg);box-shadow:0 0 0 1.5px #fff;transition:transform .3s var(--ease)}
+.dr:not(.on){filter:grayscale(.55)}
+.dr.on .mute{transform:translate(-50%,-50%) rotate(-40deg) scaleX(0)}
+.dr.on{border-color:var(--red);animation:ring 1.1s infinite}
+.dr.on .s1{transform-origin:8px 3px;animation:hitL .55s ease-in-out infinite}
+.dr.on .s2{transform-origin:32px 3px;animation:hitR .55s ease-in-out infinite .27s}
+@keyframes hitL{50%{transform:rotate(-22deg)}}
+@keyframes hitR{50%{transform:rotate(22deg)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(226,70,58,.5)}100%{box-shadow:0 0 0 10px rgba(226,70,58,0)}}
+.dr:hover{transform:rotate(-8deg) scale(1.06)}
+.dr-tip{position:absolute;top:calc(100% + 8px);right:-4px;white-space:nowrap;background:var(--ink);color:#fff;font-size:11.5px;font-weight:700;border-radius:10px;padding:4px 10px;pointer-events:none;opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .3s}
+.dr-tip::before{content:"";position:absolute;right:16px;top:-5px;border:5px solid transparent;border-top:0;border-bottom-color:var(--ink)}
+.dr-tip.show{opacity:1;transform:none}
+.walk{cursor:pointer}
+.walk .say.drum{background:var(--red);color:#fff}
 /* beat */
 .beat{animation:beat .42s cubic-bezier(.3,1.7,.5,1)}
 @keyframes beat{0%{transform:scale(1)}35%{transform:scale(1.07)}100%{transform:scale(1)}}
@@ -387,12 +391,12 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .site{font-size:11.5px;gap:8px}.site img{width:28px;height:28px}
   .pc-only{display:none}
   .site{white-space:nowrap}
-  .hsnd .lb{display:none}.hsnd{padding:6px 8px}
+  .dr{width:40px;height:40px}
   .bar{gap:10px}
   .sp{display:inline}
   .hero{min-height:640px}
   .hero-in{padding-top:86px}
-  .hero h1 img{width:min(88vw,380px)}
+  .hero h1 img{width:min(95vw,410px)}
   .dn{top:auto;bottom:calc(40px + 200px);font-size:18px}
   .lane{height:210px;bottom:34px}
   @keyframes walkx{from{transform:translateX(-60vw)}to{transform:translateX(115vw)}}
@@ -456,7 +460,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
       <li><a href="#reviews">口コミ <small>Reviews</small></a></li>
       <li><a href="#access">アクセス <small>Access</small></a></li>
     </ul></nav>
-    <button class="snd hsnd js-snd" type="button" aria-pressed="false" aria-label="太鼓の音をオン・オフ"><span class="ic">🥁</span><span class="lb">音</span><span class="eq"><i></i><i></i><i></i></span></button>
+    <span style="position:relative;display:inline-flex"><button class="dr js-snd" type="button" aria-pressed="false" aria-label="太鼓の音をオンにする"><svg viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="14" rx="13" ry="5" fill="#f6e3c0" stroke="#1d2a30" stroke-width="2"/><path d="M7 14v12c0 3 6 5.5 13 5.5s13-2.5 13-5.5V14" fill="#e2463a" stroke="#1d2a30" stroke-width="2"/><path d="M7 19c4 2 22 2 26 0" stroke="#1d2a30" stroke-width="1.5" fill="none"/><circle cx="11" cy="22" r="1" fill="#1d2a30"/><circle cx="20" cy="23.5" r="1" fill="#1d2a30"/><circle cx="29" cy="22" r="1" fill="#1d2a30"/><g class="sticks" stroke="#8a5a2b" stroke-width="2.4" stroke-linecap="round"><path class="s1" d="M8 3l8 9"/><path class="s2" d="M32 3l-8 9"/></g></svg><span class="mute" aria-hidden="true"></span></button><span class="dr-tip" id="drTip">タップで太鼓の音♪</span></span>
     <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="gnav" aria-label="メニューを開く"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -469,18 +473,17 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
     <figure class="bg" data-l="Day"><img src="assets/bg-day.jpg" alt="" style="object-position:50% 62%"></figure>
   </div>
   <div class="hero-in wrap">
-    <h1><img src="assets/logo.webp" alt="" width="1200" height="723"><span class="vh">シーサイドテラス大堂津</span></h1>
+    <h1><img src="assets/logo-sh.webp" alt="" width="1280" height="803"><span class="vh">シーサイドテラス大堂津</span></h1>
     <p class="tagline">宮崎・日南、大堂津の浜辺にとまる<br class="sp">海辺のキッチンカー。<br>海開きまで、夏は終わらない。</p>
     <div class="hero-act">
       <span class="status js-st"><i></i><span class="js-stt">—</span></span>
       <a class="arw w" href="#menu">メニューを見る</a>
     </div>
-    <button class="snd big js-snd" type="button" aria-pressed="false"><span class="ic">🥁</span><span class="lb">太鼓の音で見る</span><span class="eq"><i></i><i></i><i></i></span></button>
   </div>
   <div class="flash" id="flash" aria-hidden="true"></div>
   <div class="dn" aria-hidden="true"><span class="js-dn">Night</span><i></i></div>
   <div class="lane" aria-hidden="true">
-    <div class="walk"><span class="say">いらっしゃい！</span><img src="assets/walk.webp" alt="" width="270" height="380"><span class="shadow"></span></div>
+    <div class="walk js-snd" role="button" tabindex="0" aria-label="店主をタップすると太鼓の音がオン・オフします"><span class="say">いらっしゃい！</span><img src="assets/walk.webp" alt="" width="270" height="380"><span class="shadow"></span></div>
   </div>
   <div class="ground" aria-hidden="true">
     <svg class="w1" viewBox="0 0 2880 90" preserveAspectRatio="none"><path d="M0 40 Q 90 10 180 40 T 360 40 T 540 40 T 720 40 T 900 40 T 1080 40 T 1260 40 T 1440 40 T 1620 40 T 1800 40 T 1980 40 T 2160 40 T 2340 40 T 2520 40 T 2700 40 T 2880 40 V90 H0Z" fill="rgba(143,211,234,.85)"/></svg>
@@ -793,7 +796,8 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 (function(){const bg=[...document.querySelectorAll('.bg')],lb=document.querySelector('.js-dn');let i=0;
   setInterval(()=>{bg[i].classList.remove('on');i=(i+1)%bg.length;bg[i].classList.add('on');lb.textContent=bg[i].dataset.l;
     const d=document.querySelector('.dn i');d.style.animation='none';d.offsetHeight;d.style.animation=''},7000);
-  const w=document.querySelector('.walk');setInterval(()=>{w.classList.add('talk');setTimeout(()=>w.classList.remove('talk'),2200)},6000)})();
+  const w=document.querySelector('.walk'),sy=w.querySelector('.say');const OFF=['いらっしゃい！','ぼくをタップすると…？','太鼓、たたいていい？🥁'],ON=['ドンドン♪','いい波きてるね〜','タップで音ストップ'];let k=0;
+  setInterval(()=>{const tOn=w.classList.contains('on');const arr=tOn?ON:OFF;sy.textContent=arr[k++%arr.length];sy.classList.toggle('drum',tOn);w.classList.add('talk');setTimeout(()=>w.classList.remove('talk'),2400)},6000)})();
 
 /* ===== 和太鼓サウンド（Web Audioで合成／音源ファイルなし） ===== */
 const Taiko=(function(){
@@ -849,10 +853,13 @@ const Taiko=(function(){
   }
   function set(v){
     init();if(ctx.state==='suspended')ctx.resume();on=v;
-    document.querySelectorAll('.js-snd').forEach(bn=>{bn.classList.toggle('on',on);bn.setAttribute('aria-pressed',on);const lb=bn.querySelector('.lb');if(bn.classList.contains('big'))lb.textContent=on?'太鼓の音 ON':'太鼓の音で見る';});
+    document.querySelectorAll('.js-snd').forEach(bn=>{bn.classList.toggle('on',on);bn.setAttribute('aria-pressed',on);if(bn.classList.contains('dr'))bn.setAttribute('aria-label',on?'太鼓の音をオフにする':'太鼓の音をオンにする')});
+    document.getElementById('drTip').classList.remove('show');const sy=document.querySelector('.walk .say');sy.textContent=on?'ドン！始まるよ〜🥁':'音を止めたよ';sy.classList.toggle('drum',on);const w=document.querySelector('.walk');w.classList.add('talk');setTimeout(()=>w.classList.remove('talk'),1800);
     if(on){intro();clearTimeout(loopT);loopT=setTimeout(loop,2600)}else clearTimeout(loopT);
   }
-  document.querySelectorAll('.js-snd').forEach(bn=>bn.addEventListener('click',()=>set(!on)));
+  document.querySelectorAll('.js-snd').forEach(bn=>{bn.addEventListener('click',()=>set(!on));bn.addEventListener('keydown',e=>{if(bn.tagName!=='BUTTON'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();set(!on)}})});
+  // さりげないヒント（音がOFFのときだけ、1回）
+  setTimeout(()=>{if(on)return;const t=document.getElementById('drTip');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200)},3500);
   const hero=document.querySelector('.hero');
   if('IntersectionObserver' in window)new IntersectionObserver(es=>{heroVis=es[0].isIntersecting},{threshold:.35}).observe(hero);
   return{
