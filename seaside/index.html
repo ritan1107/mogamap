@@ -62,31 +62,39 @@ header.scrolled{box-shadow:0 1px 0 var(--line)}
 .menu-btn[aria-expanded="true"] span:nth-child(3){top:21px;transform:rotate(-45deg)}
 
 /* ===== hero ===== */
-.hero{position:relative;padding:110px 0 0;overflow:hidden;
-  background:radial-gradient(rgba(29,42,48,.07) 1.2px,transparent 1.6px) 0 0/22px 22px,var(--cream)}
-.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:20px;min-height:min(78vh,640px)}
+.hero{position:relative;height:100svh;min-height:620px;max-height:960px;overflow:hidden;color:#fff;background:#0d2a36}
+.bgs,.bg{position:absolute;inset:0;margin:0}
+.bg{opacity:0;transition:opacity 2s ease}
+.bg.on{opacity:1}
+.bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 9s cubic-bezier(.22,.1,.25,1)}
+.bg.on img{transform:scale(1.02)}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(6,20,26,.55) 0%,rgba(6,20,26,.15) 38%,rgba(6,20,26,.1) 60%,rgba(6,20,26,.45) 100%)}
+.hero-in{position:relative;z-index:3;padding-top:96px}
 .hero h1{margin:0}
-.hero h1 img{width:min(100%,560px);height:auto;opacity:0;transform:translateY(14px);animation:up 1.1s var(--ease) .15s forwards}
+.hero h1 img{width:clamp(280px,36vw,500px);height:auto;filter:drop-shadow(0 6px 22px rgba(0,0,0,.45));opacity:0;transform:translateY(14px);animation:up 1.1s var(--ease) .15s forwards}
 .hero h1 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @keyframes up{to{opacity:1;transform:none}}
-.tagline{margin-top:22px;font-size:clamp(15px,1.6vw,17px);font-weight:700;line-height:2;opacity:0;animation:up 1s var(--ease) .5s forwards}
-.tagline b{white-space:nowrap;background:linear-gradient(transparent 62%,rgba(243,154,43,.35) 62%)}
-.hero-act{display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:26px;opacity:0;animation:up 1s var(--ease) .75s forwards}
-.status{display:inline-flex;align-items:center;gap:9px;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:700}
+.tagline{margin-top:14px;font-size:clamp(14px,1.5vw,16px);font-weight:700;line-height:2;text-shadow:0 2px 12px rgba(0,0,0,.55);opacity:0;animation:up 1s var(--ease) .5s forwards}
+.hero-act{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:20px;opacity:0;animation:up 1s var(--ease) .75s forwards}
+.arw.w{color:#fff;border-color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.arw.w:hover{color:#ffcf8a;border-color:#ffcf8a}
+.status{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:700}
 .status i{width:9px;height:9px;border-radius:50%;background:#a7aea9}
 .status.open i{background:#25b866;animation:pulse 2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,184,102,.55)}70%{box-shadow:0 0 0 8px rgba(37,184,102,0)}100%{box-shadow:0 0 0 0 rgba(37,184,102,0)}}
-.stage{position:relative;height:clamp(360px,44vw,520px);display:flex;align-items:flex-end;justify-content:center}
-.walker{position:relative;z-index:3;height:clamp(300px,36vw,430px);width:auto;margin-bottom:24px;filter:drop-shadow(0 6px 0 rgba(0,0,0,.06))}
-.shadow{position:absolute;z-index:2;bottom:22px;left:50%;width:160px;height:16px;border-radius:50%;background:rgba(29,42,48,.14);transform:translateX(-50%);animation:sh .9s ease-in-out infinite alternate}
-@keyframes sh{to{width:130px;opacity:.75}}
-.don{position:absolute;z-index:4;right:2%;top:4%;width:clamp(130px,15vw,190px);transform:rotate(12deg) scale(0);animation:don .7s cubic-bezier(.3,1.6,.5,1) 1s forwards}
-@keyframes don{to{transform:rotate(12deg) scale(1)}}
-.don text{font-family:var(--f);font-weight:900}
-.don .wob{transform-origin:50% 50%;animation:wob 2.4s ease-in-out 1.8s infinite}
-@keyframes wob{50%{transform:rotate(-5deg) scale(1.04)}}
-.sunc{position:absolute;z-index:1;left:12%;top:8%;width:clamp(150px,18vw,230px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 40%,#ffd77a,#f39a2b 70%);opacity:.9}
-.ground{position:relative;height:90px;margin-top:-30px;z-index:2}
+.dn{position:absolute;z-index:3;right:clamp(18px,4vw,48px);top:96px;display:flex;align-items:center;gap:10px;font-family:var(--en);font-size:22px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.dn i{width:52px;height:2px;background:rgba(255,255,255,.35);position:relative;overflow:hidden}
+.dn i::after{content:"";position:absolute;inset:0;background:#fff;transform-origin:left;animation:fill 7s linear infinite}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+/* walking avatar */
+.lane{position:absolute;z-index:4;left:0;right:0;bottom:40px;height:clamp(250px,32vh,330px);pointer-events:none}
+.walk{position:absolute;bottom:0;left:0;height:100%;animation:walkx 22s linear infinite;pointer-events:auto}
+.walk img{height:100%;width:auto;position:relative;z-index:2;filter:drop-shadow(0 4px 0 rgba(0,0,0,.08))}
+.walk .shadow{position:absolute;z-index:1;bottom:2px;left:50%;width:60%;height:14px;border-radius:50%;background:rgba(0,0,0,.28);transform:translateX(-50%);filter:blur(2px)}
+.walk .say{position:absolute;z-index:3;left:62%;top:2%;white-space:nowrap;background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:4px 14px;font-weight:900;font-size:13px;opacity:0;transform:scale(.6);transform-origin:0 100%;transition:opacity .3s,transform .3s cubic-bezier(.3,1.6,.5,1)}
+.walk:hover .say,.walk.talk .say{opacity:1;transform:scale(1)}
+@keyframes walkx{from{transform:translateX(-30vw)}to{transform:translateX(110vw)}}
+.ground{position:absolute;z-index:5;left:0;right:0;bottom:-1px;height:70px}
 .ground svg{position:absolute;left:0;width:200%;height:100%}
 .ground .w1{animation:flow 14s linear infinite}
 .ground .w2{animation:flow 9s linear infinite reverse}
@@ -260,15 +268,12 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   body.nav-open{overflow:hidden}
   .site{font-size:12.5px}
   .sp{display:inline}
-  .hero{padding-top:84px}
-  .hero-grid{grid-template-columns:1fr;min-height:0;gap:0}
-  .hero h1 img{width:100%}
-  .hero-grid>div:first-child{display:contents}
-  .hero h1{order:1}.stage{order:2}.tagline{order:3;margin-top:0}.hero-act{order:4;margin-top:18px}
-  .stage{height:300px;margin:0 0 8px}
-  .walker{height:260px;margin-bottom:18px}
-  .don{right:2%;top:0;width:108px}
-  .sunc{left:4%;top:8%;width:130px}
+  .hero{min-height:640px}
+  .hero-in{padding-top:86px}
+  .hero h1 img{width:min(88vw,380px)}
+  .dn{top:auto;bottom:calc(40px + 200px);font-size:18px}
+  .lane{height:210px;bottom:34px}
+  @keyframes walkx{from{transform:translateX(-60vw)}to{transform:translateX(115vw)}}
   .sec{padding:80px 0}
   .nlist a,.nlist .row{grid-template-columns:36px 1fr auto;gap:4px 12px;padding:16px 4px}
   .nlist time{grid-column:2;grid-row:1}
@@ -299,7 +304,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .mbar i{width:7px;height:7px;border-radius:50%;background:#a7aea9}
   .mbar .open i{background:#25b866}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.hero h1 img,.tagline,.hero-act{opacity:1}.don{transform:rotate(12deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.hero h1 img,.tagline,.hero-act{opacity:1}}
 </style>
 </head>
 <body>
@@ -320,30 +325,26 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 
 <main id="top">
 <!-- ===== HERO ===== -->
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <h1><img src="assets/logo-ink.webp" alt="" width="1200" height="723"><span class="vh">シーサイドテラス大堂津</span></h1>
-      <p class="tagline">宮崎・日南、大堂津の浜辺にとまる<b>海辺のキッチンカー</b>。<br>海開きまで、夏は終わらない。<br class="sp">店主がお盆を持って、今日もお待ちしています。</p>
-      <div class="hero-act">
-        <span class="status js-st"><i></i><span class="js-stt">—</span></span>
-        <a class="arw" href="#menu">メニューを見る</a>
-      </div>
-    </div>
-    <div class="stage" aria-hidden="false">
-      <span class="sunc" aria-hidden="true"></span>
-      <svg class="don" viewBox="0 0 200 200" aria-hidden="true"><g class="wob">
-        <polygon points="100,4 118,52 168,28 150,78 198,92 154,116 182,162 130,150 120,198 96,156 62,192 66,142 14,150 46,110 4,84 54,72 34,24 82,46" fill="#e2463a" stroke="#1d2a30" stroke-width="5" stroke-linejoin="round"/>
-        <text x="100" y="94" text-anchor="middle" font-size="30" fill="#fff">夏、</text>
-        <text x="100" y="130" text-anchor="middle" font-size="30" fill="#fff">延長中！</text>
-      </g></svg>
-      <img class="walker" src="assets/walk.webp" alt="お盆を持って歩く店主のキャラクター" width="270" height="380">
-      <span class="shadow" aria-hidden="true"></span>
+<section class="hero" aria-label="メインビジュアル">
+  <div class="bgs" aria-hidden="true">
+    <figure class="bg on" data-l="Night"><img src="assets/bg-night.jpg" alt="" style="object-position:50% 58%"></figure>
+    <figure class="bg" data-l="Day"><img src="assets/bg-day.jpg" alt="" style="object-position:50% 62%"></figure>
+  </div>
+  <div class="hero-in wrap">
+    <h1><img src="assets/logo.webp" alt="" width="1200" height="723"><span class="vh">シーサイドテラス大堂津</span></h1>
+    <p class="tagline">宮崎・日南、大堂津の浜辺にとまる<br class="sp">海辺のキッチンカー。<br>海開きまで、夏は終わらない。</p>
+    <div class="hero-act">
+      <span class="status js-st"><i></i><span class="js-stt">—</span></span>
+      <a class="arw w" href="#menu">メニューを見る</a>
     </div>
   </div>
+  <div class="dn" aria-hidden="true"><span class="js-dn">Night</span><i></i></div>
+  <div class="lane" aria-hidden="true">
+    <div class="walk"><span class="say">いらっしゃい！</span><img src="assets/walk.webp" alt="" width="270" height="380"><span class="shadow"></span></div>
+  </div>
   <div class="ground" aria-hidden="true">
-    <svg class="w1" viewBox="0 0 2880 90" preserveAspectRatio="none"><path d="M0 40 Q 90 10 180 40 T 360 40 T 540 40 T 720 40 T 900 40 T 1080 40 T 1260 40 T 1440 40 T 1620 40 T 1800 40 T 1980 40 T 2160 40 T 2340 40 T 2520 40 T 2700 40 T 2880 40 V90 H0Z" fill="#8fd3ea"/></svg>
-    <svg class="w2" viewBox="0 0 2880 90" preserveAspectRatio="none"><path d="M0 58 Q 120 34 240 58 T 480 58 T 720 58 T 960 58 T 1200 58 T 1440 58 T 1680 58 T 1920 58 T 2160 58 T 2400 58 T 2640 58 T 2880 58 V90 H0Z" fill="#1f8fb8"/></svg>
+    <svg class="w1" viewBox="0 0 2880 90" preserveAspectRatio="none"><path d="M0 40 Q 90 10 180 40 T 360 40 T 540 40 T 720 40 T 900 40 T 1080 40 T 1260 40 T 1440 40 T 1620 40 T 1800 40 T 1980 40 T 2160 40 T 2340 40 T 2520 40 T 2700 40 T 2880 40 V90 H0Z" fill="rgba(143,211,234,.85)"/></svg>
+    <svg class="w2" viewBox="0 0 2880 90" preserveAspectRatio="none"><path d="M0 58 Q 120 34 240 58 T 480 58 T 720 58 T 960 58 T 1200 58 T 1440 58 T 1680 58 T 1920 58 T 2160 58 T 2400 58 T 2640 58 T 2880 58 V90 H0Z" fill="#F3EFE5"/></svg>
   </div>
 </section>
 
@@ -604,6 +605,11 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
     document.querySelectorAll('.js-stt').forEach(e=>e.textContent=s.l);document.querySelectorAll('.js-sts').forEach(e=>e.textContent=s.s)}
   try{draw();setInterval(draw,60000)}catch(e){}
 })();
+/* hero background day/night */
+(function(){const bg=[...document.querySelectorAll('.bg')],lb=document.querySelector('.js-dn');let i=0;
+  setInterval(()=>{bg[i].classList.remove('on');i=(i+1)%bg.length;bg[i].classList.add('on');lb.textContent=bg[i].dataset.l;
+    const d=document.querySelector('.dn i');d.style.animation='none';d.offsetHeight;d.style.animation=''},7000);
+  const w=document.querySelector('.walk');setInterval(()=>{w.classList.add('talk');setTimeout(()=>w.classList.remove('talk'),2200)},6000)})();
 /* header / mobile bar / hamburger */
 const hdr=document.getElementById('hdr'),mbar=document.getElementById('mbar');
 function onS(){const y=scrollY;hdr.classList.toggle('scrolled',y>20);mbar.classList.toggle('show',y>innerHeight*.7)}
