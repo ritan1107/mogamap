@@ -270,6 +270,31 @@ header.scrolled{box-shadow:0 1px 0 var(--line)}
 .tl h3{font-size:15px;font-weight:900;margin:4px 0}
 .tl p{font-size:13px;color:var(--sub);line-height:1.8}
 
+
+/* ===== reviews ===== */
+.reviews{background:var(--paper);border-top:2px solid var(--ink);overflow:hidden}
+.gscore{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--ink);border-radius:16px;padding:10px 16px;flex-wrap:wrap;transition:transform .2s,box-shadow .2s}
+.gscore:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--ink)}
+.gscore .g{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;background:conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0)}
+.gscore b{font-size:26px;font-weight:900;line-height:1;margin-right:6px}
+.gscore .stars,.rvw .st{color:#f5a623;letter-spacing:.06em}
+.gscore small{display:block;width:100%;font-size:11.5px;color:var(--sub);line-height:1.5}
+.rtrack{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:6px 4px 14px;scroll-behavior:smooth}
+.rtrack::-webkit-scrollbar{display:none}
+.rvw{flex:0 0 calc((100% - 40px)/3);scroll-snap-align:start;background:#fff;border:2px solid var(--ink);border-radius:20px;padding:24px 22px 20px;display:flex;flex-direction:column;gap:12px;position:relative}
+.rvw::before{content:"“";position:absolute;right:16px;top:-6px;font-size:70px;line-height:1;color:rgba(226,70,58,.15);font-family:Georgia,serif}
+.rvw .st{font-size:18px}
+.rvw p{font-size:14px;line-height:1.95;flex:1}
+.rvw .who{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--line2);padding-top:10px}
+.tg2{background:var(--cream);border:1.5px solid var(--ink);border-radius:999px;padding:0 10px;font-size:12px;font-weight:900}
+.rvw .src{font-size:11px;color:var(--sub)}
+.rctl{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px}
+.rctl button{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:#fff;font-size:16px;font-weight:900;cursor:pointer;color:var(--ink)}
+.rctl button:hover{background:var(--ink);color:#fff}
+.rdots{display:flex;gap:8px}
+.rdots i{width:9px;height:9px;border-radius:50%;background:var(--line2);transition:width .3s,background .3s;cursor:pointer}
+.rdots i.on{width:24px;border-radius:9px;background:var(--red)}
+.rlinks{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;margin-top:26px}
 /* ===== access ===== */
 .ac{display:grid;grid-template-columns:1fr 1fr;gap:44px}
 .hours{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--ink);color:#fff;border-radius:16px;padding:18px 22px;margin-bottom:18px}
@@ -352,7 +377,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .gnav li:last-child{border-bottom:0}
   .gnav li{border-bottom:1.5px solid rgba(29,42,48,.55);opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
   .gnav.open li{opacity:1;transform:none}
-  .gnav.open li:nth-child(2){transition-delay:.05s}.gnav.open li:nth-child(3){transition-delay:.1s}.gnav.open li:nth-child(4){transition-delay:.15s}.gnav.open li:nth-child(5){transition-delay:.2s}.gnav.open li:nth-child(6){transition-delay:.25s}
+  .gnav.open li:nth-child(2){transition-delay:.05s}.gnav.open li:nth-child(3){transition-delay:.1s}.gnav.open li:nth-child(4){transition-delay:.15s}.gnav.open li:nth-child(5){transition-delay:.2s}.gnav.open li:nth-child(6){transition-delay:.25s}.gnav.open li:nth-child(7){transition-delay:.3s}
   .gnav a{display:flex;justify-content:space-between;align-items:baseline;padding:13px 2px;font-size:21px;font-weight:900;color:var(--ink);text-shadow:0 0 6px rgba(255,255,255,.95),0 0 14px rgba(255,255,255,.8)}
   .gnav a::after{display:none}
   .gnav a small{display:inline;font-family:var(--en);font-weight:400;font-size:16px;color:var(--red)}
@@ -381,6 +406,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .pk .bd{padding:14px 14px 16px}
   .pk .lead2{display:none}
   .evlist{grid-template-columns:minmax(0,1fr)}
+  .rvw{flex-basis:86%}
   .ev .im{height:220px}
   .ft{padding:7px 13px;font-size:13px}
   .nxt{font-size:12.5px;padding:10px 14px;gap:8px}
@@ -427,6 +453,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
       <li><a href="#menu">メニュー <small>Menu</small></a></li>
       <li><a href="#tencho">店主 <small>Owner</small></a></li>
       <li><a href="#beach">浜辺 <small>Beach</small></a></li>
+      <li><a href="#reviews">口コミ <small>Reviews</small></a></li>
       <li><a href="#access">アクセス <small>Access</small></a></li>
     </ul></nav>
     <button class="snd hsnd js-snd" type="button" aria-pressed="false" aria-label="太鼓の音をオン・オフ"><span class="ic">🥁</span><span class="lb">音</span><span class="eq"><i></i><i></i><i></i></span></button>
@@ -670,6 +697,20 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   </div>
 </section>
 
+<!-- ===== REVIEWS ===== -->
+<section class="sec reviews" id="reviews">
+  <div class="wrap">
+    <div class="sh rv"><h2><small>Reviews</small>お客さまの声</h2>
+      <a class="gscore" href="https://www.google.com/maps/search/?api=1&query=Sea+side+terrace%E5%A4%A7%E5%A0%82%E6%B4%A5&query_place_id=ChIJg9qzcAApOTUR1oLiFS7R__A" target="_blank" rel="noopener"><span class="g">G</span><span><b>4.9</b><span class="stars">★★★★★</span></span><small>Googleの口コミ 9件（2026年11月時点）</small></a>
+    </div>
+    <div class="rslider rv">
+      <div class="rtrack" id="rtrack" tabindex="0" aria-label="口コミのスライド"><article class="rvw"><div class="st" aria-label="星5">★★★★★</div><p>友人と何度も来ています。ノンアルカクテルの「シンデレラ」とガーリックシュリンプが美味しく、海を眺めながら楽しめました。南国風の屋根と壁ができて、急な小雨や風でも安心。秘密基地みたいでワクワクします。</p><div class="who"><span class="tg2">友人と</span><span class="src">Googleの口コミより（要約）</span></div></article><article class="rvw"><div class="st" aria-label="星5">★★★★★</div><p>のんびりしたくて来店。雰囲気がよく、スタッフさんも親切で素敵な時間でした。料理を待つ間、子どもは海やブランコで遊べるので飽きません。</p><div class="who"><span class="tg2">子連れで</span><span class="src">Googleの口コミより（要約）</span></div></article><article class="rvw"><div class="st" aria-label="星5">★★★★★</div><p>娘と孫に誘われて、台風で一度行けなかったぶん念願の初来店。タコスディップサルサ、ガーリックシュリンプ、明太子パスタ、どれもハズレなしの美味しさでした。</p><div class="who"><span class="tg2">三世代で</span><span class="src">Googleの口コミより（要約）</span></div></article><article class="rvw"><div class="st" aria-label="星5">★★★★★</div><p>夫と子ども3人で。浜辺は夜まで明るく、子どもたちはずっと砂浜を走り回っていました。メニューが豊富で、スタッフさんもとても気さくでした。</p><div class="who"><span class="tg2">家族5人で</span><span class="src">Googleの口コミより（要約）</span></div></article><article class="rvw"><div class="st" aria-label="星5">★★★★★</div><p>美味しかったし、スタッフさんがとても親切でした！</p><div class="who"><span class="tg2">ひとこと</span><span class="src">Googleの口コミより（要約）</span></div></article></div>
+      <div class="rctl"><button type="button" id="rPrev" aria-label="前へ">←</button><div class="rdots" id="rdots"></div><button type="button" id="rNext" aria-label="次へ">→</button></div>
+    </div>
+    <div class="rlinks rv"><a class="arw" href="https://www.google.com/maps/search/?api=1&query=Sea+side+terrace%E5%A4%A7%E5%A0%82%E6%B4%A5&query_place_id=ChIJg9qzcAApOTUR1oLiFS7R__A" target="_blank" rel="noopener">Googleで口コミをすべて見る</a><a class="arw" href="https://search.google.com/local/writereview?placeid=ChIJg9qzcAApOTUR1oLiFS7R__A" target="_blank" rel="noopener">口コミを書く</a></div>
+  </div>
+</section>
+
 <!-- ===== ACCESS ===== -->
 <section class="sec" id="access">
   <div class="wrap">
@@ -678,7 +719,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
       <div class="rv">
         <div class="hours"><span class="tm">15:00 – 22:00</span><span class="off">月曜定休</span></div>
         <table>
-          <tr><th>場所</th><td>大堂津海水浴場の浜辺<small>宮崎県日南市大堂津</small></td></tr>
+          <tr><th>場所</th><td>大堂津海水浴場の浜辺<small>〒889-3141 宮崎県日南市大堂津4丁目6-6</small></td></tr>
           <tr><th>電車</th><td>JR日南線「大堂津駅」から徒歩すぐ</td></tr>
           <tr><th>お車</th><td>東九州道 日南東郷ICから約30分<small>海水浴場の駐車場をご利用ください</small></td></tr>
           <tr><th>営業期間</th><td>次の海開きまで</td></tr>
@@ -720,7 +761,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 
 <footer>
   <img class="fl" src="assets/logo.webp" alt="Seaside Terrace 大堂津">
-  <ul><li><a href="#top">トップ</a></li><li><a href="#news">お知らせ</a></li><li><a href="#events">イベント</a></li><li><a href="#menu">メニュー</a></li><li><a href="#tencho">店主</a></li><li><a href="#beach">浜辺</a></li><li><a href="#access">アクセス</a></li></ul>
+  <ul><li><a href="#top">トップ</a></li><li><a href="#news">お知らせ</a></li><li><a href="#events">イベント</a></li><li><a href="#menu">メニュー</a></li><li><a href="#tencho">店主</a></li><li><a href="#beach">浜辺</a></li><li><a href="#reviews">口コミ</a></li><li><a href="#access">アクセス</a></li></ul>
   <div class="fsns"><a href="https://www.instagram.com/odotsu.shinsengumi/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.tiktok.com/@odotsu.shinsengumi" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.3 2.2 1.7 3.7 3.9 3.9v3.1c-1.4 0-2.7-.4-3.9-1.1v6.2c0 3.2-2.6 5.9-5.9 5.9S4.8 18.4 4.8 15.1s2.6-5.9 5.9-5.9c.3 0 .6 0 .9.1v3.2a2.8 2.8 0 1 0 1.9 2.6V3h3.1z"/></svg></a><button type="button" class="js-call" aria-label="電話をかける"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></button></div>
   <div>宮崎県日南市 大堂津海水浴場　15:00–22:00（月曜定休）</div>
   <div class="cp">© Seaside Terrace Odotsu</div>
@@ -877,6 +918,18 @@ const EVENTS=[
   const close=()=>{lb.hidden=true;document.body.style.overflow=''};
   lb.addEventListener('click',e=>{if(e.target!==li)close()});addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 })();
+/* 口コミスライド（自動で流れる・スワイプ可） */
+(function(){const tr=document.getElementById('rtrack');if(!tr)return;const cards=[...tr.children],dots=document.getElementById('rdots');let i=0,timer;
+  cards.forEach((c,k)=>{const d=document.createElement('i');d.addEventListener('click',()=>go(k));dots.appendChild(d)});
+  function mark(){[...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i))}
+  function go(k){i=(k+cards.length)%cards.length;tr.scrollTo({left:cards[i].offsetLeft-tr.offsetLeft-4});mark();restart()}
+  function restart(){clearInterval(timer);timer=setInterval(()=>go(i+1),4500)}
+  document.getElementById('rPrev').addEventListener('click',()=>{go(i-1);if(window.Taiko)Taiko.tap()});
+  document.getElementById('rNext').addEventListener('click',()=>{go(i+1);if(window.Taiko)Taiko.tap()});
+  let st;tr.addEventListener('scroll',()=>{clearTimeout(st);st=setTimeout(()=>{const x=tr.scrollLeft;let b=0,bd=1e9;cards.forEach((c,k)=>{const d=Math.abs(c.offsetLeft-tr.offsetLeft-4-x);if(d<bd){bd=d;b=k}});i=b;mark()},120)},{passive:true});
+  ['pointerdown','touchstart','mouseenter'].forEach(ev=>tr.addEventListener(ev,()=>clearInterval(timer),{passive:true}));
+  tr.addEventListener('mouseleave',restart);tr.addEventListener('touchend',()=>setTimeout(restart,3000));
+  mark();restart()})();
 /* header / mobile bar / hamburger */
 const hdr=document.getElementById('hdr'),mbar=document.getElementById('mbar');
 function onS(){const y=scrollY;hdr.classList.toggle('scrolled',y>20);mbar.classList.toggle('show',y>innerHeight*.7)}
