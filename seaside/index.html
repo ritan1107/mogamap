@@ -279,13 +279,14 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 @media(max-width:900px){
   .wrap{padding:0 20px}
   body.nav-open header{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(243,239,229,.97)}
-  .gnav{position:fixed;top:64px;left:0;right:0;height:calc(100vh - 64px);height:calc(100dvh - 64px);overflow-y:auto;background:rgba(243,239,229,.72);-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;padding:24px 24px}
+  .gnav{position:fixed;top:64px;left:0;right:0;max-height:calc(100dvh - 64px);overflow-y:auto;background:rgba(243,239,229,.45);-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);border-bottom:1px solid rgba(255,255,255,.5);box-shadow:0 14px 30px rgba(0,0,0,.12);opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;padding:4px 20px 10px}
   .gnav.open{opacity:1;visibility:visible}
   .gnav ul{flex-direction:column;gap:0}
-  .gnav li{border-bottom:2px solid var(--ink);opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+  .gnav li:last-child{border-bottom:0}
+  .gnav li{border-bottom:1.5px solid rgba(29,42,48,.55);opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
   .gnav.open li{opacity:1;transform:none}
   .gnav.open li:nth-child(2){transition-delay:.05s}.gnav.open li:nth-child(3){transition-delay:.1s}.gnav.open li:nth-child(4){transition-delay:.15s}.gnav.open li:nth-child(5){transition-delay:.2s}
-  .gnav a{display:flex;justify-content:space-between;align-items:baseline;padding:18px 2px;font-size:22px;font-weight:900}
+  .gnav a{display:flex;justify-content:space-between;align-items:baseline;padding:13px 2px;font-size:21px;font-weight:900;color:var(--ink);text-shadow:0 0 6px rgba(255,255,255,.95),0 0 14px rgba(255,255,255,.8)}
   .gnav a::after{display:none}
   .gnav a small{display:inline;font-family:var(--en);font-weight:400;font-size:16px;color:var(--red)}
   .menu-btn{display:block}
