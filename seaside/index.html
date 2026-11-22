@@ -191,11 +191,11 @@ header.scrolled{box-shadow:0 1px 0 var(--line)}
 
 /* ===== tencho ===== */
 .tencho .grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:60px;align-items:center}
-.card-ch{position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:24px;padding:30px 20px 0;text-align:center;overflow:hidden}
-.card-ch::before{content:"";position:absolute;left:50%;top:40px;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 40%,#ffd77a,#f39a2b 75%);transform:translateX(-50%);opacity:.85}
-.card-ch img{position:relative;height:360px;width:auto;margin:0 auto;transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
-@keyframes bob{50%{transform:rotate(-2deg) translateY(-4px)}}
-.card-ch .nm{position:relative;background:var(--ink);color:#fff;margin:0 -20px;padding:12px;font-weight:900;letter-spacing:.2em}
+.card-ch{position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:24px;overflow:hidden;max-width:420px}
+.card-ch .ph{width:100%;aspect-ratio:7/9;object-fit:cover;object-position:50% 35%;display:block}
+.card-ch .av{position:absolute;right:-4px;bottom:46px;height:34%;width:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{50%{transform:rotate(-3deg) translateY(-4px)}}
+.card-ch .nm{position:relative;background:var(--ink);color:#fff;padding:12px;text-align:center;font-weight:900;letter-spacing:.2em}
 .prof{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:22px 0 28px;font-size:14px}
 .prof dt{font-weight:900;color:var(--red)}
 .prof dd{margin:0}
@@ -296,7 +296,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .sg .pr{grid-column:3;grid-row:1;margin:0;padding:0}
   .dgrid{grid-template-columns:minmax(0,1fr)}
   .tencho .grid,.ac{grid-template-columns:1fr;gap:36px}
-  .card-ch img{height:300px}
+  .card-ch{margin:0 auto}
   .col{grid-template-columns:1fr 1fr;grid-template-rows:240px 170px;height:auto}
   .col figure:first-child{grid-row:auto;grid-column:1/-1}
   .tl{grid-template-columns:1fr 1fr;gap:10px}
@@ -510,7 +510,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 <!-- ===== TENCHO ===== -->
 <section class="sec tencho" id="tencho">
   <div class="wrap grid">
-    <div class="card-ch rv"><img src="assets/tencho.webp" alt="麦わら帽子とメガネ、赤いお盆を持った店主のキャラクター"><div class="nm">店主</div></div>
+    <div class="card-ch rv"><img class="ph" src="assets/owner.jpg" alt="ピースをする店主の写真"><img class="av" src="assets/tencho.webp" alt="店主のキャラクター"><div class="nm">店主</div></div>
     <div class="rv">
       <div class="sh" style="margin-bottom:10px"><h2><small>Owner</small>店主のこと</h2></div>
       <dl class="prof">
