@@ -44,7 +44,7 @@ h1,h2,h3,p{margin:0}
 .arw:hover::after{transform:translateX(4px)}
 
 /* ===== header ===== */
-header{position:fixed;inset:0 0 auto;z-index:40;background:rgba(243,239,229,.92);backdrop-filter:blur(8px);transition:box-shadow .4s}
+header{position:fixed;inset:0 0 auto;z-index:40;background:rgba(243,239,229,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:box-shadow .4s}
 header.scrolled{box-shadow:0 1px 0 var(--line)}
 .bar{display:flex;align-items:center;height:64px;gap:28px}
 .site{display:flex;align-items:center;gap:10px;margin-right:auto;font-weight:900;font-size:14px;letter-spacing:.08em}
@@ -193,7 +193,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line)}
 .tencho .grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:60px;align-items:center}
 .card-ch{position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:24px;overflow:hidden;max-width:420px}
 .card-ch .ph{width:100%;aspect-ratio:7/9;object-fit:cover;object-position:50% 35%;display:block}
-.card-ch .av{position:absolute;right:-4px;bottom:46px;height:34%;width:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
+.card-ch .av{position:absolute;left:-4px;bottom:46px;height:34%;width:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
 @keyframes bob{50%{transform:rotate(-3deg) translateY(-4px)}}
 .card-ch .nm{position:relative;background:var(--ink);color:#fff;padding:12px;text-align:center;font-weight:900;letter-spacing:.2em}
 .prof{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:22px 0 28px;font-size:14px}
@@ -255,7 +255,8 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 
 @media(max-width:900px){
   .wrap{padding:0 20px}
-  .gnav{position:fixed;inset:64px 0 0;background:var(--cream);opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;padding:24px 24px}
+  body.nav-open header{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(243,239,229,.97)}
+  .gnav{position:fixed;top:64px;left:0;right:0;height:calc(100vh - 64px);height:calc(100dvh - 64px);overflow-y:auto;background:rgba(243,239,229,.72);-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;padding:24px 24px}
   .gnav.open{opacity:1;visibility:visible}
   .gnav ul{flex-direction:column;gap:0}
   .gnav li{border-bottom:2px solid var(--ink);opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
