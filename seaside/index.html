@@ -249,6 +249,29 @@ footer ul{display:flex;gap:10px 26px;justify-content:center;flex-wrap:wrap;list-
 footer ul a{color:#fff;font-weight:700}
 footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 
+
+/* ===== sound ===== */
+.snd{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:8px 16px 8px 12px;font-family:var(--f);font-weight:900;font-size:13px;letter-spacing:.08em;cursor:pointer;transition:transform .2s,background .3s}
+.snd:hover{transform:translateY(-2px)}
+.snd .ic{width:22px;height:22px;border-radius:50%;background:var(--red);display:grid;place-items:center;font-size:12px}
+.snd.on{background:var(--red)}
+.snd.on .ic{background:#fff;color:var(--red)}
+.snd .eq{display:none;gap:2px;align-items:flex-end;height:12px}
+.snd.on .eq{display:inline-flex}
+.snd .eq i{width:3px;background:#fff;border-radius:2px;height:4px;animation:eq .5s ease-in-out infinite alternate}
+.snd .eq i:nth-child(2){animation-delay:.15s}.snd .eq i:nth-child(3){animation-delay:.3s}
+@keyframes eq{to{height:12px}}
+.hsnd{padding:6px 12px 6px 8px;font-size:12px}
+.hero .snd.big{margin-top:16px;padding:10px 20px 10px 12px;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.3);opacity:0;animation:up 1s var(--ease) 1s forwards}
+.hero .snd.big .ic{width:28px;height:28px;font-size:15px}
+/* beat */
+.beat{animation:beat .42s cubic-bezier(.3,1.7,.5,1)}
+@keyframes beat{0%{transform:scale(1)}35%{transform:scale(1.07)}100%{transform:scale(1)}}
+.sh h2.hit{animation:hit .5s cubic-bezier(.3,1.7,.5,1)}
+@keyframes hit{0%{transform:translateX(-14px);opacity:.3}60%{transform:translateX(3px)}100%{transform:none;opacity:1}}
+.flash{position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(circle at 30% 30%,rgba(255,220,150,.55),transparent 60%);opacity:0}
+.flash.go{animation:flash .6s ease-out}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
 .mbar{display:none}
 .rv{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
 .rv.on{opacity:1;transform:none}
@@ -268,6 +291,11 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .menu-btn{display:block}
   body.nav-open{overflow:hidden}
   .site{font-size:12.5px}
+  .site{font-size:11.5px;gap:8px}.site img{width:28px;height:28px}
+  .pc-only{display:none}
+  .site{white-space:nowrap}
+  .hsnd .lb{display:none}.hsnd{padding:6px 8px}
+  .bar{gap:10px}
   .sp{display:inline}
   .hero{min-height:640px}
   .hero-in{padding-top:86px}
@@ -317,7 +345,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 
 <header id="hdr">
   <div class="wrap bar">
-    <a class="site" href="#top"><img src="assets/icon.png" alt="">シーサイドテラス大堂津 公式サイト</a>
+    <a class="site" href="#top"><img src="assets/icon.png" alt="">シーサイドテラス大堂津<span class="pc-only"> 公式サイト</span></a>
     <nav class="gnav" id="gnav" aria-label="メインメニュー"><ul>
       <li><a href="#news">お知らせ <small>News</small></a></li>
       <li><a href="#menu">メニュー <small>Menu</small></a></li>
@@ -325,6 +353,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
       <li><a href="#beach">浜辺 <small>Beach</small></a></li>
       <li><a href="#access">アクセス <small>Access</small></a></li>
     </ul></nav>
+    <button class="snd hsnd js-snd" type="button" aria-pressed="false" aria-label="太鼓の音をオン・オフ"><span class="ic">🥁</span><span class="lb">音</span><span class="eq"><i></i><i></i><i></i></span></button>
     <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="gnav" aria-label="メニューを開く"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -343,7 +372,9 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
       <span class="status js-st"><i></i><span class="js-stt">—</span></span>
       <a class="arw w" href="#menu">メニューを見る</a>
     </div>
+    <button class="snd big js-snd" type="button" aria-pressed="false"><span class="ic">🥁</span><span class="lb">太鼓の音で見る</span><span class="eq"><i></i><i></i><i></i></span></button>
   </div>
+  <div class="flash" id="flash" aria-hidden="true"></div>
   <div class="dn" aria-hidden="true"><span class="js-dn">Night</span><i></i></div>
   <div class="lane" aria-hidden="true">
     <div class="walk"><span class="say">いらっしゃい！</span><img src="assets/walk.webp" alt="" width="270" height="380"><span class="shadow"></span></div>
@@ -616,23 +647,93 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   setInterval(()=>{bg[i].classList.remove('on');i=(i+1)%bg.length;bg[i].classList.add('on');lb.textContent=bg[i].dataset.l;
     const d=document.querySelector('.dn i');d.style.animation='none';d.offsetHeight;d.style.animation=''},7000);
   const w=document.querySelector('.walk');setInterval(()=>{w.classList.add('talk');setTimeout(()=>w.classList.remove('talk'),2200)},6000)})();
+
+/* ===== 和太鼓サウンド（Web Audioで合成／音源ファイルなし） ===== */
+const Taiko=(function(){
+  let ctx=null,master=null,on=false,loopT=null,heroVis=true,lastWhoosh=0,noiseBuf=null;
+  function init(){
+    if(ctx)return;
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const comp=ctx.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;
+    master=ctx.createGain();master.gain.value=.9;master.connect(comp);comp.connect(ctx.destination);
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*1.2,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  }
+  function noise(t,dur,type,f,q,g,to){const n=ctx.createBufferSource();n.buffer=noiseBuf;const fl=ctx.createBiquadFilter();fl.type=type;fl.frequency.setValueAtTime(f,t);if(to)fl.frequency.exponentialRampToValueAtTime(to,t+dur);fl.Q.value=q||1;
+    const gn=ctx.createGain();n.connect(fl);fl.connect(gn);gn.connect(master);return{n,gn,fl}}
+  // ドン（大太鼓）
+  function don(t,vol=1,big=false){
+    const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
+    const f0=big?150:130,f1=big?48:58,dur=big?1.1:.6;
+    o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur*.6);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.05);
+    const o2=ctx.createOscillator(),g2=ctx.createGain();o2.type='triangle';o2.frequency.setValueAtTime(f0*1.6,t);o2.frequency.exponentialRampToValueAtTime(f1*1.5,t+.15);
+    g2.gain.setValueAtTime(vol*.35,t);g2.gain.exponentialRampToValueAtTime(.0001,t+.18);o2.connect(g2);g2.connect(master);o2.start(t);o2.stop(t+.2);
+    const z=noise(t,.08,'lowpass',big?900:700,.7);z.gn.gain.setValueAtTime(vol*(big?.7:.45),t);z.gn.gain.exponentialRampToValueAtTime(.0001,t+.08);z.n.start(t);z.n.stop(t+.1);
+  }
+  // カッ（ふち打ち）
+  function ka(t,vol=.5){
+    const z=noise(t,.05,'bandpass',2600,3);z.gn.gain.setValueAtTime(vol,t);z.gn.gain.exponentialRampToValueAtTime(.0001,t+.05);z.n.start(t);z.n.stop(t+.06);
+    const o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=1050;g.gain.setValueAtTime(vol*.18,t);g.gain.exponentialRampToValueAtTime(.0001,t+.035);o.connect(g);g.connect(master);o.start(t);o.stop(t+.04);
+  }
+  // シュッ（現れる音）
+  function whoosh(t,vol=.35,dur=.28){
+    const z=noise(t,dur,'bandpass',500,1.4,0,4200);z.gn.gain.setValueAtTime(.0001,t);z.gn.gain.exponentialRampToValueAtTime(vol,t+dur*.55);z.gn.gain.exponentialRampToValueAtTime(.0001,t+dur);z.n.start(t);z.n.stop(t+dur+.02);
+  }
+  const now=()=>ctx.currentTime+.02;
+  // 登場：ドン・ドン・ドドン・カッ・ドーン！
+  function intro(){
+    const t=now(),b=.27;
+    don(t,.8);don(t+b*2,.8);don(t+b*4,.7);don(t+b*5,.75);ka(t+b*6,.55);whoosh(t+b*6.2,.45,.32);don(t+b*7,1,true);
+    const at=(sec,fn)=>setTimeout(fn,sec*1000);
+    at(b*7,()=>{const f=document.getElementById('flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');
+      document.querySelectorAll('.hero h1 img,.hero-act,.tagline').forEach(e=>{e.style.animation='none';void e.offsetWidth;e.style.animation='';e.style.opacity='1';e.classList.remove('beat');void e.offsetWidth;e.classList.add('beat')})});
+    [0,2,4,5].forEach(k=>at(b*k,()=>{const l=document.querySelector('.hero h1');l.classList.remove('beat');void l.offsetWidth;l.classList.add('beat')}));
+  }
+  // トップにいる間の祭りばやし（BPM 108）
+  function loop(){
+    clearTimeout(loopT);if(!on)return;
+    if(heroVis&&!document.hidden){
+      const t=now(),b=60/108/2,v=.32;
+      // ドン・カッ・ドン・ドン | カッ・カカ・ドン・(休)
+      don(t,v);ka(t+b,v*.8);don(t+b*2,v);don(t+b*3,v*.8);ka(t+b*4,v*.8);ka(t+b*5,v*.6);ka(t+b*5.5,v*.6);don(t+b*6,v*1.1);
+    }
+    loopT=setTimeout(loop,(60/108)*4*1000);
+  }
+  function set(v){
+    init();if(ctx.state==='suspended')ctx.resume();on=v;
+    document.querySelectorAll('.js-snd').forEach(bn=>{bn.classList.toggle('on',on);bn.setAttribute('aria-pressed',on);const lb=bn.querySelector('.lb');if(bn.classList.contains('big'))lb.textContent=on?'太鼓の音 ON':'太鼓の音で見る';});
+    if(on){intro();clearTimeout(loopT);loopT=setTimeout(loop,2600)}else clearTimeout(loopT);
+  }
+  document.querySelectorAll('.js-snd').forEach(bn=>bn.addEventListener('click',()=>set(!on)));
+  const hero=document.querySelector('.hero');
+  if('IntersectionObserver' in window)new IntersectionObserver(es=>{heroVis=es[0].isIntersecting},{threshold:.35}).observe(hero);
+  return{
+    get on(){return on},
+    whoosh(){if(!on)return;const n=performance.now();if(n-lastWhoosh<140)return;lastWhoosh=n;whoosh(now(),.28,.24)},
+    head(){if(!on)return;const t=now();whoosh(t,.3,.22);don(t+.2,.75);ka(t+.34,.45);don(t+.46,.9)},
+    tap(){if(!on)return;const t=now();ka(t,.5);don(t+.08,.6)},
+    open(){if(!on)return;whoosh(now(),.35,.3)}
+  };
+})();
 /* header / mobile bar / hamburger */
 const hdr=document.getElementById('hdr'),mbar=document.getElementById('mbar');
 function onS(){const y=scrollY;hdr.classList.toggle('scrolled',y>20);mbar.classList.toggle('show',y>innerHeight*.7)}
 addEventListener('scroll',onS,{passive:true});onS();
 const gnav=document.getElementById('gnav'),mb=document.getElementById('menuBtn');
 function setNav(o){gnav.classList.toggle('open',o);mb.setAttribute('aria-expanded',o);mb.setAttribute('aria-label',o?'メニューを閉じる':'メニューを開く');document.body.classList.toggle('nav-open',o)}
-mb.addEventListener('click',()=>setNav(!gnav.classList.contains('open')));
+mb.addEventListener('click',()=>{setNav(!gnav.classList.contains('open'));Taiko.open()});
 gnav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setNav(false)));
 /* menu tabs */
 const tabs=[...document.querySelectorAll('.tab')];
 function openTab(id){tabs.forEach(x=>{const on=x.id===id;x.setAttribute('aria-selected',on);document.getElementById(x.getAttribute('aria-controls')).classList.toggle('on',on)})}
-tabs.forEach(t=>t.addEventListener('click',()=>openTab(t.id)));
+tabs.forEach(t=>t.addEventListener('click',()=>{openTab(t.id);Taiko.tap()}));
 document.querySelectorAll('[data-tab]').forEach(a=>a.addEventListener('click',()=>openTab(a.dataset.tab)));
 /* reveal */
 (function(){const els=document.querySelectorAll('.rv');
   if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('on'));return}
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);
+    if(e.target.classList.contains('sh')){const h=e.target.querySelector('h2');Taiko.head();if(Taiko.on&&h){h.classList.remove('hit');void h.offsetWidth;h.classList.add('hit')}}else Taiko.whoosh()}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});
   els.forEach(e=>io.observe(e))})();
 </script>
 </body>
