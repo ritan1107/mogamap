@@ -483,6 +483,26 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .meter{width:100%}
 }
 @media (prefers-reduced-motion:reduce){.palm-deco img{animation:none}}
+
+/* ===== 波乗りチャレンジ ===== */
+.surf{margin-top:22px;grid-template-columns:1fr auto;box-shadow:6px 6px 0 var(--sea);background:linear-gradient(#eaf7fc,#fff 70%)}
+.surf::before{background:linear-gradient(#bfe6f4,#8fd0ea);border-top:2px dashed #6fb9d6}
+.surf .cstage{width:200px;height:236px;order:2}
+.surf .spr{background-size:500% 400%}
+.surf .cinfo{order:1}
+.surf .cinfo h3 small{color:var(--sea)}
+.bal{position:relative;height:26px;max-width:360px;border:2px solid var(--ink);border-radius:999px;background:#fdeaea;overflow:hidden}
+.bal .zone{position:absolute;top:0;bottom:0;left:50%;width:30%;transform:translateX(-50%);background:#bfe8b0;border-left:2px dashed #3f9a3a;border-right:2px dashed #3f9a3a;transition:width .3s}
+.bal .cur{position:absolute;top:2px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--sea);border:2px solid var(--ink);left:0}
+.bal.hit{animation:balhit .3s}
+.bal.miss{animation:balmiss .35s}
+@keyframes balhit{50%{box-shadow:0 0 0 5px rgba(63,154,58,.35)}}
+@keyframes balmiss{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.surf .meter i{background:linear-gradient(90deg,#6cc3e6,#1f8fb8)}
+.phase{font-weight:900;font-size:13px;color:var(--sea)}
+.cstage.win .spr{animation:win 1s ease-in-out 2}
+@keyframes win{50%{transform:translateY(-8px) rotate(-2deg)}}
+@media (max-width:760px){.surf{grid-template-columns:1fr}.surf .cstage{order:0}.surf .cinfo{order:1}.bal{width:100%}}
 </style>
 </head>
 <body>
@@ -741,6 +761,18 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
         <div class="cstats" aria-live="polite"><span>今回 <b id="ctime">0.0</b>秒</span><span>自己ベスト <b id="cbest">-</b></span><span>てっぺん <b id="ctop">0</b>回</span><span>ココナッツ <b id="cnut">0</b>個</span></div>
         <button class="cagain" id="cagain" type="button" hidden>もう1回 登らせる</button>
       </div>
+    </div>
+    <div class="climb surf rv" id="surf">
+      <div class="cinfo">
+        <h3><small>Surf Challenge</small>店主を波に乗せて！</h3>
+        <p class="how"><b>①</b> 連打でボードに立ち上がる　<b>②</b> 青い玉が<b>緑のゾーン</b>に入った瞬間にタップ！タイミングを外すと…ドボン。大波のチューブまで行けるかな？</p>
+        <div class="phase" id="sphase">タップでスタート</div>
+        <div class="meter" id="smeterw" aria-hidden="true"><i id="smeter"></i></div>
+        <div class="bal" id="sbal" hidden aria-hidden="true"><span class="zone" id="szone"></span><span class="cur" id="scur"></span></div>
+        <div class="cstats" aria-live="polite"><span>波の高さ <b id="sh">0</b>%</span><span>ベスト <b id="sbest">0</b>%</span><span>チューブ成功 <b id="swin">0</b>回</span><span>ドボン <b id="sfall">0</b>回</span></div>
+        <button class="cagain" id="sagain" type="button" hidden>もう1回 波に乗る</button>
+      </div>
+      <button class="cstage" id="sstage" type="button" aria-label="タップして店主を波に乗せる"><span class="spr" id="sspr"></span><span class="bub" id="sbub"></span></button>
     </div>
     <div class="tl">
       <div class="rv"><b>15:00</b><h3>波乗りのあとに</h3><p>開店と同時に、サーフィン帰りの一杯。</p></div>
@@ -1063,6 +1095,61 @@ document.querySelectorAll('[data-tab]').forEach(a=>a.addEventListener('click',()
     setTimeout(()=>{sfx('tap');S.nut++;save();showStats();const pl=document.createElement('span');pl.className='plus';pl.textContent='ココナッツ +1';pl.style.left=Math.max(0,r.left-hr.left-30)+'px';pl.style.top=(r.top-hr.top+r.height*.7)+'px';host.appendChild(pl);setTimeout(()=>pl.remove(),1000)},620);
     setTimeout(()=>n.remove(),1200);
   });
+})();
+
+/* ===== 波乗りチャレンジ ===== */
+(function(){
+  const st=document.getElementById('sstage');if(!st)return;
+  const spr=document.getElementById('sspr'),bub=document.getElementById('sbub'),meterW=document.getElementById('smeterw'),meter=document.getElementById('smeter'),
+    bal=document.getElementById('sbal'),zone=document.getElementById('szone'),cur=document.getElementById('scur'),phase=document.getElementById('sphase'),again=document.getElementById('sagain');
+  const elH=document.getElementById('sh'),elB=document.getElementById('sbest'),elW=document.getElementById('swin'),elF=document.getElementById('sfall');
+  const K='seaside_surf_v1';let S={best:0,win:0,fall:0};try{S=Object.assign(S,JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){}
+  const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+  const stats=()=>{elB.textContent=S.best;elW.textContent=S.win;elF.textContent=S.fall};stats();
+  const IMG={up:'assets/surf-up.webp',ride:'assets/surf-ride.webp',fall:'assets/surf-fall.webp'};
+  const load=()=>{Object.values(IMG).forEach(u=>{const i=new Image();i.src=u});show('up',0)};
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){load();io.disconnect()}},{rootMargin:'400px'});io.observe(st)}else load();
+  let sheet='';
+  function show(name,i){if(sheet!==name){spr.style.backgroundImage='url('+IMG[name]+')';sheet=name}spr.style.backgroundPosition=(i%5)*25+'% '+Math.floor(i/5)*(100/3)+'%'}
+  let bt=null;const say=(t,ms=1100)=>{bub.textContent=t;bub.classList.add('show');clearTimeout(bt);bt=setTimeout(()=>bub.classList.remove('show'),ms)};
+  const sfx=k=>{if(typeof Taiko==='undefined'||!Taiko.on)return;if(k==='tap')Taiko.tap();else if(k==='big')Taiko.head();else Taiko.whoosh()};
+  let state='idle',up=0,ride=0,raf=null,pos=0,dir=1,speed=.9,zw=30,lastHit=0;
+  function setH(){const h=Math.round(ride/19*100);elH.textContent=h;return h}
+  function reset(){state='idle';up=0;ride=0;show('up',0);meterW.hidden=false;meter.style.width='0%';bal.hidden=true;phase.textContent='タップでスタート';again.hidden=true;elH.textContent=0;st.classList.remove('win')}
+  function startRide(){
+    state='ride';meterW.hidden=true;bal.hidden=false;phase.textContent='緑のゾーンでタップ！';ride=0;show('ride',0);zw=34;speed=.7;zone.style.width=zw+'%';pos=0;dir=1;lastHit=performance.now();say('いくよー！',900);sfx('swish');
+    cancelAnimationFrame(raf);let prev=performance.now();
+    const loop=t=>{if(state!=='ride')return;const dt=Math.min(50,t-prev);prev=t;pos+=dir*speed*dt/10;if(pos>=100){pos=100;dir=-1}if(pos<=0){pos=0;dir=1}cur.style.left=pos+'%';
+      if(t-lastHit>2600){wipe('のんびりしすぎ〜！');return}raf=requestAnimationFrame(loop)};
+    raf=requestAnimationFrame(loop);
+  }
+  function hit(){
+    const inZone=Math.abs(pos-50)<=zw/2;
+    if(!inZone){bal.classList.remove('miss');void bal.offsetWidth;bal.classList.add('miss');wipe('うわっ！');return}
+    bal.classList.remove('hit');void bal.offsetWidth;bal.classList.add('hit');sfx('swish');lastHit=performance.now();
+    ride=Math.min(19,ride+2);show('ride',ride);setH();zw=Math.max(16,zw-1.8);speed=Math.min(1.4,speed+.08);zone.style.width=zw+'%';
+    const L=['いい波！','ナイス！','まだまだ！','でかいの来た！','チューブ見えた！'];if(Math.random()<.45)say(L[Math.floor(Math.random()*L.length)],700);
+    if(ride>=19)win();
+  }
+  function end(){const h=setH();if(h>S.best)S.best=h;save();stats();again.hidden=false;bal.hidden=true}
+  function win(){state='done';cancelAnimationFrame(raf);S.win++;phase.textContent='チューブライディング成功！';sfx('big');st.classList.add('win');say('最高の波だった〜！',2400);end()}
+  function wipe(msg){
+    state='fall';cancelAnimationFrame(raf);S.fall++;phase.textContent='ドボン…';say(msg,900);
+    const f0=Math.min(10,Math.floor(ride/2)+(ride>0?2:0));let i=f0;
+    const step=()=>{show('fall',i);if(i===16)sfx('big');i++;if(i<20)setTimeout(step,95);else{state='done';say('もう1回！ぷはっ',1800);end()}};step();
+  }
+  function tap(){
+    if(state==='fall'||state==='done')return;
+    if(state==='idle'){state='up';phase.textContent='連打で立ち上がれ！';say('よーし！',700)}
+    if(state==='up'){up=Math.min(19,up+1.5);show('up',Math.floor(up));meter.style.width=(up/19*100)+'%';sfx('tap');if(up>=19)setTimeout(startRide,250);return}
+    if(state==='ride')hit();
+  }
+  st.addEventListener('pointerdown',e=>{e.preventDefault();tap()});
+  st.addEventListener('click',e=>{if(e.detail===0)tap()});
+  // ゾーンのバーを直接タップしてもOK
+  bal.addEventListener('pointerdown',e=>{e.preventDefault();if(state==='ride')hit()});
+  again.addEventListener('click',()=>{reset();say('次はチューブまで！',1200);st.focus({preventScroll:true})});
+  reset();
 })();
 </script>
 </body>
