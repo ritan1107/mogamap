@@ -138,6 +138,57 @@ header.scrolled{box-shadow:0 1px 0 var(--line)}
 .fc .cap span{font-size:12.5px;color:var(--sub);display:block;font-weight:500}
 .fc .cap em{font-style:normal;font-size:20px}
 
+
+/* ===== next strip ===== */
+.nxt{display:flex;align-items:center;gap:12px;background:var(--red);color:#fff;padding:12px 20px;font-weight:900;font-size:14px;position:relative;z-index:6;overflow:hidden}
+.nxt::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.25) 50%,transparent 70%);transform:translateX(-100%);animation:shine2 3.2s ease-in-out infinite}
+@keyframes shine2{60%,100%{transform:translateX(100%)}}
+.nxt .lbl{background:#fff;color:var(--red);border-radius:999px;padding:1px 10px;font-size:11.5px;letter-spacing:.14em;flex:none}
+.nxt .js-nxt-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nxt .cd{background:var(--ink);border-radius:999px;padding:2px 12px;font-size:12.5px;flex:none}
+.nxt .go{flex:none}
+/* ===== pick (featured) ===== */
+.pick:empty{display:none}
+.pick{margin-bottom:36px}
+.pk{display:grid;grid-template-columns:200px 1fr;gap:0;background:#fff;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:6px 6px 0 var(--red);position:relative}
+.pk .im{background:var(--ink);cursor:zoom-in;position:relative}
+.pk .im img{width:100%;height:100%;object-fit:cover;object-position:50% 0}
+.pk .bd{padding:22px 24px;display:flex;flex-direction:column;gap:6px}
+.pk .flag{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:var(--red);color:#fff;border-radius:999px;padding:2px 12px;font-size:12px;font-weight:900;letter-spacing:.12em;animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{50%{transform:scale(1.06)}}
+.pk h3{font-size:clamp(19px,2.4vw,24px);font-weight:900;line-height:1.5}
+.pk .when{font-weight:900;color:var(--red);font-size:16px}
+.pk .lead2{font-size:13.5px;color:#3d4a4f}
+.pk .acts{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:6px}
+/* ===== events ===== */
+.events{background:#fff7ea;border-top:2px solid var(--ink)}
+.ftabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+.ft{background:#fff;border:2px solid var(--ink);border-radius:999px;padding:8px 18px;font-family:var(--f);font-weight:900;font-size:14px;cursor:pointer;color:var(--ink);transition:background .25s,color .25s,transform .2s}
+.ft:hover{transform:translateY(-2px)}
+.ft[aria-selected="true"]{background:var(--ink);color:#fff}
+.ft .n{display:inline-block;min-width:20px;margin-left:6px;background:var(--red);color:#fff;border-radius:999px;font-size:11px;padding:0 6px;line-height:1.7}
+.evlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.ev{background:#fff;border:2px solid var(--ink);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;animation:fadeIn .5s var(--ease)}
+.ev .im{height:260px;overflow:hidden;background:var(--ink);cursor:zoom-in;position:relative}
+.ev .im img{width:100%;height:100%;object-fit:cover;object-position:50% 0;transition:transform 1s var(--ease)}
+.ev .im:hover img{transform:scale(1.04)}
+.ev .im .zoom{position:absolute;right:10px;bottom:10px;background:rgba(255,255,255,.92);border:2px solid var(--ink);border-radius:999px;padding:2px 12px;font-size:12px;font-weight:900}
+.ev .bd{padding:20px 22px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
+.ev .tags{display:flex;gap:6px;flex-wrap:wrap}
+.tg{font-size:11.5px;font-weight:900;border-radius:999px;padding:1px 10px;color:#fff}
+.tg.limited{background:var(--sun)}.tg.monthly{background:var(--sea)}.tg.meetup{background:#c2417d}
+.tg.soon{background:var(--red)}.tg.now{background:#25b866}
+.ev h3{font-size:19px;font-weight:900;line-height:1.5}
+.ev .when{font-weight:900;color:var(--red)}
+.ev ul{margin:0;padding-left:1.1em;font-size:13.5px;color:#3d4a4f;line-height:1.85}
+.ev .acts{margin-top:auto;padding-top:10px;display:flex;gap:18px;flex-wrap:wrap}
+.evempty{grid-column:1/-1;background:#fff;border:2px dashed var(--line2);border-radius:20px;padding:44px 20px;text-align:center;color:var(--sub);font-weight:700}
+.evempty b{display:block;font-size:30px;margin-bottom:6px}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:90;background:rgba(10,20,26,.86);display:grid;place-items:center;padding:20px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.lb[hidden]{display:none}
+.lb img{max-width:min(92vw,560px);max-height:88vh;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.lb-x{position:absolute;top:14px;right:16px;width:46px;height:46px;border-radius:50%;border:0;background:#fff;font-size:26px;cursor:pointer;line-height:1}
 /* ===== menu ===== */
 .menu{background:var(--paper);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
 .tabs{display:inline-flex;gap:6px;background:var(--cream);border:2px solid var(--ink);border-radius:999px;padding:5px;margin-bottom:56px}
@@ -301,7 +352,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .gnav li:last-child{border-bottom:0}
   .gnav li{border-bottom:1.5px solid rgba(29,42,48,.55);opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
   .gnav.open li{opacity:1;transform:none}
-  .gnav.open li:nth-child(2){transition-delay:.05s}.gnav.open li:nth-child(3){transition-delay:.1s}.gnav.open li:nth-child(4){transition-delay:.15s}.gnav.open li:nth-child(5){transition-delay:.2s}
+  .gnav.open li:nth-child(2){transition-delay:.05s}.gnav.open li:nth-child(3){transition-delay:.1s}.gnav.open li:nth-child(4){transition-delay:.15s}.gnav.open li:nth-child(5){transition-delay:.2s}.gnav.open li:nth-child(6){transition-delay:.25s}
   .gnav a{display:flex;justify-content:space-between;align-items:baseline;padding:13px 2px;font-size:21px;font-weight:900;color:var(--ink);text-shadow:0 0 6px rgba(255,255,255,.95),0 0 14px rgba(255,255,255,.8)}
   .gnav a::after{display:none}
   .gnav a small{display:inline;font-family:var(--en);font-weight:400;font-size:16px;color:var(--red)}
@@ -326,6 +377,13 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .nlist .tx{grid-column:2;grid-row:2;font-size:14px}
   .nlist .no{grid-row:1/3}
   .nlist .go{grid-row:1/3;grid-column:3}
+  .pk{grid-template-columns:110px 1fr;box-shadow:4px 4px 0 var(--red)}
+  .pk .bd{padding:14px 14px 16px}
+  .pk .lead2{display:none}
+  .evlist{grid-template-columns:minmax(0,1fr)}
+  .ev .im{height:220px}
+  .ft{padding:7px 13px;font-size:13px}
+  .nxt{font-size:12.5px;padding:10px 14px;gap:8px}
   .feat{grid-template-columns:1fr;gap:20px;margin-top:50px}
   .tabs{display:flex}.tab{flex:1;padding:10px 8px}
   .dishes{grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:44px}
@@ -365,6 +423,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
     <a class="site" href="#top"><img src="assets/icon.png" alt="">シーサイドテラス大堂津<span class="pc-only"> 公式サイト</span></a>
     <nav class="gnav" id="gnav" aria-label="メインメニュー"><ul>
       <li><a href="#news">お知らせ <small>News</small></a></li>
+      <li><a href="#events">イベント <small>Events</small></a></li>
       <li><a href="#menu">メニュー <small>Menu</small></a></li>
       <li><a href="#tencho">店主 <small>Owner</small></a></li>
       <li><a href="#beach">浜辺 <small>Beach</small></a></li>
@@ -402,10 +461,13 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   </div>
 </section>
 
+<a class="nxt" id="nxt" href="#events" hidden><span class="lbl">NEXT</span><span class="js-nxt-t"></span><span class="cd js-nxt-cd"></span><span class="go">→</span></a>
+
 <!-- ===== NEWS ===== -->
 <section class="sec news" id="news">
   <div class="wrap">
     <div class="sh rv"><h2><small>News</small>お知らせ</h2></div>
+    <div class="pick" id="pick"></div>
     <ol class="nlist rv">
       <li><a href="#top"><span class="no">01</span><time datetime="2026-11-22">2026.11.22</time><span class="tx">公式サイトを公開しました</span><span class="go">→</span></a></li>
       <li><a href="#menu"><span class="no">02</span><time datetime="2026-11-22">2026.11.22</time><span class="tx">フード・ドリンクメニューを掲載しました</span><span class="go">→</span></a></li>
@@ -423,6 +485,22 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
     </div>
   </div>
 </section>
+
+<!-- ===== EVENTS ===== -->
+<section class="sec events" id="events">
+  <div class="wrap">
+    <div class="sh rv"><h2><small>Events</small>イベント</h2><p>期間限定のお得なセットや交流会など、浜辺のイベント情報です。</p></div>
+    <div class="ftabs" role="tablist" aria-label="イベントの種類">
+      <button class="ft" role="tab" data-cat="all" aria-selected="true">すべて</button>
+      <button class="ft" role="tab" data-cat="limited" aria-selected="false">期間限定</button>
+      <button class="ft" role="tab" data-cat="monthly" aria-selected="false">毎月のイベント</button>
+      <button class="ft" role="tab" data-cat="meetup" aria-selected="false">交流会</button>
+    </div>
+    <div class="evlist" id="evlist" aria-live="polite"></div>
+  </div>
+</section>
+
+<div class="lb" id="lb" hidden><button class="lb-x" type="button" aria-label="閉じる">×</button><img id="lbImg" alt=""></div>
 
 <!-- ===== MENU ===== -->
 <section class="sec menu" id="menu">
@@ -642,7 +720,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 
 <footer>
   <img class="fl" src="assets/logo.webp" alt="Seaside Terrace 大堂津">
-  <ul><li><a href="#top">トップ</a></li><li><a href="#news">お知らせ</a></li><li><a href="#menu">メニュー</a></li><li><a href="#tencho">店主</a></li><li><a href="#beach">浜辺</a></li><li><a href="#access">アクセス</a></li></ul>
+  <ul><li><a href="#top">トップ</a></li><li><a href="#news">お知らせ</a></li><li><a href="#events">イベント</a></li><li><a href="#menu">メニュー</a></li><li><a href="#tencho">店主</a></li><li><a href="#beach">浜辺</a></li><li><a href="#access">アクセス</a></li></ul>
   <div class="fsns"><a href="https://www.instagram.com/odotsu.shinsengumi/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.tiktok.com/@odotsu.shinsengumi" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.3 2.2 1.7 3.7 3.9 3.9v3.1c-1.4 0-2.7-.4-3.9-1.1v6.2c0 3.2-2.6 5.9-5.9 5.9S4.8 18.4 4.8 15.1s2.6-5.9 5.9-5.9c.3 0 .6 0 .9.1v3.2a2.8 2.8 0 1 0 1.9 2.6V3h3.1z"/></svg></a><button type="button" class="js-call" aria-label="電話をかける"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></button></div>
   <div>宮崎県日南市 大堂津海水浴場　15:00–22:00（月曜定休）</div>
   <div class="cp">© Seaside Terrace Odotsu</div>
@@ -747,6 +825,58 @@ const Taiko=(function(){
 /* 電話（番号はページに表示せず、押したときだけ組み立てる） */
 (function(){const p=['070','9505','3141'];
   document.querySelectorAll('.js-call').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();location.href='tel:'+p.join('');}))})();
+/* =========================================================
+   イベント情報（ここを書き換えるだけで更新できます）
+   cat：limited=期間限定 ／ monthly=毎月 ／ meetup=交流会
+   date：開催日（YYYY-MM-DD）。毎日・常設なら null
+   until：この日を過ぎたら自動で非表示（YYYY-MM-DD）。なければ null
+   priority：1〜3（3が一番目立つ）
+   ========================================================= */
+const EVENTS=[
+  {id:'meetup2',cat:'meetup',priority:3,date:'2026-11-29',until:'2026-11-29',
+   title:'第2回 シーサイド交流会',when:'11月29日（日）15:00〜　最終22:00まで（出入り自由）',
+   lead:'大好評につき第2回開催決定！海辺で生まれる、素敵な出会い。',
+   points:['定員：男性10名・女性10名','参加費：1,000円（ワンドリンク制）、その後のドリンクは実費','会場：シーサイドテラス大堂津','お申し込み：りょーやんのInstagram（@ryoyan0501）へDMで「お名前・ご連絡先・ご年齢」'],
+   img:'assets/ev-meetup2.webp',link:{label:'Instagramで申し込む',url:'https://www.instagram.com/ryoyan0501/'}},
+  {id:'happyhour',cat:'limited',priority:2,date:null,until:null,
+   title:'ハッピーアワー ポテナゲセット 500円',when:'営業日 オープン〜18:00まで',
+   lead:'ギザギザポテト・チキンナゲット・選べるドリンクがセットで500円。',
+   points:['ポテト80g＋ナゲット4個＋ドリンク200ml','＋200円でポテト120g・ナゲット6個に増量','ドリンク：オレンジ／コーラ／コーヒー／アップル／無糖レモン炭酸水','アルコールは＋300円','駐車場は海水浴場の所を無料開放中（波乗りの方も無料）'],
+   img:'assets/ev-happyhour.webp',link:null},
+];
+(function(){
+  const CAT={limited:'期間限定',monthly:'毎月',meetup:'交流会'};
+  const W=['日','月','火','水','木','金','土'];
+  const today=(()=>{const p={};new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).forEach(x=>p[x.type]=x.value);return p.year+'-'+p.month+'-'+p.day})();
+  const days=d=>Math.round((Date.parse(d)-Date.parse(today))/864e5);
+  const live=EVENTS.filter(e=>!e.until||e.until>=today);
+  const badge=e=>{if(!e.date)return'<span class="tg now">開催中</span>';const n=days(e.date);return n===0?'<span class="tg soon">本日開催！</span>':n>0&&n<=14?'<span class="tg soon">あと'+n+'日</span>':''};
+  // 目立たせる1件：14日以内の開催日が近いもの → なければ優先度の高いもの
+  const soon=live.filter(e=>e.date&&days(e.date)>=0&&days(e.date)<=14).sort((a,b)=>a.date<b.date?-1:1);
+  const top=soon[0]||live.slice().sort((a,b)=>b.priority-a.priority)[0];
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const linkHtml=e=>(e.link?'<a class="arw" href="'+e.link.url+'" target="_blank" rel="noopener">'+esc(e.link.label)+'</a>':'')+'<a class="arw js-zoom" href="#" data-img="'+e.img+'">チラシを見る</a>';
+  if(top){
+    document.getElementById('pick').innerHTML='<article class="pk rv on"><div class="im js-zoom" data-img="'+top.img+'"><img src="'+top.img+'" alt="'+esc(top.title)+'のチラシ"></div><div class="bd"><span class="flag">★ 注目のイベント</span><div class="tags"><span class="tg '+top.cat+'">'+CAT[top.cat]+'</span>'+badge(top)+'</div><h3>'+esc(top.title)+'</h3><p class="when">'+esc(top.when)+'</p><p class="lead2">'+esc(top.lead)+'</p><div class="acts">'+linkHtml(top)+'</div></div></article>';
+    const nx=document.getElementById('nxt');nx.hidden=false;
+    const sd=top.date?(()=>{const d=new Date(top.date+'T00:00:00+09:00');return (d.getUTCMonth()+1)+'/'+new Date(Date.parse(top.date)).getUTCDate()+'('+W[new Date(top.date+'T12:00:00+09:00').getUTCDay()]+') '})():'';nx.querySelector('.js-nxt-t').textContent=sd+top.title;
+    const n=top.date?days(top.date):null;nx.querySelector('.js-nxt-cd').textContent=n===null?'開催中':n===0?'本日！':'あと'+n+'日';
+  }
+  const cnt={all:live.length,limited:0,monthly:0,meetup:0};live.forEach(e=>cnt[e.cat]++);
+  document.querySelectorAll('.ft').forEach(b=>b.insertAdjacentHTML('beforeend','<span class="n">'+cnt[b.dataset.cat]+'</span>'));
+  function render(cat){
+    const list=live.filter(e=>cat==='all'||e.cat===cat).sort((a,b)=>(b===top)-(a===top)||b.priority-a.priority);
+    const box=document.getElementById('evlist');
+    if(!list.length){box.innerHTML='<div class="evempty"><b>🌺</b>'+(cat==='monthly'?'毎月のイベントは準備中です。決まり次第お知らせします！':'現在予定されているイベントはありません。')+'</div>';return}
+    box.innerHTML=list.map(e=>'<article class="ev"><div class="im js-zoom" data-img="'+e.img+'"><img src="'+e.img+'" alt="'+esc(e.title)+'のチラシ" loading="lazy"><span class="zoom">チラシを拡大</span></div><div class="bd"><div class="tags"><span class="tg '+e.cat+'">'+CAT[e.cat]+'</span>'+badge(e)+'</div><h3>'+esc(e.title)+'</h3><p class="when">'+esc(e.when)+'</p><ul>'+e.points.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><div class="acts">'+linkHtml(e)+'</div></div></article>').join('');
+  }
+  document.querySelectorAll('.ft').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.ft').forEach(x=>x.setAttribute('aria-selected',x===b));render(b.dataset.cat);if(window.Taiko)Taiko.tap()}));
+  render('all');
+  const lb=document.getElementById('lb'),li=document.getElementById('lbImg');
+  document.addEventListener('click',e=>{const z=e.target.closest('.js-zoom');if(z){e.preventDefault();li.src=z.dataset.img;lb.hidden=false;document.body.style.overflow='hidden'}});
+  const close=()=>{lb.hidden=true;document.body.style.overflow=''};
+  lb.addEventListener('click',e=>{if(e.target!==li)close()});addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+})();
 /* header / mobile bar / hamburger */
 const hdr=document.getElementById('hdr'),mbar=document.getElementById('mbar');
 function onS(){const y=scrollY;hdr.classList.toggle('scrolled',y>20);mbar.classList.toggle('show',y>innerHeight*.7)}
