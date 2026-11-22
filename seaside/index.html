@@ -232,6 +232,22 @@ td small{display:block;color:var(--sub);font-size:12.5px}
 .map iframe{width:100%;height:100%;min-height:420px;border:0;display:block}
 .ac .links{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px}
 
+
+/* ===== contact ===== */
+.contact{margin-top:28px;background:var(--paper);border:2px solid var(--ink);border-radius:18px;padding:22px}
+.contact h3{font-size:16px;font-weight:900;letter-spacing:.1em;margin-bottom:14px}
+.cbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:2px solid var(--ink);border-radius:999px;padding:13px 16px;font-family:var(--f);font-weight:900;font-size:15px;letter-spacing:.08em;cursor:pointer;transition:transform .2s,box-shadow .2s;color:var(--ink);background:#fff}
+.cbtn:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--ink)}
+.cbtn svg{width:20px;height:20px;flex:none}
+.cbtn.tel{background:var(--red);color:#fff}
+.cnote{font-size:11.5px;color:var(--sub);text-align:center;margin:6px 0 14px}
+.sns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cbtn.ig{background:linear-gradient(45deg,#f9ce34,#ee2a7b 55%,#6228d7);color:#fff;border-color:var(--ink)}
+.cbtn.tt{background:#111;color:#fff}
+.fsns{display:flex;gap:14px;justify-content:center;margin:0 0 18px}
+.fsns a,.fsns button{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);display:grid;place-items:center;color:#fff;background:none;cursor:pointer;transition:background .3s}
+.fsns a:hover,.fsns button:hover{background:rgba(255,255,255,.12)}
+.fsns svg{width:20px;height:20px}
 /* ===== faq ===== */
 .qa{border-top:2px solid var(--ink)}
 details{border-bottom:1px dashed var(--line2)}
@@ -331,7 +347,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .col figure:first-child{grid-row:auto;grid-column:1/-1}
   .tl{grid-template-columns:1fr 1fr;gap:10px}
   .map,.map iframe{min-height:300px}
-  .mbar{display:grid;grid-template-columns:1.3fr 1fr 1fr;position:fixed;left:10px;right:10px;bottom:10px;z-index:30;background:var(--ink);border-radius:999px;overflow:hidden;transform:translateY(140%);transition:transform .45s var(--ease);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .mbar{display:grid;grid-template-columns:1.25fr 1fr .8fr 1fr;position:fixed;left:10px;right:10px;bottom:10px;z-index:30;background:var(--ink);border-radius:999px;overflow:hidden;transform:translateY(140%);transition:transform .45s var(--ease);box-shadow:0 8px 24px rgba(0,0,0,.25)}
   .mbar.show{transform:none}
   .mbar a{display:flex;align-items:center;justify-content:center;gap:7px;color:#fff;font-size:12.5px;font-weight:700;padding:14px 4px}
   .mbar a+a{border-left:1px solid rgba(255,255,255,.15)}
@@ -590,6 +606,15 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
           <tr><th>営業期間</th><td>次の海開きまで</td></tr>
           <tr><th>運営</th><td>大堂津新選組</td></tr>
         </table>
+<div class="contact rv">
+          <h3>お問い合わせ・SNS</h3>
+          <button type="button" class="cbtn tel js-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span>電話をかける</span></button>
+          <p class="cnote">※ボタンを押すと、スマホの電話アプリが開きます</p>
+          <div class="sns">
+            <a class="cbtn ig" href="https://www.instagram.com/odotsu.shinsengumi/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a>
+            <a class="cbtn tt" href="https://www.tiktok.com/@odotsu.shinsengumi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.3 2.2 1.7 3.7 3.9 3.9v3.1c-1.4 0-2.7-.4-3.9-1.1v6.2c0 3.2-2.6 5.9-5.9 5.9S4.8 18.4 4.8 15.1s2.6-5.9 5.9-5.9c.3 0 .6 0 .9.1v3.2a2.8 2.8 0 1 0 1.9 2.6V3h3.1z"/></svg><span>TikTok</span></a>
+          </div>
+        </div>
         <div class="links">
           <a class="arw" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4" target="_blank" rel="noopener">Googleマップで開く</a>
         </div>
@@ -618,6 +643,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 <footer>
   <img class="fl" src="assets/logo.webp" alt="Seaside Terrace 大堂津">
   <ul><li><a href="#top">トップ</a></li><li><a href="#news">お知らせ</a></li><li><a href="#menu">メニュー</a></li><li><a href="#tencho">店主</a></li><li><a href="#beach">浜辺</a></li><li><a href="#access">アクセス</a></li></ul>
+  <div class="fsns"><a href="https://www.instagram.com/odotsu.shinsengumi/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.tiktok.com/@odotsu.shinsengumi" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.3 2.2 1.7 3.7 3.9 3.9v3.1c-1.4 0-2.7-.4-3.9-1.1v6.2c0 3.2-2.6 5.9-5.9 5.9S4.8 18.4 4.8 15.1s2.6-5.9 5.9-5.9c.3 0 .6 0 .9.1v3.2a2.8 2.8 0 1 0 1.9 2.6V3h3.1z"/></svg></a><button type="button" class="js-call" aria-label="電話をかける"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></button></div>
   <div>宮崎県日南市 大堂津海水浴場　15:00–22:00（月曜定休）</div>
   <div class="cp">© Seaside Terrace Odotsu</div>
 </footer>
@@ -625,6 +651,7 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 <nav class="mbar" id="mbar" aria-label="クイックメニュー">
   <a href="#access" class="js-st"><i></i><span class="js-sts">営業時間</span></a>
   <a href="#menu">メニュー</a>
+  <a href="#access" class="js-call">電話</a>
   <a class="hot" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%A0%82%E6%B4%A5%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4" target="_blank" rel="noopener">道案内</a>
 </nav>
 
@@ -717,6 +744,9 @@ const Taiko=(function(){
     open(){if(!on)return;whoosh(now(),.35,.3)}
   };
 })();
+/* 電話（番号はページに表示せず、押したときだけ組み立てる） */
+(function(){const p=['070','9505','3141'];
+  document.querySelectorAll('.js-call').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();location.href='tel:'+p.join('');}))})();
 /* header / mobile bar / hamburger */
 const hdr=document.getElementById('hdr'),mbar=document.getElementById('mbar');
 function onS(){const y=scrollY;hdr.classList.toggle('scrolled',y>20);mbar.classList.toggle('show',y>innerHeight*.7)}
