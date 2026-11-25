@@ -325,6 +325,8 @@ function editForm(s){const id=esc(s.id);return `<div class="edit">
   <label class="label">住所</label><input id="eAddr-${id}" value="${esc(s.address||'')}">
   <label class="label">電話</label><input id="ePhone-${id}" value="${esc(s.phone||'')}">
   <label class="label">紹介文</label><textarea id="eDesc-${id}">${esc(s.description||'')}</textarea>
+  <label class="label">🎬 お店のようす：YouTube動画のURL（ネットマルシェのお店のいちばん上に出ます）</label><input id="eYt-${id}" inputmode="url" value="${esc(s.youtube_url||'')}" placeholder="https://youtu.be/…">
+  <label class="label">📷 お店のようす：写真のURL${String(s.image_url||'').startsWith('data:')?'（登録済みの写真あり・変えるときだけ入力）':''}</label><input id="eImg-${id}" inputmode="url" value="${String(s.image_url||'').startsWith('https://')?esc(s.image_url):''}" placeholder="https://… .jpg">
   <button class="btn" data-a="save" data-id="${id}">保存する</button></div>`}
 function findShop(id){return aShops.find(x=>String(x.id)===String(id))}
 $('aList').onclick=async e=>{
@@ -355,6 +357,9 @@ $('aList').onclick=async e=>{
       const v=k=>$(k+'-'+s.id).value;
       const r=await rpc('admin_update_shop_by_pin',{p_admin_pin:aPin,p_shop_id:s.id,p_name:v('eName'),p_address:v('eAddr'),p_category:s.category,p_description:v('eDesc'),p_phone:v('ePhone'),p_community_url:s.community_url||'',p_point_purchase_url:s.point_purchase_url||'',p_stamp_rally_enabled:!!s.stamp_rally_enabled,p_spot_job_enabled:!!s.spot_job_enabled,p_spot_job_title:s.spot_job_title||'',p_spot_job_description:s.spot_job_description||'',p_spot_job_hourly_wage:s.spot_job_hourly_wage??null,p_spot_job_schedule:s.spot_job_schedule||'',p_spot_job_payment_method:s.spot_job_payment_method||'',p_spot_job_contact:s.spot_job_contact||'',p_website_url:s.website_url||'',p_instagram_url:s.instagram_url||'',p_facebook_url:s.facebook_url||'',p_x_url:s.x_url||'',p_line_url:s.line_url||''});
       if(failed(r))throw 0;
+      const yt=v('eYt').trim(),img=v('eImg').trim(),hadData=String(s.image_url||'').startsWith('data:');
+      if((yt&&!/^https:\/\//i.test(yt))||(img&&!/^https:\/\//i.test(img))){toast('写真・動画のURLは https:// から入れてください');return}
+      if(yt!==(s.youtube_url||'')||img!==(hadData?'':(s.image_url||''))){await rpc('mogu_admin_set_shop_media',{p_admin_pin:aPin,p_shop_id:s.id,p_youtube:yt,p_image:img||(hadData?null:'')});s.youtube_url=yt;if(img||!hadData)s.image_url=img}
       Object.assign(s,{name:v('eName'),address:v('eAddr'),description:v('eDesc'),phone:v('ePhone')});aOpenEdit.delete(s.id);toast('保存しました');
     }
     aRender();

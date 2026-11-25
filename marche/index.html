@@ -227,6 +227,10 @@ nav button .i{font-size:22px;line-height:1.2}
 .cdone .ck{font-size:48px}
 .cdone .no{background:#f3f4f6;border-radius:8px;padding:8px;margin:12px 0;font-size:14px}
 
+.smv{position:relative;display:block;width:100%;aspect-ratio:16/9;margin-top:12px;padding:0;border:2px solid #f3e6d6;border-radius:18px;overflow:hidden;background:#222;cursor:pointer}
+.smv img,.smv iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;display:block}
+.smv .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:#ff0033e6;color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;padding-left:5px;box-shadow:0 4px 14px #0005}
+.smv .cap2{position:absolute;left:8px;bottom:8px;background:#000a;color:#fff;font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px}
 .scene{position:relative;height:210px;border-radius:18px;overflow:hidden;margin-top:12px;background:linear-gradient(#dff2ff,#fff8ef 58%,#ecd7b8 58%);border:2px solid #f3e6d6}
 .scene .awn2{position:absolute;top:0;left:5%;right:5%;height:40px;background:repeating-linear-gradient(90deg,var(--c) 0 24px,#fff 24px 48px)}
 .scene .awn2::after{content:'';position:absolute;left:0;right:0;top:100%;height:12px;background:radial-gradient(circle at 12px 0,var(--c) 12px,transparent 12.5px) 0 0/48px 12px repeat-x,radial-gradient(circle at 36px 0,#fff 12px,transparent 12.5px) 0 0/48px 12px repeat-x}
@@ -1077,14 +1081,28 @@ function openRealShop(sh,tab){if(sh.id==='ritan')return openMyShop(sh);const st=
   const stLabel={approved:'🎉 スタンプ済み',pending:'⏳ 確認待ち',bought:'📮 申請できます',none:'📮 未獲得'}[st]||'';
   const foot=st==='approved'?`<button class="btn sub" data-act="stab" data-t="stamp">🎉 スタンプ済み</button>`:st==='pending'?`<button class="btn sub" data-act="stab" data-t="stamp">⏳ 確認待ち</button>`:sh.real?`<button class="btn" data-act="bought" data-shop="${sh.id}">📮 スタンプ申請</button>`:`<button class="btn" data-act="stab" data-t="stamp">📮 スタンプ</button>`;
   openModal(`<div class="shophead" style="--c:${sh.color}"><div class="big">${esc(sh.emoji)}</div><div style="min-width:0"><h2>${esc(sh.name)}</h2><div class="tags"><span class="tg">${esc(sh.tag||'お店')}</span>${sh.rally!==false?`<span class="tg">${stLabel}</span>`:''}${sh.online?'<span class="tg">📦 通販でスタンプOK</span>':''}</div></div></div>
-  ${sceneHTML(sh)}
+  <div class="smedia" id="smedia">${sceneHTML(sh)}</div>
   <div class="stabs" data-shop="${sh.id}">${tabs.map(([k,l])=>`<button class="${k===tab?'on':''}" data-act="stab" data-t="${k}">${l}</button>`).join('')}</div>
   <div class="spanel" data-p="buy" ${tab==='buy'?'':'hidden'}>${buyPanel(sh)}</div>
   ${sh.rally!==false?`<div class="spanel" data-p="stamp" ${tab==='stamp'?'':'hidden'}>${stampPanel(sh)}</div>`:''}
   <div class="spanel" data-p="info" ${tab==='info'?'':'hidden'}>${infoPanel(sh)}</div>
   <div class="spanel" data-p="cheer" ${tab==='cheer'?'':'hidden'}>${supportHTML(sh).replace('<div class="sec">','<div>')}</div>
   <div class="shopfoot"><button class="btn sub" data-act="stab" data-t="buy">🛒 買う</button><button class="btn sub" data-act="chatshop" data-shop="${sh.id}">💬 お店と話す</button>${sh.rally!==false?foot:''}</div>`);
-  $('#modal .sheet').dataset.shop=sh.id}
+  $('#modal .sheet').dataset.shop=sh.id;loadShopMedia(sh)}
+/* ---------- お店のトップ：写真・動画（お店が登録したもの。なければイラスト） ---------- */
+const MEDIA={};
+function ytId(u){try{const x=new URL(u);if(/youtu\.be$/.test(x.hostname))return x.pathname.slice(1).split('/')[0];if(/youtube\.com$/.test(x.hostname)){if(x.searchParams.get('v'))return x.searchParams.get('v');const m=x.pathname.match(/\/(shorts|embed|live)\/([\w-]{6,})/);if(m)return m[2]}}catch(e){}return ''}
+async function loadShopMedia(sh){
+  if(!LIVE||!isReal(sh.id))return;
+  try{if(!(sh.id in MEDIA)){const r=await api(`/rest/v1/shop_public?select=youtube_url,image_url&id=eq.${encodeURIComponent(sh.id)}`);MEDIA[sh.id]=(r&&r[0])||{}}}catch(e){MEDIA[sh.id]={};return}
+  const m=MEDIA[sh.id],box=$('#smedia');if(!box||$('#modal .sheet').dataset.shop!==sh.id)return;
+  const yt=ytId(m.youtube_url||''),img=String(m.image_url||'');
+  const okImg=/^https:\/\//.test(img)||/^data:image\//.test(img);
+  if(yt){box.innerHTML=`<button class="smv" data-yt="${esc(yt)}" aria-label="お店の動画を再生"><img src="https://i.ytimg.com/vi/${esc(yt)}/hqdefault.jpg" alt="${esc(sh.name)}の動画" loading="lazy"><span class="play">▶</span><span class="cap2">🎬 お店のようす（タップで再生）</span></button>`;
+    box.querySelector('.smv').onclick=e=>{const id=e.currentTarget.dataset.yt;box.innerHTML=`<div class="smv"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&playsinline=1&rel=0" title="${esc(sh.name)}の動画" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`}}
+  else if(okImg){box.innerHTML=`<div class="smv"><img src="${esc(img)}" alt="${esc(sh.name)}のようす"><span class="cap2">📷 お店のようす</span></div>`;
+    const im=box.querySelector('img');im.onerror=()=>{box.innerHTML=sceneHTML(sh)}}
+}
 function openBought(id){const sh=shopById(id);
   openModal(`<h2>📮 スタンプを申請</h2><div class="muted">${esc(sh.emoji)} ${esc(sh.name)}</div>
   <p style="font-size:14px;line-height:1.7">何を買ったか教えてね。お店の人が確認すると、スタンプ帳にスタンプが押されます。</p>

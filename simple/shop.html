@@ -204,6 +204,17 @@
         <div class="ol-pick" id="olPick"><button data-ol="1">📦 有り</button><button data-ol="0">🏪 無し（来店のみ）</button></div>
         <div class="status" id="olStatus"></div>
       </div>
+      <div class="card" id="mdCard">
+        <h3>🎬 お店のようす（写真・動画）</h3>
+        <div class="muted">ネットマルシェでお客様がお店に入ったとき、いちばん上に出ます。どちらも空なら、今までどおりイラストの屋台が出ます。<b>動画がある場合は動画が優先</b>です。</div>
+        <label class="label" for="md_yt">YouTube動画のURL</label>
+        <input id="md_yt" inputmode="url" placeholder="https://youtu.be/… または https://youtube.com/shorts/…">
+        <label class="label" for="md_img">写真のURL（ネット上にある写真）</label>
+        <input id="md_img" inputmode="url" placeholder="https://… .jpg">
+        <div class="muted" id="mdImgNote" style="font-size:12.5px;margin-top:4px">写真をネット上に置いて、そのURLを入れてください（もぐマップに写真ファイルは保存しません）。</div>
+        <button class="btn" id="mdSave">保存する</button>
+        <div class="status" id="mdStatus"></div>
+      </div>
       <div class="card" id="eCard">
         <h3>✏️ お店の情報</h3>
         <div class="muted">お客様アプリの「お店・購入」に出る内容です。直したら「保存する」を押してください。</div>
@@ -293,7 +304,7 @@ function enter(){
   try{if(window.Notification&&Notification.permission==='granted')$('noticeBar').classList.add('hidden')}catch{}
   $('shopName').textContent=login.name||shops.find(s=>s.id===login.shopId)?.name||'';
   $('orgBar').classList.toggle('hidden',!login.organizer);
-  setupQr();loadOnline();loadInbox(true);if(NOTIFY_URL)loadMail();
+  setupQr();loadOnline();loadMedia();loadInbox(true);if(NOTIFY_URL)loadMail();
   timer=setInterval(()=>{if(document.visibilityState==='visible')loadInbox()},30000);
 }
 function goTab(name){const t=document.querySelector(`.tab[data-tab="${name}"]`);if(t)t.click();window.scrollTo({top:0,behavior:'smooth'})}
@@ -395,6 +406,18 @@ $('olPick').onclick=async e=>{
   try{await rpc('mogu_shop_set_online_menu',{p_shop_id:login.shopId,p_pin:login.pin,p_on:on});hasOnline=on;showOnline();
     $('olStatus').textContent=on?'「有り」にしました。お客様アプリに「📦 通販スタンプOK」と出ます':'「無し」にしました（来店のみ）'}
   catch(e){console.error(e);$('olStatus').textContent='保存できませんでした'}
+};
+/* お店のようす（写真・動画） */
+let mdHadImg=false;
+async function loadMedia(){try{const r=(await rpc('mogu_shop_get_media',{p_shop_id:login.shopId,p_pin:login.pin}))?.[0]||{};$('md_yt').value=r.youtube_url||'';
+  mdHadImg=r.image_url==='(登録済みの写真)';$('md_img').value=mdHadImg?'':(r.image_url||'');$('md_img').placeholder=mdHadImg?'登録済みの写真があります（変えるときだけ入力）':'https://… .jpg'}catch(e){console.warn(e)}}
+$('mdSave').onclick=async()=>{
+  const yt=$('md_yt').value.trim(),img=$('md_img').value.trim(),st=$('mdStatus');
+  if(yt&&!/^https:\/\/(www\.|m\.)?(youtube\.com|youtu\.be)\//i.test(yt))return st.textContent='YouTubeのURLを入れてください';
+  if(img&&!/^https:\/\//i.test(img))return st.textContent='写真のURLは https:// から入れてください';
+  st.textContent='保存中…';
+  try{await rpc('mogu_shop_set_media',{p_shop_id:login.shopId,p_pin:login.pin,p_youtube:yt,p_image:img||(mdHadImg?null:'')});st.textContent='保存しました。ネットマルシェのお店のいちばん上に出ます';loadMedia()}
+  catch(e){console.error(e);st.textContent=/https/.test(errText(e))?'URLは https:// から入れてください':'保存できませんでした'}
 };
 $('olGo').onclick=()=>{goTab('set');setTimeout(()=>$('olCard').scrollIntoView({behavior:'smooth'}),100)};
 
