@@ -144,6 +144,31 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
 .period-bar{border-radius:18px;padding:12px 14px;margin-bottom:12px;font-weight:900;font-size:15px;text-align:center;background:#fff3d9;color:#a8742a;border:2px solid #f3d79b}
 .period-bar.open{background:#e9f7f2;color:#2f8a69;border-color:#bfe6d6;font-size:13px}
 .admin-link{display:block;text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
+/* ホーム（使う人が迷わない形） */
+.start-box{background:#fff;border-radius:24px;padding:16px;margin-bottom:12px;box-shadow:0 8px 20px rgba(120,90,60,.09)}
+.how3{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.how3 li{font-size:13.5px;font-weight:900;line-height:1.35;color:var(--ink)}
+.how3 li span{display:flex;width:28px;height:28px;margin:0 auto 4px;border-radius:50%;background:var(--pink);color:#fff;align-items:center;justify-content:center;font-size:15px}
+.how3 li small{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
+.start-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.start-btns .btn{margin:0;font-size:17px;padding:15px 8px}
+.text-link{display:block;margin:12px auto 0;border:0;background:none;color:var(--teal);font:inherit;font-weight:800;font-size:14px;text-decoration:underline;cursor:pointer}
+.prog{padding:14px 16px}
+.prog-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.prog .mode-chip{margin:0;font-size:12px;padding:4px 10px}
+.prog-goal{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;font-size:16px;font-weight:900;color:#a8742a;cursor:pointer}
+.prog-goal b{color:var(--pink)}
+.prog-sub{font-size:12px;margin-top:6px}
+.acts{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.act{display:flex;align-items:center;gap:14px;width:100%;min-height:84px;border:2px solid transparent;border-radius:22px;padding:14px 16px;background:#fff;box-shadow:0 8px 20px rgba(120,90,60,.09);cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.act:active{transform:scale(.98)}
+.act span{font-size:38px;line-height:1}.act div{flex:1}.act b{display:block;font-size:20px}.act small{display:block;font-size:13.5px;color:var(--muted);font-weight:700;margin-top:2px}.act i{font-style:normal;font-size:28px;color:var(--teal)}
+.act.a1{border-color:#bfe3e1;background:linear-gradient(160deg,#effaf9,#fff)}
+.act.a2{border-color:#cfe0f5;background:linear-gradient(160deg,#f0f6fe,#fff)}
+.act.a3{border-color:#f6d3df;background:linear-gradient(160deg,#fff1f6,#fff)}
+.acts.remote-first .a2{order:-1}
+.more-head{margin:22px 4px 0;font-size:14px;font-weight:900;color:var(--muted)}
+.sub4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.sub4 .sub-tile{border:1.5px solid var(--line);background:#fff;min-height:92px}
 .complete{text-align:center}
 .complete .code{font-size:28px;font-weight:900;letter-spacing:.1em;background:#fff1f6;border-radius:16px;padding:12px;margin:10px 0;color:var(--pink)}
 </style>
@@ -160,33 +185,54 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
     <div class="top-card fest-glow" id="welcome" data-fixed="1">
       <img src="img/top.jpg?v=1" alt="もぐマップ：お店をめぐって、たべて、つながる街のイラスト" width="1200" height="675" fetchpriority="high">
       <div class="top-text">
-        <h1>めぐる、たべる、つながる</h1>
-        <p>お店をめぐって、スタンプを集めよう 🎯</p>
-        <div class="top-tags"><span>🗺️ めぐる</span><span>🍴 たべる</span><span>📷 スタンプ</span><span>🎁 もらえる</span></div>
+        <h1>北海道のお店をめぐって楽しもう</h1>
+        <p>3店舗でスタンプを集めると、景品がもらえます 🎁</p>
       </div>
     </div>
     <a class="fest-banner" id="festBanner" href="info.html"></a>
     <div class="period-bar hidden" id="periodBar"></div>
-    <button class="mode-chip hidden" id="modeChip"></button>
-    <div class="card progress-card">
-      <div class="progress-num" id="pNum">0<small> / 0</small></div>
-      <div style="flex:1"><div class="muted" id="rallyTitle">スタンプラリー</div><div class="bar"><i id="pBar"></i></div></div>
+
+    <!-- まだ参加していない人：まず「始める」か「お店を見る」 -->
+    <div class="start-box hidden" id="startBox">
+      <ol class="how3">
+        <li><span>1</span>名前で参加<small>無料・30秒</small></li>
+        <li><span>2</span>お店でQRを読む<small>通販でもOK</small></li>
+        <li><span>3</span>3つで景品<small>何回でも</small></li>
+      </ol>
+      <div class="start-btns">
+        <button class="btn pink" id="startJoin">参加して始める</button>
+        <button class="btn ghost" data-go="shops">参加店を探す</button>
+      </div>
+      <button class="text-link" id="startLogin">前に参加したことがある方はこちら</button>
     </div>
-    <div class="clear-line hidden" id="clearLine"></div>
-    <a class="first-guide hidden" id="firstGuide" href="book/guest.html"><span>🔰</span><div><b>はじめての方へ</b><br>使い方を見る（1分でわかります）</div><i>›</i></a>
-    <div class="grid4">
-      <button class="big b1" data-go="stamp"><span>🏪</span><b>対面スタンプ</b><small>お店にいるとき</small></button>
-      <button class="big b2" data-go="remote"><span>📦</span><b>遠隔スタンプ</b><small>通販・遠くから</small></button>
-      <button class="big b3" data-go="book"><span>📖</span><b>スタンプ帳</b><small>集めたスタンプ</small></button>
-      <button class="big b4" data-go="mypage"><span>👤</span><b>マイページ</b><small>自分の情報</small></button>
+
+    <!-- 進み具合 -->
+    <div class="card prog hidden" id="progBox">
+      <div class="prog-top">
+        <div class="progress-num" id="pNum">0<small> / 0店舗</small></div>
+        <button class="mode-chip hidden" id="modeChip"></button>
+      </div>
+      <div class="prog-goal" id="clearLine"></div>
+      <div class="bar"><i id="pBar"></i></div>
+      <div class="muted prog-sub" id="rallyTitle">スタンプラリー</div>
     </div>
-    <!-- 動線：①スタンプ（上の4つ）→ ②行くお店・買うお店をさがす → ③イベントを見る／友だちを誘う -->
-    <button class="wide-btn shop-main" data-go="shops"><span>🛍️</span><div><b>お店・購入</b><small>行くお店・通販で買うお店をさがす</small></div><i>›</i></button>
+
+    <!-- いちばん使う3つ：やりたいことで選ぶ -->
+    <div class="acts" id="acts">
+      <button class="act a1" data-go="stamp"><span>🏪</span><div><b>今、お店にいる</b><small>お店のQRコードを読み取る</small></div><i>›</i></button>
+      <button class="act a2" data-go="remote"><span>📦</span><div><b>通販で買った</b><small>購入の証明をお店に送る</small></div><i>›</i></button>
+      <button class="act a3" data-go="book"><span>📖</span><div><b>集めたスタンプを見る</b><small>スタンプ帳・景品の受け取り</small></div><i>›</i></button>
+    </div>
+
+    <!-- そのほか -->
+    <div class="more-head">そのほか</div>
+    <div class="sub4">
+      <button class="sub-tile" data-go="shops"><span>🔎</span><b>お店を探す</b><small>場所・通販</small></button>
+      <button class="sub-tile" data-go="mypage"><span>👤</span><b>マイページ</b><small>お店とメッセージ</small></button>
+      <a class="sub-tile" href="info.html"><span>📣</span><b>お知らせ<em class="new-dot hidden" id="infoNew">NEW</em></b><small>イベント情報</small></a>
+      <button class="sub-tile" data-share-open><span>📤</span><b>友だちに教える</b><small>LINE・QR</small></button>
+    </div>
     <a class="wide-btn marche-btn" href="../marche/"><span>🎪</span><div><b>ネットマルシェ</b><small>キャラで街を歩いて、お店をのぞこう</small></div><i>›</i></a>
-    <div class="sub2">
-      <a class="sub-tile info-tile" href="info.html"><span>📣</span><b>お知らせ<em class="new-dot hidden" id="infoNew">NEW</em></b><small>マルシェ・イベント</small></a>
-      <button class="sub-tile share-tile" data-share-open><span>📤</span><b>友だちに教える</b><small>LINE・SNS・QR</small></button>
-    </div>
     <div class="ticker hidden" id="ticker">
       <div class="ticker-head"><b>📣 いまのお知らせ</b><a href="info.html">もっと見る ›</a></div>
       <div class="slider" id="tickSlider"></div>
@@ -199,10 +245,10 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
   <section class="view" id="v-stamp">
     <button class="back" data-go="home">← もどる</button>
     <div class="card">
-      <h2>🏪 対面スタンプ</h2>
-      <div class="muted">お店にあるQRコードを読み取ると、スタンプが押されます。</div>
+      <h2>🏪 今、お店にいる</h2>
+      <div class="muted">レジなどにあるQRコードを読み取ると、スタンプが押されます。</div>
       <button class="btn pink scan-btn" id="scanBtn"><span>📷</span>QRコードを読み取る</button>
-      <div class="muted img-hint">お店から送られてきたQRコードは「📦 遠隔スタンプ」から読み取ってね</div>
+      <div class="muted img-hint">LINEなどでお店から届いたQRコードは、ホームの「📦 通販で買った」から読み取れます</div>
     </div>
     <div class="nfc-hint"><span>📱</span><div><b>NFCタグがあるお店</b><br>スマホをタグにかざすだけでOK。</div></div>
     <details class="card num-box">
@@ -244,8 +290,8 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
       <div class="paste-row"><input id="rtPaste" inputmode="url" placeholder="https://…?rt=…"><button class="btn small" id="rtPasteBtn">押す</button></div>
     </div>
     <div class="card">
-      <h2>📦 遠隔スタンプ（自分で申請）</h2>
-      <div class="online-note">📦 遠隔スタンプは<b>通販メニューのあるお店</b>だけです（お店の一覧の「📦 通販スタンプOK」）</div>
+      <h2>📦 通販で買った（お店に送る）</h2>
+      <div class="online-note">📦 <b>通販メニューのあるお店</b>だけが対象です（お店の一覧で「📦 通販スタンプOK」の印があるお店）</div>
       <div class="muted">通販などで買ったときは、購入の証明をお店に送ってください。お店が確認するとスタンプが押されます。</div>
       <label class="label" for="remoteShop">お店</label>
       <select id="remoteShop"></select>
@@ -276,7 +322,7 @@ body.festive .ticker{border:3px solid transparent;background:linear-gradient(#ff
     </div>
     <div class="card">
       <h3>🎁 クリアと景品</h3>
-      <div class="muted">スタンプ3つで1クリア。クリアするたびに景品がもらえます。</div>
+      <div class="muted">スタンプ3つで景品がもらえます。そのあとも3つ集めるごとに、また景品がもらえます。</div>
       <div id="clearList"></div>
     </div>
   </section>
@@ -374,7 +420,7 @@ const PER_CLEAR=3; // スタンプいくつで1クリアか
 function go(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+name));
   window.scrollTo(0,0);
-  if(!['home','book','shops'].includes(name)&&!participant()){openJoin();}
+  if(!['home','book','shops'].includes(name)&&!participant()){openJoin(()=>{if(name==='mypage')renderMy()})}
   if(name==='shops')renderShops();
   if(name==='remote')loadSubs();
   if(name==='mypage'){renderMy();loadNotices();loadDm();}
@@ -432,19 +478,18 @@ async function loadProgress(){
 function renderProgress(){
   const p=participant(),rs=rallyShops(),rem=isRemote();
   const count=rem?rs.filter(s=>stampIds.has(s.id)).length:(progress?.stamp_count??[...stampIds].length),total=rem?rs.length:(progress?.total_shops??rs.length),pct=total?Math.min(100,count/total*100):0;
+  $('startBox').classList.toggle('hidden',!!p);$('progBox').classList.toggle('hidden',!p);
   $('modeChip').classList.toggle('hidden',!p);$('modeChip').classList.toggle('remote',rem);
-  $('modeChip').innerHTML=rem?'📦 通販スタンプラリーで参加中 <small>変える ›</small>':'🏪 お店に行って参加中 <small>変える ›</small>';
-  $('rallyTitle').textContent=rem?'📦 通販スタンプラリー（通販メニューのあるお店）':(settings.rally_title||'スタンプラリー');
-  document.querySelector('.grid4').classList.toggle('remote-first',rem);
+  $('modeChip').innerHTML=rem?'📦 通販で参加中 ›':'🏪 お店で参加中 ›';
+  $('rallyTitle').textContent=rem?'通販メニューのあるお店だけが対象です':(settings.rally_title||'スタンプラリー');
+  $('acts').classList.toggle('remote-first',rem);
   $('who').textContent=p?`${p.nickname||'参加者'}さん`:'未参加';$('who').classList.toggle('ok',!!p);
-  $('pNum').innerHTML=`${count}<small> / ${total}</small>`;$('pBar').style.width=pct+'%';$('bookBar').style.width=pct+'%';
+  $('pNum').innerHTML=`${count}<small> / ${total}店舗</small>`;$('pBar').style.width=pct+'%';$('bookBar').style.width=pct+'%';
   $('bookNote').textContent=p?`${count}個 / ${total}店舗`:'参加すると、ここにスタンプがたまります';
   $('book').innerHTML=rs.length?rs.map(s=>`<div class="stamp ${stampIds.has(s.id)?'on':''}"><span class="stamp-inner">${esc(s.name)}</span></div>`).join(''):'<div class="muted">参加店舗はまだありません</div>';
   $('showComplete').classList.toggle('hidden',!progress?.completed);
-  $('firstGuide').classList.toggle('hidden',!!p);
   renderClears(count);
 }
-
 /* ---------- クリア（スタンプ3つで1クリア） ---------- */
 const stampCount=()=>progress?.stamp_count??stampIds.size;
 const seenKey=()=>'mogu_seen_clears_'+(participant()?.id||'');
@@ -462,8 +507,8 @@ async function recordClears(){
 }
 function renderClears(count){
   const p=participant(),line=$('clearLine'),n=clears.length,rest=PER_CLEAR-(count%PER_CLEAR);
-  line.classList.toggle('hidden',!p);
-  if(p)line.innerHTML=`<span>${n?`🎁 ${n}クリア達成！`:'🎁 3つで1クリア'}　あと${rest}個で${n+1}クリア</span><span class="clear-dots">${Array.from({length:PER_CLEAR},(_,i)=>`<i class="${i<count%PER_CLEAR?'on':''}"></i>`).join('')}</span>`;
+  const unclaimed=clears.filter(c=>!c.reward_given).length;
+  if(p)line.innerHTML=`<span>${unclaimed?`🎁 景品を受け取れます <b>›</b>`:`あと<b>${rest}個</b>で${n?`${n+1}回目の`:''}景品`}</span><span class="clear-dots">${Array.from({length:PER_CLEAR},(_,i)=>`<i class="${i<count%PER_CLEAR?'on':''}"></i>`).join('')}</span>`;
   $('clearList').innerHTML=n?clears.slice().reverse().map(c=>`<div class="reward"><div><b>${c.clear_no}クリア</b><div class="muted">${c.reward_given?'✅ 景品を受け取りました':'🎁 景品がもらえます'}</div></div>${c.reward_given?'':`<button class="btn pink small" data-reward="${c.clear_no}">受け取り画面</button>`}</div>`).join(''):`<div class="muted" style="margin-top:8px">${p?`あと${rest}個で1クリア！`:'参加すると、ここにクリアが出ます'}</div>`;
 }
 $('clearList').addEventListener('click',e=>{const b=e.target.closest('[data-reward]');if(b)showReward(+b.dataset.reward)});
@@ -486,6 +531,8 @@ function checkNewClears(){
 /* ---------- 参加登録 ---------- */
 let afterJoin=null;
 function openJoin(then,mode){afterJoin=then||null;setMode(mode||'new');$('joinModal').classList.add('on');setTimeout(()=>$('joinName').focus(),200)}
+$('startJoin').onclick=()=>openJoin(()=>toast('参加しました！お店でQRを読み取ってスタンプを集めよう'));
+$('startLogin').onclick=()=>openJoin(null,'login');
 let pickStyle='onsite';
 $('joinStyle').onclick=e=>{const b=e.target.closest('[data-style]');if(!b)return;pickStyle=b.dataset.style;$('joinStyle').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))};
 $('joinBtn').onclick=async()=>{
@@ -566,12 +613,12 @@ function openShop(id){
     ${s.phone?`<div>☎️ <a href="tel:${esc(s.phone)}">${esc(s.phone)}</a></div>`:''}
     <div class="sd-sec"><b>🛍️ 買う・つながる</b>
       ${buy||comm?`<div class="buy-row">${buy}${comm}</div>`:'<div class="muted">通販・コミュニティの情報は準備中です。</div>'}
-      ${buy&&s.stamp_rally_enabled?`<div class="buy-guide"><b>📦 通販で買ってもスタンプがもらえます</b><ol><li>「購入ページへ」で買い物する</li><li>注文画面のスクショを撮っておく</li><li>下の「遠隔スタンプを申請」から送る</li></ol></div>`:''}
+      ${buy&&s.stamp_rally_enabled?`<div class="buy-guide"><b>📦 通販で買ってもスタンプがもらえます</b><ol><li>「購入ページへ」で買い物する</li><li>注文画面のスクショを撮っておく</li><li>下の「通販で買った（申請）」から送る</li></ol></div>`:''}
     </div>
     <div class="sd-sec"><b>🏪 お店へ行く・もっと見る</b>
       <div class="link-grid"><a class="btn" target="_blank" rel="noopener" href="${esc(map)}">🗺️ ここまでナビ</a>${links}</div>
     </div>
-    ${s.stamp_rally_enabled?`<div class="sd-sec"><b>🎯 スタンプ</b>${s.has_online_menu?'<div class="online-note">📦 <b>通販スタンプOK</b>：遠くからでも、通販で買えばスタンプがもらえます</div>':'<div class="muted" style="font-size:13px">このお店は来店したときだけスタンプが押せます</div>'}<div class="link-grid"><button class="btn pink" data-sd="stamp">🏪 対面スタンプ</button>${s.has_online_menu?'<button class="btn ghost" data-sd="remote">📦 遠隔スタンプを申請</button>':''}</div></div>`:''}
+    ${s.stamp_rally_enabled?`<div class="sd-sec"><b>🎯 スタンプ</b>${s.has_online_menu?'<div class="online-note">📦 <b>通販スタンプOK</b>：遠くからでも、通販で買えばスタンプがもらえます</div>':'<div class="muted" style="font-size:13px">このお店は来店したときだけスタンプが押せます</div>'}<div class="link-grid"><button class="btn pink" data-sd="stamp">🏪 お店でスタンプ</button>${s.has_online_menu?'<button class="btn ghost" data-sd="remote">📦 通販で買った（申請）</button>':''}</div></div>`:''}
     <button class="btn ghost" data-sd="dm">💬 このお店にメッセージ</button>`;
   $('shopDetail').dataset.id=id;$('shopModal').classList.add('on');
 }
