@@ -14,6 +14,16 @@
 <meta property="og:image" content="https://ritan1107.github.io/mogamap/seaside/assets/ogp.jpg">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://ritan1107.github.io/mogamap/seaside/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BarOrPub","name":"Sea side terrace大堂津（シーサイドテラス大堂津）","alternateName":["シーサイドテラス大堂津","Seaside Terrace Odotsu"],
+"url":"https://ritan1107.github.io/mogamap/seaside/","image":"https://ritan1107.github.io/mogamap/seaside/assets/ogp.jpg","priceRange":"¥",
+"address":{"@type":"PostalAddress","postalCode":"889-3141","addressRegion":"宮崎県","addressLocality":"日南市","streetAddress":"大堂津4丁目6-6","addressCountry":"JP"},
+"geo":{"@type":"GeoCoordinates","latitude":31.5551322,"longitude":131.381174},
+"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"15:00","closes":"22:00"}],
+"servesCuisine":["パスタ","おつまみ","カクテル"],"hasMenu":"https://ritan1107.github.io/mogamap/seaside/#menu",
+"sameAs":["https://www.instagram.com/odotsu.shinsengumi/","https://www.tiktok.com/@odotsu.shinsengumi"]}
+</script>
 <link rel="icon" href="assets/icon.png">
 <link rel="apple-touch-icon" href="assets/icon.png">
 <link rel="preload" as="image" href="assets/walk.webp">
@@ -444,65 +454,6 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
   .mbar .open i{background:#25b866}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.hero h1 img,.tagline,.hero-act{opacity:1}}
-
-/* ===== ヤシの木チャレンジ（店主を登らせるミニゲーム） ===== */
-.beach .wrap{position:relative}
-.palm-deco{position:absolute;right:20px;top:-104px;width:112px;background:none;border:0;padding:0;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent}
-.palm-deco img{width:100%;height:auto;transform-origin:50% 100%;animation:sway 4.8s ease-in-out infinite}
-.palm-deco.shake img{animation:shake .5s ease-in-out}
-@keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
-@keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-9deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-5deg)}85%{transform:rotate(3deg)}}
-.nut{position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe27a,#f2b51c 70%);border:2.5px solid #4a3410;pointer-events:none;z-index:4}
-.nut.drop{animation:nutdrop 1.1s cubic-bezier(.4,0,.6,1) forwards}
-@keyframes nutdrop{0%{transform:translate(0,0)}55%{transform:translate(6px,var(--fall))}70%{transform:translate(16px,calc(var(--fall) - 26px))}85%{transform:translate(24px,var(--fall))}93%{transform:translate(29px,calc(var(--fall) - 8px))}100%{transform:translate(32px,var(--fall));opacity:0}}
-.plus{position:absolute;font-weight:900;color:var(--sun);font-size:15px;pointer-events:none;z-index:5;animation:plus 1s var(--ease) forwards;white-space:nowrap;text-shadow:0 2px 0 #fff}
-@keyframes plus{from{transform:translateY(0);opacity:1}to{transform:translateY(-34px);opacity:0}}
-.climb{margin-top:40px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:#fff;border:2px solid var(--ink);border-radius:22px;padding:22px 28px;box-shadow:6px 6px 0 var(--sun);position:relative;overflow:hidden}
-.climb::before{content:"";position:absolute;left:0;right:0;bottom:0;height:46px;background:linear-gradient(#f6e6c3,#efd9a8);border-top:2px dashed #d8bf86;z-index:0}
-.cstage{position:relative;z-index:1;width:221px;height:245px;border:0;padding:0;background:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
-.cstage .spr{position:absolute;inset:0;background-repeat:no-repeat;background-size:500% 500%;background-position:0 0}
-.cstage:active .spr{transform:scale(.985)}
-.cstage .bub{position:absolute;left:50%;top:-8px;margin-left:-60px;white-space:nowrap;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:2px 12px;font-weight:900;font-size:13px;opacity:0;transform:scale(.6);transform-origin:30% 100%;transition:opacity .25s,transform .3s cubic-bezier(.3,1.6,.5,1);z-index:3}
-.cstage .bub.show{opacity:1;transform:scale(1)}
-.cinfo{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;padding-bottom:40px}
-.cinfo h3{font-size:clamp(20px,2.4vw,26px);font-weight:900;letter-spacing:.06em;line-height:1.35}
-.cinfo h3 small{display:block;font-family:var(--en);font-weight:400;color:var(--red);font-size:17px;letter-spacing:.03em}
-.cinfo .how{font-size:14px;color:var(--sub);line-height:1.8}
-.meter{height:14px;border:2px solid var(--ink);border-radius:999px;background:#f3efe5;overflow:hidden;max-width:360px}
-.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7cc35b,#3f9a3a);transition:width .15s linear}
-.cstats{display:flex;flex-wrap:wrap;gap:8px}
-.cstats span{background:var(--cream);border:2px solid var(--ink);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:900;font-variant-numeric:tabular-nums}
-.cstats span b{color:var(--red)}
-.cagain{align-self:flex-start;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:9px 20px;font-family:var(--f);font-weight:900;font-size:14px;cursor:pointer;min-height:44px}
-.cagain[hidden]{display:none}
-@media (max-width:760px){
-  .palm-deco{width:80px;top:-62px;right:12px}
-  .climb{grid-template-columns:1fr;justify-items:center;text-align:center;padding:20px 18px}
-  .cinfo{align-items:center}
-  .cagain{align-self:center}
-  .meter{width:100%}
-}
-@media (prefers-reduced-motion:reduce){.palm-deco img{animation:none}}
-
-/* ===== 波乗りチャレンジ ===== */
-.surf{margin-top:22px;grid-template-columns:1fr auto;box-shadow:6px 6px 0 var(--sea);background:linear-gradient(#eaf7fc,#fff 70%)}
-.surf::before{background:linear-gradient(#bfe6f4,#8fd0ea);border-top:2px dashed #6fb9d6}
-.surf .cstage{width:200px;height:236px;order:2}
-.surf .spr{background-size:500% 400%}
-.surf .cinfo{order:1}
-.surf .cinfo h3 small{color:var(--sea)}
-.bal{position:relative;height:26px;max-width:360px;border:2px solid var(--ink);border-radius:999px;background:#fdeaea;overflow:hidden}
-.bal .zone{position:absolute;top:0;bottom:0;left:50%;width:30%;transform:translateX(-50%);background:#bfe8b0;border-left:2px dashed #3f9a3a;border-right:2px dashed #3f9a3a;transition:width .3s}
-.bal .cur{position:absolute;top:2px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--sea);border:2px solid var(--ink);left:0}
-.bal.hit{animation:balhit .3s}
-.bal.miss{animation:balmiss .35s}
-@keyframes balhit{50%{box-shadow:0 0 0 5px rgba(63,154,58,.35)}}
-@keyframes balmiss{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.surf .meter i{background:linear-gradient(90deg,#6cc3e6,#1f8fb8)}
-.phase{font-weight:900;font-size:13px;color:var(--sea)}
-.cstage.win .spr{animation:win 1s ease-in-out 2}
-@keyframes win{50%{transform:translateY(-8px) rotate(-2deg)}}
-@media (max-width:760px){.surf{grid-template-columns:1fr}.surf .cstage{order:0}.surf .cinfo{order:1}.bal{width:100%}}
 </style>
 </head>
 <body>
@@ -744,35 +695,11 @@ footer .cp{margin-top:18px;font-family:var(--en);font-size:15px;color:#9aa6a1}
 <!-- ===== BEACH ===== -->
 <section class="sec beach" id="beach">
   <div class="wrap">
-        <!-- ヤシの木チャレンジ -->
-    <button class="palm-deco" type="button" aria-label="ヤシの木をゆらしてココナッツを落とす"><img src="assets/palm.webp" alt="" width="262" height="300" loading="lazy"></button>
     <div class="sh rv"><h2><small>Beach</small>大堂津の浜辺で</h2><p>何時に来ても、その時間だけの海があります。</p></div>
     <div class="col rv">
       <figure><img src="assets/shop.jpg" alt="ヤシの葉で飾られたキッチンカーと店主"><figcaption>キッチンカー</figcaption></figure>
       <figure><img src="assets/hero.jpg" alt="ロゴシャツの背中と大堂津の海" style="object-position:50% 40%"><figcaption>Ocean Bound</figcaption></figure>
       <figure class="lg"><img src="assets/logo.webp" alt="Seaside Terrace 大堂津 ロゴ"></figure>
-    </div>
-    <div class="climb rv" id="climb">
-      <button class="cstage" id="cstage" type="button" aria-label="タップして店主をヤシの木に登らせる"><span class="spr" id="cspr"></span><span class="bub" id="cbub"></span></button>
-      <div class="cinfo">
-        <h3><small>Palm Challenge</small>店主をヤシの木に登らせて！</h3>
-        <p class="how">店主をタップ（連打）すると登ります。手を止めるとずり落ちるので、てっぺんまで一気に！ココナッツ、取れるかな…？</p>
-        <div class="meter" aria-hidden="true"><i id="cmeter"></i></div>
-        <div class="cstats" aria-live="polite"><span>今回 <b id="ctime">0.0</b>秒</span><span>自己ベスト <b id="cbest">-</b></span><span>てっぺん <b id="ctop">0</b>回</span><span>ココナッツ <b id="cnut">0</b>個</span></div>
-        <button class="cagain" id="cagain" type="button" hidden>もう1回 登らせる</button>
-      </div>
-    </div>
-    <div class="climb surf rv" id="surf">
-      <div class="cinfo">
-        <h3><small>Surf Challenge</small>店主を波に乗せて！</h3>
-        <p class="how"><b>①</b> 連打でボードに立ち上がる　<b>②</b> 青い玉が<b>緑のゾーン</b>に入った瞬間にタップ！タイミングを外すと…ドボン。大波のチューブまで行けるかな？</p>
-        <div class="phase" id="sphase">タップでスタート</div>
-        <div class="meter" id="smeterw" aria-hidden="true"><i id="smeter"></i></div>
-        <div class="bal" id="sbal" hidden aria-hidden="true"><span class="zone" id="szone"></span><span class="cur" id="scur"></span></div>
-        <div class="cstats" aria-live="polite"><span>波の高さ <b id="sh">0</b>%</span><span>ベスト <b id="sbest">0</b>%</span><span>チューブ成功 <b id="swin">0</b>回</span><span>ドボン <b id="sfall">0</b>回</span></div>
-        <button class="cagain" id="sagain" type="button" hidden>もう1回 波に乗る</button>
-      </div>
-      <button class="cstage" id="sstage" type="button" aria-label="タップして店主を波に乗せる"><span class="spr" id="sspr"></span><span class="bub" id="sbub"></span></button>
     </div>
     <div class="tl">
       <div class="rv"><b>15:00</b><h3>波乗りのあとに</h3><p>開店と同時に、サーフィン帰りの一杯。</p></div>
@@ -1039,118 +966,6 @@ document.querySelectorAll('[data-tab]').forEach(a=>a.addEventListener('click',()
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);
     if(e.target.classList.contains('sh')){const h=e.target.querySelector('h2');Taiko.head();if(Taiko.on&&h){h.classList.remove('hit');void h.offsetWidth;h.classList.add('hit')}}else Taiko.whoosh()}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});
   els.forEach(e=>io.observe(e))})();
-
-/* ===== ヤシの木チャレンジ ===== */
-(function(){
-  const st=document.getElementById('cstage');if(!st)return;
-  const spr=document.getElementById('cspr'),bub=document.getElementById('cbub'),meter=document.getElementById('cmeter'),again=document.getElementById('cagain');
-  const elT=document.getElementById('ctime'),elB=document.getElementById('cbest'),elTop=document.getElementById('ctop'),elN=document.getElementById('cnut');
-  const K='seaside_palm_v1';let S={best:null,top:0,nut:0};try{S=Object.assign(S,JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){}
-  const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
-  const showStats=()=>{elB.textContent=S.best?S.best.toFixed(1)+'秒':'-';elTop.textContent=S.top;elN.textContent=S.nut};showStats();
-  // 画面に近づいたら画像を読み込む
-  const load=()=>{spr.style.backgroundImage='url(assets/palm-climb.webp)'};
-  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){load();io.disconnect()}},{rootMargin:'400px'});io.observe(st)}else load();
-  const TOP=10,FALL=[11,12,13,14,15,16,17,18,19,20,21,22,23,24];
-  let p=0,state='idle',last=0,t0=0,timer=null,bt=null;
-  const frame=i=>{spr.style.backgroundPosition=(i%5)*25+'% '+Math.floor(i/5)*25+'%'};
-  const say=(txt,ms=1100)=>{bub.textContent=txt;bub.classList.add('show');clearTimeout(bt);bt=setTimeout(()=>bub.classList.remove('show'),ms)};
-  const sfx=k=>{if(typeof Taiko==='undefined'||!Taiko.on)return;if(k==='tap')Taiko.tap();else if(k==='fall')Taiko.head();else if(k==='swish')Taiko.whoosh()};
-  const draw=()=>{frame(Math.min(TOP-1,Math.floor(p)));meter.style.width=Math.min(100,p/TOP*100)+'%';if(state==='climb')elT.textContent=((performance.now()-t0)/1000).toFixed(1)};
-  const CHEER=['よいしょ！','もうちょい！','いけるいける！','ふんっ！','高い〜！'];
-  function tick(){
-    if(state!=='climb')return;
-    const idle=performance.now()-last;
-    if(idle>450){p=Math.max(0,p-0.09);if(p===0&&idle>2500){state='idle';say('…あきらめた？',1400);elT.textContent='0.0';meter.style.width='0%';frame(0);return}
-      if(idle>450&&idle<520)say('ずり落ちる〜！',900)}
-    draw();timer=requestAnimationFrame(tick);
-  }
-  function tap(){
-    if(state==='fall'||state==='done')return;
-    if(state==='idle'){state='climb';p=0;t0=performance.now();again.hidden=true;cancelAnimationFrame(timer);timer=requestAnimationFrame(tick)}
-    last=performance.now();p+=0.55;sfx('tap');
-    if(Math.random()<.18)say(CHEER[Math.floor(Math.random()*CHEER.length)],700);
-    if(p>=TOP)reachTop();else draw();
-  }
-  function reachTop(){
-    state='fall';cancelAnimationFrame(timer);const sec=(performance.now()-t0)/1000;elT.textContent=sec.toFixed(1);meter.style.width='100%';
-    const isBest=!S.best||sec<S.best;if(isBest)S.best=sec;S.top++;S.nut++;save();
-    frame(TOP);say('ココナッツ取れ…',900);
-    setTimeout(()=>{say('あっ！！',700);sfx('swish');
-      FALL.forEach((f,i)=>setTimeout(()=>{frame(f);if(f===23)sfx('fall')},i*105));
-      setTimeout(()=>{state='done';showStats();say(isBest?'自己ベスト！…いてて':'いてて…ココナッツGET！',2200);again.hidden=false;meter.style.width='0%'},FALL.length*105+250)},900);
-  }
-  st.addEventListener('pointerdown',e=>{e.preventDefault();tap()});
-  st.addEventListener('click',e=>{if(e.detail===0)tap()}); // キーボード（Enter／スペース）で登る
-  again.addEventListener('click',()=>{state='idle';p=0;frame(0);elT.textContent='0.0';again.hidden=true;say('次こそは！',1000);st.focus({preventScroll:true})});
-  frame(0);setTimeout(()=>say('タップで登るよ！',1800),1200);
-
-  // 飾りのヤシの木：タップでゆれてココナッツが落ちる
-  const deco=document.querySelector('.palm-deco');
-  if(deco)deco.addEventListener('click',()=>{
-    deco.classList.remove('shake');void deco.offsetWidth;deco.classList.add('shake');sfx('swish');
-    const host=deco.parentElement,r=deco.getBoundingClientRect(),hr=host.getBoundingClientRect();
-    const n=document.createElement('span');n.className='nut';n.style.left=(r.left-hr.left+r.width*.47)+'px';n.style.top=(r.top-hr.top+r.height*.38)+'px';
-    n.style.setProperty('--fall',Math.round(r.height*.62)+'px');host.appendChild(n);requestAnimationFrame(()=>n.classList.add('drop'));
-    setTimeout(()=>{sfx('tap');S.nut++;save();showStats();const pl=document.createElement('span');pl.className='plus';pl.textContent='ココナッツ +1';pl.style.left=Math.max(0,r.left-hr.left-30)+'px';pl.style.top=(r.top-hr.top+r.height*.7)+'px';host.appendChild(pl);setTimeout(()=>pl.remove(),1000)},620);
-    setTimeout(()=>n.remove(),1200);
-  });
-})();
-
-/* ===== 波乗りチャレンジ ===== */
-(function(){
-  const st=document.getElementById('sstage');if(!st)return;
-  const spr=document.getElementById('sspr'),bub=document.getElementById('sbub'),meterW=document.getElementById('smeterw'),meter=document.getElementById('smeter'),
-    bal=document.getElementById('sbal'),zone=document.getElementById('szone'),cur=document.getElementById('scur'),phase=document.getElementById('sphase'),again=document.getElementById('sagain');
-  const elH=document.getElementById('sh'),elB=document.getElementById('sbest'),elW=document.getElementById('swin'),elF=document.getElementById('sfall');
-  const K='seaside_surf_v1';let S={best:0,win:0,fall:0};try{S=Object.assign(S,JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){}
-  const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
-  const stats=()=>{elB.textContent=S.best;elW.textContent=S.win;elF.textContent=S.fall};stats();
-  const IMG={up:'assets/surf-up.webp',ride:'assets/surf-ride.webp',fall:'assets/surf-fall.webp'};
-  const load=()=>{Object.values(IMG).forEach(u=>{const i=new Image();i.src=u});show('up',0)};
-  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){load();io.disconnect()}},{rootMargin:'400px'});io.observe(st)}else load();
-  let sheet='';
-  function show(name,i){if(sheet!==name){spr.style.backgroundImage='url('+IMG[name]+')';sheet=name}spr.style.backgroundPosition=(i%5)*25+'% '+Math.floor(i/5)*(100/3)+'%'}
-  let bt=null;const say=(t,ms=1100)=>{bub.textContent=t;bub.classList.add('show');clearTimeout(bt);bt=setTimeout(()=>bub.classList.remove('show'),ms)};
-  const sfx=k=>{if(typeof Taiko==='undefined'||!Taiko.on)return;if(k==='tap')Taiko.tap();else if(k==='big')Taiko.head();else Taiko.whoosh()};
-  let state='idle',up=0,ride=0,raf=null,pos=0,dir=1,speed=.9,zw=30,lastHit=0;
-  function setH(){const h=Math.round(ride/19*100);elH.textContent=h;return h}
-  function reset(){state='idle';up=0;ride=0;show('up',0);meterW.hidden=false;meter.style.width='0%';bal.hidden=true;phase.textContent='タップでスタート';again.hidden=true;elH.textContent=0;st.classList.remove('win')}
-  function startRide(){
-    state='ride';meterW.hidden=true;bal.hidden=false;phase.textContent='緑のゾーンでタップ！';ride=0;show('ride',0);zw=34;speed=.7;zone.style.width=zw+'%';pos=0;dir=1;lastHit=performance.now();say('いくよー！',900);sfx('swish');
-    cancelAnimationFrame(raf);let prev=performance.now();
-    const loop=t=>{if(state!=='ride')return;const dt=Math.min(50,t-prev);prev=t;pos+=dir*speed*dt/10;if(pos>=100){pos=100;dir=-1}if(pos<=0){pos=0;dir=1}cur.style.left=pos+'%';
-      if(t-lastHit>2600){wipe('のんびりしすぎ〜！');return}raf=requestAnimationFrame(loop)};
-    raf=requestAnimationFrame(loop);
-  }
-  function hit(){
-    const inZone=Math.abs(pos-50)<=zw/2;
-    if(!inZone){bal.classList.remove('miss');void bal.offsetWidth;bal.classList.add('miss');wipe('うわっ！');return}
-    bal.classList.remove('hit');void bal.offsetWidth;bal.classList.add('hit');sfx('swish');lastHit=performance.now();
-    ride=Math.min(19,ride+2);show('ride',ride);setH();zw=Math.max(16,zw-1.8);speed=Math.min(1.4,speed+.08);zone.style.width=zw+'%';
-    const L=['いい波！','ナイス！','まだまだ！','でかいの来た！','チューブ見えた！'];if(Math.random()<.45)say(L[Math.floor(Math.random()*L.length)],700);
-    if(ride>=19)win();
-  }
-  function end(){const h=setH();if(h>S.best)S.best=h;save();stats();again.hidden=false;bal.hidden=true}
-  function win(){state='done';cancelAnimationFrame(raf);S.win++;phase.textContent='チューブライディング成功！';sfx('big');st.classList.add('win');say('最高の波だった〜！',2400);end()}
-  function wipe(msg){
-    state='fall';cancelAnimationFrame(raf);S.fall++;phase.textContent='ドボン…';say(msg,900);
-    const f0=Math.min(10,Math.floor(ride/2)+(ride>0?2:0));let i=f0;
-    const step=()=>{show('fall',i);if(i===16)sfx('big');i++;if(i<20)setTimeout(step,95);else{state='done';say('もう1回！ぷはっ',1800);end()}};step();
-  }
-  function tap(){
-    if(state==='fall'||state==='done')return;
-    if(state==='idle'){state='up';phase.textContent='連打で立ち上がれ！';say('よーし！',700)}
-    if(state==='up'){up=Math.min(19,up+1.5);show('up',Math.floor(up));meter.style.width=(up/19*100)+'%';sfx('tap');if(up>=19)setTimeout(startRide,250);return}
-    if(state==='ride')hit();
-  }
-  st.addEventListener('pointerdown',e=>{e.preventDefault();tap()});
-  st.addEventListener('click',e=>{if(e.detail===0)tap()});
-  // ゾーンのバーを直接タップしてもOK
-  bal.addEventListener('pointerdown',e=>{e.preventDefault();if(state==='ride')hit()});
-  again.addEventListener('click',()=>{reset();say('次はチューブまで！',1200);st.focus({preventScroll:true})});
-  reset();
-})();
 </script>
 </body>
 </html>
